@@ -129,7 +129,7 @@ export const typography = {
     },
   },
   Slogan: {
-    1: {
+    Md: {
       fontSize: '24px',
       lineHeight: '150%',
       fontWeight: 500,
