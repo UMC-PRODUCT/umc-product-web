@@ -10,6 +10,8 @@ import { routeTree } from './routeTree.gen.ts'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { GlobalStyle } from '@/styles/global.tsx'
+import { theme } from './styles/theme/index.ts'
+import { ThemeProvider } from '@emotion/react'
 
 // Create a new router instance
 
@@ -39,8 +41,10 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-        <GlobalStyle />
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )

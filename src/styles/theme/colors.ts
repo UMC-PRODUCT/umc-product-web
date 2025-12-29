@@ -12,6 +12,7 @@ export const colors = {
     700: '#272727',
     800: '#202020',
   },
+  kakao: '#FEE500',
 
   necessary: '#F95755',
 } as const
