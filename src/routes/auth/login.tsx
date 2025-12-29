@@ -7,6 +7,7 @@ import Kakao from '@/assets/social/kakao.svg?react'
 import Google from '@/assets/social/google.svg?react'
 import Apple from '@/assets/social/apple.svg?react'
 import Divider from '@/components/auth/Divider'
+import AuthSection from '@/components/auth/AuthSection'
 export const Route = createFileRoute('/auth/login')({
   component: Login,
 })
@@ -25,22 +26,11 @@ const Main = styled.main`
   }
 `
 
-const Section = styled.section`
-  display: flex;
-  justify-content: center;
-  justify-self: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 48px;
-  width: 372px;
-  max-width: 80%;
-`
-
 function Login() {
   return (
     <Main>
       <IntroBanner></IntroBanner>
-      <Section>
+      <AuthSection size="md">
         <Logo></Logo>
         <Divider label="로그인 또는 회원가입"></Divider>
         <div
@@ -76,7 +66,7 @@ function Login() {
             onClick={() => {}}
           ></Button>
         </div>
-      </Section>
+      </AuthSection>
     </Main>
   )
 }

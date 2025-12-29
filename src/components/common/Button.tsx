@@ -1,15 +1,6 @@
+import type { SvgIconComponent } from '@/types/component'
 import type { TypoToken, TypoGroup } from '@/types/typo'
 import { css, useTheme, type Theme } from '@emotion/react'
-import type { ComponentProps, ComponentType } from 'react'
-
-type SvgIconComponent = ComponentType<
-  ComponentProps<'svg'> & {
-    title?: string
-    titleId?: string
-    desc?: string
-    descId?: string
-  }
->
 
 type ButtonVariant = 'solid' | 'outline'
 type ButtonTone = 'white' | 'lime' | 'kakao' | 'gray'
@@ -85,13 +76,13 @@ const baseButton = (disabled: boolean) =>
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    flexWrap: 'nowrap',
     maxHeight: '100%',
     cursor: disabled ? 'not-allowed' : 'pointer',
-    opacity: disabled ? 0.5 : 1,
     border: 'none',
     outline: 0,
     gap: 8,
-    padding: '12px 16px',
+    padding: '16px 16px',
   })
 
 const resolveTypo = (theme: Theme, token?: TypoToken) => {
