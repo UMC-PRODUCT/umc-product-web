@@ -6,28 +6,34 @@ import Button from '@/components/common/Button'
 import Kakao from '@/assets/social/kakao.svg?react'
 import Google from '@/assets/social/google.svg?react'
 import Apple from '@/assets/social/apple.svg?react'
+import Divider from '@/components/auth/Divider'
 export const Route = createFileRoute('/auth/login')({
   component: Login,
 })
 
 const Main = styled.main`
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   justify-content: space-between;
   align-items: center;
   height: 100vh;
   padding: 24px;
-  @media (max-width: ${({ theme }) => theme.breakPoints.tablet}) {
+  gap: 24px;
+  @media (max-width: ${({ theme }) => theme.breakPoints.desktop}) {
+    grid-template-columns: 1fr;
     justify-content: center;
   }
 `
 
 const Section = styled.section`
   display: flex;
+  justify-content: center;
+  justify-self: center;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 48px;
   width: 372px;
+  max-width: 80%;
 `
 
 function Login() {
@@ -36,27 +42,40 @@ function Login() {
       <IntroBanner></IntroBanner>
       <Section>
         <Logo></Logo>
-        <Button
-          disabled={false}
-          label="Kakao로 계속하기"
-          Icon={Kakao}
-          variant="solid"
-          tone="kakao"
-        ></Button>
-        <Button
-          disabled={false}
-          label="Google로 계속하기"
-          Icon={Google}
-          variant="solid"
-          tone="white"
-        ></Button>
-        <Button
-          disabled={false}
-          label="Apple로 계속하기"
-          Icon={Apple}
-          variant="solid"
-          tone="white"
-        ></Button>
+        <Divider label="로그인 또는 회원가입"></Divider>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 32,
+            width: '100%',
+          }}
+        >
+          <Button
+            disabled={false}
+            label="Kakao로 계속하기"
+            Icon={Kakao}
+            variant="solid"
+            tone="kakao"
+            onClick={() => {}}
+          ></Button>
+          <Button
+            disabled={false}
+            label="Google로 계속하기"
+            Icon={Google}
+            variant="solid"
+            tone="white"
+            onClick={() => {}}
+          ></Button>
+          <Button
+            disabled={false}
+            label="Apple로 계속하기"
+            Icon={Apple}
+            variant="solid"
+            tone="white"
+            onClick={() => {}}
+          ></Button>
+        </div>
       </Section>
     </Main>
   )

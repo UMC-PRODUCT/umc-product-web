@@ -5,10 +5,10 @@ function IntroBanner() {
   return (
     <div
       css={{
-        width: '50%',
+        width: '100%',
         backgroundColor: theme.colors.white,
         height: '100%',
-        [media.down(theme.breakPoints.tablet)]: {
+        [media.down(theme.breakPoints.desktop)]: {
           display: 'none',
         },
       }}

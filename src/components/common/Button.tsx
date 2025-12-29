@@ -17,7 +17,7 @@ type ButtonTone = 'white' | 'lime' | 'kakao' | 'gray'
 type ButtonProps = {
   label?: string
   type?: 'button' | 'submit'
-  onClick?: () => void
+  onClick: () => void
   disabled?: boolean
   rounded?: number
   typo?: TypoToken
