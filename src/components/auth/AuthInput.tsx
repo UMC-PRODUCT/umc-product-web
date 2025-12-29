@@ -5,16 +5,14 @@ import ErrorMessage from './ErrorMessage'
 import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
 import { Field, inputShell } from './formStyles'
+import { forwardRef, useEffect, type InputHTMLAttributes } from 'react'
 
-type InputProps = {
+type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
-  placeholder?: string
   label: string
-  error?: boolean
-  value?: string
   Icon?: SvgIconComponent
+  error?: boolean
   errorMessage?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   button?: {
     buttonMesssage: string
     buttonClick: () => void
@@ -54,49 +52,55 @@ const InputHeader = styled.div`
   align-items: center;
   width: 100%;
 `
-export default function AuthInput({
-  type,
-  placeholder,
-  label,
-  error,
-  value,
-  onChange,
-  Icon,
-  errorMessage,
-  button,
-}: InputProps) {
-  return (
-    <Field>
-      <InputHeader>
-        <Label label={label} necessary={true}></Label>
-        {error && errorMessage && (
-          <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
-        )}
-      </InputHeader>
-      <InputWrapper>
-        <Input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-        />
-        {Icon && (
-          <IconBox>
-            <Icon width={20} height={20} aria-hidden />
-          </IconBox>
-        )}
-        {button && (
-          <Button
-            label={button.buttonMesssage}
-            variant={button.validate ? 'solid' : 'outline'}
-            tone="lime"
-            typo="B3.Md"
-            rounded={8}
-            onClick={button.buttonClick}
-            disabled={button.validate}
-          ></Button>
-        )}
-      </InputWrapper>
-    </Field>
-  )
-}
+
+export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
+  (
+    {
+      type,
+      placeholder,
+      label,
+      error,
+      Icon,
+      errorMessage,
+      button,
+      ...inputProps
+    },
+    ref,
+  ) => {
+    return (
+      <Field>
+        <InputHeader>
+          <Label label={label} necessary={true}></Label>
+          {error && errorMessage && (
+            <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
+          )}
+        </InputHeader>
+        <InputWrapper>
+          <Input
+            type={type}
+            placeholder={placeholder}
+            ref={ref}
+            {...inputProps}
+          />
+          {Icon && (
+            <IconBox>
+              <Icon width={20} height={20} aria-hidden />
+            </IconBox>
+          )}
+          {button && (
+            <Button
+              label={button.buttonMesssage}
+              variant={button.validate ? 'solid' : 'outline'}
+              tone="lime"
+              typo="B3.Md"
+              rounded={8}
+              onClick={button.buttonClick}
+              disabled={button.validate}
+              type="button"
+            ></Button>
+          )}
+        </InputWrapper>
+      </Field>
+    )
+  },
+)

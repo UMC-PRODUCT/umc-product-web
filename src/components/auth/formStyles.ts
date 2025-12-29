@@ -8,15 +8,6 @@ export const Field = styled.div`
   flex-direction: column;
 `
 
-export const Label = styled.label`
-  display: flex;
-  align-items: center;
-  color: ${theme.colors.white};
-  gap: 4px;
-  margin-bottom: 10px;
-  font-size: ${theme.typography.C3.Md};
-`
-
 export const inputShell = css`
   width: 100%;
   min-width: 300px;
@@ -25,7 +16,10 @@ export const inputShell = css`
   background-color: ${theme.colors.gray[800]};
   color: ${theme.colors.white};
   font-size: ${theme.typography.B3.Rg};
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 120ms ease;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 120ms ease;
 
   &:focus-visible {
     outline: 2px solid ${theme.colors.lime};

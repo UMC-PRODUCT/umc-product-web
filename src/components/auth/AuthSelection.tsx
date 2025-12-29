@@ -1,17 +1,22 @@
 import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
-import Necessary from '@/assets/icons/Necessary.svg?react'
+
 import Arrow from '@/assets/icons/Arrow.svg?react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Field, Label, inputShell } from './formStyles'
+import { Field, inputShell } from './formStyles'
+import ErrorMessage from './ErrorMessage'
+import Label from '../common/Label'
 type Option = { label: string; value: string }
 
-type Props = {
-  label?: string
+type AuthSelectionProps = {
+  label: string
   placeholder?: string
   options: Option[]
   value?: string
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  onChange?: (value: string) => void
+  onBlur?: (e: React.FocusEvent<HTMLButtonElement>) => void
+  error?: boolean
+  errorMessage?: string
 }
 
 const SelectWrapper = styled.div`
@@ -87,13 +92,23 @@ const OptionItem = styled.li<{ $selected: boolean }>`
   }
 `
 
+const SelectHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`
+
 export default function AuthSelection({
   label,
   placeholder,
   options,
   value,
   onChange,
-}: Props) {
+  onBlur,
+  error,
+  errorMessage,
+}: AuthSelectionProps) {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
 
@@ -103,28 +118,31 @@ export default function AuthSelection({
   )
 
   useEffect(() => {
+    if (!open) return
+
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
         setOpen(false)
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [open])
 
   const handleSelect = (v: string) => {
-    onChange?.({ target: { value: v } } as React.ChangeEvent<HTMLSelectElement>)
+    onChange?.(v)
     setOpen(false)
   }
 
   return (
     <Field ref={wrapRef}>
-      {label && (
-        <Label>
-          {label}
-          <Necessary />
-        </Label>
-      )}
+      <SelectHeader>
+        <Label label={label} necessary={true}></Label>
+        {error && errorMessage && (
+          <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
+        )}
+      </SelectHeader>
       <SelectWrapper>
         <Trigger
           type="button"
@@ -132,6 +150,10 @@ export default function AuthSelection({
           $open={open}
           aria-expanded={open}
           aria-haspopup="listbox"
+          onBlur={(e) => {
+            setOpen(false)
+            onBlur?.(e)
+          }}
         >
           {selectedLabel ? (
             <span>{selectedLabel}</span>
