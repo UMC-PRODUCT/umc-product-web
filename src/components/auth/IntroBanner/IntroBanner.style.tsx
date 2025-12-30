@@ -1,18 +1,6 @@
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 import styled from '@emotion/styled'
-import { useEffect, useMemo, useState } from 'react'
-
-type Slide = {
-  image: string
-}
-
-const slides: Slide[] = [
-  { image: '/images/banner/활동사진1.png' },
-  { image: '/images/banner/활동사진2.png' },
-  { image: '/images/banner/활동사진3.png' },
-]
-
 const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -101,51 +89,4 @@ const Blur = styled.div`
     z-index: 0;
   }
 `
-
-export default function IntroBanner() {
-  const [current, setCurrent] = useState(0)
-  const total = slides.length
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCurrent((idx) => (idx + 1) % total)
-    }, 3400)
-    return () => clearInterval(id)
-  }, [total])
-
-  useEffect(() => {
-    slides.forEach(({ image }) => {
-      const img = new Image()
-      img.src = image
-    })
-  }, [])
-
-  const renderedSlides = useMemo(
-    () =>
-      slides.map((slide, index) => (
-        <SlideLayer
-          key={slide.image}
-          $active={index === current}
-          $image={slide.image}
-          aria-hidden={index === current ? 'false' : 'true'}
-        />
-      )),
-    [current],
-  )
-
-  return (
-    <Container>
-      {renderedSlides}
-      <Blur>
-        <Slogan>
-          Break the Rules! <br /> 세상의 틀을 깰 챌린저들이 하나로 모이는 곳
-        </Slogan>
-        <Slider aria-hidden>
-          {slides.map((_, idx) => (
-            <Bar key={idx} $active={idx === current} />
-          ))}
-        </Slider>
-      </Blur>
-    </Container>
-  )
-}
+export { Container, SlideLayer, Slogan, Slider, Bar, Blur }

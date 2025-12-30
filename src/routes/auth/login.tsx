@@ -1,13 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Logo from '@/assets/brand_logo.svg?react'
-import IntroBanner from '@/components/auth/IntroBanner'
+import IntroBanner from '@/components/auth/IntroBanner/IntroBanner'
 import styled from '@emotion/styled'
-import Button from '@/components/common/Button'
+import Button from '@/components/common/Button/Button'
 import Kakao from '@/assets/social/kakao.svg?react'
 import Google from '@/assets/social/google.svg?react'
 import Apple from '@/assets/social/apple.svg?react'
-import Divider from '@/components/auth/Divider'
-import AuthSection from '@/components/auth/AuthSection'
+import Divider from '@/components/auth/Divider/Divider'
+import AuthSection from '@/components/auth/AuthSection/AuthSection'
+
 export const Route = createFileRoute('/auth/login')({
   component: Login,
 })
