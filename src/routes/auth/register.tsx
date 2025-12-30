@@ -1,14 +1,15 @@
 import { AuthInput } from '@/components/auth/AuthInput'
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Logo from '@/assets/brand_logo.svg?react'
 import AuthSection from '@/components/auth/AuthSection'
 import styled from '@emotion/styled'
 import Button from '@/components/common/Button'
 import AuthSelection from '@/components/auth/AuthSelection'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { registerSchema } from '@/schema/register'
+import { UNI_LIST_MOCK } from '@/mocks/mocks'
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -28,9 +29,11 @@ type RegisterForm = {
 
 function Register() {
   const [confirm, setConfirm] = useState(false)
+  const [school, setSchool] = useState({ id: '', label: '' })
   const {
     register,
     handleSubmit,
+    control,
     formState: { isValid, errors },
   } = useForm<RegisterForm>({
     mode: 'onChange',
@@ -41,6 +44,17 @@ function Register() {
     console.log(data)
   }
 
+  const watchEmail = useWatch({
+    control,
+    name: 'email',
+  })
+
+  useEffect(() => {
+    if (confirm) {
+      setConfirm(false)
+    }
+  }, [watchEmail])
+
   return (
     <AuthSection size="lg">
       <Logo></Logo>
@@ -49,12 +63,11 @@ function Register() {
           <AuthSelection
             label="학교"
             placeholder="학교를 선택해 주세요."
-            options={[
-              { label: 'Option 1', value: '1' },
-              { label: 'Option 2', value: '2' },
-            ]}
+            options={UNI_LIST_MOCK}
             error={!!errors.school}
             errorMessage={errors.school?.message}
+            onClick={setSchool}
+            value={school}
           ></AuthSelection>
           <AuthInput
             type="text"
@@ -76,6 +89,8 @@ function Register() {
             type="email"
             placeholder="이메일 주소를 입력해주세요."
             label="이메일 주소"
+            error={!!errors.email}
+            errorMessage={errors.email?.message}
             button={{
               buttonMesssage: confirm ? '인증완료' : '인증하기',
               buttonClick: () => setConfirm(!confirm),

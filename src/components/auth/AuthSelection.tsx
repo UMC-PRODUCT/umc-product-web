@@ -2,19 +2,21 @@ import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
 
 import Arrow from '@/assets/icons/Arrow.svg?react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Field, inputShell } from './formStyles'
 import ErrorMessage from './ErrorMessage'
 import Label from '../common/Label'
-type Option = { label: string; value: string }
+type Option = { label: string; id: string }
 
 type AuthSelectionProps = {
   label: string
   placeholder?: string
   options: Option[]
-  value?: string
-  onChange?: (value: string) => void
-  onBlur?: (e: React.FocusEvent<HTMLButtonElement>) => void
+  value?: {
+    id: string
+    label: string
+  }
+  onClick: React.Dispatch<React.SetStateAction<{ id: string; label: string }>>
   error?: boolean
   errorMessage?: string
 }
@@ -104,18 +106,12 @@ export default function AuthSelection({
   placeholder,
   options,
   value,
-  onChange,
-  onBlur,
   error,
   errorMessage,
+  onClick,
 }: AuthSelectionProps) {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
-
-  const selectedLabel = useMemo(
-    () => options.find((o) => o.value === value)?.label,
-    [options, value],
-  )
 
   useEffect(() => {
     if (!open) return
@@ -129,11 +125,6 @@ export default function AuthSelection({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
-
-  const handleSelect = (v: string) => {
-    onChange?.(v)
-    setOpen(false)
-  }
 
   return (
     <Field ref={wrapRef}>
@@ -150,13 +141,9 @@ export default function AuthSelection({
           $open={open}
           aria-expanded={open}
           aria-haspopup="listbox"
-          onBlur={(e) => {
-            setOpen(false)
-            onBlur?.(e)
-          }}
         >
-          {selectedLabel ? (
-            <span>{selectedLabel}</span>
+          {value?.label.trim() !== '' && value ? (
+            <span>{value.label}</span>
           ) : (
             <Placeholder>{placeholder}</Placeholder>
           )}
@@ -167,11 +154,14 @@ export default function AuthSelection({
         <Options $open={open} role="listbox">
           {options.map((option) => (
             <OptionItem
-              key={option.value}
-              onClick={() => handleSelect(option.value)}
-              $selected={option.value === value}
+              key={option.id}
+              onClick={() => {
+                onClick(option)
+                setOpen(false)
+              }}
+              $selected={option.id === value?.id}
               role="option"
-              aria-selected={option.value === value}
+              aria-selected={option.id === value?.id}
             >
               {option.label}
             </OptionItem>

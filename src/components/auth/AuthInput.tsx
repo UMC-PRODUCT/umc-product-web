@@ -5,7 +5,13 @@ import ErrorMessage from './ErrorMessage'
 import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
 import { Field, inputShell } from './formStyles'
-import { forwardRef, useEffect, type InputHTMLAttributes } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type InputHTMLAttributes,
+} from 'react'
 
 type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
@@ -33,7 +39,7 @@ const InputWrapper = styled.div`
   gap: 16px;
   position: relative;
   width: 100%;
-  max-height: 50px;
+  height: 50px;
 `
 
 const IconBox = styled.span`
@@ -67,6 +73,30 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
     },
     ref,
   ) => {
+    const { onChange, value, defaultValue, ...restInputProps } = inputProps
+    const [inputValue, setInputValue] = useState(
+      typeof value === 'string'
+        ? value
+        : typeof defaultValue === 'string'
+          ? defaultValue
+          : '',
+    )
+
+    useEffect(() => {
+      if (typeof value === 'string') {
+        setInputValue(value)
+      }
+    }, [value])
+
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onChange?.(event)
+      setInputValue(event.target.value)
+    }
+
+    const trimmedValue = inputValue.trim()
+    const isButtonDisabled =
+      !!button?.validate || !!error || trimmedValue === ''
+
     return (
       <Field>
         <InputHeader>
@@ -77,10 +107,13 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
         </InputHeader>
         <InputWrapper>
           <Input
+            onChange={handleChange}
+            defaultValue={defaultValue}
             type={type}
             placeholder={placeholder}
             ref={ref}
-            {...inputProps}
+            {...restInputProps}
+            {...(value !== undefined ? { value } : {})}
           />
           {Icon && (
             <IconBox>
@@ -95,7 +128,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
               typo="B3.Md"
               rounded={8}
               onClick={button.buttonClick}
-              disabled={button.validate}
+              disabled={isButtonDisabled}
               type="button"
             ></Button>
           )}
