@@ -34,7 +34,7 @@ const Options = styled.ul<{ $open: boolean }>`
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% + 8px);
+  top: 0;
   margin: 0;
   padding: 8px;
   list-style: none;
@@ -61,16 +61,15 @@ const OptionItem = styled.li<{ $selected: boolean }>`
   justify-content: space-between;
   cursor: pointer;
   color: ${({ $selected }) =>
-    $selected ? theme.colors.black : theme.colors.white};
+    $selected ? theme.colors.white : theme.colors.gray[400]};
   background: ${({ $selected }) =>
-    $selected ? theme.colors.lime : 'transparent'};
+    $selected ? theme.colors.gray[700] : 'transparent'};
   transition:
     background 120ms ease,
     color 120ms ease;
 
   &:hover {
-    background: ${({ $selected }) =>
-      $selected ? theme.colors.lime : theme.colors.gray[700]};
+    background: ${theme.colors.gray[700]};
   }
 `
 
