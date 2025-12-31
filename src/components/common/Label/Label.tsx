@@ -14,7 +14,7 @@ export default function Label({ label, necessary, size = 'md' }: LabelProps) {
   return (
     <label css={LabelStyle({ fontSize })}>
       {label}
-      {necessary && <Necessary></Necessary>}
+      {necessary && <Necessary />}
     </label>
   )
 }

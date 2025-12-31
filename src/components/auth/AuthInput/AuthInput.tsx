@@ -16,8 +16,10 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
   label: string
   Icon?: SvgIconComponent
-  error?: boolean
-  errorMessage?: string
+  error?: {
+    error: boolean
+    errorMessage: string
+  }
   button?: {
     buttonMesssage: string
     buttonClick: () => void
@@ -26,19 +28,7 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 }
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
-  (
-    {
-      type,
-      placeholder,
-      label,
-      error,
-      Icon,
-      errorMessage,
-      button,
-      ...inputProps
-    },
-    ref,
-  ) => {
+  ({ type, placeholder, label, error, Icon, button, ...inputProps }, ref) => {
     const { onChange, value, defaultValue, ...restInputProps } = inputProps
     const [inputValue, setInputValue] = useState(
       typeof value === 'string'
@@ -67,8 +57,8 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
       <Field>
         <S.InputHeader>
           <Label label={label} necessary={true}></Label>
-          {error && errorMessage && (
-            <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
+          {error?.error && (
+            <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
           )}
         </S.InputHeader>
         <S.InputWrapper>

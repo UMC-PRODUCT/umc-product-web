@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import * as S from './Term.style'
 import CheckIcon from '@/assets/icons/check.svg?react'
 import Flex from '@/components/common/Flex/Flex'
+import { forwardRef } from 'react'
 type TermProps = {
   onClick: () => void
   termTitle?: string
@@ -10,27 +10,33 @@ type TermProps = {
   value: boolean
 }
 
-export function Term({
-  onClick,
-  termTitle,
-  title,
-  necessary,
-  value,
-}: TermProps) {
-  return (
-    <Flex
-      justifyContent="flex-start"
-      gap="2px"
-      width="fit-content"
-      onClick={onClick}
-      css={{ cursor: 'pointer' }}
-    >
-      <S.HiddenCheckbox type="checkbox" checked={value} onChange={onClick} />
-      <S.Box>{value && <CheckIcon />}</S.Box>
-      {termTitle && <S.TermTitle onClick={onClick}>{termTitle}</S.TermTitle>}
-      <S.Title>
-        {title} {necessary !== undefined && `(${necessary ? '필수' : '선택'})`}
-      </S.Title>
-    </Flex>
-  )
-}
+export const Term = forwardRef<HTMLInputElement, TermProps>(
+  (
+    { onClick, termTitle, title, necessary, value, ...props }: TermProps,
+    ref,
+  ) => {
+    return (
+      <Flex
+        justifyContent="flex-start"
+        gap="2px"
+        width="fit-content"
+        onClick={onClick}
+        css={{ cursor: 'pointer' }}
+      >
+        <S.HiddenCheckbox
+          type="checkbox"
+          checked={value}
+          onChange={onClick}
+          ref={ref}
+          {...props}
+        />
+        <S.Box>{value && <CheckIcon />}</S.Box>
+        {termTitle && <S.TermTitle onClick={onClick}>{termTitle}</S.TermTitle>}
+        <S.Title>
+          {title}{' '}
+          {necessary !== undefined && `(${necessary ? '필수' : '선택'})`}
+        </S.Title>
+      </Flex>
+    )
+  },
+)
