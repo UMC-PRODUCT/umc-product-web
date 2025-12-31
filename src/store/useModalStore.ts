@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { modalType } from '@/components/common/Modal/ModalProvider'
 
 interface IModalState {
-  modalType: modalType
+  modalType: modalType | null
   isOpen: boolean
   modalProps?: Record<string, any>
   openModal: (
@@ -14,7 +14,7 @@ interface IModalState {
 }
 
 const useModalStore = create<IModalState>((set) => ({
-  modalType: '',
+  modalType: null,
   isOpen: false,
   modalProps: {},
   openModal: (payload) =>
@@ -35,7 +35,7 @@ const useModalStore = create<IModalState>((set) => ({
     }),
   closeModal: () =>
     set(() => ({
-      modalType: '',
+      modalType: null,
       modalProps: {},
       isOpen: false,
     })),

@@ -38,9 +38,9 @@ export default function ModalProvider() {
     closeModal()
   }, [locationKey, closeModal])
 
-  const ModalComponent = MODAL_COMPONENTS[modalType] as
-    | ComponentType<any>
-    | undefined
+  const ModalComponent = modalType
+    ? (MODAL_COMPONENTS[modalType] as ComponentType<any> | undefined)
+    : undefined
   return ModalComponent ? (
     <ModalComponent onClose={closeModal} {...modalProps}></ModalComponent>
   ) : null

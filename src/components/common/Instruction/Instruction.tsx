@@ -15,7 +15,7 @@ export default function Instruction({
   iconSize?: number
   mode: 'success' | 'error' | 'warning'
 }) {
-  const textStyle = resolveTypo(theme, typography)
+  const textStyle = resolveTypo(theme, typography) ?? {}
   const color =
     mode === 'success'
       ? theme.colors.lime
