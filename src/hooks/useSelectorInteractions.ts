@@ -97,11 +97,7 @@ export function useSelectorInteractions({
             (option) => option.id === value?.id,
           )
           setFocusedIndex(
-            selectedIndex !== -1
-              ? selectedIndex
-              : options.length > 0
-                ? 0
-                : -1,
+            selectedIndex !== -1 ? selectedIndex : options.length > 0 ? 0 : -1,
           )
         }
         return next
@@ -158,14 +154,7 @@ export function useSelectorInteractions({
     }
 
     if (event.key === 'Tab') {
-      event.preventDefault()
-      if (options.length === 0) {
-        triggerRef.current?.focus()
-        return
-      }
-      const currentIndex =
-        focusedIndex >= 0 ? focusedIndex : Math.min(0, options.length - 1)
-      optionRefs.current[currentIndex]?.focus()
+      setOpen(false)
     }
   }
 
