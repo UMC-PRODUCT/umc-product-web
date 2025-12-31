@@ -1,6 +1,6 @@
 import Flex from '@/components/common/Flex/Flex'
 import Modal from '@/components/common/Modal/Modal'
-import Instruction from '@/components/Instruction/Instruction'
+import Instruction from '@/components/common/Instruction/Instruction'
 import { theme } from '@/styles/theme'
 import Close from '@/assets/icons/close.svg?react'
 import * as S from './AlertModalLayout.style'

@@ -10,7 +10,7 @@ import Divider from '@/components/auth/Divider/Divider'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-import Instruction from '@/components/Instruction/Instruction'
+import Instruction from '@/components/common/Instruction/Instruction'
 import Notice from '@/assets/icons/notice.svg?react'
 export const Route = createFileRoute('/auth/login')({
   component: Login,
