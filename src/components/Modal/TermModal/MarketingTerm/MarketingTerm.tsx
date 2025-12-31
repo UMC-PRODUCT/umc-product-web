@@ -1,5 +1,5 @@
-import Modal from '../Modal'
-import TermModalLayout from '../TermModalLayout'
+import Modal from '@/components/common/Modal/Modal'
+import TermModalLayout from '@/components/Modal/TermModal/TermModalLayout'
 import marketingTermContent from '@/constants/privacyTerm.md?raw'
 
 export default function MarketingTerm({ onClose }: { onClose: () => void }) {

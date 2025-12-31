@@ -2,11 +2,10 @@ import { useEffect } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
 import useModalStore from '@/store/useModalStore'
-import AlertModal from './AlertModal/AlertModal'
-
-import ServiceTerm from './ServiceTerm/ServiceTerm'
-import MarketingTerm from './MarketingTerm/MarketingTerm'
-import PrivacyTerm from './PrivacyTerm/PrivacyTerm'
+import AlertModal from '@/components/Modal/AlertModal/AlertModal'
+import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
+import MarketingTerm from '@/components/Modal/TermModal/MarketingTerm/MarketingTerm'
+import PrivacyTerm from '@/components/Modal/TermModal/PrivacyTerm/PrivacyTerm'
 
 export const MODAL_TYPES = {
   AlertModal: 'AlertModal',
