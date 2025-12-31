@@ -1,17 +1,15 @@
-import { useEffect, useRef } from 'react'
 import * as S from './Selector.style'
 import Arrow from '@/assets/icons/Arrow.svg?react'
-
-type Option = { label: string; id: string }
+import {
+  useSelectorInteractions,
+  type Option,
+} from './useSelectorInteractions'
 
 type SelectorProps = {
   placeholder?: string
   options: Option[]
-  value?: {
-    id: string
-    label: string
-  }
-  onClick: (option: { id: string; label: string }) => void
+  value?: Option
+  onClick: (option: Option) => void
   setOpen: (open: boolean | ((prev: boolean) => boolean)) => void
   open: boolean
   id?: string
@@ -27,20 +25,21 @@ export default function Selector({
   id,
   ariaLabelledby,
 }: SelectorProps) {
-  const wrapRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!open) return
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [open, setOpen])
+  const {
+    wrapRef,
+    triggerRef,
+    optionRefs,
+    focusedIndex,
+    handleOptionSelect,
+    handleTriggerKeyDown,
+    handleOptionsKeyDown,
+  } = useSelectorInteractions({
+    options,
+    value,
+    open,
+    setOpen,
+    onSelect: onClick,
+  })
 
   return (
     <S.SelectWrapper ref={wrapRef}>
@@ -48,10 +47,12 @@ export default function Selector({
         type="button"
         id={id}
         onClick={() => setOpen((v) => !v)}
+        onKeyDown={handleTriggerKeyDown}
         $open={open}
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-labelledby={ariaLabelledby}
+        ref={triggerRef}
       >
         {value?.label.trim() !== '' && value ? (
           <span>{value.label}</span>
@@ -67,17 +68,21 @@ export default function Selector({
         role="listbox"
         aria-labelledby={ariaLabelledby}
         aria-hidden={!open}
+        onKeyDown={handleOptionsKeyDown}
       >
-        {options.map((option) => (
+        {options.map((option, index) => (
           <S.OptionItem
             key={option.id}
             onClick={() => {
-              onClick(option)
-              setOpen(false)
+              handleOptionSelect(option)
             }}
             $selected={option.id === value?.id}
             role="option"
             aria-selected={option.id === value?.id}
+            tabIndex={focusedIndex === index ? 0 : -1}
+            ref={(el) => {
+              optionRefs.current[index] = el
+            }}
           >
             {option.label}
           </S.OptionItem>
