@@ -14,6 +14,8 @@ type SelectorProps = {
   onClick: (option: { id: string; label: string }) => void
   setOpen: (open: boolean | ((prev: boolean) => boolean)) => void
   open: boolean
+  id?: string
+  ariaLabelledby?: string
 }
 export default function Selector({
   placeholder,
@@ -22,6 +24,8 @@ export default function Selector({
   onClick,
   setOpen,
   open,
+  id,
+  ariaLabelledby,
 }: SelectorProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
 
@@ -42,10 +46,12 @@ export default function Selector({
     <S.SelectWrapper ref={wrapRef}>
       <S.Trigger
         type="button"
+        id={id}
         onClick={() => setOpen((v) => !v)}
         $open={open}
         aria-expanded={open}
         aria-haspopup="listbox"
+        aria-labelledby={ariaLabelledby}
       >
         {value?.label.trim() !== '' && value ? (
           <span>{value.label}</span>
@@ -56,7 +62,12 @@ export default function Selector({
           <Arrow width={16} height={16} aria-hidden />
         </S.ArrowBox>
       </S.Trigger>
-      <S.Options $open={open} role="listbox">
+      <S.Options
+        $open={open}
+        role="listbox"
+        aria-labelledby={ariaLabelledby}
+        aria-hidden={!open}
+      >
         {options.map((option) => (
           <S.OptionItem
             key={option.id}

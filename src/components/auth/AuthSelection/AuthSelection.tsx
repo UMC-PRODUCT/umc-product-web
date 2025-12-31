@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Field } from '@/styles/formStyles'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import Label from '@/components/common/Label/Label'
@@ -31,11 +31,14 @@ export default function AuthSelection({
   onClick,
 }: AuthSelectionProps) {
   const [open, setOpen] = useState(false)
+  const baseId = useId()
+  const triggerId = `${baseId}-selector`
+  const labelId = `${baseId}-label`
 
   return (
     <Field>
       <S.SelectHeader>
-        <Label label={label} necessary={true}></Label>
+        <Label id={labelId} htmlFor={triggerId} label={label} necessary={true} />
         {error?.error && (
           <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
         )}
@@ -50,6 +53,8 @@ export default function AuthSelection({
         }}
         setOpen={setOpen}
         open={open}
+        id={triggerId}
+        ariaLabelledby={labelId}
       ></Selector>
     </Field>
   )

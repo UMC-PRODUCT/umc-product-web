@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useEffect, useId, useState } from 'react'
 import * as S from './AuthInput.style'
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
 import type { SvgIconComponent } from '@/types/component'
@@ -24,6 +24,7 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
   ({ type, placeholder, label, error, Icon, button, ...inputProps }, ref) => {
+    const id = useId()
     const { onChange, value, defaultValue, ...restInputProps } = inputProps
     const [inputValue, setInputValue] = useState(
       typeof value === 'string'
@@ -51,13 +52,17 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
     return (
       <Field>
         <S.InputHeader>
-          <Label label={label} necessary={true}></Label>
+          <Label label={label} necessary={true} htmlFor={id} />
+
           {error?.error && (
             <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
           )}
         </S.InputHeader>
         <S.InputWrapper>
           <S.Input
+            id={id}
+            autoComplete={label}
+            name={label}
             onChange={handleChange}
             defaultValue={defaultValue}
             type={type}

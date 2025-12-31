@@ -8,7 +8,7 @@ type TermProps = {
   toggleCheck: () => void
   onClick?: () => void
   termTitle?: string
-  title: string
+  label: string
   necessary?: boolean
   value: boolean
 }
@@ -19,7 +19,7 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
       toggleCheck,
       onClick,
       termTitle,
-      title,
+      label,
       necessary,
       value,
       ...props
@@ -44,6 +44,7 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
           onChange={toggleCheck}
           checked={value}
           ref={ref}
+          name={label}
           {...props}
         />
         <S.Box>{value && <CheckIcon />}</S.Box>
@@ -51,7 +52,7 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
           <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>
         )}
         <S.Title>
-          {title}{' '}
+          {label}
           {necessary !== undefined && `(${necessary ? '필수' : '선택'})`}
         </S.Title>
       </Flex>

@@ -48,8 +48,8 @@ function Register() {
   } = useRegisterForm()
 
   const sendEmail = () => {
-    openModal(MODAL_TYPES.AlreadyExistAccount)
     confirmButton.toggle()
+    openModal(MODAL_TYPES.EmailSendModal)
   }
 
   return (
@@ -71,7 +71,7 @@ function Register() {
             }}
             onClick={handleSelectSchool}
             value={school}
-          ></AuthSelection>
+          />
           <AuthInput
             type="text"
             label="이름"
@@ -81,7 +81,7 @@ function Register() {
               errorMessage: errors.name?.message || '',
             }}
             {...register('name')}
-          ></AuthInput>
+          />
           <AuthInput
             type="text"
             placeholder="2~5글자 한글 닉네임을 입력해 주세요."
@@ -91,7 +91,7 @@ function Register() {
               errorMessage: errors.nickname?.message || '',
             }}
             {...register('nickname')}
-          ></AuthInput>
+          />
           <AuthInput
             type="email"
             placeholder="이메일 주소를 입력해주세요."
@@ -106,7 +106,7 @@ function Register() {
               validate: confirmButton.state,
             }}
             {...register('email')}
-          ></AuthInput>
+          />
           <TermsSection
             terms={terms}
             onToggleAll={toggleAllTerms}
@@ -116,7 +116,7 @@ function Register() {
               privacyTerm: errors.privacyTerm?.message,
               marketingTerm: errors.marketingTerm?.message,
             }}
-          ></TermsSection>
+          />
           <Button
             type="submit"
             onClick={handleSubmit(onSubmit)}
@@ -125,7 +125,7 @@ function Register() {
             typo="B3.Sb"
             variant="solid"
             disabled={!isValid}
-          ></Button>
+          />
         </InputWrapper>
       </form>
     </AuthSection>

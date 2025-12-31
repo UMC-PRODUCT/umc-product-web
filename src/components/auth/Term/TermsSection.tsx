@@ -37,14 +37,14 @@ export function TermsSection({
     >
       <Term
         toggleCheck={onToggleAll}
-        title="전체 동의"
+        label="전체 동의"
         value={terms.service && terms.privacy && terms.marketing}
       ></Term>
       <Term
         toggleCheck={() => onToggle('service')}
         onClick={() => openModal(MODAL_TYPES.ServiceTerm)}
         termTitle="서비스이용약관"
-        title="동의"
+        label="동의"
         necessary={true}
         value={terms.service}
       ></Term>
@@ -52,7 +52,7 @@ export function TermsSection({
         toggleCheck={() => onToggle('privacy')}
         onClick={() => openModal(MODAL_TYPES.PrivacyTerm)}
         termTitle="개인정보처리방침"
-        title="동의"
+        label="동의"
         necessary={true}
         value={terms.privacy}
       ></Term>
@@ -60,7 +60,7 @@ export function TermsSection({
         toggleCheck={() => onToggle('marketing')}
         onClick={() => openModal(MODAL_TYPES.MarketingTerm)}
         termTitle="마케팅정보수신"
-        title="동의"
+        label="동의"
         necessary={false}
         value={terms.marketing}
       ></Term>
