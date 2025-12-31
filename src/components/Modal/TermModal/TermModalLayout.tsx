@@ -10,6 +10,7 @@ type TermModalLayoutProps = {
   title?: string
   content?: string
   children?: ReactNode
+  onClose: () => void
 }
 
 function TermMarkdown({ content }: { content: string }) {
@@ -40,6 +41,7 @@ export default function TermModalLayout({
   title = '약관',
   content,
   children,
+  onClose,
 }: TermModalLayoutProps) {
   return (
     <Flex
@@ -55,12 +57,13 @@ export default function TermModalLayout({
         <S.Header>
           <Flex justifyContent="space-between" alignItems="center">
             <S.Title>{title}</S.Title>
-            <Close />
+            <Close css={{ cursor: 'pointer' }} onClick={onClose} />
           </Flex>
         </S.Header>
         <S.ContentWrapper>
           <S.ContentSection>
             {content ? <TermMarkdown content={content} /> : children}
+            <br />
           </S.ContentSection>
         </S.ContentWrapper>
         <S.Blur />

@@ -7,6 +7,9 @@ const TermTitle = styled.span`
   color: ${theme.colors.lime};
   margin-left: 4px;
   cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 const Title = styled.span`

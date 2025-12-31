@@ -8,7 +8,8 @@ export default function MarketingTerm({ onClose }: { onClose: () => void }) {
       <TermModalLayout
         title="마케팅 이용약관"
         content={marketingTermContent}
-      ></TermModalLayout>
+        onClose={onClose}
+      />
     </Modal>
   )
 }

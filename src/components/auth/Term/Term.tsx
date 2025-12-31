@@ -1,4 +1,5 @@
 import { forwardRef } from 'react'
+import type { MouseEvent } from 'react'
 import * as S from './Term.style'
 import CheckIcon from '@/assets/icons/check.svg?react'
 import Flex from '@/components/common/Flex/Flex'
@@ -25,6 +26,11 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
     }: TermProps,
     ref,
   ) => {
+    const handleTermTitleClick = (event: MouseEvent<HTMLSpanElement>) => {
+      event.stopPropagation()
+      onClick?.()
+    }
+
     return (
       <Flex
         justifyContent="flex-start"
@@ -41,7 +47,9 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
           {...props}
         />
         <S.Box>{value && <CheckIcon />}</S.Box>
-        {termTitle && <S.TermTitle onClick={onClick}>{termTitle}</S.TermTitle>}
+        {termTitle && (
+          <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>
+        )}
         <S.Title>
           {title}{' '}
           {necessary !== undefined && `(${necessary ? '필수' : '선택'})`}

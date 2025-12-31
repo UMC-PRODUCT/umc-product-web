@@ -8,7 +8,8 @@ export default function PrivacyTerm({ onClose }: { onClose: () => void }) {
       <TermModalLayout
         title="개인정보 처리방침"
         content={privacyTermContent}
-      ></TermModalLayout>
+        onClose={onClose}
+      />
     </Modal>
   )
 }

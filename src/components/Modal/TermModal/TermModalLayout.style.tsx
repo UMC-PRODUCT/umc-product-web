@@ -83,13 +83,18 @@ const TableCell = styled.td`
 
 const Blur = styled.div`
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   left: 0;
-  width: 100%;
+  width: 80%;
   height: 60px;
   z-index: 999999;
   border-radius: 0 0 16px 16px;
-  background: linear-gradient(to bottom, rgba(39, 39, 39, 0) 0%, #141414 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(39, 39, 39, 0) 0%,
+    rgba(39, 39, 39, 1) 70%,
+    rgba(39, 39, 39, 1) 100%
+  );
 `
 
 export {
