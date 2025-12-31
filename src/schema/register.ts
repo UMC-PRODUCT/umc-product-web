@@ -13,6 +13,15 @@ export const registerSchema = yup.object().shape({
     .matches(/^[가-힣]{2,5}$/, '닉네임은 2~5글자의 한글이어야 합니다.')
     .required('닉네임은 필수 입력 사항입니다.'),
   email,
+  serviceTerm: yup
+    .boolean()
+    .oneOf([true], '서비스 이용 약관에 동의해 주세요.')
+    .required(),
+  privacyTerm: yup
+    .boolean()
+    .oneOf([true], '개인정보 처리 방침에 동의해 주세요.')
+    .required(),
+  marketingTerm: yup.boolean().required(),
 })
 
 export type RegisterForm = yup.InferType<typeof registerSchema>

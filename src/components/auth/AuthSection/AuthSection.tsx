@@ -6,9 +6,9 @@ const Section = styled.section<{ $size: 'md' | 'lg' }>`
   justify-self: center;
   flex-direction: column;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   padding: 24px;
-  gap: 48px;
+  gap: ${({ $size }) => ($size === 'md' ? '48px' : '33px')};
   width: ${({ $size }) => ($size === 'md' ? '420px' : '452px')};
   max-width: 80%;
   flex: 1;

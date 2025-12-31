@@ -1,17 +1,18 @@
-import { AuthInput } from '@/components/auth/AuthInput/AuthInput'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import Logo from '@/assets/brand_logo.svg?react'
-import AuthSection from '@/components/auth/AuthSection/AuthSection'
 import styled from '@emotion/styled'
-import Button from '@/components/common/Button/Button'
-import AuthSelection from '@/components/auth/AuthSelection/AuthSelection'
 import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import type { RegisterForm } from '@/schema/register'
 import { registerSchema } from '@/schema/register'
-import { UNI_LIST_MOCK } from '@/mocks/mocks'
-import { Term } from '@/components/auth/Term/Term'
+import Logo from '@/assets/brand_logo.svg?react'
+import AuthSection from '@/components/auth/AuthSection/AuthSection'
+import AuthSelection from '@/components/auth/AuthSelection/AuthSelection'
+import { AuthInput } from '@/components/auth/AuthInput/AuthInput'
+import Button from '@/components/common/Button/Button'
 import Flex from '@/components/common/Flex/Flex'
+import { Term } from '@/components/auth/Term/Term'
+import { UNI_LIST_MOCK } from '@/mocks/mocks'
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -22,16 +23,14 @@ const InputWrapper = styled.div`
   flex-direction: column;
   gap: 22px;
 `
-type RegisterForm = {
-  school: string
-  name: string
-  nickname: string
-  email: string
-}
-
 function Register() {
   const [confirm, setConfirm] = useState(false)
   const [school, setSchool] = useState({ id: '', label: '' })
+  const [terms, setTerms] = useState({
+    service: false,
+    privacy: false,
+    marketing: false,
+  })
   const {
     register,
     handleSubmit,
@@ -40,6 +39,15 @@ function Register() {
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: yupResolver(registerSchema),
+    defaultValues: {
+      school: '',
+      name: '',
+      nickname: '',
+      email: '',
+      serviceTerm: false,
+      privacyTerm: false,
+      marketingTerm: false,
+    },
   })
 
   const onSubmit = (data: RegisterForm) => {
@@ -56,6 +64,15 @@ function Register() {
       setConfirm(false)
     }
   }, [watchEmail])
+
+  const handleChangeAllTerm = () => {
+    const allChecked = terms.service && terms.privacy && terms.marketing
+    setTerms({
+      service: !allChecked,
+      privacy: !allChecked,
+      marketing: !allChecked,
+    })
+  }
 
   return (
     <AuthSection size="lg">
@@ -104,28 +121,30 @@ function Register() {
       </form>
       <Flex direction="column" alignItems="flex-start" gap="12px">
         <Term
-          onClick={() => {}}
-          termTitle="이용약관"
-          title="동의"
-          necessary={true}
-        ></Term>{' '}
+          onClick={handleChangeAllTerm}
+          title="전체 동의"
+          value={terms.service && terms.privacy && terms.marketing}
+        ></Term>
         <Term
-          onClick={() => {}}
-          termTitle="이용약관"
+          onClick={() => setTerms({ ...terms, service: !terms.service })}
+          termTitle="서비스이용약관"
           title="동의"
           necessary={true}
-        ></Term>{' '}
+          value={terms.service}
+        ></Term>
         <Term
-          onClick={() => {}}
-          termTitle="이용약관"
+          onClick={() => setTerms({ ...terms, privacy: !terms.privacy })}
+          termTitle="개인정보처리방침"
           title="동의"
           necessary={true}
-        ></Term>{' '}
+          value={terms.privacy}
+        ></Term>
         <Term
-          onClick={() => {}}
-          termTitle="이용약관"
+          onClick={() => setTerms({ ...terms, marketing: !terms.marketing })}
+          termTitle="마케팅정보수신"
           title="동의"
-          necessary={true}
+          necessary={false}
+          value={terms.marketing}
         ></Term>
       </Flex>
       <Button
