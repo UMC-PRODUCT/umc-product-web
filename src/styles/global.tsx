@@ -6,7 +6,6 @@ export const GlobalStyle = () => (
   <Global
     styles={css`
       ${reset}
-
       body {
         background: ${theme.colors.black};
         font-family: ${theme.typography.fontFamily.base};

@@ -8,6 +8,8 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import type { QueryClient } from '@tanstack/react-query'
 
+import ModalProvider from '@/components/common/Modal/ModalProvider'
+
 interface MyRouterContext {
   queryClient: QueryClient
 }
@@ -15,6 +17,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
+      <ModalProvider></ModalProvider>
       <Header />
       <Outlet />
       <TanStackDevtools
