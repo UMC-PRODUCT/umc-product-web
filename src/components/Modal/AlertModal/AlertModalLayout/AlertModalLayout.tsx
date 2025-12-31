@@ -3,6 +3,15 @@ import Modal from '@/components/common/Modal/Modal'
 import Instruction from '@/components/Instruction/Instruction'
 import { theme } from '@/styles/theme'
 import Close from '@/assets/icons/close.svg?react'
+import * as S from './AlertModalLayout.style'
+type AlertModalLayoutProps = {
+  onClose: () => void
+  title: string
+  content: string
+  Icon: React.FC<React.SVGProps<SVGSVGElement>>
+  children: React.ReactNode
+  mode: 'success' | 'error' | 'warning'
+}
 export default function AlertModalLayout({
   onClose,
   title,
@@ -10,14 +19,7 @@ export default function AlertModalLayout({
   Icon,
   children,
   mode,
-}: {
-  onClose: () => void
-  title: string
-  content: string
-  Icon: React.FC<React.SVGProps<SVGSVGElement>>
-  children: React.ReactNode
-  mode: 'success' | 'error' | 'warning'
-}) {
+}: AlertModalLayoutProps) {
   return (
     <Modal onClose={onClose}>
       <Flex
@@ -46,22 +48,9 @@ export default function AlertModalLayout({
             iconSize={32}
             mode={mode}
           />
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="모달 닫기"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-            }}
-          >
+          <S.ModalButton type="button" onClick={onClose} aria-label="모달 닫기">
             <Close />
-          </button>
+          </S.ModalButton>
         </Flex>
         <Flex
           justifyContent="flex-start"
@@ -71,7 +60,6 @@ export default function AlertModalLayout({
           css={{
             borderLeft: `4px solid ${theme.colors.white}`,
             paddingLeft: '14px',
-            alignItems: 'flex-start',
             color: theme.colors.white,
             whiteSpace: 'pre-line',
             ...theme.typography.B3.Md,

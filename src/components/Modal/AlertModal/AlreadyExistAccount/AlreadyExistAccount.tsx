@@ -1,4 +1,4 @@
-import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout'
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import Notice from '@/assets/icons/notice.svg?react'
 import Flex from '@/components/common/Flex/Flex'
 import Button from '@/components/common/Button/Button'

@@ -1,5 +1,5 @@
 import Notice from '@/assets/icons/notice.svg?react'
-import AlertModalLayout from '../AlertModalLayout'
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import Flex from '@/components/common/Flex/Flex'
 import { theme } from '@/styles/theme'
 
