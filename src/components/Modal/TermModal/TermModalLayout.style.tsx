@@ -1,3 +1,4 @@
+import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 import styled from '@emotion/styled'
 
@@ -9,6 +10,9 @@ const Card = styled.div`
   padding: 24px 46px 15px 46px;
   z-index: 99999;
   position: relative;
+  ${media.down(theme.breakPoints.mobile)} {
+    padding: 15px 20px 15px 20px;
+  }
 `
 
 const Header = styled.header`

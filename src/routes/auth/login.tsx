@@ -8,7 +8,10 @@ import Google from '@/assets/social/google.svg?react'
 import Apple from '@/assets/social/apple.svg?react'
 import Divider from '@/components/auth/Divider/Divider'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
-
+import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
+import Instruction from '@/components/Instruction/Instruction'
+import Notice from '@/assets/icons/notice.svg?react'
 export const Route = createFileRoute('/auth/login')({
   component: Login,
 })
@@ -21,11 +24,22 @@ const Main = styled.main`
   height: 100vh;
   width: 100%;
   gap: 24px;
-  @media (max-width: ${({ theme }) => theme.breakPoints.desktop}) {
+  ${media.down(theme.breakPoints.desktop)} {
     grid-template-columns: 1fr;
     justify-content: center;
+    gap: 0px;
   }
-  overflow-y: hidden;
+  overflow-y: auto;
+`
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  ${media.down(theme.breakPoints.mobile)} {
+    gap: 16px;
+  }
 `
 
 function Login() {
@@ -35,14 +49,7 @@ function Login() {
       <AuthSection size="md">
         <Logo></Logo>
         <Divider label="로그인 또는 회원가입"></Divider>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 32,
-            width: '100%',
-          }}
-        >
+        <ButtonGroup>
           <Button
             disabled={false}
             label="Kakao로 계속하기"
@@ -67,7 +74,13 @@ function Login() {
             tone="white"
             onClick={() => {}}
           ></Button>
-        </div>
+          <Instruction
+            mode="success"
+            Icon={Notice}
+            content={'최근 카카오 계정으로 로그인 하였습니다.'}
+            typography="C3.Md"
+          ></Instruction>
+        </ButtonGroup>
       </AuthSection>
     </Main>
   )

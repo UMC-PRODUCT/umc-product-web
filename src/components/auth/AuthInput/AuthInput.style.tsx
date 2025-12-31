@@ -1,13 +1,15 @@
 import { inputShell } from '@/styles/formStyles'
+import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 import styled from '@emotion/styled'
 
 const Input = styled.input`
   ${inputShell};
-  padding: 10px 44px 10px 20px;
+  padding: 10px 0 10px 20px;
   ::placeholder {
     color: ${theme.colors.gray[400]};
   }
+  flex: 1;
 `
 const InputWrapper = styled.div`
   display: flex;
@@ -15,7 +17,11 @@ const InputWrapper = styled.div`
   gap: 16px;
   position: relative;
   width: 100%;
+  max-width: 100%;
   height: 50px;
+  ${media.down(theme.breakPoints.mobile)} {
+    gap: 8px;
+  }
 `
 
 const IconBox = styled.span`

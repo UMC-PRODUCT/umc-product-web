@@ -10,7 +10,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background: ${theme.colors.black};
-  ${media.down(theme.breakPoints.desktop)} {
+  ${media.down(theme.breakPoints.tablet)} {
     display: none;
   }
   border-radius: 12px;

@@ -8,6 +8,10 @@ import { AuthInput } from '@/components/auth/AuthInput/AuthInput'
 import Button from '@/components/common/Button/Button'
 import { TermsSection } from '@/components/auth/Term/TermsSection'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
+import useModalStore from '@/store/useModalStore'
+import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -17,8 +21,18 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 22px;
+  width: 100%;
+`
+
+const ResponsiveLogo = styled(Logo)`
+  width: 264px;
+  height: auto;
+  ${media.down(theme.breakPoints.mobile)} {
+    width: 200px;
+  }
 `
 function Register() {
+  const { openModal } = useModalStore()
   const {
     register,
     handleSubmit,
@@ -33,10 +47,19 @@ function Register() {
     onSubmit,
   } = useRegisterForm()
 
+  const sendEmail = () => {
+    openModal(MODAL_TYPES.AlreadyExistAccount)
+    confirmButton.toggle()
+  }
+
   return (
     <AuthSection size="lg">
-      <Logo></Logo>
-      <form action="submit" onSubmit={handleSubmit(onSubmit)}>
+      <ResponsiveLogo />
+      <form
+        action="submit"
+        onSubmit={handleSubmit(onSubmit)}
+        css={{ maxWidth: '100%' }}
+      >
         <InputWrapper>
           <AuthSelection
             label="학교"
@@ -79,7 +102,7 @@ function Register() {
             }}
             button={{
               buttonMesssage: confirmButton.state ? '인증완료' : '인증하기',
-              buttonClick: confirmButton.toggle,
+              buttonClick: sendEmail,
               validate: confirmButton.state,
             }}
             {...register('email')}

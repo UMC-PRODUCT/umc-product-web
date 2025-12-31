@@ -28,7 +28,13 @@ export function TermsSection({
     !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
   const { openModal } = useModalStore()
   return (
-    <Flex direction="column" alignItems="flex-start" gap="12px">
+    <Flex
+      direction="column"
+      alignItems="flex-start"
+      gap="12px"
+      width="100%"
+      maxWidth="80%"
+    >
       <Term
         toggleCheck={onToggleAll}
         title="전체 동의"

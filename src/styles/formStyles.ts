@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
 
 export const Field = styled.div`
+  max-width: 100%;
   width: 408px;
   display: flex;
   flex-direction: column;
@@ -10,7 +11,7 @@ export const Field = styled.div`
 
 export const inputShell = css`
   width: 100%;
-  min-width: 300px;
+  min-width: 230px;
   border-radius: 8px;
   border: 1.5px solid ${theme.colors.gray[600]};
   background-color: ${theme.colors.gray[800]};

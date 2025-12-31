@@ -46,7 +46,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
 
     const trimmedValue = inputValue.trim()
     const isButtonDisabled =
-      !!button?.validate || !!error || trimmedValue === ''
+      !!button?.validate || !!error?.error || trimmedValue === ''
 
     return (
       <Field>

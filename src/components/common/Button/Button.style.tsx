@@ -59,6 +59,7 @@ export const baseButton = (disabled: boolean) =>
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    minWidth: '50px',
     flexWrap: 'nowrap',
     maxHeight: '100%',
     cursor: disabled ? 'not-allowed' : 'pointer',

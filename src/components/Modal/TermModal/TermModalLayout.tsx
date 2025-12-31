@@ -49,9 +49,9 @@ export default function TermModalLayout({
       direction="column"
       alignItems="center"
       width="1048px"
-      minWidth="360px"
+      maxWidth="90vw"
       height="720px"
-      maxHeight="80%"
+      maxHeight="90vh"
     >
       <S.Card>
         <S.Header>

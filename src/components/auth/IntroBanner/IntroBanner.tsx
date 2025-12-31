@@ -1,6 +1,7 @@
 import Flex from '@/components/common/Flex/Flex'
 import * as S from './IntroBanner.style'
 import { useEffect, useMemo, useState } from 'react'
+import { theme } from '@/styles/theme'
 
 type Slide = {
   image: string
@@ -15,6 +16,10 @@ const total = slides.length
 
 export default function IntroBanner() {
   const [current, setCurrent] = useState(0)
+  const [isMdDown, setIsMdDown] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia(`(max-width: ${theme.breakPoints.tablet})`).matches
+  })
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -30,6 +35,18 @@ export default function IntroBanner() {
     })
   }, [])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${theme.breakPoints.tablet})`,
+    )
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsMdDown(event.matches)
+    }
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
   const renderedSlides = useMemo(
     () =>
       slides.map((slide, index) => (
@@ -43,6 +60,8 @@ export default function IntroBanner() {
     [current],
   )
 
+  if (isMdDown) return null
+
   return (
     <Flex
       direction="column"
@@ -52,6 +71,7 @@ export default function IntroBanner() {
       height="100%"
       width="100%"
       padding="24px"
+      css={{}}
     >
       <S.Container>
         {renderedSlides}
