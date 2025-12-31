@@ -38,17 +38,20 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
     ref,
   ) => {
     const id = useId()
-    const { onChange, value, defaultValue: _defaultValue, ...restInputProps } =
-      inputProps
+    const {
+      onChange,
+      value,
+      defaultValue: _defaultValue,
+      ...restInputProps
+    } = inputProps
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       onChange?.(event)
     }
 
     const currentValue = value ?? ''
-    const trimmedValue = (typeof currentValue === 'string'
-      ? currentValue
-      : ''
+    const trimmedValue = (
+      typeof currentValue === 'string' ? currentValue : ''
     ).trim()
     const isButtonDisabled =
       !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
@@ -71,8 +74,8 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             type={type}
             placeholder={placeholder}
             ref={ref}
-            {...restInputProps}
             value={currentValue}
+            {...restInputProps}
           />
           {Icon && (
             <S.IconBox>

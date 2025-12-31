@@ -45,6 +45,7 @@ function Register() {
     toggleTerm,
     toggleAllTerms,
     onSubmit,
+    values,
   } = useRegisterForm()
 
   const sendEmail = () => {
@@ -77,6 +78,7 @@ function Register() {
               error: !!errors.name,
               errorMessage: errors.name?.message || '',
             }}
+            value={values.name}
             {...register('name')}
           />
           <AuthInput
@@ -88,6 +90,7 @@ function Register() {
               error: !!errors.nickname,
               errorMessage: errors.nickname?.message || '',
             }}
+            value={values.nickname}
             {...register('nickname')}
           />
           <AuthInput
@@ -104,6 +107,7 @@ function Register() {
               buttonClick: sendEmail,
               validation: confirmButton.state,
             }}
+            value={values.email}
             {...register('email')}
           />
           <TermsSection

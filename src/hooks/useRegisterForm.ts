@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type { RegisterForm } from '@/schema/register'
 import { registerSchema } from '@/schema/register'
@@ -33,7 +33,7 @@ export function useRegisterForm() {
   const {
     register,
     handleSubmit,
-    control,
+    watch,
     setValue,
     formState: { isValid, errors },
   } = useForm<RegisterForm>({
@@ -61,16 +61,17 @@ export function useRegisterForm() {
     console.log(data)
   }
 
-  const watchEmail = useWatch({
-    control,
-    name: 'email',
-  })
+  const [nameValue, nicknameValue, emailValue] = watch([
+    'name',
+    'nickname',
+    'email',
+  ])
 
   useEffect(() => {
     if (confirm) {
       setConfirm(false)
     }
-  }, [confirm, watchEmail])
+  }, [confirm, emailValue])
 
   const handleSelectSchool = ({ id, label }: School) => {
     setSchool({ id, label })
@@ -120,5 +121,10 @@ export function useRegisterForm() {
     toggleTerm,
     toggleAllTerms,
     onSubmit,
+    values: {
+      name: nameValue,
+      nickname: nicknameValue,
+      email: emailValue,
+    },
   }
 }
