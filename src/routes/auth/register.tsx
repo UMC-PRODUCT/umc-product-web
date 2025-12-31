@@ -101,7 +101,7 @@ function Register() {
               errorMessage: errors.email?.message || '',
             }}
             button={{
-              buttonMesssage: confirmButton.state ? '인증완료' : '인증하기',
+              buttonMessage: confirmButton.state ? '인증완료' : '인증하기',
               buttonClick: sendEmail,
               validate: confirmButton.state,
             }}

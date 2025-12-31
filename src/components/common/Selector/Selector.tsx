@@ -40,7 +40,7 @@ export default function Selector({
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [open])
+  }, [open, setOpen])
 
   return (
     <S.SelectWrapper ref={wrapRef}>

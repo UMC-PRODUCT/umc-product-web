@@ -26,7 +26,7 @@ export default function IntroBanner() {
       setCurrent((idx) => (idx + 1) % total)
     }, 3400)
     return () => clearInterval(id)
-  }, [total])
+  }, [])
 
   useEffect(() => {
     slides.forEach(({ image }) => {
