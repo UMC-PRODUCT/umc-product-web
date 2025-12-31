@@ -1,16 +1,11 @@
-import Button from '@/components/common/Button/Button'
+import { forwardRef, useEffect, useState } from 'react'
+import * as S from './AuthInput.style'
+import type { ChangeEvent, InputHTMLAttributes } from 'react'
 import type { SvgIconComponent } from '@/types/component'
+import Button from '@/components/common/Button/Button'
 import Label from '@/components/common/Label/Label'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
-import {
-  forwardRef,
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type InputHTMLAttributes,
-} from 'react'
 import { Field } from '@/styles/formStyles'
-import * as S from './AuthInput.style'
 
 type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'

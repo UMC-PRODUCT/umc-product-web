@@ -1,16 +1,7 @@
-export default function Flex({
-  children,
-  direction = 'row',
-  alignItems = 'center',
-  justifyContent = 'center',
-  gap = '0',
-  style,
-  width = '100%',
-  padding,
-  height,
-  maxHeight,
-  ...props
-}: {
+import type { Interpolation, Theme } from '@emotion/react'
+import type React from 'react'
+
+type FlexProps = {
   children: React.ReactNode
   direction?: 'row' | 'column'
   alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'
@@ -24,12 +15,35 @@ export default function Flex({
   gap?: string
   style?: React.CSSProperties
   width?: '100%' | 'fit-content' | 'auto' | string
-  padding?: string
+  minWidth?: string
+  maxWidth?: string
   height?: string
   maxHeight?: string
-} & React.HTMLAttributes<HTMLDivElement>) {
+  minHeight?: string
+  padding?: string
+  css?: Interpolation<Theme>
+} & React.HTMLAttributes<HTMLDivElement>
+
+export default function Flex({
+  children,
+  direction = 'row',
+  alignItems = 'center',
+  justifyContent = 'center',
+  gap = '0',
+  style,
+  width = '100%',
+  maxWidth,
+  padding,
+  height,
+  maxHeight,
+  minHeight,
+  minWidth,
+  css,
+  ...props
+}: FlexProps) {
   return (
     <div
+      css={css}
       style={{
         display: 'flex',
         flexDirection: direction,
@@ -40,6 +54,9 @@ export default function Flex({
         padding: padding,
         height: height,
         maxHeight: maxHeight,
+        minHeight: minHeight,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
         ...style,
       }}
       {...props}

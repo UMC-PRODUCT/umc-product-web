@@ -1,9 +1,11 @@
+import { forwardRef } from 'react'
 import * as S from './Term.style'
 import CheckIcon from '@/assets/icons/check.svg?react'
 import Flex from '@/components/common/Flex/Flex'
-import { forwardRef } from 'react'
+
 type TermProps = {
-  onClick: () => void
+  toggleCheck: () => void
+  onClick?: () => void
   termTitle?: string
   title: string
   necessary?: boolean
@@ -12,7 +14,15 @@ type TermProps = {
 
 export const Term = forwardRef<HTMLInputElement, TermProps>(
   (
-    { onClick, termTitle, title, necessary, value, ...props }: TermProps,
+    {
+      toggleCheck,
+      onClick,
+      termTitle,
+      title,
+      necessary,
+      value,
+      ...props
+    }: TermProps,
     ref,
   ) => {
     return (
@@ -20,13 +30,13 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
         justifyContent="flex-start"
         gap="2px"
         width="fit-content"
-        onClick={onClick}
+        onClick={toggleCheck}
         css={{ cursor: 'pointer' }}
       >
         <S.HiddenCheckbox
           type="checkbox"
+          onChange={toggleCheck}
           checked={value}
-          onChange={onClick}
           ref={ref}
           {...props}
         />

@@ -35,7 +35,6 @@ export function useRegisterForm() {
     handleSubmit,
     control,
     setValue,
-    watch,
     formState: { isValid, errors },
   } = useForm<RegisterForm>({
     mode: 'onChange',
@@ -72,14 +71,6 @@ export function useRegisterForm() {
       setConfirm(false)
     }
   }, [confirm, watchEmail])
-
-  const watchedValues = watch()
-
-  useEffect(() => {
-    console.log('form values', watchedValues)
-    console.log('terms state', terms)
-    console.log('isValid', isValid)
-  }, [watchedValues, terms, isValid])
 
   const handleSelectSchool = ({ id, label }: School) => {
     setSchool({ id, label })

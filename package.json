@@ -31,8 +31,11 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.69.0",
+    "react-markdown": "9.0.3",
+    "remark-gfm": "^4.0.1",
     "vite-plugin-svgr": "^4.5.0",
-    "yup": "^1.7.1"
+    "yup": "^1.7.1",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.13.5",
