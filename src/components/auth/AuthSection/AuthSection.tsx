@@ -6,10 +6,12 @@ const Section = styled.section<{ $size: 'md' | 'lg' }>`
   justify-self: center;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 100%;
+  padding: 24px;
   gap: 48px;
-  width: ${({ $size }) => ($size === 'md' ? '372px' : '408px')};
+  width: ${({ $size }) => ($size === 'md' ? '420px' : '452px')};
   max-width: 80%;
+  flex: 1;
 `
 
 export default function AuthSection({

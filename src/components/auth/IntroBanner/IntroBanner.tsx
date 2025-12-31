@@ -1,3 +1,4 @@
+import Flex from '@/components/common/Flex/Flex'
 import * as S from './IntroBanner.style'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -43,18 +44,28 @@ export default function IntroBanner() {
   )
 
   return (
-    <S.Container>
-      {renderedSlides}
-      <S.Blur>
-        <S.Slogan>
-          Break the Rules! <br /> 세상의 틀을 깰 챌린저들이 하나로 모이는 곳
-        </S.Slogan>
-        <S.Slider aria-hidden>
-          {slides.map((_, idx) => (
-            <S.Bar key={idx} $active={idx === current} />
-          ))}
-        </S.Slider>
-      </S.Blur>
-    </S.Container>
+    <Flex
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      maxHeight="100%"
+      height="100%"
+      width="100%"
+      padding="24px"
+    >
+      <S.Container>
+        {renderedSlides}
+        <S.Blur>
+          <S.Slogan>
+            Break the Rules! <br /> 세상의 틀을 깰 챌린저들이 하나로 모이는 곳
+          </S.Slogan>
+          <S.Slider aria-hidden>
+            {slides.map((_, idx) => (
+              <S.Bar key={idx} $active={idx === current} />
+            ))}
+          </S.Slider>
+        </S.Blur>
+      </S.Container>
+    </Flex>
   )
 }

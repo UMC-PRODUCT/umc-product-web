@@ -10,6 +10,8 @@ import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { registerSchema } from '@/schema/register'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
+import { Term } from '@/components/auth/Term/Term'
+import Flex from '@/components/common/Flex/Flex'
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -100,6 +102,32 @@ function Register() {
           ></AuthInput>
         </InputWrapper>
       </form>
+      <Flex direction="column" alignItems="flex-start" gap="12px">
+        <Term
+          onClick={() => {}}
+          termTitle="이용약관"
+          title="동의"
+          necessary={true}
+        ></Term>{' '}
+        <Term
+          onClick={() => {}}
+          termTitle="이용약관"
+          title="동의"
+          necessary={true}
+        ></Term>{' '}
+        <Term
+          onClick={() => {}}
+          termTitle="이용약관"
+          title="동의"
+          necessary={true}
+        ></Term>{' '}
+        <Term
+          onClick={() => {}}
+          termTitle="이용약관"
+          title="동의"
+          necessary={true}
+        ></Term>
+      </Flex>
       <Button
         label="회원가입"
         tone="lime"

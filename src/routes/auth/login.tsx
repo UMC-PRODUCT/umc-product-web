@@ -8,6 +8,7 @@ import Google from '@/assets/social/google.svg?react'
 import Apple from '@/assets/social/apple.svg?react'
 import Divider from '@/components/auth/Divider/Divider'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
+import Flex from '@/components/common/Flex/Flex'
 
 export const Route = createFileRoute('/auth/login')({
   component: Login,
@@ -19,12 +20,13 @@ const Main = styled.main`
   justify-content: space-between;
   align-items: center;
   height: 100vh;
-  padding: 24px;
+  width: 100%;
   gap: 24px;
   @media (max-width: ${({ theme }) => theme.breakPoints.desktop}) {
     grid-template-columns: 1fr;
     justify-content: center;
   }
+  overflow-y: hidden;
 `
 
 function Login() {
