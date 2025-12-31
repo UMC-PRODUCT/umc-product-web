@@ -3,8 +3,8 @@ import styled from '@emotion/styled'
 import { useRegisterForm } from '../../hooks/useRegisterForm'
 import Logo from '@/assets/brand_logo.svg?react'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
-import AuthSelection from '@/components/auth/AuthSelection/AuthSelection'
-import { AuthInput } from '@/components/auth/AuthInput/AuthInput'
+import LabelDropdown from '@/components/common/LabelDropdown/LabelDropdown'
+import { TextField } from '@/components/common/LabelTextField/LabelTextField'
 import Button from '@/components/common/Button/Button'
 import { TermsSection } from '@/components/auth/Term/TermsSection'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
@@ -58,7 +58,7 @@ function Register() {
       <ResponsiveLogo />
       <form onSubmit={handleSubmit(onSubmit)} css={{ maxWidth: '100%' }}>
         <InputWrapper>
-          <AuthSelection
+          <LabelDropdown
             label="학교"
             placeholder="학교를 선택해 주세요."
             options={UNI_LIST_MOCK}
@@ -69,7 +69,7 @@ function Register() {
             onClick={handleSelectSchool}
             value={school}
           />
-          <AuthInput
+          <TextField
             autoComplete="name"
             type="text"
             label="이름"
@@ -81,7 +81,7 @@ function Register() {
             value={values.name}
             {...register('name')}
           />
-          <AuthInput
+          <TextField
             autoComplete="nickname"
             type="text"
             placeholder="2~5글자 한글 닉네임을 입력해 주세요."
@@ -93,7 +93,7 @@ function Register() {
             value={values.nickname}
             {...register('nickname')}
           />
-          <AuthInput
+          <TextField
             autoComplete="email"
             type="email"
             placeholder="이메일 주소를 입력해주세요."

@@ -34,6 +34,7 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
     return (
       <Flex
         justifyContent="flex-start"
+        alignItems="center"
         gap="2px"
         width="fit-content"
         onClick={toggleCheck}
@@ -53,7 +54,7 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
         )}
         <S.Title>
           {label}
-          {necessary !== undefined && `(${necessary ? '필수' : '선택'})`}
+          {necessary !== undefined && ` (${necessary ? '필수' : '선택'})`}
         </S.Title>
       </Flex>
     )

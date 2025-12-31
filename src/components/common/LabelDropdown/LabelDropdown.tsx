@@ -2,12 +2,12 @@ import { useId, useState } from 'react'
 import { Field } from '@/styles/formStyles'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import Label from '@/components/common/Label/Label'
-import * as S from './AuthSelection.style'
-import Selector from '@/components/common/Selector/Selector'
+import * as S from './LabelDropdown.style'
+import Selector from '@/components/common/Dropdown/Dropdown'
 
 type Option = { label: string; id: string }
 
-type AuthSelectionProps = {
+type LabelDropdownProps = {
   label: string
   placeholder?: string
   options: Option[]
@@ -22,14 +22,14 @@ type AuthSelectionProps = {
   }
 }
 
-export default function AuthSelection({
+export default function LabelDropdown({
   label,
   placeholder,
   options,
   value,
   error,
   onClick,
-}: AuthSelectionProps) {
+}: LabelDropdownProps) {
   const [open, setOpen] = useState(false)
   const baseId = useId()
   const triggerId = `${baseId}-selector`
@@ -38,7 +38,12 @@ export default function AuthSelection({
   return (
     <Field>
       <S.SelectHeader>
-        <Label id={labelId} htmlFor={triggerId} label={label} necessary={true} />
+        <Label
+          id={labelId}
+          htmlFor={triggerId}
+          label={label}
+          necessary={true}
+        />
         {error?.error && (
           <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
         )}

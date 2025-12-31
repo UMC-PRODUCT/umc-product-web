@@ -1,5 +1,5 @@
 import { forwardRef, useId } from 'react'
-import * as S from './AuthInput.style'
+import * as S from './LabelTextField.style'
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
 import type { SvgIconComponent } from '@/types/component'
 import Button from '@/components/common/Button/Button'
@@ -7,7 +7,7 @@ import Label from '@/components/common/Label/Label'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import { Field } from '@/styles/formStyles'
 
-type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
   label: string
   Icon?: SvgIconComponent
@@ -23,7 +23,7 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   autoComplete: string
 }
 
-export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
+export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     {
       type,

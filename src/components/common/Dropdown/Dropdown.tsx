@@ -1,9 +1,9 @@
-import * as S from './Selector.style'
+import * as S from './Dropdown.style'
 import Arrow from '@/assets/icons/Arrow.svg?react'
 import {
   useSelectorInteractions,
   type Option,
-} from './useSelectorInteractions'
+} from '@/hooks/useSelectorInteractions'
 
 type SelectorProps = {
   placeholder?: string
