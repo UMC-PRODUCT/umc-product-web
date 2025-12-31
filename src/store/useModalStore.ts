@@ -6,7 +6,9 @@ interface IModalState {
   isOpen: boolean
   modalProps?: Record<string, any>
   openModal: (
-    payload: string | { modalType: string; modalProps?: Record<string, any> },
+    payload:
+      | modalType
+      | { modalType: modalType; modalProps?: Record<string, any> },
   ) => void
   closeModal: () => void
 }

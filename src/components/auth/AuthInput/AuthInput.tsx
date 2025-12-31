@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useId, useState } from 'react'
+import { forwardRef, useId } from 'react'
 import * as S from './AuthInput.style'
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
 import type { SvgIconComponent } from '@/types/component'
@@ -18,36 +18,40 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   button?: {
     buttonMessage: string
     buttonClick: () => void
-    validate: boolean
+    validation: boolean // 버튼이 언제 validate 되는지 여부 (예시: 이메일 인증 완료시)
   }
+  autoComplete: string
 }
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
-  ({ type, placeholder, label, error, Icon, button, ...inputProps }, ref) => {
+  (
+    {
+      type,
+      placeholder,
+      label,
+      error,
+      Icon,
+      button,
+      autoComplete,
+      ...inputProps
+    },
+    ref,
+  ) => {
     const id = useId()
-    const { onChange, value, defaultValue, ...restInputProps } = inputProps
-    const [inputValue, setInputValue] = useState(
-      typeof value === 'string'
-        ? value
-        : typeof defaultValue === 'string'
-          ? defaultValue
-          : '',
-    )
-
-    useEffect(() => {
-      if (typeof value === 'string') {
-        setInputValue(value)
-      }
-    }, [value])
+    const { onChange, value, defaultValue: _defaultValue, ...restInputProps } =
+      inputProps
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       onChange?.(event)
-      setInputValue(event.target.value)
     }
 
-    const trimmedValue = inputValue.trim()
+    const currentValue = value ?? ''
+    const trimmedValue = (typeof currentValue === 'string'
+      ? currentValue
+      : ''
+    ).trim()
     const isButtonDisabled =
-      !!button?.validate || !!error?.error || trimmedValue === ''
+      !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
 
     return (
       <Field>
@@ -61,15 +65,14 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
         <S.InputWrapper>
           <S.Input
             id={id}
-            autoComplete={label}
+            autoComplete={autoComplete}
             name={label}
             onChange={handleChange}
-            defaultValue={defaultValue}
             type={type}
             placeholder={placeholder}
             ref={ref}
             {...restInputProps}
-            {...(value !== undefined ? { value } : {})}
+            value={currentValue}
           />
           {Icon && (
             <S.IconBox>
@@ -79,7 +82,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           {button && (
             <Button
               label={button.buttonMessage}
-              variant={button.validate ? 'solid' : 'outline'}
+              variant={button.validation ? 'solid' : 'outline'}
               tone="lime"
               typo="B3.Md"
               rounded={8}

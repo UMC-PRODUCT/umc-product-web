@@ -16,7 +16,7 @@ export const inputShell = css`
   border: 1.5px solid ${theme.colors.gray[600]};
   background-color: ${theme.colors.gray[800]};
   color: ${theme.colors.white};
-  font-size: ${theme.typography.B3.Rg};
+  ${theme.typography.B3.Rg};
   transition:
     border-color 140ms ease,
     box-shadow 140ms ease,

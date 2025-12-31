@@ -55,11 +55,7 @@ function Register() {
   return (
     <AuthSection size="lg">
       <ResponsiveLogo />
-      <form
-        action="submit"
-        onSubmit={handleSubmit(onSubmit)}
-        css={{ maxWidth: '100%' }}
-      >
+      <form onSubmit={handleSubmit(onSubmit)} css={{ maxWidth: '100%' }}>
         <InputWrapper>
           <AuthSelection
             label="학교"
@@ -73,6 +69,7 @@ function Register() {
             value={school}
           />
           <AuthInput
+            autoComplete="name"
             type="text"
             label="이름"
             placeholder="이름을 입력해주세요."
@@ -83,6 +80,7 @@ function Register() {
             {...register('name')}
           />
           <AuthInput
+            autoComplete="nickname"
             type="text"
             placeholder="2~5글자 한글 닉네임을 입력해 주세요."
             label="닉네임"
@@ -93,6 +91,7 @@ function Register() {
             {...register('nickname')}
           />
           <AuthInput
+            autoComplete="email"
             type="email"
             placeholder="이메일 주소를 입력해주세요."
             label="이메일 주소"
@@ -103,7 +102,7 @@ function Register() {
             button={{
               buttonMessage: confirmButton.state ? '인증완료' : '인증하기',
               buttonClick: sendEmail,
-              validate: confirmButton.state,
+              validation: confirmButton.state,
             }}
             {...register('email')}
           />

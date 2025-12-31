@@ -42,11 +42,11 @@ export default function Modal({
   }
 
   return createPortal(
-    isVisible && (
+    isVisible ? (
       <Overlay onClick={onClose}>
         <Content onClick={handleContentClick}>{children}</Content>
       </Overlay>
-    ),
+    ) : null,
     document.getElementById('modal-root')!,
   )
 }
