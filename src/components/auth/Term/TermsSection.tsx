@@ -33,7 +33,7 @@ export function TermsSection({
       alignItems="flex-start"
       gap="12px"
       width="100%"
-      maxWidth="80%"
+      maxWidth="80vw"
     >
       <Term
         toggleCheck={onToggleAll}
