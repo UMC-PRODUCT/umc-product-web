@@ -16,7 +16,7 @@ type AuthInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
     errorMessage: string
   }
   button?: {
-    buttonMesssage: string
+    buttonMessage: string
     buttonClick: () => void
     validate: boolean
   }
@@ -78,7 +78,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           )}
           {button && (
             <Button
-              label={button.buttonMesssage}
+              label={button.buttonMessage}
               variant={button.validate ? 'solid' : 'outline'}
               tone="lime"
               typo="B3.Md"
