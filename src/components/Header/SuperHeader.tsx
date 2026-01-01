@@ -23,19 +23,29 @@ const left = [
   },
 ]
 
-const right = [
+const social = [
   {
-    label: '시스템 관리',
-    onClick: () => {},
-    icon: 'arrowUp' as const,
+    label: 'UMC 문의 카카오톡 채널',
+    link: 'https://pf.kakao.com/_xgxbxbC',
+    icon: 'kakao' as const,
   },
   {
-    label: '외부 링크',
-    onClick: () => {},
-    icon: 'arrow' as const,
+    label: 'UMC Instagram',
+    link: 'https://www.instagram.com/umcchannel',
+    icon: 'instagram' as const,
+  },
+  {
+    label: 'UMC 중앙대 Instagram',
+    link: 'https://www.instagram.com/umc_cdu',
+    icon: 'instagram' as const,
+  },
+  {
+    label: 'UMC YouTube',
+    link: 'https://www.youtube.com/@umcchannel',
+    icon: 'youtube' as const,
   },
 ]
 
 export default function SuperHeader() {
-  return <Header leftChildren={left} rightChildren={right} />
+  return <Header leftChildren={left} social={social} />
 }

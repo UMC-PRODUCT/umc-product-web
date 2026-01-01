@@ -1,22 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import styled from '@emotion/styled'
 import Badge from '../Badge/Badge'
 import Flex from '../Flex/Flex'
-import Icon from '@/assets/icons/profile.svg?react'
-import Close from '@/assets/icons/close.svg?react'
-import { media } from '@/styles/media'
-import { theme } from '@/styles/theme'
+import * as S from './Profile.style'
 
 export default function Profile({ children }: { children?: React.ReactNode }) {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   // 추후 수정 예정
   const school = '중앙대학교'
   const rights = '총괄'
   const name = '성이름'
   const nickname = '닉넴'
   const email = 'umc1234'
+
+  useEffect(() => {
+    if (!open) return
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
 
   const handleLogout = () => {
     // 로그아웃 로직 추가 예정
@@ -25,117 +33,34 @@ export default function Profile({ children }: { children?: React.ReactNode }) {
     })
   }
   return (
-    <>
-      <Icon
-        css={{
-          borderRadius: '100%',
-          cursor: 'pointer',
-          width: 40,
-          [media.down(theme.breakPoints.tablet)]: {
-            width: 19,
-          },
-        }}
-        onClick={() => setOpen(!open)}
-      />
+    <S.Container ref={menuRef}>
+      <S.TriggerIcon onClick={() => setOpen(!open)} />
       {open && (
-        <Modal>
-          <Close
-            width={22}
-            css={{ position: 'absolute', top: 16, right: 16 }}
-          />
+        <S.Modal>
+          <S.CloseButton onClick={() => setOpen(false)} />
           <Flex gap="12px">
-            <Icon
-              css={{
-                borderRadius: '100%',
-                cursor: 'pointer',
-                width: 46,
-                minWidth: 46,
-                [media.down(theme.breakPoints.tablet)]: {
-                  width: 40,
-                  minWidth: 40,
-                },
-              }}
-            />
+            <S.Avatar />
             <Flex direction="column" alignItems="flex-start" gap="4px">
-              <span
-                css={{
-                  color: theme.colors.white,
-                  ...theme.typography.B3.Md,
-                  [media.down(theme.breakPoints.tablet)]: {
-                    ...theme.typography.B4.Md,
-                  },
-                }}
-              >
+              <S.NameText>
                 {nickname}/{name}
-              </span>
-              <span
-                css={{
-                  color: theme.colors.gray[300],
-                  ...theme.typography.B4.Rg,
-                  [media.down(theme.breakPoints.tablet)]: {
-                    ...theme.typography.B5.Rg,
-                  },
-                }}
-              >
-                {email}
-              </span>
+              </S.NameText>
+              <S.EmailText>{email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex direction="column" gap="12px">
-            <Flex
-              gap="10px"
-              css={{ color: theme.colors.gray[300], ...theme.typography.B4.Rg }}
-            >
+            <S.InfoRow gap="10px">
               <Badge content="소속" tone="gray" variant="solid" typo="H5.Md" />
               {school}
-            </Flex>
-            <Flex
-              gap="10px"
-              css={{ color: theme.colors.gray[300], ...theme.typography.B4.Rg }}
-            >
+            </S.InfoRow>
+            <S.InfoRow gap="10px">
               <Badge content="권한" tone="gray" variant="solid" typo="H5.Md" />
               {rights}
-            </Flex>
+            </S.InfoRow>
           </Flex>
-          {children && <MobileOnly>{children}</MobileOnly>}
-          <Flex
-            justifyContent="center"
-            css={{
-              color: theme.colors.white,
-              textDecoration: 'underline',
-              ...theme.typography.B5.Rg,
-            }}
-            onClick={handleLogout}
-          >
-            로그아웃
-          </Flex>
-        </Modal>
+          {children && <S.MobileOnly>{children}</S.MobileOnly>}
+          <S.Logout onClick={handleLogout}>로그아웃</S.Logout>
+        </S.Modal>
       )}
-    </>
+    </S.Container>
   )
 }
-
-const Modal = styled.div`
-  position: absolute;
-  top: 80px;
-  right: 20px;
-  background-color: ${theme.colors.gray[800]};
-  border: 1px solid ${theme.colors.gray[700]};
-  border-radius: 10px;
-  width: 232px;
-  ${media.down(theme.breakPoints.tablet)} {
-    width: 212px;
-    top: 50px;
-  }
-  padding: 16px;
-  gap: 20px;
-  display: flex;
-  flex-direction: column;
-`
-
-const MobileOnly = styled.div`
-  display: none;
-  ${media.down('1120px')} {
-    display: block;
-  }
-`

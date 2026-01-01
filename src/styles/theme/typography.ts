@@ -153,6 +153,20 @@ export const typography = {
       fontWeight: 400,
     },
   },
+  C4: {
+    Rg: {
+      fontSize: '13px',
+      lineHeight: '130%',
+      fontWeight: 400,
+    },
+  },
+  C5: {
+    Rg: {
+      fontSize: '11px',
+      lineHeight: '130%',
+      fontWeight: 400,
+    },
+  },
   Slogan: {
     Md: {
       fontSize: '24px',
