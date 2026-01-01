@@ -23,17 +23,17 @@ export const MenuList = styled.div({
   },
 })
 
-export const MenuLink = styled(RouterLink)<{ $active: boolean }>(
-  ({ $active }) => ({
-    color: $active ? theme.colors.lime : theme.colors.white,
-    transition: 'color 0.15s ease',
-    whiteSpace: 'nowrap',
-    ...theme.typography.H4.Sb,
-    [media.down(theme.breakPoints.desktop)]: {
-      ...theme.typography.H4.Md,
-    },
-    [media.down(theme.breakPoints.tablet)]: {
-      ...theme.typography.H5.Md,
-    },
-  }),
-)
+export const MenuLink = styled(RouterLink, {
+  shouldForwardProp: (prop) => prop !== '$active',
+})<{ $active: boolean }>(({ $active }) => ({
+  color: $active ? theme.colors.lime : theme.colors.white,
+  transition: 'color 0.15s ease',
+  whiteSpace: 'nowrap',
+  ...theme.typography.H4.Sb,
+  [media.down(theme.breakPoints.desktop)]: {
+    ...theme.typography.H4.Md,
+  },
+  [media.down(theme.breakPoints.tablet)]: {
+    ...theme.typography.H5.Md,
+  },
+}))

@@ -29,13 +29,16 @@ export default function Header({
       <S.Nav aria-label="Main Navigation">
         <S.LeftWrapper>
           <S.Logo
+            aria-label="홈으로 이동"
+            role="button"
+            tabIndex={1}
             onClick={() =>
               navigate({
                 to: '/',
               })
             }
           />
-          <LeftMenu children={leftChildren} />
+          <LeftMenu>{leftChildren}</LeftMenu>
         </S.LeftWrapper>
         <S.RightWrapper>
           <RightMenu social={social} nav={nav} />

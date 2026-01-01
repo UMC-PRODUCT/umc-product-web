@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import type { Theme } from '@emotion/react'
 
 export const getTone = (theme: Theme) =>

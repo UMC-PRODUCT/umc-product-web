@@ -17,7 +17,10 @@ export default function LeftMenu({
     <S.Container>
       <S.MenuList>
         {children?.map((child) => {
-          const isActive = currentPath.startsWith(child.link)
+          const isActive =
+            child.link === '/'
+              ? currentPath === '/'
+              : currentPath.startsWith(child.link)
           return (
             <S.MenuLink key={child.label} to={child.link} $active={isActive}>
               {child.label}

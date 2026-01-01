@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { media } from '@/styles/media'
-import { theme as appTheme } from '@/styles/theme'
+import { theme } from '@/styles/theme'
 
 const Container = styled.div`
   width: 100%;
@@ -10,8 +10,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${appTheme.colors.black};
-  ${media.down(appTheme.breakPoints.tablet)} {
+  background: ${theme.colors.black};
+  ${media.down(theme.breakPoints.tablet)} {
     display: none;
   }
   border-radius: 12px;
@@ -28,7 +28,7 @@ const SlideLayer = styled.div<{ $active: boolean; $image: string }>`
 
 const Slogan = styled.span`
   text-align: center;
-  color: ${appTheme.colors.white};
+  color: ${theme.colors.white};
   ${({ theme }) => theme.typography.Slogan.Md};
   font-family: 'Isamanru', sans-serif;
   pointer-events: none;
@@ -50,7 +50,7 @@ const Bar = styled.span<{ $active: boolean }>`
   height: 4px;
   width: ${({ $active }) => ($active ? '36px' : '24px')};
   border-radius: 999px;
-  background: ${appTheme.colors.white};
+  background: ${theme.colors.white};
   opacity: ${({ $active }) => ($active ? 1 : 0.4)};
   transition:
     width 200ms ease,

@@ -70,7 +70,7 @@ const Main = styled.main`
   ${media.down(theme.breakPoints.desktop)} {
     grid-template-columns: 1fr;
     justify-content: center;
-    gap: 0px;
+    gap: 0;
   }
   overflow-y: auto;
 `

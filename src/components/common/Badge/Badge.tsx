@@ -1,10 +1,11 @@
 import { useTheme } from '@emotion/react'
-import styled from '@emotion/styled'
-import { getTone } from '../Button/Button.style'
+
+import { getTone } from './Badge.style'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
 type toneType = 'lime' | 'gray'
+
 export default function Badge({
   content,
   tone,
@@ -21,16 +22,21 @@ export default function Badge({
   const t = toneMap[tone][variant]
   const textStyle = resolveTypo(theme, typo)
 
-  const BadgeDiv = styled.div`
-    border-radius: 20px;
-    padding: 3px 10px;
-    text-align: center;
-    width: fit-content;
-    height: fit-content;
-    background: ${t.background};
-    color: ${t.color};
-    border: ${t.border};
-    ${textStyle}
-  `
-  return <BadgeDiv>{content}</BadgeDiv>
+  return (
+    <div
+      css={{
+        borderRadius: 20,
+        padding: '3px 10px',
+        textAlign: 'center',
+        width: 'fit-content',
+        height: 'fit-content',
+        background: t.background,
+        color: t.color,
+        border: t.border,
+        ...textStyle,
+      }}
+    >
+      {content}
+    </div>
+  )
 }
