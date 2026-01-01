@@ -10,7 +10,7 @@ export const registerSchema = yup.object().shape({
   name: yup.string().required('양식이 올바르지 않습니다.'),
   nickname: yup
     .string()
-    .matches(/^[가-힣]{2,5}$/, '닉네임은 2~5글자의 한글이어야 합니다.')
+    .matches(/^[가-힣]{1,5}$/, '닉네임은 1~5글자의 한글이어야 합니다.')
     .required('양식이 올바르지 않습니다.'),
   email,
   serviceTerm: yup

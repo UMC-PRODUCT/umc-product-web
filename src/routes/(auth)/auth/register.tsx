@@ -84,7 +84,7 @@ function Register() {
           <TextField
             autoComplete="nickname"
             type="text"
-            placeholder="2~5글자 한글 닉네임을 입력해 주세요."
+            placeholder="1~5글자 한글 닉네임을 입력해 주세요."
             label="닉네임"
             error={{
               error: !!errors.nickname,
