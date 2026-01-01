@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Flex from '../../../Flex/Flex'
 import * as S from './ExternalLink.style'
 import KakaoIcon from '@/assets/social/kakao-talk.svg?react'
@@ -21,14 +21,26 @@ export default function ExternalLink({
     icon: 'kakao' | 'instagram' | 'youtube'
   }>
 }) {
+  const cardRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => {
     setIsOpen((prev) => !prev)
   }
 
+  useEffect(() => {
+    if (!isOpen) return
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
+
   return (
     <>
-      <S.MenuItemWrapper>
+      <S.MenuItemWrapper ref={cardRef}>
         <S.MenuItem onClick={() => handleToggle()}>
           외부 링크
           <Arrow
