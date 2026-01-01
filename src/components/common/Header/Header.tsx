@@ -20,7 +20,7 @@ export default function Header({
 }) {
   const navigate = useNavigate()
   return (
-    <header>
+    <header css={{ minWidth: '100vw', maxWidth: '100vw' }}>
       <S.Nav aria-label="Main Navigation">
         <S.LeftWrapper>
           <S.Logo

@@ -1,5 +1,7 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import Header from '@/components/common/Header/Header'
+import Footer from '@/components/common/Footer/Footer'
+import Flex from '@/components/common/Flex/Flex'
 
 export const Route = createFileRoute('/(app)/_layout')({
   component: RouteComponent,
@@ -7,9 +9,12 @@ export const Route = createFileRoute('/(app)/_layout')({
 
 function RouteComponent() {
   return (
-    <>
+    <Flex direction="column" minHeight="100vh">
       <Header />
-      <Outlet />
-    </>
+      <Flex css={{ flex: 1 }}>
+        <Outlet />
+      </Flex>
+      <Footer />
+    </Flex>
   )
 }

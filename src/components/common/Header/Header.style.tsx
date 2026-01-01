@@ -6,7 +6,8 @@ import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
 export const Nav = styled.nav({
-  width: '100%',
+  maxWidth: '100vw',
+  width: '100vw',
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -36,7 +37,6 @@ export const LeftWrapper = styled(Flex)({
 })
 
 export const RightWrapper = styled(Flex)({
-  gap: '49px',
   justifyContent: 'flex-end',
   width: 'fit-content',
 })

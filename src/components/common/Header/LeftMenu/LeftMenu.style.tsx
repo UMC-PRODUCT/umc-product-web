@@ -18,11 +18,8 @@ export const MenuList = styled.div({
   [media.down(theme.breakPoints.desktop)]: {
     gap: '38px',
   },
-  [media.down(theme.breakPoints.tablet)]: {
-    flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'space-evenly',
-    maxWidth: '503px',
+  [media.down(theme.breakPoints.mobile)]: {
+    gap: '13px',
   },
 })
 
