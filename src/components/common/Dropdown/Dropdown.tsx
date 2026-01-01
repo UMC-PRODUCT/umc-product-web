@@ -5,7 +5,7 @@ import {
   type Option,
 } from '@/hooks/useSelectorInteractions'
 
-type SelectorProps = {
+type DropdownProps = {
   placeholder?: string
   options: Option[]
   value?: Option
@@ -15,7 +15,7 @@ type SelectorProps = {
   id?: string
   ariaLabelledby?: string
 }
-export default function Selector({
+export default function Dropdown({
   placeholder,
   options,
   value,
@@ -24,7 +24,7 @@ export default function Selector({
   open,
   id,
   ariaLabelledby,
-}: SelectorProps) {
+}: DropdownProps) {
   const {
     wrapRef,
     triggerRef,
