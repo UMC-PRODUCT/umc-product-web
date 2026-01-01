@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { MouseEvent, ReactNode } from 'react'
-
 import styled from '@emotion/styled'
+import type { MouseEvent, ReactNode } from 'react'
 
 type Modalprops = {
   isOpen?: boolean

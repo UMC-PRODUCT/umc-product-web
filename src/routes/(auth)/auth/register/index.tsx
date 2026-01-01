@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import styled from '@emotion/styled'
-import { useRegisterForm } from '../../hooks/useRegisterForm'
+import { useRegisterForm } from '@/hooks/useRegisterForm'
 import Logo from '@/assets/brand_logo.svg?react'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
 import LabelDropdown from '@/components/common/LabelDropdown/LabelDropdown'
@@ -13,7 +13,7 @@ import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
-export const Route = createFileRoute('/auth/register')({
+export const Route = createFileRoute('/(auth)/auth/register/')({
   component: Register,
 })
 
@@ -84,7 +84,7 @@ function Register() {
           <TextField
             autoComplete="nickname"
             type="text"
-            placeholder="2~5글자 한글 닉네임을 입력해 주세요."
+            placeholder="1~5글자 한글 닉네임을 입력해 주세요."
             label="닉네임"
             error={{
               error: !!errors.nickname,

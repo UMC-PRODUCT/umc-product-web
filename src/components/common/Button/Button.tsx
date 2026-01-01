@@ -1,7 +1,7 @@
-import type { SvgIconComponent } from '@/types/component'
-import type { TypoToken } from '@/types/typo'
 import { useTheme } from '@emotion/react'
 import * as S from './Button.style'
+import type { SvgIconComponent } from '@/types/component'
+import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
 type ButtonVariant = 'solid' | 'outline'
@@ -50,10 +50,10 @@ export default function Button({
           background: t.background,
           color: t.color,
           border: t.border,
-          ...(textStyle ?? {}),
           flexWrap: 'nowrap',
           whiteSpace: 'nowrap',
           width: 'auto',
+          ...textStyle,
         },
       ]}
     >

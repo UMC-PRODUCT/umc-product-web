@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 const ModalButton = styled.button`
   display: inline-flex;
   align-items: center;

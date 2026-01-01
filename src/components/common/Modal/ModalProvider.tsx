@@ -1,13 +1,14 @@
-import { useEffect, type ComponentType } from 'react'
+import { useEffect } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
+import AlreadyExistAccount from '../../Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
+import type { ComponentType } from 'react'
 import useModalStore from '@/store/useModalStore'
 import AlertModal from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import EmailSendModal from '@/components/Modal/AlertModal/EmailSendModal/EmailSendModal'
 import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
 import MarketingTerm from '@/components/Modal/TermModal/MarketingTerm/MarketingTerm'
 import PrivacyTerm from '@/components/Modal/TermModal/PrivacyTerm/PrivacyTerm'
-import AlreadyExistAccount from '../../Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
 
 export const MODAL_TYPES = {
   AlertModal: 'AlertModal',

@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import * as S from './TermModalLayout.style'
+import type { ReactNode } from 'react'
 import Flex from '@/components/common/Flex/Flex'
 
 import Close from '@/assets/icons/close.svg?react'

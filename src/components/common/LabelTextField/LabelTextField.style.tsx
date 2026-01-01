@@ -1,7 +1,7 @@
+import styled from '@emotion/styled'
 import { inputShell } from '@/styles/formStyles'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-import styled from '@emotion/styled'
 
 const Input = styled.input`
   ${inputShell};

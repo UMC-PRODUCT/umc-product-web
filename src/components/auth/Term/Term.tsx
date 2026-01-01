@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
-import type { MouseEvent } from 'react'
 import * as S from './Term.style'
+import type { MouseEvent } from 'react'
 import CheckIcon from '@/assets/icons/check.svg?react'
 import Flex from '@/components/common/Flex/Flex'
 

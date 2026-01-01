@@ -1,8 +1,8 @@
 import { useId, useState } from 'react'
+import * as S from './LabelDropdown.style'
 import { Field } from '@/styles/formStyles'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import Label from '@/components/common/Label/Label'
-import * as S from './LabelDropdown.style'
 import Selector from '@/components/common/Dropdown/Dropdown'
 
 type Option = { label: string; id: string }
@@ -10,7 +10,7 @@ type Option = { label: string; id: string }
 type LabelDropdownProps = {
   label: string
   placeholder?: string
-  options: Option[]
+  options: Array<Option>
   value?: {
     id: string
     label: string

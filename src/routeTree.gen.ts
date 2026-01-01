@@ -9,58 +9,208 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthRegisterRouteImport } from './routes/auth/register'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as appManagementRouteRouteImport } from './routes/(app)/management/route'
+import { Route as appRecruitingIndexRouteImport } from './routes/(app)/recruiting/index'
+import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
+import { Route as appApplyIndexRouteImport } from './routes/(app)/apply/index'
+import { Route as authAuthLayoutRouteImport } from './routes/(auth)/auth/_layout'
+import { Route as authAuthRegisterIndexRouteImport } from './routes/(auth)/auth/register/index'
+import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/login/index'
+import { Route as appManagementSchoolIndexRouteImport } from './routes/(app)/management/school/index'
+import { Route as appManagementPolicyIndexRouteImport } from './routes/(app)/management/policy/index'
+import { Route as appManagementNoticeIndexRouteImport } from './routes/(app)/management/notice/index'
+import { Route as appManagementDataIndexRouteImport } from './routes/(app)/management/data/index'
+import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
 
+const appRouteRoute = appRouteRouteImport.update({
+  id: '/(app)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/auth/register',
-  path: '/auth/register',
+const appManagementRouteRoute = appManagementRouteRouteImport.update({
+  id: '/management',
+  path: '/management',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appRecruitingIndexRoute = appRecruitingIndexRouteImport.update({
+  id: '/recruiting/',
+  path: '/recruiting/',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appApplyIndexRoute = appApplyIndexRouteImport.update({
+  id: '/apply/',
+  path: '/apply/',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const authAuthLayoutRoute = authAuthLayoutRouteImport.update({
+  id: '/(auth)/auth/_layout',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
+const authAuthRegisterIndexRoute = authAuthRegisterIndexRouteImport.update({
+  id: '/(auth)/auth/register/',
+  path: '/auth/register/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authAuthLoginIndexRoute = authAuthLoginIndexRouteImport.update({
+  id: '/(auth)/auth/login/',
+  path: '/auth/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appManagementSchoolIndexRoute =
+  appManagementSchoolIndexRouteImport.update({
+    id: '/school/',
+    path: '/school/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementPolicyIndexRoute =
+  appManagementPolicyIndexRouteImport.update({
+    id: '/policy/',
+    path: '/policy/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementNoticeIndexRoute =
+  appManagementNoticeIndexRouteImport.update({
+    id: '/notice/',
+    path: '/notice/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementDataIndexRoute = appManagementDataIndexRouteImport.update({
+  id: '/data/',
+  path: '/data/',
+  getParentRoute: () => appManagementRouteRoute,
+} as any)
+const appManagementAccountIndexRoute =
+  appManagementAccountIndexRouteImport.update({
+    id: '/account/',
+    path: '/account/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/management': typeof appManagementRouteRouteWithChildren
+  '/auth': typeof authAuthLayoutRoute
+  '/apply': typeof appApplyIndexRoute
+  '/dashboard': typeof appDashboardIndexRoute
+  '/recruiting': typeof appRecruitingIndexRoute
+  '/management/account': typeof appManagementAccountIndexRoute
+  '/management/data': typeof appManagementDataIndexRoute
+  '/management/notice': typeof appManagementNoticeIndexRoute
+  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/school': typeof appManagementSchoolIndexRoute
+  '/auth/login': typeof authAuthLoginIndexRoute
+  '/auth/register': typeof authAuthRegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/management': typeof appManagementRouteRouteWithChildren
+  '/auth': typeof authAuthLayoutRoute
+  '/apply': typeof appApplyIndexRoute
+  '/dashboard': typeof appDashboardIndexRoute
+  '/recruiting': typeof appRecruitingIndexRoute
+  '/management/account': typeof appManagementAccountIndexRoute
+  '/management/data': typeof appManagementDataIndexRoute
+  '/management/notice': typeof appManagementNoticeIndexRoute
+  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/school': typeof appManagementSchoolIndexRoute
+  '/auth/login': typeof authAuthLoginIndexRoute
+  '/auth/register': typeof authAuthRegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/(app)': typeof appRouteRouteWithChildren
+  '/(app)/management': typeof appManagementRouteRouteWithChildren
+  '/(auth)/auth/_layout': typeof authAuthLayoutRoute
+  '/(app)/apply/': typeof appApplyIndexRoute
+  '/(app)/dashboard/': typeof appDashboardIndexRoute
+  '/(app)/recruiting/': typeof appRecruitingIndexRoute
+  '/(app)/management/account/': typeof appManagementAccountIndexRoute
+  '/(app)/management/data/': typeof appManagementDataIndexRoute
+  '/(app)/management/notice/': typeof appManagementNoticeIndexRoute
+  '/(app)/management/policy/': typeof appManagementPolicyIndexRoute
+  '/(app)/management/school/': typeof appManagementSchoolIndexRoute
+  '/(auth)/auth/login/': typeof authAuthLoginIndexRoute
+  '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/login' | '/auth/register'
+  fullPaths:
+    | '/'
+    | '/management'
+    | '/auth'
+    | '/apply'
+    | '/dashboard'
+    | '/recruiting'
+    | '/management/account'
+    | '/management/data'
+    | '/management/notice'
+    | '/management/policy'
+    | '/management/school'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/login' | '/auth/register'
-  id: '__root__' | '/' | '/auth/login' | '/auth/register'
+  to:
+    | '/'
+    | '/management'
+    | '/auth'
+    | '/apply'
+    | '/dashboard'
+    | '/recruiting'
+    | '/management/account'
+    | '/management/data'
+    | '/management/notice'
+    | '/management/policy'
+    | '/management/school'
+    | '/auth/login'
+    | '/auth/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/(app)'
+    | '/(app)/management'
+    | '/(auth)/auth/_layout'
+    | '/(app)/apply/'
+    | '/(app)/dashboard/'
+    | '/(app)/recruiting/'
+    | '/(app)/management/account/'
+    | '/(app)/management/data/'
+    | '/(app)/management/notice/'
+    | '/(app)/management/policy/'
+    | '/(app)/management/school/'
+    | '/(auth)/auth/login/'
+    | '/(auth)/auth/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
+  appRouteRoute: typeof appRouteRouteWithChildren
+  authAuthLayoutRoute: typeof authAuthLayoutRoute
+  authAuthLoginIndexRoute: typeof authAuthLoginIndexRoute
+  authAuthRegisterIndexRoute: typeof authAuthRegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(app)': {
+      id: '/(app)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -68,27 +218,136 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
+    '/(app)/management': {
+      id: '/(app)/management'
+      path: '/management'
+      fullPath: '/management'
+      preLoaderRoute: typeof appManagementRouteRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/recruiting/': {
+      id: '/(app)/recruiting/'
+      path: '/recruiting'
+      fullPath: '/recruiting'
+      preLoaderRoute: typeof appRecruitingIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/dashboard/': {
+      id: '/(app)/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof appDashboardIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/apply/': {
+      id: '/(app)/apply/'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof appApplyIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(auth)/auth/_layout': {
+      id: '/(auth)/auth/_layout'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof authAuthLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/login': {
-      id: '/auth/login'
+    '/(auth)/auth/register/': {
+      id: '/(auth)/auth/register/'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof authAuthRegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/auth/login/': {
+      id: '/(auth)/auth/login/'
       path: '/auth/login'
       fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
+      preLoaderRoute: typeof authAuthLoginIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/management/school/': {
+      id: '/(app)/management/school/'
+      path: '/school'
+      fullPath: '/management/school'
+      preLoaderRoute: typeof appManagementSchoolIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/policy/': {
+      id: '/(app)/management/policy/'
+      path: '/policy'
+      fullPath: '/management/policy'
+      preLoaderRoute: typeof appManagementPolicyIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/notice/': {
+      id: '/(app)/management/notice/'
+      path: '/notice'
+      fullPath: '/management/notice'
+      preLoaderRoute: typeof appManagementNoticeIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/data/': {
+      id: '/(app)/management/data/'
+      path: '/data'
+      fullPath: '/management/data'
+      preLoaderRoute: typeof appManagementDataIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/account/': {
+      id: '/(app)/management/account/'
+      path: '/account'
+      fullPath: '/management/account'
+      preLoaderRoute: typeof appManagementAccountIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
     }
   }
 }
 
+interface appManagementRouteRouteChildren {
+  appManagementAccountIndexRoute: typeof appManagementAccountIndexRoute
+  appManagementDataIndexRoute: typeof appManagementDataIndexRoute
+  appManagementNoticeIndexRoute: typeof appManagementNoticeIndexRoute
+  appManagementPolicyIndexRoute: typeof appManagementPolicyIndexRoute
+  appManagementSchoolIndexRoute: typeof appManagementSchoolIndexRoute
+}
+
+const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
+  appManagementAccountIndexRoute: appManagementAccountIndexRoute,
+  appManagementDataIndexRoute: appManagementDataIndexRoute,
+  appManagementNoticeIndexRoute: appManagementNoticeIndexRoute,
+  appManagementPolicyIndexRoute: appManagementPolicyIndexRoute,
+  appManagementSchoolIndexRoute: appManagementSchoolIndexRoute,
+}
+
+const appManagementRouteRouteWithChildren =
+  appManagementRouteRoute._addFileChildren(appManagementRouteRouteChildren)
+
+interface appRouteRouteChildren {
+  appManagementRouteRoute: typeof appManagementRouteRouteWithChildren
+  appApplyIndexRoute: typeof appApplyIndexRoute
+  appDashboardIndexRoute: typeof appDashboardIndexRoute
+  appRecruitingIndexRoute: typeof appRecruitingIndexRoute
+}
+
+const appRouteRouteChildren: appRouteRouteChildren = {
+  appManagementRouteRoute: appManagementRouteRouteWithChildren,
+  appApplyIndexRoute: appApplyIndexRoute,
+  appDashboardIndexRoute: appDashboardIndexRoute,
+  appRecruitingIndexRoute: appRecruitingIndexRoute,
+}
+
+const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
+  appRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
+  appRouteRoute: appRouteRouteWithChildren,
+  authAuthLayoutRoute: authAuthLayoutRoute,
+  authAuthLoginIndexRoute: authAuthLoginIndexRoute,
+  authAuthRegisterIndexRoute: authAuthRegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,7 @@
+import styled from '@emotion/styled'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-import styled from '@emotion/styled'
+
 const Container = styled.div`
   width: 100%;
   height: 100%;

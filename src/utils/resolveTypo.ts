@@ -1,11 +1,20 @@
 import type { TypoGroup, TypoToken } from '@/types/typo'
 import type { Theme } from '@emotion/react'
 
-export const resolveTypo = (theme: Theme, token?: TypoToken) => {
-  if (!token) return undefined
+type TypoStyle = Record<string, string | number>
+
+export const resolveTypo = (theme: Theme, token?: TypoToken): TypoStyle => {
+  if (!token) return theme.typography.B3.Md
+
   const [group, variant] = token.split('.')
-  if (!group || !variant) return undefined
+  if (!group || !variant) return theme.typography.B3.Md
+
   const groupKey = group as TypoGroup
-  const variantKey = variant as keyof Theme['typography'][TypoGroup]
-  return theme.typography[groupKey]?.[variantKey]
+  const groupTypo = theme.typography[groupKey]
+
+  if (variant in groupTypo) {
+    return groupTypo[variant as keyof typeof groupTypo]
+  }
+
+  return theme.typography.B3.Md
 }

@@ -39,6 +39,19 @@ export const typography = {
     },
   },
 
+  H5: {
+    Sb: {
+      fontSize: '10px',
+      lineHeight: '150%',
+      fontWeight: 600,
+    },
+    Md: {
+      fontSize: '10px',
+      lineHeight: '150%',
+      fontWeight: 500,
+    },
+  },
+
   B1: {
     Sb: {
       fontSize: '20px',
@@ -92,6 +105,13 @@ export const typography = {
       fontWeight: 400,
     },
   },
+  B5: {
+    Rg: {
+      fontSize: '12px',
+      lineHeight: '150%',
+      fontWeight: 400,
+    },
+  },
   C1: {
     Sb: {
       fontSize: '18px',
@@ -130,6 +150,20 @@ export const typography = {
     Rg: {
       fontSize: '14px',
       lineHeight: '150%',
+      fontWeight: 400,
+    },
+  },
+  C4: {
+    Rg: {
+      fontSize: '13px',
+      lineHeight: '130%',
+      fontWeight: 400,
+    },
+  },
+  C5: {
+    Rg: {
+      fontSize: '11px',
+      lineHeight: '130%',
       fontWeight: 400,
     },
   },
