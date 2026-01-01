@@ -1,6 +1,7 @@
+import styled from '@emotion/styled'
 import { inputShell } from '@/styles/formStyles'
 import { theme } from '@/styles/theme'
-import styled from '@emotion/styled'
+
 const SelectWrapper = styled.div`
   position: relative;
   width: 100%;

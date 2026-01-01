@@ -1,7 +1,8 @@
-import { theme } from '@/styles/theme'
 import type { TypoToken } from '@/types/typo'
+import { theme } from '@/styles/theme'
 import { resolveTypo } from '@/utils/resolveTypo'
 import Flex from '@/components/common/Flex/Flex'
+
 export default function Instruction({
   content,
   typography,
@@ -15,7 +16,7 @@ export default function Instruction({
   iconSize?: number
   mode: 'success' | 'error' | 'warning'
 }) {
-  const textStyle = resolveTypo(theme, typography) ?? {}
+  const textStyle = resolveTypo(theme, typography)
   const color =
     mode === 'success'
       ? theme.colors.lime

@@ -1,13 +1,11 @@
 import * as S from './Dropdown.style'
+import type { Option } from '@/hooks/useSelectorInteractions'
 import Arrow from '@/assets/icons/Arrow.svg?react'
-import {
-  useSelectorInteractions,
-  type Option,
-} from '@/hooks/useSelectorInteractions'
+import { useSelectorInteractions } from '@/hooks/useSelectorInteractions'
 
 type DropdownProps = {
   placeholder?: string
-  options: Option[]
+  options: Array<Option>
   value?: Option
   onClick: (option: Option) => void
   setOpen: (open: boolean | ((prev: boolean) => boolean)) => void

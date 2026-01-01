@@ -11,9 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appLayoutRouteImport } from './routes/(app)/_layout'
-import { Route as authAuthRegisterRouteImport } from './routes/(auth)/auth/register'
+import { Route as appManagementRouteRouteImport } from './routes/(app)/management/route'
 import { Route as authAuthLayoutRouteImport } from './routes/(auth)/auth/_layout'
-import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/login.index'
+import { Route as authAuthRegisterIndexRouteImport } from './routes/(auth)/auth/register/index'
+import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/login/index'
+import { Route as appManagementSchoolIndexRouteImport } from './routes/(app)/management/school/index'
+import { Route as appManagementPolicyIndexRouteImport } from './routes/(app)/management/policy/index'
+import { Route as appManagementNoticeIndexRouteImport } from './routes/(app)/management/notice/index'
+import { Route as appManagementDataIndexRouteImport } from './routes/(app)/management/data/index'
+import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,9 +30,9 @@ const appLayoutRoute = appLayoutRouteImport.update({
   id: '/(app)/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authAuthRegisterRoute = authAuthRegisterRouteImport.update({
-  id: '/(auth)/auth/register',
-  path: '/auth/register',
+const appManagementRouteRoute = appManagementRouteRouteImport.update({
+  id: '/(app)/management',
+  path: '/management',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authAuthLayoutRoute = authAuthLayoutRouteImport.update({
@@ -34,52 +40,131 @@ const authAuthLayoutRoute = authAuthLayoutRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authAuthRegisterIndexRoute = authAuthRegisterIndexRouteImport.update({
+  id: '/(auth)/auth/register/',
+  path: '/auth/register/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authAuthLoginIndexRoute = authAuthLoginIndexRouteImport.update({
   id: '/(auth)/auth/login/',
   path: '/auth/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appManagementSchoolIndexRoute =
+  appManagementSchoolIndexRouteImport.update({
+    id: '/school/',
+    path: '/school/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementPolicyIndexRoute =
+  appManagementPolicyIndexRouteImport.update({
+    id: '/policy/',
+    path: '/policy/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementNoticeIndexRoute =
+  appManagementNoticeIndexRouteImport.update({
+    id: '/notice/',
+    path: '/notice/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementDataIndexRoute = appManagementDataIndexRouteImport.update({
+  id: '/data/',
+  path: '/data/',
+  getParentRoute: () => appManagementRouteRoute,
+} as any)
+const appManagementAccountIndexRoute =
+  appManagementAccountIndexRouteImport.update({
+    id: '/account/',
+    path: '/account/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/management': typeof appManagementRouteRouteWithChildren
   '/auth': typeof authAuthLayoutRoute
-  '/auth/register': typeof authAuthRegisterRoute
+  '/management/account': typeof appManagementAccountIndexRoute
+  '/management/data': typeof appManagementDataIndexRoute
+  '/management/notice': typeof appManagementNoticeIndexRoute
+  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/school': typeof appManagementSchoolIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
+  '/auth/register': typeof authAuthRegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/management': typeof appManagementRouteRouteWithChildren
   '/auth': typeof authAuthLayoutRoute
-  '/auth/register': typeof authAuthRegisterRoute
+  '/management/account': typeof appManagementAccountIndexRoute
+  '/management/data': typeof appManagementDataIndexRoute
+  '/management/notice': typeof appManagementNoticeIndexRoute
+  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/school': typeof appManagementSchoolIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
+  '/auth/register': typeof authAuthRegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/(app)/management': typeof appManagementRouteRouteWithChildren
   '/(app)/_layout': typeof appLayoutRoute
   '/(auth)/auth/_layout': typeof authAuthLayoutRoute
-  '/(auth)/auth/register': typeof authAuthRegisterRoute
+  '/(app)/management/account/': typeof appManagementAccountIndexRoute
+  '/(app)/management/data/': typeof appManagementDataIndexRoute
+  '/(app)/management/notice/': typeof appManagementNoticeIndexRoute
+  '/(app)/management/policy/': typeof appManagementPolicyIndexRoute
+  '/(app)/management/school/': typeof appManagementSchoolIndexRoute
   '/(auth)/auth/login/': typeof authAuthLoginIndexRoute
+  '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/auth/register' | '/auth/login'
+  fullPaths:
+    | '/'
+    | '/management'
+    | '/auth'
+    | '/management/account'
+    | '/management/data'
+    | '/management/notice'
+    | '/management/policy'
+    | '/management/school'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/auth/register' | '/auth/login'
+  to:
+    | '/'
+    | '/management'
+    | '/auth'
+    | '/management/account'
+    | '/management/data'
+    | '/management/notice'
+    | '/management/policy'
+    | '/management/school'
+    | '/auth/login'
+    | '/auth/register'
   id:
     | '__root__'
     | '/'
+    | '/(app)/management'
     | '/(app)/_layout'
     | '/(auth)/auth/_layout'
-    | '/(auth)/auth/register'
+    | '/(app)/management/account/'
+    | '/(app)/management/data/'
+    | '/(app)/management/notice/'
+    | '/(app)/management/policy/'
+    | '/(app)/management/school/'
     | '/(auth)/auth/login/'
+    | '/(auth)/auth/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  appManagementRouteRoute: typeof appManagementRouteRouteWithChildren
   appLayoutRoute: typeof appLayoutRoute
   authAuthLayoutRoute: typeof authAuthLayoutRoute
-  authAuthRegisterRoute: typeof authAuthRegisterRoute
   authAuthLoginIndexRoute: typeof authAuthLoginIndexRoute
+  authAuthRegisterIndexRoute: typeof authAuthRegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -98,11 +183,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/auth/register': {
-      id: '/(auth)/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof authAuthRegisterRouteImport
+    '/(app)/management': {
+      id: '/(app)/management'
+      path: '/management'
+      fullPath: '/management'
+      preLoaderRoute: typeof appManagementRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/auth/_layout': {
@@ -112,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAuthLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)/auth/register/': {
+      id: '/(auth)/auth/register/'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof authAuthRegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(auth)/auth/login/': {
       id: '/(auth)/auth/login/'
       path: '/auth/login'
@@ -119,15 +211,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAuthLoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/management/school/': {
+      id: '/(app)/management/school/'
+      path: '/school'
+      fullPath: '/management/school'
+      preLoaderRoute: typeof appManagementSchoolIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/policy/': {
+      id: '/(app)/management/policy/'
+      path: '/policy'
+      fullPath: '/management/policy'
+      preLoaderRoute: typeof appManagementPolicyIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/notice/': {
+      id: '/(app)/management/notice/'
+      path: '/notice'
+      fullPath: '/management/notice'
+      preLoaderRoute: typeof appManagementNoticeIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/data/': {
+      id: '/(app)/management/data/'
+      path: '/data'
+      fullPath: '/management/data'
+      preLoaderRoute: typeof appManagementDataIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/account/': {
+      id: '/(app)/management/account/'
+      path: '/account'
+      fullPath: '/management/account'
+      preLoaderRoute: typeof appManagementAccountIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
   }
 }
 
+interface appManagementRouteRouteChildren {
+  appManagementAccountIndexRoute: typeof appManagementAccountIndexRoute
+  appManagementDataIndexRoute: typeof appManagementDataIndexRoute
+  appManagementNoticeIndexRoute: typeof appManagementNoticeIndexRoute
+  appManagementPolicyIndexRoute: typeof appManagementPolicyIndexRoute
+  appManagementSchoolIndexRoute: typeof appManagementSchoolIndexRoute
+}
+
+const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
+  appManagementAccountIndexRoute: appManagementAccountIndexRoute,
+  appManagementDataIndexRoute: appManagementDataIndexRoute,
+  appManagementNoticeIndexRoute: appManagementNoticeIndexRoute,
+  appManagementPolicyIndexRoute: appManagementPolicyIndexRoute,
+  appManagementSchoolIndexRoute: appManagementSchoolIndexRoute,
+}
+
+const appManagementRouteRouteWithChildren =
+  appManagementRouteRoute._addFileChildren(appManagementRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  appManagementRouteRoute: appManagementRouteRouteWithChildren,
   appLayoutRoute: appLayoutRoute,
   authAuthLayoutRoute: authAuthLayoutRoute,
-  authAuthRegisterRoute: authAuthRegisterRoute,
   authAuthLoginIndexRoute: authAuthLoginIndexRoute,
+  authAuthRegisterIndexRoute: authAuthRegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,10 +1,24 @@
+import { useNavigate } from '@tanstack/react-router'
 import Flex from '../Flex/Flex'
 import Logo from '@/assets/umc.svg?react'
-import Profile from '@/assets/icons/profile.svg?react'
+
 import LeftMenu from '@/components/common/Header/LeftMenu'
 import RightMenu from '@/components/common/Header/RightMenu'
-import { useNavigate } from '@tanstack/react-router'
-export default function Header() {
+
+export default function Header({
+  leftChildren,
+  rightChildren,
+}: {
+  leftChildren?: Array<{
+    label: string
+    link: string
+  }>
+  rightChildren?: Array<{
+    label: string
+    onClick: () => void
+    icon: 'arrow' | 'arrowUp'
+  }>
+}) {
   const navigate = useNavigate()
   return (
     <header>
@@ -29,12 +43,11 @@ export default function Header() {
               })
             }
             css={{ minWidth: 82, minHeight: 40 }}
-          ></Logo>
-          <LeftMenu></LeftMenu>
+          />
+          <LeftMenu children={leftChildren} />
         </Flex>
         <Flex gap="49px" justifyContent="flex-end" width="fit-content">
-          <RightMenu></RightMenu>
-          <Profile css={{ borderRadius: '50%' }}></Profile>
+          <RightMenu children={rightChildren} />
         </Flex>
       </nav>
     </header>

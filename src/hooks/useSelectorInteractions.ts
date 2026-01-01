@@ -4,7 +4,7 @@ import type { KeyboardEvent } from 'react'
 export type Option = { label: string; id: string }
 
 type Params = {
-  options: Option[]
+  options: Array<Option>
   value?: Option
   open: boolean
   setOpen: (open: boolean | ((prev: boolean) => boolean)) => void
@@ -20,7 +20,7 @@ export function useSelectorInteractions({
 }: Params) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const optionRefs = useRef<(HTMLLIElement | null)[]>([])
+  const optionRefs = useRef<Array<HTMLLIElement | null>>([])
   const [focusedIndex, setFocusedIndex] = useState<number>(-1)
 
   useEffect(() => {

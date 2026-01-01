@@ -1,14 +1,14 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
-import Header from '@/components/common/Header/Header'
+import SuperHeader from '@/components/Header/SuperHeader'
 
-export const Route = createFileRoute('/(app)/_layout')({
+export const Route = createFileRoute('/(app)/management')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   return (
     <>
-      <Header />
+      <SuperHeader />
       <Outlet />
     </>
   )

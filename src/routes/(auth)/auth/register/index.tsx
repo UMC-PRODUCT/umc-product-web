@@ -13,7 +13,7 @@ import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
-export const Route = createFileRoute('/(auth)/auth/register')({
+export const Route = createFileRoute('/(auth)/auth/register/')({
   component: Register,
 })
 
