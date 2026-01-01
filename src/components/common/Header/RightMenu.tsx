@@ -2,6 +2,7 @@ import * as S from './RightMenu.style'
 import Profile from './Profile'
 import ExternalLink from './ExternalLink'
 import ArrowUp from '@/assets/icons/arrow_up.svg?react'
+
 type SocialLink = {
   label: string
   link: string

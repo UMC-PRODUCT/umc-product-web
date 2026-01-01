@@ -1,12 +1,13 @@
+import styled from '@emotion/styled'
+import { useState } from 'react'
+import Flex from '../Flex/Flex'
 import KakaoIcon from '@/assets/social/kakao-talk.svg?react'
 import InstagramIcon from '@/assets/social/instagram.svg?react'
 import YoutubeIcon from '@/assets/social/youtube.svg?react'
-import Flex from '../Flex/Flex'
-import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
 import { media } from '@/styles/media'
 import Arrow from '@/assets/icons/arrow.svg?react'
-import { useState } from 'react'
+
 const socialIconMap = {
   kakao: KakaoIcon,
   instagram: InstagramIcon,
