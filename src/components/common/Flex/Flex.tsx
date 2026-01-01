@@ -26,10 +26,10 @@ type FlexProps = {
 
 export default function Flex({
   children,
-  direction = 'row',
+  direction,
   alignItems = 'center',
-  justifyContent = 'center',
-  gap = '0',
+  justifyContent,
+  gap,
   style,
   width = '100%',
   maxWidth,

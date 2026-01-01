@@ -3,6 +3,7 @@ export type TypoGroup =
   | 'H2'
   | 'H3'
   | 'H4'
+  | 'H5'
   | 'B1'
   | 'B2'
   | 'B3'

@@ -1,21 +1,19 @@
 import styled from '@emotion/styled'
-import { theme } from '@/styles/theme'
+import Profile from './Profile'
 import Flex from '@/components/common/Flex/Flex'
-import Profile from '@/assets/icons/profile.svg?react'
 import Arrow from '@/assets/icons/arrow.svg?react'
 import ArrowUp from '@/assets/icons/arrow_up.svg?react'
 import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 const StyleFlex = styled('div')`
   display: flex;
   align-items: center;
   gap: 32px;
   justify-content: center;
-  color: ${theme.colors.white};
-  ${media.down(theme.breakPoints.desktop)} {
+  ${media.down('1120px')} {
     display: none;
   }
-  ${theme.typography.B3.Md};
 `
 
 export default function RightMenu({
@@ -27,39 +25,54 @@ export default function RightMenu({
     icon: 'arrow' | 'arrowUp'
   }>
 }) {
+  const Children = (
+    <Flex
+      css={{
+        gap: '32px',
+        [media.down('1120px')]: {
+          gap: '8px',
+          flexDirection: 'column',
+        },
+      }}
+    >
+      {children?.map((child) => (
+        <Flex
+          key={child.label}
+          onClick={child.onClick}
+          css={{
+            gap: '4px',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            flexWrap: 'nowrap',
+            color: theme.colors.white,
+            ...theme.typography.B3.Md,
+            [media.down('1120px')]: {
+              ...theme.typography.B5.Rg,
+            },
+          }}
+        >
+          {child.label}
+          {child.icon === 'arrow' ? (
+            <Arrow height={18} />
+          ) : (
+            <ArrowUp height={18} />
+          )}
+        </Flex>
+      ))}
+    </Flex>
+  )
+
   return (
-    <nav css={{ display: 'flex', alignItems: 'center', gap: '49px' }}>
-      <StyleFlex>
-        {children?.map((child) => (
-          <Flex
-            key={child.label}
-            onClick={child.onClick}
-            gap="4px"
-            css={{
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              flexWrap: 'nowrap',
-            }}
-          >
-            {child.label}
-            {child.icon === 'arrow' ? (
-              <Arrow width={18} height={18} />
-            ) : (
-              <ArrowUp width={35} height={35} />
-            )}
-          </Flex>
-        ))}
-      </StyleFlex>
-      <Profile
-        width={32}
-        height={32}
-        css={{
-          borderRadius: '50%',
-          cursor: 'pointer',
-          minWidth: 32,
-          minHeight: 32,
-        }}
-      />
+    <nav
+      css={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '49px',
+        height: 'fit-content',
+      }}
+    >
+      <StyleFlex>{Children}</StyleFlex>
+      <Profile children={Children} />
     </nav>
   )
 }

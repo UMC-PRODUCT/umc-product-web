@@ -4,6 +4,8 @@ import Logo from '@/assets/umc.svg?react'
 
 import LeftMenu from '@/components/common/Header/LeftMenu'
 import RightMenu from '@/components/common/Header/RightMenu'
+import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 export default function Header({
   leftChildren,
@@ -31,18 +33,48 @@ export default function Header({
           alignItems: 'center',
           padding: '14px 28px 14px 36px',
           overflowX: 'hidden',
+          borderBottom: `1.5px solid ${theme.colors.gray[700]}`,
+          [media.down(theme.breakPoints.desktop)]: {
+            padding: '14px  26px 14px 26px',
+          },
+          [media.down(theme.breakPoints.tablet)]: {
+            padding: '7px 10px 7px 10px',
+            height: '44px',
+          },
         }}
       >
-        <Flex gap="76px" justifyContent="flex-start" width="fit-content">
+        <Flex
+          justifyContent="flex-start"
+          width="fit-content"
+          css={{
+            gap: '76px',
+            [media.down(theme.breakPoints.desktop)]: {
+              gap: '68px',
+            },
+            [media.down(theme.breakPoints.tablet)]: {
+              gap: '18px',
+              flex: 1,
+            },
+          }}
+        >
           <Logo
-            width={82}
-            height={40}
             onClick={() =>
               navigate({
                 to: '/',
               })
             }
-            css={{ minWidth: 82, minHeight: 40 }}
+            css={{
+              width: 82,
+              height: 40,
+              [media.down(theme.breakPoints.desktop)]: {
+                width: 70,
+                height: 22,
+              },
+              [media.down(theme.breakPoints.tablet)]: {
+                width: 38,
+                height: 12,
+              },
+            }}
           />
           <LeftMenu children={leftChildren} />
         </Flex>

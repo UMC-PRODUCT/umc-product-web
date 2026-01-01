@@ -18,7 +18,8 @@ export default function IntroBanner() {
   const [current, setCurrent] = useState(0)
   const [isMdDown, setIsMdDown] = useState(() => {
     if (typeof window === 'undefined') return false
-    return window.matchMedia(`(max-width: ${theme.breakPoints.tablet})`).matches
+    return window.matchMedia(`(max-width: ${theme.breakPoints.desktop})`)
+      .matches
   })
 
   useEffect(() => {
