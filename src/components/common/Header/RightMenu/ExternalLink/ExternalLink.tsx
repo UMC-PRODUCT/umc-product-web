@@ -77,7 +77,7 @@ export default function ExternalLink({
                     rel="noreferrer noopener"
                   >
                     <Flex direction="row" gap="6px" alignItems="center">
-                      <SocialIcon width={24} height={24} aria-hidden />
+                      <SocialIcon width={24} height={24} aria-hidden="true" />
                       {sub.label}
                     </Flex>
                   </a>
