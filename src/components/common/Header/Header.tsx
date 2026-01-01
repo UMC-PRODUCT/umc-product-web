@@ -1,8 +1,8 @@
 import { useNavigate } from '@tanstack/react-router'
 
 import * as S from './Header.style'
-import LeftMenu from '@/components/common/Header/LeftMenu'
-import RightMenu from '@/components/common/Header/RightMenu'
+import LeftMenu from '@/components/common/Header/LeftMenu/LeftMenu'
+import RightMenu from '@/components/common/Header/RightMenu/RightMenu'
 
 export default function Header({
   leftChildren,

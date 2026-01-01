@@ -1,6 +1,6 @@
 import * as S from './RightMenu.style'
-import Profile from './Profile'
-import ExternalLink from './ExternalLink'
+import Profile from '@/components/common/Header/RightMenu/Profile/Profile'
+import ExternalLink from '@/components/common/Header/RightMenu/ExternalLink/ExternalLink'
 import ArrowUp from '@/assets/icons/arrow_up.svg?react'
 
 type SocialLink = {

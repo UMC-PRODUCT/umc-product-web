@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 
-import Flex from '../Flex/Flex'
+import Flex from '@/components/common/Flex/Flex'
 import Icon from '@/assets/icons/profile.svg?react'
 import Close from '@/assets/icons/close.svg?react'
 import { media } from '@/styles/media'
