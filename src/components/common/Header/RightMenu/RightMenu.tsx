@@ -13,7 +13,7 @@ export default function RightMenu({
   nav,
   social,
 }: {
-  nav: {
+  nav?: {
     label: string
     link: string
   }
@@ -21,9 +21,11 @@ export default function RightMenu({
 }) {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
-      <S.NavLink href={nav.link}>
-        {nav.label} <ArrowUp />
-      </S.NavLink>
+      {nav && (
+        <S.NavLink href={nav.link}>
+          {nav.label} <ArrowUp />
+        </S.NavLink>
+      )}
       <ExternalLink subLinks={social || []} />
     </S.MenuWrapper>
   )

@@ -7,6 +7,7 @@ import RightMenu from '@/components/common/Header/RightMenu/RightMenu'
 export default function Header({
   leftChildren,
   social,
+  nav,
 }: {
   leftChildren?: Array<{
     label: string
@@ -17,6 +18,10 @@ export default function Header({
     link: string
     icon: 'kakao' | 'instagram' | 'youtube'
   }>
+  nav?: {
+    label: string
+    link: string
+  }
 }) {
   const navigate = useNavigate()
   return (
@@ -33,10 +38,7 @@ export default function Header({
           <LeftMenu children={leftChildren} />
         </S.LeftWrapper>
         <S.RightWrapper>
-          <RightMenu
-            social={social}
-            nav={{ label: '시스템 관리', link: '/' }}
-          />
+          <RightMenu social={social} nav={nav} />
         </S.RightWrapper>
       </S.Nav>
     </header>

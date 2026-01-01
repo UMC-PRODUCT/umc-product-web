@@ -14,7 +14,7 @@ const left = [
     link: '/dashboard',
   },
 ]
-
+// TODO: 데이터 수정 필요
 const social = [
   {
     label: 'UMC 문의 카카오톡 채널',
@@ -38,6 +38,11 @@ const social = [
   },
 ]
 
+const nav = {
+  label: '자주 묻는 질문',
+  link: '/', // TODO: 링크 수정
+}
+
 export default function ChallengerHeader() {
-  return <Header leftChildren={left} social={social} />
+  return <Header leftChildren={left} social={social} nav={nav} />
 }

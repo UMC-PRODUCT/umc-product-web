@@ -22,7 +22,7 @@ const left = [
     link: '/management/policy',
   },
 ]
-
+// TODO: 데이터 수정 필요
 const social = [
   {
     label: 'UMC 문의 카카오톡 채널',
@@ -45,7 +45,11 @@ const social = [
     icon: 'youtube' as const,
   },
 ]
+const nav = {
+  label: '시스템 관리',
+  link: '/', // TODO: 링크 수정
+}
 
 export default function SuperHeader() {
-  return <Header leftChildren={left} social={social} />
+  return <Header leftChildren={left} social={social} nav={nav} />
 }
