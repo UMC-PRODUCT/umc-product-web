@@ -7,7 +7,7 @@ import { registerSchema } from '@/schema/register'
 export type TermKey = 'service' | 'privacy' | 'marketing'
 
 type School = {
-  id: string
+  id: string | number
   label: string
 }
 

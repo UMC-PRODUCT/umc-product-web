@@ -1,0 +1,55 @@
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
+import FillNotice from '@/assets/icons/notice_fill.svg?react'
+import Flex from '@/components/common/Flex/Flex'
+import Button from '@/components/common/Button/Button'
+
+export default function DeleteConfirm({
+  onClose,
+  name,
+  onClick,
+  type,
+  count,
+}: {
+  onClose: () => void
+  onClick: () => void
+  name: string
+  type: 'school' | 'account'
+  count: number
+}) {
+  const KoreaType = type === 'school' ? '학교' : '계정'
+  return (
+    <AlertModalLayout
+      mode={'error'}
+      onClose={onClose}
+      title="경고"
+      content={`삭제된 학교 데이터는 복구할 수 없습니다.
+        ‘${name}’ 외 ${count - 1}개의 ${KoreaType}를 삭제하시겠습니까?`}
+      Icon={FillNotice}
+    >
+      <Flex
+        height="32px"
+        gap="16px"
+        maxWidth="182px"
+        justifyContent="flex-end"
+        css={{
+          marginTop: '40px',
+        }}
+      >
+        <Button
+          type="button"
+          label={'취소하기'}
+          tone="gray"
+          onClick={onClose}
+          typo="C3.Md"
+        ></Button>
+        <Button
+          type="button"
+          label={'삭제하기'}
+          tone="necessary"
+          typo="C3.Md"
+          onClick={onClick}
+        ></Button>
+      </Flex>
+    </AlertModalLayout>
+  )
+}

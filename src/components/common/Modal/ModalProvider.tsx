@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
-import AlreadyExistAccount from '../../Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
+import AlreadyExistAccount from '@/components/Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
+import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
 import type { ComponentType } from 'react'
 import useModalStore from '@/store/useModalStore'
 import AlertModal from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
@@ -19,6 +20,7 @@ export const MODAL_TYPES = {
   PrivacyTerm: 'PrivacyTerm',
   AlreadyExistAccount: 'AlreadyExistAccount',
   RegisterConfirm: 'RegisterConfirm',
+  DeleteConfirm: 'DeleteConfirm',
 }
 
 export type modalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
@@ -31,6 +33,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.MarketingTerm]: MarketingTerm,
   [MODAL_TYPES.PrivacyTerm]: PrivacyTerm,
   [MODAL_TYPES.RegisterConfirm]: RegisterConfirm,
+  [MODAL_TYPES.DeleteConfirm]: DeleteConfirm,
 }
 
 export default function ModalProvider() {

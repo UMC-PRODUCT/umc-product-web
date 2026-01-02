@@ -1,30 +1,50 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import * as yup from 'yup'
 import * as S from './School.style'
 import AddSchool from './-components/AddSchool'
 import EditSchool from './-components/EditSchool'
+import DeleteSchool from './-components/DeleteSchool'
+import type { ManageSchoolTabName } from '@/constants/tabNames'
 import SectionTab from '@/components/common/SectionTab/SectionTab'
 import PageTitle from '@/components/common/PageTitle/PageTitle'
+import { manageSchoolTabValues, manageSchoolTabs } from '@/constants/tabNames'
+
+const tabSchema = yup.object({
+  tab: yup.mixed<ManageSchoolTabName>().oneOf(manageSchoolTabValues).optional(),
+})
 
 export const Route = createFileRoute('/(app)/management/school/')({
+  validateSearch: (search) =>
+    tabSchema.validateSync(search, {
+      stripUnknown: true,
+    }),
   component: RouteComponent,
 })
 
-const tabNames = ['신규 학교 추가', '학교 삭제', '학교 정보 수정']
 function RouteComponent() {
-  const [currentTab, setCurrentTab] = useState(tabNames[0])
+  const { tab } = Route.useSearch()
+  const navigate = useNavigate()
+  const activeTab: ManageSchoolTabName = tab ?? 'add'
+
+  const setTab = (next: ManageSchoolTabName) => {
+    navigate({
+      to: Route.to,
+      search: (prev) => ({ ...prev, tab: next }),
+      replace: true, // 히스토리 쌓기 싫으면
+    })
+  }
 
   return (
     <S.PageLayout>
       <PageTitle title="학교 관리" />
       <SectionTab
-        tabNames={tabNames}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
+        tabs={manageSchoolTabs}
+        currentTab={activeTab}
+        setCurrentTab={setTab}
       >
-        {currentTab === '신규 학교 추가' && <AddSchool />}
-        {currentTab === '학교 삭제' && <div>학교 삭제 페이지</div>}
-        {currentTab === '학교 정보 수정' && <EditSchool />}
+        {activeTab === 'add' && <AddSchool />}
+        {activeTab === 'delete' && <DeleteSchool />}
+        {activeTab === 'edit' && <EditSchool />}
       </SectionTab>
     </S.PageLayout>
   )

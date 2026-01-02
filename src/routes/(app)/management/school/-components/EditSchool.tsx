@@ -4,21 +4,16 @@ import { useState } from 'react'
 import * as S from '../School.style'
 import { SchoolFormFields } from './SchoolFormFields'
 import { EmptySelectionNotice } from './EmptySelectionNotice'
-import type {SchoolRegisterForm} from '@/schema/management';
+import type { SchoolRegisterForm } from '@/schema/management'
+import type { Option } from '@/hooks/useSelectorInteractions'
 import Button from '@/components/common/Button/Button'
-import {
-  
-  schoolRegisterSchema
-} from '@/schema/management'
+import { schoolRegisterSchema } from '@/schema/management'
 import useModalStore from '@/store/useModalStore'
 import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
 import Dropdown from '@/components/common/Dropdown/Dropdown'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
 
-type SchoolOption = {
-  id: string
-  label: string
-}
+type SchoolOption = Option
 
 const REGISTERED_AT = '2026.01.15'
 

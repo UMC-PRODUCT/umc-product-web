@@ -1,26 +1,28 @@
 import * as S from './SectionTab.style'
 
-export default function SectionTab({
-  tabNames,
+type SectionTabProps<T extends string> = {
+  children?: React.ReactNode
+  tabs?: ReadonlyArray<{ label: string; value: T }>
+  currentTab?: T
+  setCurrentTab?: (tab: T) => void
+}
+
+export default function SectionTab<T extends string>({
+  tabs,
   currentTab,
   setCurrentTab,
   children,
-}: {
-  children?: React.ReactNode
-  tabNames?: Array<string>
-  currentTab?: string
-  setCurrentTab?: (tab: string) => void
-}) {
+}: SectionTabProps<T>) {
   return (
     <S.SectionWrapper>
       <S.TabList>
-        {tabNames?.map((tabName) => (
+        {tabs?.map(({ value, label }) => (
           <S.TabButton
-            key={tabName}
-            $active={currentTab === tabName}
-            onClick={() => setCurrentTab && setCurrentTab(tabName)}
+            key={value}
+            $active={currentTab === value}
+            onClick={() => setCurrentTab && setCurrentTab(value)}
           >
-            {tabName}
+            {label}
           </S.TabButton>
         ))}
       </S.TabList>
