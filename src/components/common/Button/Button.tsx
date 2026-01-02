@@ -52,7 +52,6 @@ export default function Button({
           border: t.border,
           flexWrap: 'nowrap',
           whiteSpace: 'nowrap',
-          width: 'auto',
           ...textStyle,
         },
       ]}

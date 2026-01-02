@@ -4,7 +4,7 @@ import { theme } from '@/styles/theme'
 
 export const Field = styled.div`
   max-width: 100%;
-  width: 408px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `

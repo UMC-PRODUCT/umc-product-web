@@ -29,7 +29,7 @@ const SlideLayer = styled.div<{ $active: boolean; $image: string }>`
 const Slogan = styled.span`
   text-align: center;
   color: ${theme.colors.white};
-  ${({ theme }) => theme.typography.Slogan.Md};
+  ${theme.typography.Slogan.Md};
   font-family: 'Isamanru', sans-serif;
   pointer-events: none;
   width: 100%;
