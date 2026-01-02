@@ -1,6 +1,6 @@
 import Notice from '@/assets/icons/notice.svg?react'
-import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import Flex from '@/components/common/Flex/Flex'
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import { theme } from '@/styles/theme'
 
 export default function EmailSendModal({ onClose }: { onClose: () => void }) {

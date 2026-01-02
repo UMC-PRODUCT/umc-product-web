@@ -1,6 +1,7 @@
+import CheckIcon from '@/assets/icons/check.svg?react'
+
 import Flex from '../Flex/Flex'
 import * as S from './Checkbox.style'
-import CheckIcon from '@/assets/icons/check.svg?react'
 
 export default function Checkbox({
   toggleCheck,

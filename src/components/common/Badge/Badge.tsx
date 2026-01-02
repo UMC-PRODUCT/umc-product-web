@@ -1,8 +1,9 @@
 import { useTheme } from '@emotion/react'
 
-import { getTone } from './Badge.style'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
+
+import { getTone } from './Badge.style'
 
 type toneType = 'lime' | 'gray' | 'white'
 

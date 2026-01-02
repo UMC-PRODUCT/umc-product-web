@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
+
 import Flex from '@/components/common/Flex/Flex'
-import { theme } from '@/styles/theme'
 import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 export const PageLayout = styled(Flex)`
   flex-direction: column;

@@ -1,9 +1,10 @@
-import * as S from '../Account.style'
-import Flex from '@/components/common/Flex/Flex'
-import Checkbox from '@/components/common/Checkbox/Checkbox'
 import Badge from '@/components/common/Badge/Badge'
 import Button from '@/components/common/Button/Button'
+import Checkbox from '@/components/common/Checkbox/Checkbox'
+import Flex from '@/components/common/Flex/Flex'
 import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
+
+import * as S from '../Account.style'
 
 const KoreanRoleMap: Record<string, string> = {
   ADMIN: '관리자',

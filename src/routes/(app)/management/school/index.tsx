@@ -1,13 +1,15 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import * as yup from 'yup'
-import * as S from './School.style'
-import AddSchool from './-components/AddSchool'
-import EditSchool from './-components/EditSchool'
-import DeleteSchool from './-components/DeleteSchool'
-import type { ManageSchoolTabName } from '@/constants/tabNames'
-import SectionTab from '@/components/common/SectionTab/SectionTab'
+
 import PageTitle from '@/components/common/PageTitle/PageTitle'
-import { manageSchoolTabValues, manageSchoolTabs } from '@/constants/tabNames'
+import SectionTab from '@/components/common/SectionTab/SectionTab'
+import type { ManageSchoolTabName } from '@/constants/tabNames'
+import { manageSchoolTabs, manageSchoolTabValues } from '@/constants/tabNames'
+
+import AddSchool from './-components/AddSchool'
+import DeleteSchool from './-components/DeleteSchool'
+import EditSchool from './-components/EditSchool'
+import * as S from './School.style'
 
 const tabSchema = yup.object({
   tab: yup.mixed<ManageSchoolTabName>().oneOf(manageSchoolTabValues).optional(),

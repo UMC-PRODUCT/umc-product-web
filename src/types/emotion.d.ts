@@ -1,4 +1,5 @@
 import '@emotion/react'
+
 import type { theme } from '@/styles/theme'
 
 type AppTheme = typeof theme

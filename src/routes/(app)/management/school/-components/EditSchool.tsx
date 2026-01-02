@@ -1,17 +1,19 @@
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
-import * as S from '../School.style'
-import { SchoolFormFields } from './SchoolFormFields'
-import { EmptySelectionNotice } from './EmptySelectionNotice'
-import type { SchoolRegisterForm } from '@/schema/management'
-import type { Option } from '@/hooks/useSelectorInteractions'
+import { useForm } from 'react-hook-form'
+
 import Button from '@/components/common/Button/Button'
+import Dropdown from '@/components/common/Dropdown/Dropdown'
+import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import type { Option } from '@/hooks/useSelectorInteractions'
+import { UNI_LIST_MOCK } from '@/mocks/mocks'
+import type { SchoolRegisterForm } from '@/schema/management'
 import { schoolRegisterSchema } from '@/schema/management'
 import useModalStore from '@/store/useModalStore'
-import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
-import Dropdown from '@/components/common/Dropdown/Dropdown'
-import { UNI_LIST_MOCK } from '@/mocks/mocks'
+
+import * as S from '../School.style'
+import { EmptySelectionNotice } from './EmptySelectionNotice'
+import { SchoolFormFields } from './SchoolFormFields'
 
 type SchoolOption = Option
 

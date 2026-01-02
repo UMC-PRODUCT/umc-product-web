@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import * as S from './IntroBanner.style'
+
 import Flex from '@/components/common/Flex/Flex'
 import { theme } from '@/styles/theme'
+
+import * as S from './IntroBanner.style'
 
 type Slide = {
   image: string

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { theme } from '@/styles/theme'
 
 const TableWrapper = styled.div`
@@ -78,4 +79,4 @@ const BottomButtonGroup = styled.div`
   }
 `
 
-export { TableWrapper, Table, Th, Td, Footer, Pagination, BottomButtonGroup }
+export { BottomButtonGroup, Footer, Pagination, Table, TableWrapper, Td, Th }

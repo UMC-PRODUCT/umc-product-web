@@ -1,7 +1,7 @@
-import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import FillNotice from '@/assets/icons/notice_fill.svg?react'
-import Flex from '@/components/common/Flex/Flex'
 import Button from '@/components/common/Button/Button'
+import Flex from '@/components/common/Flex/Flex'
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 
 export default function DeleteConfirm({
   onClose,
@@ -22,7 +22,7 @@ export default function DeleteConfirm({
       mode={'error'}
       onClose={onClose}
       title="경고"
-      content={`삭제된 학교 데이터는 복구할 수 없습니다.
+      content={`삭제된 ${KoreaType} 데이터는 복구할 수 없습니다.
         ‘${name}’ 외 ${count - 1}개의 ${KoreaType}를 삭제하시겠습니까?`}
       Icon={FillNotice}
     >

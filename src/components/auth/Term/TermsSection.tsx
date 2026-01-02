@@ -1,9 +1,10 @@
-import { Term } from './Term'
-import type { TermKey } from '@/hooks/useRegisterForm'
-import Flex from '@/components/common/Flex/Flex'
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
-import useModalStore from '@/store/useModalStore'
+import Flex from '@/components/common/Flex/Flex'
 import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import type { TermKey } from '@/hooks/useRegisterForm'
+import useModalStore from '@/store/useModalStore'
+
+import { Term } from './Term'
 
 type TermsState = Record<TermKey, boolean>
 

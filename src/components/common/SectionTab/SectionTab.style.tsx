@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { theme } from '@/styles/theme'
+
 import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 type TabButtonProps = {
   $active: boolean

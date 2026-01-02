@@ -1,17 +1,19 @@
 import { useCallback, useMemo, useState } from 'react'
-import * as S from '../School.style'
-import type { Option } from '@/hooks/useSelectorInteractions'
-import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@/mocks/mocks'
-import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
+
+import Search from '@/assets/icons/search.svg?react'
+import Badge from '@/components/common/Badge/Badge'
+import Button from '@/components/common/Button/Button'
+import Checkbox from '@/components/common/Checkbox/Checkbox'
 import Dropdown from '@/components/common/Dropdown/Dropdown'
 import Flex from '@/components/common/Flex/Flex'
 import { TextField } from '@/components/common/LabelTextField/TextField'
-import Search from '@/assets/icons/search.svg?react'
-import useModalStore from '@/store/useModalStore'
 import { DeleteSchoolTableHeaderLabel } from '@/constants/tableHeaders'
-import Checkbox from '@/components/common/Checkbox/Checkbox'
-import Badge from '@/components/common/Badge/Badge'
-import Button from '@/components/common/Button/Button'
+import type { Option } from '@/hooks/useSelectorInteractions'
+import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@/mocks/mocks'
+import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
+import useModalStore from '@/store/useModalStore'
+
+import * as S from '../School.style'
 
 export default function DeleteSchool() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -112,10 +114,15 @@ export default function DeleteSchool() {
           </Flex>
         </S.FilterWrapper>
         <ManagementTable
-          selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
+          isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
+          onToggleAll={() => {
+            setSelectedIds((prev) => {
+              if (prev.size === UNI_DELETE_MOCK.length) return new Set()
+              return new Set(UNI_DELETE_MOCK.map((item) => item.id))
+            })
+          }}
+          totalAmounts={UNI_DELETE_MOCK.length}
           headerLabels={DeleteSchoolTableHeaderLabel}
-          rows={UNI_DELETE_MOCK}
           type="school"
           currentPage={page}
           totalPages={5}

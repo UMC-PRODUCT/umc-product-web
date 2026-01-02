@@ -1,8 +1,10 @@
-import { forwardRef } from 'react'
-import * as S from './Term.style'
 import type { MouseEvent } from 'react'
-import Flex from '@/components/common/Flex/Flex'
+import { forwardRef } from 'react'
+
 import Checkbox from '@/components/common/Checkbox/Checkbox'
+import Flex from '@/components/common/Flex/Flex'
+
+import * as S from './Term.style'
 
 type TermProps = {
   toggleCheck: () => void

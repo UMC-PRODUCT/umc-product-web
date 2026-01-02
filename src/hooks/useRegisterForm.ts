@@ -1,6 +1,7 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+
 import type { RegisterForm } from '@/schema/register'
 import { registerSchema } from '@/schema/register'
 

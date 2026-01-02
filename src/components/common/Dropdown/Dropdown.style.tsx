@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { inputShell } from '@/styles/formStyles'
 import { theme } from '@/styles/theme'
 
@@ -68,4 +69,4 @@ const OptionItem = styled.li<{ $selected: boolean }>`
     background: ${theme.colors.gray[700]};
   }
 `
-export { SelectWrapper, Trigger, Placeholder, ArrowBox, Options, OptionItem }
+export { ArrowBox, OptionItem, Options, Placeholder, SelectWrapper, Trigger }

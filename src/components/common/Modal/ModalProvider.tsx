@@ -1,16 +1,16 @@
-import { useEffect } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 import type { ComponentType } from 'react'
+import { useEffect } from 'react'
 
+import AlertModal from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import AlreadyExistAccount from '@/components/Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
 import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
-import useModalStore from '@/store/useModalStore'
-import AlertModal from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import EmailSendModal from '@/components/Modal/AlertModal/EmailSendModal/EmailSendModal'
-import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
+import RegisterConfirm from '@/components/Modal/AlertModal/RegisterConfirm/RegisterConfirm'
 import MarketingTerm from '@/components/Modal/TermModal/MarketingTerm/MarketingTerm'
 import PrivacyTerm from '@/components/Modal/TermModal/PrivacyTerm/PrivacyTerm'
-import RegisterConfirm from '@/components/Modal/AlertModal/RegisterConfirm/RegisterConfirm'
+import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
+import useModalStore from '@/store/useModalStore'
 
 export const MODAL_TYPES = {
   AlertModal: 'AlertModal',

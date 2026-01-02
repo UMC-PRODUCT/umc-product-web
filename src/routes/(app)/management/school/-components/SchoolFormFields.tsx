@@ -1,10 +1,12 @@
-import * as S from '../School.style'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
-import type { SchoolRegisterForm } from '@/schema/management'
+
+import Flex from '@/components/common/Flex/Flex'
 import Label from '@/components/common/Label/Label'
 import { LabelTextField } from '@/components/common/LabelTextField/LabelTextField'
-import Flex from '@/components/common/Flex/Flex'
+import type { SchoolRegisterForm } from '@/schema/management'
 import { theme } from '@/styles/theme'
+
+import * as S from '../School.style'
 
 type SchoolFormFieldsProps = {
   register: UseFormRegister<SchoolRegisterForm>

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { theme } from '@/styles/theme'
 
 const TermTitle = styled.span`
@@ -41,4 +42,4 @@ const Box = styled.span<{ $checked: boolean; $disabled: boolean }>`
     props.$checked ? theme.colors.lime : theme.colors.gray[800]};
   opacity: ${(props) => (props.$disabled ? 0.6 : 1)};
 `
-export { TermTitle, Title, HiddenCheckbox, Box }
+export { Box, HiddenCheckbox, TermTitle, Title }

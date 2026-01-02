@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import * as yup from 'yup'
-import * as S from './Account.style'
-import EditAccount from './-components/EditAccount'
-import type { ManageAccountTabName } from '@/constants/tabNames'
-import SectionTab from '@/components/common/SectionTab/SectionTab'
+
 import PageTitle from '@/components/common/PageTitle/PageTitle'
-import { manageAccountTabValues, manageAccountTabs } from '@/constants/tabNames'
+import SectionTab from '@/components/common/SectionTab/SectionTab'
+import type { ManageAccountTabName } from '@/constants/tabNames'
+import { manageAccountTabs, manageAccountTabValues } from '@/constants/tabNames'
+
+import EditAccount from './-components/EditAccount'
+import * as S from './Account.style'
 
 const tabSchema = yup.object({
   tab: yup

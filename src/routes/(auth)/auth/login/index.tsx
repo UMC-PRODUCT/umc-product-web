@@ -1,17 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router'
 import styled from '@emotion/styled'
+import { createFileRoute } from '@tanstack/react-router'
+
 import Logo from '@/assets/brand_logo.svg?react'
+import Notice from '@/assets/icons/notice.svg?react'
+import Apple from '@/assets/social/apple.svg?react'
+import Google from '@/assets/social/google.svg?react'
+import Kakao from '@/assets/social/kakao.svg?react'
+import AuthSection from '@/components/auth/AuthSection/AuthSection'
+import Divider from '@/components/auth/Divider/Divider'
 import IntroBanner from '@/components/auth/IntroBanner/IntroBanner'
 import Button from '@/components/common/Button/Button'
-import Kakao from '@/assets/social/kakao.svg?react'
-import Google from '@/assets/social/google.svg?react'
-import Apple from '@/assets/social/apple.svg?react'
-import Divider from '@/components/auth/Divider/Divider'
-import AuthSection from '@/components/auth/AuthSection/AuthSection'
+import Instruction from '@/components/common/Instruction/Instruction'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-import Instruction from '@/components/common/Instruction/Instruction'
-import Notice from '@/assets/icons/notice.svg?react'
 
 export const Route = createFileRoute('/(auth)/auth/login/')({
   component: () => {

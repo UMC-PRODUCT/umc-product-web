@@ -1,8 +1,8 @@
-import type { Option } from '@/hooks/useSelectorInteractions'
-import Flex from '@/components/common/Flex/Flex'
-import Dropdown from '@/components/common/Dropdown/Dropdown'
-import { TextField } from '@/components/common/LabelTextField/TextField'
 import Search from '@/assets/icons/search.svg?react'
+import Dropdown from '@/components/common/Dropdown/Dropdown'
+import Flex from '@/components/common/Flex/Flex'
+import { TextField } from '@/components/common/LabelTextField/TextField'
+import type { Option } from '@/hooks/useSelectorInteractions'
 import { AFFILIATED_MOCK, ROLE_MOCK, STATUS_MOCK } from '@/mocks/mocks'
 
 type AccountFiltersProps = {

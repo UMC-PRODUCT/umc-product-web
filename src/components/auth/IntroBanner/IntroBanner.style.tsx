@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
@@ -90,4 +91,4 @@ const Blur = styled.div`
     z-index: 0;
   }
 `
-export { Container, SlideLayer, Slogan, Slider, Bar, Blur }
+export { Bar, Blur, Container, SlideLayer, Slider, Slogan }

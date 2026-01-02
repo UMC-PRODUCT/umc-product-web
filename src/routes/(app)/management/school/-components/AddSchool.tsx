@@ -1,13 +1,15 @@
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as S from '../School.style'
-import type { SchoolRegisterForm } from '@/schema/management'
+import { useForm } from 'react-hook-form'
+
 import Button from '@/components/common/Button/Button'
 import Label from '@/components/common/Label/Label'
 import { LabelTextField } from '@/components/common/LabelTextField/LabelTextField'
+import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import type { SchoolRegisterForm } from '@/schema/management'
 import { schoolRegisterSchema } from '@/schema/management'
 import useModalStore from '@/store/useModalStore'
-import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+
+import * as S from '../School.style'
 
 export default function AddSchool() {
   const { openModal } = useModalStore()

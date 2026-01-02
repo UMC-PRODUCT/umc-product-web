@@ -1,8 +1,10 @@
-import * as S from './Dropdown.style'
-import type { Option } from '@/hooks/useSelectorInteractions'
 import type { Interpolation, Theme } from '@emotion/react'
+
 import Arrow from '@/assets/icons/Arrow.svg?react'
+import type { Option } from '@/hooks/useSelectorInteractions'
 import { useSelectorInteractions } from '@/hooks/useSelectorInteractions'
+
+import * as S from './Dropdown.style'
 
 type DropdownProps = {
   placeholder?: string

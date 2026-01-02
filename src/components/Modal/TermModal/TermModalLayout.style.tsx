@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
@@ -102,19 +103,19 @@ const Blur = styled.div`
 `
 
 export {
-  Card,
-  Header,
-  Title,
   Blur,
-  ContentWrapper,
+  Card,
   ContentSection,
+  ContentWrapper,
+  Divider,
+  Header,
   Heading1,
   Heading2,
-  Paragraph,
   ListItem,
-  Divider,
-  TableWrapper,
+  Paragraph,
   StyledTable,
-  TableHeader,
   TableCell,
+  TableHeader,
+  TableWrapper,
+  Title,
 }

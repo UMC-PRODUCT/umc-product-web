@@ -1,10 +1,12 @@
 import { forwardRef, useId } from 'react'
-import * as S from './LabelTextField.style'
-import { TextField } from './TextField'
-import type { TextFieldProps } from './TextField'
-import Label from '@/components/common/Label/Label'
+
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
+import Label from '@/components/common/Label/Label'
 import { Field } from '@/styles/formStyles'
+
+import * as S from './LabelTextField.style'
+import type { TextFieldProps } from './TextField'
+import { TextField } from './TextField'
 
 type LabelTextFieldProps = TextFieldProps & {
   label: string

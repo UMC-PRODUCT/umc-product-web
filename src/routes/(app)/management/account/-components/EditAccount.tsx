@@ -1,14 +1,16 @@
 import { useCallback, useMemo, useState } from 'react'
+
+import ManagementActionButton from '@/components/common/Button/Button'
+import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
+import type { Option } from '@/hooks/useSelectorInteractions'
+import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
+import type { ManagementRow } from '@/routes/(app)/management/-components/ManagementTable'
+import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
+import useModalStore from '@/store/useModalStore'
+
 import * as S from '../Account.style'
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
-import type { Option } from '@/hooks/useSelectorInteractions'
-import type { ManagementRow } from '@/routes/(app)/management/-components/ManagementTable'
-import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
-import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
-import useModalStore from '@/store/useModalStore'
-import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
-import ManagementActionButton from '@/components/common/Button/Button'
 
 export default function EditAccount() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -44,12 +46,12 @@ export default function EditAccount() {
       targetId ??
       (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
-    if (selectedId === undefined) return '학교 이름'
+    if (selectedId === undefined) return '계정 이름'
 
     const matched = ACCOUNT_DELETE_MOCK.find(
       (account) => account.id === selectedId,
     )
-    return matched?.name ?? '학교 이름'
+    return matched?.name ?? '계정 이름'
   }
 
   const openDeleteConfirm = useCallback(
@@ -61,10 +63,10 @@ export default function EditAccount() {
         modalType: 'DeleteConfirm',
         modalProps: {
           name: findSchoolName(targetId),
-          type: 'school',
+          type: 'account',
           count,
           onClick: () => {
-            // TODO: 선택된 학교 삭제 API 연동
+            // TODO: 선택된 계정 삭제 API 연동
             console.log('delete target', targetId ?? Array.from(selectedIds))
           },
         },
@@ -89,6 +91,13 @@ export default function EditAccount() {
         next.add(id)
       }
       return next
+    })
+  }
+
+  const toggleAll = () => {
+    setSelectedIds((prev) => {
+      if (prev.size === tableRows.length) return new Set()
+      return new Set(tableRows.map((row) => row.id))
     })
   }
 
@@ -134,10 +143,10 @@ export default function EditAccount() {
           />
         </S.FilterWrapper>
         <ManagementTable
-          selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
+          isAllChecked={selectedIds.size === tableRows.length}
+          onToggleAll={toggleAll}
+          totalAmounts={tableRows.length}
           headerLabels={DeleteAccountTableHeaderLabel}
-          rows={tableRows}
           currentPage={page}
           totalPages={totalPages}
           onChangePage={handlePageChange}

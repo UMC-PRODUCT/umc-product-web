@@ -1,11 +1,11 @@
-import { useMemo } from 'react'
-import * as S from './ManagementTable.style'
-import Navigation from './Navigation'
-import type { ButtonStyleType } from '@/types/style'
-import { typography } from '@/styles/theme/typography'
-import { theme } from '@/styles/theme'
 import Checkbox from '@/components/common/Checkbox/Checkbox'
 import Flex from '@/components/common/Flex/Flex'
+import { theme } from '@/styles/theme'
+import { typography } from '@/styles/theme/typography'
+import type { ButtonStyleType } from '@/types/style'
+
+import * as S from './ManagementTable.style'
+import Navigation from './Navigation'
 
 export type ManagementRow = {
   id: number
@@ -24,44 +24,29 @@ export type ManagementFooterButton = {
 
 type ManagementTableProps = {
   headerLabels: Array<string>
-  rows: Array<ManagementRow>
-  selectedIds: Set<number>
-  setSelectedIds: (
-    ids: Set<number> | ((prev: Set<number>) => Set<number>),
-  ) => void
+  isAllChecked: boolean
+  onToggleAll: () => void
   children: React.ReactNode
   type: 'school' | 'account'
   buttonChildren?: React.ReactNode
   currentPage?: number
   totalPages?: number
   onChangePage?: (page: number) => void
+  totalAmounts: number
 }
 
 export default function ManagementTable({
-  rows,
   headerLabels,
   children,
-  selectedIds,
-  setSelectedIds,
+  isAllChecked,
+  onToggleAll,
   type,
   buttonChildren,
   currentPage,
   totalPages,
   onChangePage,
+  totalAmounts,
 }: ManagementTableProps) {
-  const isAllChecked = useMemo(
-    () => rows.length > 0 && selectedIds.size === rows.length,
-    [rows.length, selectedIds],
-  )
-
-  const toggleAll = () => {
-    if (isAllChecked) {
-      setSelectedIds(new Set())
-      return
-    }
-    setSelectedIds(new Set(rows.map((item) => item.id)))
-  }
-
   return (
     <>
       <Flex
@@ -83,7 +68,7 @@ export default function ManagementTable({
               <tr>
                 <S.Th>
                   <Checkbox
-                    toggleCheck={toggleAll}
+                    toggleCheck={onToggleAll}
                     value={isAllChecked}
                   ></Checkbox>
                 </S.Th>
@@ -97,7 +82,7 @@ export default function ManagementTable({
         </S.TableWrapper>
         <S.Footer>
           <span css={{ color: theme.colors.gray[300], ...typography.C4.Rg }}>
-            총 {rows.length}개 {type === 'account' ? '계정' : '학교'}
+            총 {totalAmounts}개 {type === 'account' ? '계정' : '학교'}
           </span>
           {totalPages && totalPages > 1 && onChangePage && (
             <Navigation
