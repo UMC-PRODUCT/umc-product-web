@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import * as yup from 'yup'
 
+import Flex from '@/components/common/Flex/Flex'
 import PageTitle from '@/components/common/PageTitle/PageTitle'
 import SectionTab from '@/components/common/SectionTab/SectionTab'
 import type { ManageAccountTabName } from '@/constants/tabNames'
@@ -39,14 +40,22 @@ function RouteComponent() {
 
   return (
     <S.PageLayout>
-      <PageTitle title="계정 관리" />
-      <SectionTab
-        tabs={manageAccountTabs}
-        currentTab={activeTab}
-        setCurrentTab={setTab}
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        maxWidth="1170px"
+        gap="32px"
       >
-        {activeTab === 'edit' && <EditAccount />}
-      </SectionTab>
+        <PageTitle title="계정 관리" />
+        <SectionTab
+          tabs={manageAccountTabs}
+          currentTab={activeTab}
+          setCurrentTab={setTab}
+        >
+          {activeTab === 'edit' && <EditAccount />}
+        </SectionTab>
+      </Flex>
     </S.PageLayout>
   )
 }

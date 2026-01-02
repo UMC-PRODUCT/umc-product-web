@@ -6,6 +6,7 @@ import { theme } from '@/styles/theme'
 const SelectWrapper = styled.div`
   position: relative;
   width: 100%;
+  display: flex;
 `
 const Trigger = styled.button<{ $open: boolean }>`
   ${inputShell};

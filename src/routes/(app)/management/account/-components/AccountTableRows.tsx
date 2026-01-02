@@ -70,7 +70,7 @@ export function AccountTableRows({
               <Button
                 key={`edit-${item.id}`}
                 label="수정"
-                tone="gray"
+                tone="caution"
                 onClick={() => onEdit(item.id)}
                 typo="C2.Md"
               />

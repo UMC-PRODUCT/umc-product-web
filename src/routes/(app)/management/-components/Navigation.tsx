@@ -11,9 +11,13 @@ export default function Navigation({
   totalPages: number
   onChangePage: (page: number) => void
 }) {
-  const pageNumbers = Array.from({ length: totalPages }, (_, idx) => idx + 1)
-  const start = Math.floor((currentPage - 1) / 5) * 5
-  const visiblePages = pageNumbers.slice(start, start + 5)
+  const windowSize = 6
+  const blockStart = Math.floor((currentPage - 1) / windowSize) * windowSize + 1
+  const blockEnd = Math.min(blockStart + windowSize - 1, totalPages)
+  const visiblePages = Array.from(
+    { length: blockEnd - blockStart + 1 },
+    (_, idx) => blockStart + idx,
+  )
 
   const goToPage = (page: number) => {
     const clamped = Math.min(Math.max(page, 1), totalPages)

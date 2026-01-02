@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
 const TableWrapper = styled.div`
@@ -46,6 +47,13 @@ const Footer = styled.div`
     position: absolute;
     left: 22px;
     width: fit-content;
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    margin-top: 20px;
+    height: 80px;
+    span {
+      bottom: 0px;
+    }
   }
 `
 

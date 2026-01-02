@@ -1,0 +1,61 @@
+import Badge from '@/components/common/Badge/Badge'
+import Button from '@/components/common/Button/Button'
+import Checkbox from '@/components/common/Checkbox/Checkbox'
+import { UNI_DELETE_MOCK } from '@/mocks/mocks'
+
+import * as S from '../School.style'
+
+export default function DeleteTableRow({
+  setSelectedIds,
+  selectedIds,
+  openDeleteConfirm,
+}: {
+  setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>
+  selectedIds: Set<number>
+  openDeleteConfirm: (targetId?: number) => void
+}) {
+  return (
+    <>
+      {UNI_DELETE_MOCK.map((item) => (
+        <tr key={item.id}>
+          <S.Td>
+            <Checkbox
+              toggleCheck={() => {
+                setSelectedIds((prev: Set<number>) => {
+                  const next = new Set(prev)
+                  if (next.has(item.id)) {
+                    next.delete(item.id)
+                  } else {
+                    next.add(item.id)
+                  }
+                  return next
+                })
+              }}
+              value={selectedIds.has(item.id)}
+            />
+          </S.Td>
+          <S.Td>{item.name}</S.Td>
+          <S.Td>{item.branch}</S.Td>
+          <S.Td>{item.date}</S.Td>
+          <S.Td>
+            <Badge
+              content={item.status}
+              tone={item.status === '활성' ? 'lime' : 'gray'}
+              variant="outline"
+              typo="B4.Md"
+            />
+          </S.Td>
+          <S.Td>
+            <Button
+              key={item.id}
+              label={'삭제'}
+              tone={'necessary'}
+              onClick={() => openDeleteConfirm(item.id)}
+              typo="C2.Md"
+            />
+          </S.Td>
+        </tr>
+      ))}
+    </>
+  )
+}

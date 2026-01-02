@@ -4,13 +4,14 @@ import ManagementActionButton from '@/components/common/Button/Button'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
 import type { Option } from '@/hooks/useSelectorInteractions'
 import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
-import type { ManagementRow } from '@/routes/(app)/management/-components/ManagementTable'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import useModalStore from '@/store/useModalStore'
 
 import * as S from '../Account.style'
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
+
+const totalAmounts = 10
 
 export default function EditAccount() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -27,19 +28,8 @@ export default function EditAccount() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
   }, [])
   const [page, setPage] = useState(initialPage)
-  const totalPages = 6
+  const totalPages = 12
   const { openModal } = useModalStore()
-  const tableRows = useMemo<Array<ManagementRow>>(
-    () =>
-      ACCOUNT_DELETE_MOCK.map((account) => ({
-        id: account.id,
-        name: account.name,
-        branch: account.branch,
-        date: '-',
-        status: account.status,
-      })),
-    [],
-  )
 
   const findSchoolName = (targetId?: number) => {
     const selectedId =
@@ -96,8 +86,8 @@ export default function EditAccount() {
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === tableRows.length) return new Set()
-      return new Set(tableRows.map((row) => row.id))
+      if (prev.size === 6) return new Set()
+      return new Set(ACCOUNT_DELETE_MOCK.map((item) => item.id))
     })
   }
 
@@ -143,9 +133,9 @@ export default function EditAccount() {
           />
         </S.FilterWrapper>
         <ManagementTable
-          isAllChecked={selectedIds.size === tableRows.length}
+          isAllChecked={selectedIds.size === 6}
           onToggleAll={toggleAll}
-          totalAmounts={tableRows.length}
+          totalAmounts={totalAmounts}
           headerLabels={DeleteAccountTableHeaderLabel}
           currentPage={page}
           totalPages={totalPages}

@@ -1,9 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import Search from '@/assets/icons/search.svg?react'
-import Badge from '@/components/common/Badge/Badge'
 import Button from '@/components/common/Button/Button'
-import Checkbox from '@/components/common/Checkbox/Checkbox'
 import Dropdown from '@/components/common/Dropdown/Dropdown'
 import Flex from '@/components/common/Flex/Flex'
 import { TextField } from '@/components/common/LabelTextField/TextField'
@@ -12,8 +10,11 @@ import type { Option } from '@/hooks/useSelectorInteractions'
 import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import useModalStore from '@/store/useModalStore'
+import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 import * as S from '../School.style'
+import DeleteTableRow from './DeleteTableRow'
 
 export default function DeleteSchool() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -84,6 +85,13 @@ export default function DeleteSchool() {
     )
   }
 
+  const toggleAll = () => {
+    setSelectedIds((prev) => {
+      if (prev.size === 6) return new Set()
+      return new Set(UNI_DELETE_MOCK.map((item) => item.id))
+    })
+  }
+
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -92,7 +100,14 @@ export default function DeleteSchool() {
           삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.
         </S.TabSubtitle>
         <S.FilterWrapper>
-          <Flex maxWidth="320px">
+          <Flex
+            css={{
+              maxWidth: '240px',
+              [media.down(theme.breakPoints.tablet)]: {
+                maxWidth: '100%',
+              },
+            }}
+          >
             <TextField
               type="text"
               autoComplete="off"
@@ -102,7 +117,14 @@ export default function DeleteSchool() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Flex>
-          <Flex maxWidth="240px">
+          <Flex
+            css={{
+              maxWidth: '240px',
+              [media.down(theme.breakPoints.tablet)]: {
+                maxWidth: '100%',
+              },
+            }}
+          >
             <Dropdown
               options={AFFILIATED_MOCK}
               placeholder="전체 지부"
@@ -114,13 +136,8 @@ export default function DeleteSchool() {
           </Flex>
         </S.FilterWrapper>
         <ManagementTable
-          isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
-          onToggleAll={() => {
-            setSelectedIds((prev) => {
-              if (prev.size === UNI_DELETE_MOCK.length) return new Set()
-              return new Set(UNI_DELETE_MOCK.map((item) => item.id))
-            })
-          }}
+          isAllChecked={selectedIds.size === 5}
+          onToggleAll={() => toggleAll()}
           totalAmounts={UNI_DELETE_MOCK.length}
           headerLabels={DeleteSchoolTableHeaderLabel}
           type="school"
@@ -129,46 +146,11 @@ export default function DeleteSchool() {
           onChangePage={handlePageChange}
           buttonChildren={<Buttons />}
         >
-          {UNI_DELETE_MOCK.map((item) => (
-            <tr key={item.id}>
-              <S.Td>
-                <Checkbox
-                  toggleCheck={() => {
-                    setSelectedIds((prev: Set<number>) => {
-                      const next = new Set(prev)
-                      if (next.has(item.id)) {
-                        next.delete(item.id)
-                      } else {
-                        next.add(item.id)
-                      }
-                      return next
-                    })
-                  }}
-                  value={selectedIds.has(item.id)}
-                ></Checkbox>
-              </S.Td>
-              <S.Td>{item.name}</S.Td>
-              <S.Td>{item.branch}</S.Td>
-              <S.Td>{item.date}</S.Td>
-              <S.Td>
-                <Badge
-                  content={item.status}
-                  tone={item.status === '활성' ? 'lime' : 'gray'}
-                  variant="outline"
-                  typo="B4.Md"
-                />
-              </S.Td>
-              <S.Td>
-                <Button
-                  key={item.id}
-                  label={'삭제'}
-                  tone={'necessary'}
-                  onClick={() => openDeleteConfirm(item.id)}
-                  typo="C2.Md"
-                />
-              </S.Td>
-            </tr>
-          ))}
+          <DeleteTableRow
+            setSelectedIds={setSelectedIds}
+            selectedIds={selectedIds}
+            openDeleteConfirm={openDeleteConfirm}
+          />
         </ManagementTable>
       </S.TabHeader>
     </>

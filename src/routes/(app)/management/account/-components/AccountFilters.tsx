@@ -1,9 +1,12 @@
 import Search from '@/assets/icons/search.svg?react'
+import Button from '@/components/common/Button/Button'
 import Dropdown from '@/components/common/Dropdown/Dropdown'
 import Flex from '@/components/common/Flex/Flex'
 import { TextField } from '@/components/common/LabelTextField/TextField'
 import type { Option } from '@/hooks/useSelectorInteractions'
 import { AFFILIATED_MOCK, ROLE_MOCK, STATUS_MOCK } from '@/mocks/mocks'
+import { media } from '@/styles/media'
+import { theme } from '@/styles/theme'
 
 type AccountFiltersProps = {
   searchTerm: string
@@ -40,7 +43,14 @@ export function AccountFilters({
 }: AccountFiltersProps) {
   return (
     <Flex gap="12px" css={{ flexWrap: 'wrap' }}>
-      <Flex maxWidth="320px">
+      <Flex
+        css={{
+          maxWidth: '320px',
+          [media.down(theme.breakPoints.desktop)]: {
+            maxWidth: '100%',
+          },
+        }}
+      >
         <TextField
           type="text"
           autoComplete="off"
@@ -50,7 +60,14 @@ export function AccountFilters({
           onChange={(e) => onChangeSearch(e.target.value)}
         />
       </Flex>
-      <Flex maxWidth="240px">
+      <Flex
+        css={{
+          maxWidth: '212px',
+          [media.down(theme.breakPoints.desktop)]: {
+            maxWidth: '100%',
+          },
+        }}
+      >
         <Dropdown
           options={AFFILIATED_MOCK}
           placeholder="전체 지부"
@@ -60,7 +77,14 @@ export function AccountFilters({
           setOpen={setAffiliatedOpen}
         />
       </Flex>
-      <Flex maxWidth="240px">
+      <Flex
+        css={{
+          maxWidth: '188px',
+          [media.down(theme.breakPoints.desktop)]: {
+            maxWidth: '100%',
+          },
+        }}
+      >
         <Dropdown
           options={ROLE_MOCK}
           placeholder="전체 권한"
@@ -70,7 +94,15 @@ export function AccountFilters({
           setOpen={setRoleOpen}
         />
       </Flex>
-      <Flex maxWidth="240px">
+      <Flex
+        css={{
+          maxWidth: '188px',
+
+          [media.down(theme.breakPoints.desktop)]: {
+            maxWidth: '100%',
+          },
+        }}
+      >
         <Dropdown
           options={STATUS_MOCK}
           placeholder="전체 상태"
@@ -79,6 +111,17 @@ export function AccountFilters({
           open={statusOpen}
           setOpen={setStatusOpen}
         />
+      </Flex>
+      <Flex
+        css={{
+          maxWidth: '76px',
+          height: '40px',
+          [media.down(theme.breakPoints.desktop)]: {
+            maxWidth: '100%',
+          },
+        }}
+      >
+        <Button label="조회" tone="lime" onClick={() => {}} />
       </Flex>
     </Flex>
   )

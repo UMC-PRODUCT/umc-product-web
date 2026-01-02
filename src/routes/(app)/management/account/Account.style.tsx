@@ -7,7 +7,7 @@ import { theme } from '@/styles/theme'
 export const PageLayout = styled(Flex)`
   flex-direction: column;
   gap: 28px;
-  padding: 52px 135px;
+  padding: 52px 20px;
   ${media.down(theme.breakPoints.desktop)} {
     padding: 20px 20px;
   }
