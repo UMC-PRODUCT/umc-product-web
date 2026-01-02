@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 import * as S from './Term.style'
 import type { MouseEvent } from 'react'
-import CheckIcon from '@/assets/icons/check.svg?react'
 import Flex from '@/components/common/Flex/Flex'
+import Checkbox from '@/components/common/Checkbox/Checkbox'
 
 type TermProps = {
   toggleCheck: () => void
@@ -40,15 +40,12 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
         onClick={toggleCheck}
         css={{ cursor: 'pointer' }}
       >
-        <S.HiddenCheckbox
-          type="checkbox"
-          onChange={toggleCheck}
-          checked={value}
-          ref={ref}
-          name={label}
+        <Checkbox
+          toggleCheck={toggleCheck}
+          value={value}
+          innerRef={ref}
           {...props}
         />
-        <S.Box>{value && <CheckIcon />}</S.Box>
         {termTitle && (
           <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>
         )}
