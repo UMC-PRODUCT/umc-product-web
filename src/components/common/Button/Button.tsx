@@ -5,7 +5,14 @@ import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
 type ButtonVariant = 'solid' | 'outline'
-type ButtonTone = 'white' | 'lime' | 'kakao' | 'gray' | 'darkGray'
+type ButtonTone =
+  | 'white'
+  | 'lime'
+  | 'kakao'
+  | 'gray'
+  | 'darkGray'
+  | 'necessary'
+  | 'caution'
 
 type ButtonProps = {
   label?: string
