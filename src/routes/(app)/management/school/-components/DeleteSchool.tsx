@@ -95,7 +95,7 @@ export default function DeleteSchool() {
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === 6) return new Set()
+      if (prev.size === 5) return new Set()
       return new Set(UNI_DELETE_MOCK.map((item) => item.id))
     })
   }

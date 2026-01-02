@@ -59,18 +59,21 @@ export default function EditAccount() {
     [],
   )
 
-  const findAccountName = (targetId?: number) => {
-    const selectedId =
-      targetId ??
-      (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+  const findAccountName = useCallback(
+    (targetId?: number) => {
+      const selectedId =
+        targetId ??
+        (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
-    if (selectedId === undefined) return '계정 이름'
+      if (selectedId === undefined) return '계정 이름'
 
-    const matched = ACCOUNT_DELETE_MOCK.find(
-      (account) => account.id === selectedId,
-    )
-    return matched?.name ?? '계정 이름'
-  }
+      const matched = ACCOUNT_DELETE_MOCK.find(
+        (account) => account.id === selectedId,
+      )
+      return matched?.name ?? '계정 이름'
+    },
+    [selectedIds],
+  )
 
   const openDeleteConfirm = useCallback(
     (targetId?: number) => {
