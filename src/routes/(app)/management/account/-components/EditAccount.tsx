@@ -3,11 +3,16 @@ import { useCallback, useMemo, useState } from 'react'
 import ManagementActionButton from '@/components/common/Button/Button'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
 import type { Option } from '@/hooks/useSelectorInteractions'
-import { ACCOUNT_DELETE_MOCK, AFFILIATED_MOCK, ROLE_MOCK, STATUS_MOCK } from '@/mocks/mocks'
+import {
+  ACCOUNT_DELETE_MOCK,
+  AFFILIATED_MOCK,
+  ROLE_MOCK,
+  STATUS_MOCK,
+} from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import useModalStore from '@/store/useModalStore'
 
-import * as S from '../Account.style'
+import * as S from '@/routes/(app)/management/account/-styles/shared'
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
 
@@ -54,7 +59,7 @@ export default function EditAccount() {
     [],
   )
 
-  const findSchoolName = (targetId?: number) => {
+  const findAccountName = (targetId?: number) => {
     const selectedId =
       targetId ??
       (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
@@ -75,7 +80,7 @@ export default function EditAccount() {
       openModal({
         modalType: 'DeleteConfirm',
         modalProps: {
-          name: findSchoolName(targetId),
+          name: findAccountName(targetId),
           type: 'account',
           count,
           onClick: () => {
@@ -85,7 +90,7 @@ export default function EditAccount() {
         },
       })
     },
-    [findSchoolName, openModal, selectedIds],
+    [findAccountName, openModal, selectedIds],
   )
 
   const handlePageChange = (nextPage: number) => {

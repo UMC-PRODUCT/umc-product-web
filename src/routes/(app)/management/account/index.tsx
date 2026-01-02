@@ -8,7 +8,7 @@ import type { ManageAccountTabName } from '@/constants/tabNames'
 import { manageAccountTabs, manageAccountTabValues } from '@/constants/tabNames'
 
 import EditAccount from './-components/EditAccount'
-import * as S from './Account.style'
+import * as S from '@/routes/(app)/management/account/-styles/shared'
 
 const tabSchema = yup.object({
   tab: yup
