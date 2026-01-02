@@ -56,7 +56,7 @@ function Register() {
   return (
     <AuthSection size="lg">
       <ResponsiveLogo />
-      <form onSubmit={handleSubmit(onSubmit)} css={{ maxWidth: '100%' }}>
+      <form onSubmit={handleSubmit(onSubmit)} css={{ width: '100%' }}>
         <InputWrapper>
           <LabelDropdown
             label="학교"

@@ -14,7 +14,7 @@ export const inputShell = css`
   min-width: 230px;
   border-radius: 8px;
   border: 1.5px solid ${theme.colors.gray[600]};
-  background-color: ${theme.colors.gray[800]};
+  background-color: ${theme.colors.black};
   color: ${theme.colors.white};
   ${theme.typography.B3.Rg};
   transition:
