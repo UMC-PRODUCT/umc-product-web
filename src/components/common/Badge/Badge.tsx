@@ -4,7 +4,7 @@ import { getTone } from './Badge.style'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
-type toneType = 'lime' | 'gray'
+type toneType = 'lime' | 'gray' | 'white'
 
 export default function Badge({
   content,
