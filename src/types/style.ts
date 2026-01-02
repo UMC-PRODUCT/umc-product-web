@@ -5,3 +5,4 @@ export type ButtonStyleType =
   | 'gray'
   | 'darkGray'
   | 'necessary'
+  | 'caution'

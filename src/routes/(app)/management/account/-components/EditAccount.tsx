@@ -10,9 +10,9 @@ import {
   STATUS_MOCK,
 } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
+import * as S from '@/routes/(app)/management/account/-styles/shared'
 import useModalStore from '@/store/useModalStore'
 
-import * as S from '@/routes/(app)/management/account/-styles/shared'
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
 

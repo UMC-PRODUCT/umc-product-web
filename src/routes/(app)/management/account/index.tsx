@@ -6,9 +6,9 @@ import PageTitle from '@/components/common/PageTitle/PageTitle'
 import SectionTab from '@/components/common/SectionTab/SectionTab'
 import type { ManageAccountTabName } from '@/constants/tabNames'
 import { manageAccountTabs, manageAccountTabValues } from '@/constants/tabNames'
+import * as S from '@/routes/(app)/management/account/-styles/shared'
 
 import EditAccount from './-components/EditAccount'
-import * as S from '@/routes/(app)/management/account/-styles/shared'
 
 const tabSchema = yup.object({
   tab: yup

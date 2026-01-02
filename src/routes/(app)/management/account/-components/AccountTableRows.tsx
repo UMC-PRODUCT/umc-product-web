@@ -3,7 +3,6 @@ import Button from '@/components/common/Button/Button'
 import Checkbox from '@/components/common/Checkbox/Checkbox'
 import Flex from '@/components/common/Flex/Flex'
 import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
-
 import * as S from '@/routes/(app)/management/account/-styles/shared'
 
 const KoreanRoleMap: Record<string, string> = {

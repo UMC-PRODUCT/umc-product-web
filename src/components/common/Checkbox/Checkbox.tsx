@@ -38,7 +38,6 @@ export default function Checkbox({
     >
       <S.HiddenCheckbox
         type="checkbox"
-        onChange={toggleCheck}
         checked={value}
         ref={innerRef}
         disabled={disabled}

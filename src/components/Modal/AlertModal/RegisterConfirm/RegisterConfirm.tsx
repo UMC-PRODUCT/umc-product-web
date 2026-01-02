@@ -33,7 +33,10 @@ export default function RegisterConfirm({
         css={{ marginTop: '50px' }}
       >
         <Button
-          onClick={() => navigate({ to: link })}
+          onClick={() => {
+            onClose()
+            navigate({ to: link })
+          }}
           label="학교 정보 확인하기"
           tone="lime"
           typo="C3.Md"
