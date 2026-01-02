@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import ManagementActionButton from '@/components/common/Button/Button'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
 import type { Option } from '@/hooks/useSelectorInteractions'
-import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
+import { ACCOUNT_DELETE_MOCK, AFFILIATED_MOCK, ROLE_MOCK, STATUS_MOCK } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import useModalStore from '@/store/useModalStore'
 
@@ -30,6 +30,29 @@ export default function EditAccount() {
   const [page, setPage] = useState(initialPage)
   const totalPages = 12
   const { openModal } = useModalStore()
+  const affiliatedOptions = useMemo(
+    () => [
+      { label: '-- 전체 지부 --', id: 0 },
+      ...AFFILIATED_MOCK.filter((option) => option.id !== 0),
+    ],
+    [],
+  )
+
+  const roleOptions = useMemo(
+    () => [
+      { label: '-- 전체 역할 --', id: 0 },
+      ...ROLE_MOCK.filter((option) => option.id !== 0),
+    ],
+    [],
+  )
+
+  const statusOptions = useMemo(
+    () => [
+      { label: '-- 전체 상태 --', id: 0 },
+      ...STATUS_MOCK.filter((option) => option.id !== 0),
+    ],
+    [],
+  )
 
   const findSchoolName = (targetId?: number) => {
     const selectedId =
@@ -119,17 +142,26 @@ export default function EditAccount() {
             searchTerm={searchTerm}
             onChangeSearch={setSearchTerm}
             affiliated={affiliated}
-            onSelectAffiliated={(option) => setAffiliated(option)}
+            onSelectAffiliated={(option) =>
+              setAffiliated(option.id === 0 ? undefined : option)
+            }
             affiliatedOpen={affiliatedOpen}
             setAffiliatedOpen={setAffiliatedOpen}
+            affiliatedOptions={affiliatedOptions}
             role={role}
-            onSelectRole={(option) => setRole(option)}
+            onSelectRole={(option) =>
+              setRole(option.id === 0 ? undefined : option)
+            }
             roleOpen={roleOpen}
             setRoleOpen={setRoleOpen}
+            roleOptions={roleOptions}
             status={status}
-            onSelectStatus={(option) => setStatus(option)}
+            onSelectStatus={(option) =>
+              setStatus(option.id === 0 ? undefined : option)
+            }
             statusOpen={statusOpen}
             setStatusOpen={setStatusOpen}
+            statusOptions={statusOptions}
           />
         </S.FilterWrapper>
         <ManagementTable

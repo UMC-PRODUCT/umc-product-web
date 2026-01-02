@@ -29,6 +29,14 @@ export default function DeleteSchool() {
   const [page, setPage] = useState(initialPage)
   const { openModal } = useModalStore()
 
+  const affiliatedOptions = useMemo(
+    () => [
+      { label: '-- 전체 지부 --', id: 0 },
+      ...AFFILIATED_MOCK.filter((option) => option.id !== 0),
+    ],
+    [],
+  )
+
   const findSchoolName = (targetId?: number) => {
     const selectedId =
       targetId ??
@@ -126,10 +134,12 @@ export default function DeleteSchool() {
             }}
           >
             <Dropdown
-              options={AFFILIATED_MOCK}
+              options={affiliatedOptions}
               placeholder="전체 지부"
               value={affiliated}
-              onClick={(option) => setAffiliated(option)}
+              onClick={(option) =>
+                setAffiliated(option.id === 0 ? undefined : option)
+              }
               open={affiliatedOpen}
               setOpen={setAffiliatedOpen}
             />
