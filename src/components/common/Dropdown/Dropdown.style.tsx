@@ -1,10 +1,12 @@
 import styled from '@emotion/styled'
+
 import { inputShell } from '@/styles/formStyles'
 import { theme } from '@/styles/theme'
 
 const SelectWrapper = styled.div`
   position: relative;
   width: 100%;
+  display: flex;
 `
 const Trigger = styled.button<{ $open: boolean }>`
   ${inputShell};
@@ -14,6 +16,7 @@ const Trigger = styled.button<{ $open: boolean }>`
   justify-content: space-between;
   gap: 12px;
   cursor: pointer;
+  background-color: ${theme.colors.black};
   transform: translateY(${({ $open }) => ($open ? '1px' : '0')});
 `
 const Placeholder = styled.span`
@@ -35,7 +38,7 @@ const Options = styled.ul<{ $open: boolean }>`
   margin: 0;
   padding: 8px;
   list-style: none;
-  background: ${theme.colors.gray[800]};
+  background: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
@@ -56,8 +59,7 @@ const OptionItem = styled.li<{ $selected: boolean }>`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  color: ${({ $selected }) =>
-    $selected ? theme.colors.white : theme.colors.gray[400]};
+  color: ${theme.colors.white};
   background: ${({ $selected }) =>
     $selected ? theme.colors.gray[700] : 'transparent'};
   transition:
@@ -68,4 +70,4 @@ const OptionItem = styled.li<{ $selected: boolean }>`
     background: ${theme.colors.gray[700]};
   }
 `
-export { SelectWrapper, Trigger, Placeholder, ArrowBox, Options, OptionItem }
+export { ArrowBox, OptionItem, Options, Placeholder, SelectWrapper, Trigger }

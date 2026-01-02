@@ -1,6 +1,7 @@
-import * as S from './Footer.style'
-import Flex from '@/components/common/Flex/Flex'
 import Logo from '@/assets/umc_gray.svg?react'
+import Flex from '@/components/common/Flex/Flex'
+
+import * as S from './Footer.style'
 
 export default function Footer() {
   return (

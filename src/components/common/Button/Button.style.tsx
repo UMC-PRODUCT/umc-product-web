@@ -1,5 +1,5 @@
-import { css } from '@emotion/react'
 import type { Theme } from '@emotion/react'
+import { css } from '@emotion/react'
 
 export const getTone = (theme: Theme) =>
   ({
@@ -13,6 +13,18 @@ export const getTone = (theme: Theme) =>
         background: 'transparent',
         color: theme.colors.gray[700],
         border: `1px solid ${theme.colors.gray[700]}`,
+      },
+    },
+    darkGray: {
+      solid: {
+        background: theme.colors.gray[500],
+        color: theme.colors.black,
+        border: 'none',
+      },
+      outline: {
+        background: 'transparent',
+        color: theme.colors.black,
+        border: `1px solid ${theme.colors.gray[500]}`,
       },
     },
     white: {
@@ -50,6 +62,30 @@ export const getTone = (theme: Theme) =>
         background: 'transparent',
         color: theme.colors.kakao,
         border: `1px solid ${theme.colors.kakao}`,
+      },
+    },
+    necessary: {
+      solid: {
+        background: theme.colors.necessary,
+        color: theme.colors.black,
+        border: 'none',
+      },
+      outline: {
+        background: 'transparent',
+        color: theme.colors.necessary,
+        border: `1px solid ${theme.colors.necessary}`,
+      },
+    },
+    caution: {
+      solid: {
+        background: theme.colors.caution,
+        color: theme.colors.black,
+        border: 'none',
+      },
+      outline: {
+        background: 'transparent',
+        color: theme.colors.caution,
+        border: `1px solid ${theme.colors.caution}`,
       },
     },
   }) as const

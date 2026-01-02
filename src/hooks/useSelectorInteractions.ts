@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-export type Option = { label: string; id: string }
+export type Option = { label: string; id: string | number }
 
 type Params = {
   options: Array<Option>

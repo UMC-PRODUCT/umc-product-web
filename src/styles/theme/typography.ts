@@ -106,6 +106,11 @@ export const typography = {
     },
   },
   B5: {
+    Sb: {
+      fontSize: '12px',
+      lineHeight: '130%',
+      fontWeight: 600,
+    },
     Rg: {
       fontSize: '12px',
       lineHeight: '150%',

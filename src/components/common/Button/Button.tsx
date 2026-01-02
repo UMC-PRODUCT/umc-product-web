@@ -1,11 +1,20 @@
 import { useTheme } from '@emotion/react'
-import * as S from './Button.style'
+
 import type { SvgIconComponent } from '@/types/component'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
+import * as S from './Button.style'
+
 type ButtonVariant = 'solid' | 'outline'
-type ButtonTone = 'white' | 'lime' | 'kakao' | 'gray'
+type ButtonTone =
+  | 'white'
+  | 'lime'
+  | 'kakao'
+  | 'gray'
+  | 'darkGray'
+  | 'necessary'
+  | 'caution'
 
 type ButtonProps = {
   label?: string
@@ -52,7 +61,6 @@ export default function Button({
           border: t.border,
           flexWrap: 'nowrap',
           whiteSpace: 'nowrap',
-          width: 'auto',
           ...textStyle,
         },
       ]}

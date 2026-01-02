@@ -1,20 +1,21 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+
 import { theme } from '@/styles/theme'
 
 export const Field = styled.div`
   max-width: 100%;
-  width: 408px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `
 
 export const inputShell = css`
   width: 100%;
-  min-width: 230px;
+  min-width: 180px;
   border-radius: 8px;
   border: 1.5px solid ${theme.colors.gray[600]};
-  background-color: ${theme.colors.gray[800]};
+  background-color: ${theme.colors.black};
   color: ${theme.colors.white};
   ${theme.typography.B3.Rg};
   transition:

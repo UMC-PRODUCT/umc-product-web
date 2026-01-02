@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { inputShell } from '@/styles/formStyles'
 import { theme } from '@/styles/theme'
 
@@ -82,11 +83,11 @@ const SelectHeader = styled.div`
 `
 
 export {
+  ArrowBox,
+  OptionItem,
+  Options,
+  Placeholder,
+  SelectHeader,
   SelectWrapper,
   Trigger,
-  Placeholder,
-  ArrowBox,
-  Options,
-  OptionItem,
-  SelectHeader,
 }

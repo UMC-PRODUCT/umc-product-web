@@ -1,5 +1,6 @@
-import type { TypoGroup, TypoToken } from '@/types/typo'
 import type { Theme } from '@emotion/react'
+
+import type { TypoGroup, TypoToken } from '@/types/typo'
 
 type TypoStyle = Record<string, string | number>
 

@@ -1,6 +1,7 @@
-import { Outlet, createFileRoute, useRouterState } from '@tanstack/react-router'
-import Footer from '@/components/common/Footer/Footer'
+import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router'
+
 import Flex from '@/components/common/Flex/Flex'
+import Footer from '@/components/common/Footer/Footer'
 import ChallengerHeader from '@/components/Header/ChallengerHeader'
 import SuperHeader from '@/components/Header/SuperHeader'
 

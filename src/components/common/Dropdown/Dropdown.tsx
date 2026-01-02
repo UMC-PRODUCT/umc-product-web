@@ -1,7 +1,10 @@
-import * as S from './Dropdown.style'
-import type { Option } from '@/hooks/useSelectorInteractions'
+import type { Interpolation, Theme } from '@emotion/react'
+
 import Arrow from '@/assets/icons/Arrow.svg?react'
+import type { Option } from '@/hooks/useSelectorInteractions'
 import { useSelectorInteractions } from '@/hooks/useSelectorInteractions'
+
+import * as S from './Dropdown.style'
 
 type DropdownProps = {
   placeholder?: string
@@ -12,6 +15,7 @@ type DropdownProps = {
   open: boolean
   id?: string
   ariaLabelledby?: string
+  css?: Interpolation<Theme>
 }
 export default function Dropdown({
   placeholder,
@@ -22,6 +26,7 @@ export default function Dropdown({
   open,
   id,
   ariaLabelledby,
+  css,
 }: DropdownProps) {
   const {
     wrapRef,
@@ -40,7 +45,7 @@ export default function Dropdown({
   })
 
   return (
-    <S.SelectWrapper ref={wrapRef}>
+    <S.SelectWrapper ref={wrapRef} css={css}>
       <S.Trigger
         type="button"
         id={id}

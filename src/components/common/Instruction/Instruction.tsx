@@ -1,7 +1,7 @@
-import type { TypoToken } from '@/types/typo'
-import { theme } from '@/styles/theme'
-import { resolveTypo } from '@/utils/resolveTypo'
 import Flex from '@/components/common/Flex/Flex'
+import { theme } from '@/styles/theme'
+import type { TypoToken } from '@/types/typo'
+import { resolveTypo } from '@/utils/resolveTypo'
 
 export default function Instruction({
   content,

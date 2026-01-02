@@ -7,6 +7,8 @@ const ModalButton = styled.button`
   background: transparent;
   border: none;
   padding: 0;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
 `
 

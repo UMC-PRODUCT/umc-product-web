@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import * as S from './Profile.style'
+import { useEffect, useRef, useState } from 'react'
+
 import Badge from '@/components/common/Badge/Badge'
 import Flex from '@/components/common/Flex/Flex'
+
+import * as S from './Profile.style'
 
 export default function Profile({ children }: { children?: React.ReactNode }) {
   const navigate = useNavigate()

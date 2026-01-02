@@ -1,13 +1,14 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+
 import type { RegisterForm } from '@/schema/register'
 import { registerSchema } from '@/schema/register'
 
 export type TermKey = 'service' | 'privacy' | 'marketing'
 
 type School = {
-  id: string
+  id: string | number
   label: string
 }
 
@@ -68,10 +69,9 @@ export function useRegisterForm() {
   ])
 
   useEffect(() => {
-    if (confirm) {
-      setConfirm(false)
-    }
-  }, [confirm, emailValue])
+    // reset confirmation when the email changes
+    setConfirm(false)
+  }, [emailValue])
 
   const handleSelectSchool = ({ id, label }: School) => {
     setSchool({ id, label })
@@ -113,7 +113,7 @@ export function useRegisterForm() {
     register,
     handleSubmit,
     errors,
-    isValid,
+    isValid: isValid && confirm,
     confirmButton,
     school,
     handleSelectSchool,

@@ -1,21 +1,19 @@
 import { useId, useState } from 'react'
-import * as S from './LabelDropdown.style'
-import { Field } from '@/styles/formStyles'
-import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
-import Label from '@/components/common/Label/Label'
-import Selector from '@/components/common/Dropdown/Dropdown'
 
-type Option = { label: string; id: string }
+import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
+import Selector from '@/components/common/Dropdown/Dropdown'
+import Label from '@/components/common/Label/Label'
+import type { Option } from '@/hooks/useSelectorInteractions'
+import { Field } from '@/styles/formStyles'
+
+import * as S from './LabelDropdown.style'
 
 type LabelDropdownProps = {
   label: string
   placeholder?: string
   options: Array<Option>
-  value?: {
-    id: string
-    label: string
-  }
-  onClick: (option: { id: string; label: string }) => void
+  value?: Option
+  onClick: (option: Option) => void
   error?: {
     error: boolean
     errorMessage: string

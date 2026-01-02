@@ -1,7 +1,8 @@
-import * as S from './RightMenu.style'
-import Profile from '@/components/common/Header/RightMenu/Profile/Profile'
-import ExternalLink from '@/components/common/Header/RightMenu/ExternalLink/ExternalLink'
 import ArrowUp from '@/assets/icons/arrow_up.svg?react'
+import ExternalLink from '@/components/common/Header/RightMenu/ExternalLink/ExternalLink'
+import Profile from '@/components/common/Header/RightMenu/Profile/Profile'
+
+import * as S from './RightMenu.style'
 
 type SocialLink = {
   label: string

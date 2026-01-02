@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+
 import type { modalType } from '@/components/common/Modal/ModalProvider'
 
 interface IModalState {

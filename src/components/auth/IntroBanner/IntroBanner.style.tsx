@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
@@ -29,7 +30,7 @@ const SlideLayer = styled.div<{ $active: boolean; $image: string }>`
 const Slogan = styled.span`
   text-align: center;
   color: ${theme.colors.white};
-  ${({ theme }) => theme.typography.Slogan.Md};
+  ${theme.typography.Slogan.Md};
   font-family: 'Isamanru', sans-serif;
   pointer-events: none;
   width: 100%;
@@ -90,4 +91,4 @@ const Blur = styled.div`
     z-index: 0;
   }
 `
-export { Container, SlideLayer, Slogan, Slider, Bar, Blur }
+export { Bar, Blur, Container, SlideLayer, Slider, Slogan }

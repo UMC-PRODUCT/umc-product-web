@@ -1,6 +1,7 @@
-import { LabelStyle } from './Label.style'
 import Necessary from '@/assets/icons/Necessary.svg?react'
 import { theme } from '@/styles/theme'
+
+import { LabelStyle } from './Label.style'
 
 type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   label: string

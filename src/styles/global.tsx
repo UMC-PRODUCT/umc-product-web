@@ -1,4 +1,5 @@
-import { Global, css } from '@emotion/react'
+import { css, Global } from '@emotion/react'
+
 import { reset } from './reset'
 import { theme } from './theme'
 
