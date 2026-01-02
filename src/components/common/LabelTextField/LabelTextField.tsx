@@ -21,9 +21,10 @@ type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
     validation: boolean // 버튼이 언제 validate 되는지 여부 (예시: 이메일 인증 완료시)
   }
   autoComplete: string
+  necessary?: boolean
 }
 
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
+export const LabelTextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     {
       type,
@@ -33,33 +34,28 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       Icon,
       button,
       autoComplete,
+      necessary = true,
       ...inputProps
     },
     ref,
   ) => {
     const id = useId()
-    const {
-      onChange,
-      value,
-      defaultValue: _defaultValue,
-      ...restInputProps
-    } = inputProps
+    const { onChange, value, ...restInputProps } = inputProps
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       onChange?.(event)
     }
 
-    const currentValue = value ?? ''
-    const trimmedValue = (
-      typeof currentValue === 'string' ? currentValue : ''
-    ).trim()
+    const trimmedValue = (typeof value === 'string' ? value : '').trim()
     const isButtonDisabled =
       !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
+
+    const controlledProps = value !== undefined ? { value } : undefined
 
     return (
       <Field>
         <S.InputHeader>
-          <Label label={label} necessary={true} htmlFor={id} />
+          <Label label={label} necessary={necessary} htmlFor={id} />
 
           {error?.error && (
             <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
@@ -74,8 +70,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             type={type}
             placeholder={placeholder}
             ref={ref}
-            value={currentValue}
             {...restInputProps}
+            {...controlledProps}
           />
           {Icon && (
             <S.IconBox>

@@ -68,10 +68,9 @@ export function useRegisterForm() {
   ])
 
   useEffect(() => {
-    if (confirm) {
-      setConfirm(false)
-    }
-  }, [confirm, emailValue])
+    // reset confirmation when the email changes
+    setConfirm(false)
+  }, [emailValue])
 
   const handleSelectSchool = ({ id, label }: School) => {
     setSchool({ id, label })
@@ -113,7 +112,7 @@ export function useRegisterForm() {
     register,
     handleSubmit,
     errors,
-    isValid,
+    isValid: isValid && confirm,
     confirmButton,
     school,
     handleSelectSchool,
