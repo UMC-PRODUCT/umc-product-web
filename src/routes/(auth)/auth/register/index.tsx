@@ -4,7 +4,7 @@ import { useRegisterForm } from '@/hooks/useRegisterForm'
 import Logo from '@/assets/brand_logo.svg?react'
 import AuthSection from '@/components/auth/AuthSection/AuthSection'
 import LabelDropdown from '@/components/common/LabelDropdown/LabelDropdown'
-import { TextField } from '@/components/common/LabelTextField/LabelTextField'
+import { LabelTextField } from '@/components/common/LabelTextField/LabelTextField'
 import Button from '@/components/common/Button/Button'
 import { TermsSection } from '@/components/auth/Term/TermsSection'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
@@ -69,7 +69,7 @@ function Register() {
             onClick={handleSelectSchool}
             value={school}
           />
-          <TextField
+          <LabelTextField
             autoComplete="name"
             type="text"
             label="이름"
@@ -81,7 +81,7 @@ function Register() {
             value={values.name}
             {...register('name')}
           />
-          <TextField
+          <LabelTextField
             autoComplete="nickname"
             type="text"
             placeholder="1~5글자 한글 닉네임을 입력해 주세요."
@@ -93,7 +93,7 @@ function Register() {
             value={values.nickname}
             {...register('nickname')}
           />
-          <TextField
+          <LabelTextField
             autoComplete="email"
             type="email"
             placeholder="이메일 주소를 입력해주세요."

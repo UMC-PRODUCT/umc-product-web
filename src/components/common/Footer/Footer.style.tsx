@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { theme } from '@/styles/theme'
+import { media } from '@/styles/media'
 
 export const FooterContainer = styled.footer`
   background-color: ${theme.colors.gray[700]};
@@ -8,13 +9,13 @@ export const FooterContainer = styled.footer`
   display: flex;
   flex-direction: column;
   min-width: 100vw;
-  @media (max-width: ${theme.breakPoints.desktop}) {
+  ${media.down(theme.breakPoints.desktop)} {
     padding: 48px 60px 32px 60px;
   }
-  @media (max-width: ${theme.breakPoints.tablet}) {
+  ${media.down(theme.breakPoints.tablet)} {
     padding: 32px 60px 32px 32px;
   }
-  @media (max-width: ${theme.breakPoints.mobile}) {
+  ${media.down(theme.breakPoints.mobile)} {
     padding: 32px 16px 32px 16px;
   }
 `

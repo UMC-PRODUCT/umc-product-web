@@ -9,6 +9,7 @@ import EmailSendModal from '@/components/Modal/AlertModal/EmailSendModal/EmailSe
 import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
 import MarketingTerm from '@/components/Modal/TermModal/MarketingTerm/MarketingTerm'
 import PrivacyTerm from '@/components/Modal/TermModal/PrivacyTerm/PrivacyTerm'
+import RegisterConfirm from '@/components/Modal/AlertModal/RegisterConfirm/RegisterConfirm'
 
 export const MODAL_TYPES = {
   AlertModal: 'AlertModal',
@@ -17,6 +18,7 @@ export const MODAL_TYPES = {
   MarketingTerm: 'MarketingTerm',
   PrivacyTerm: 'PrivacyTerm',
   AlreadyExistAccount: 'AlreadyExistAccount',
+  RegisterConfirm: 'RegisterConfirm',
 }
 
 export type modalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
@@ -28,6 +30,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.ServiceTerm]: ServiceTerm,
   [MODAL_TYPES.MarketingTerm]: MarketingTerm,
   [MODAL_TYPES.PrivacyTerm]: PrivacyTerm,
+  [MODAL_TYPES.RegisterConfirm]: RegisterConfirm,
 }
 
 export default function ModalProvider() {

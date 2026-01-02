@@ -24,7 +24,7 @@ export default function Instruction({
         ? theme.colors.necessary
         : theme.colors.caution
   const IconWithColor = () => (
-    <Icon width={iconSize || 18} height={iconSize || 18} fill={color} />
+    <Icon width={iconSize || 18} height={iconSize || 18} color={color} />
   )
   return (
     <Flex
