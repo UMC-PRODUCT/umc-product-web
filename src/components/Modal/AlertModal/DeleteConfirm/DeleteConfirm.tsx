@@ -16,14 +16,19 @@ export default function DeleteConfirm({
   type: 'school' | 'account'
   count: number
 }) {
-  const KoreaType = type === 'school' ? '학교' : '계정'
+  const entityTypeKorea = type === 'school' ? '학교' : '계정'
+  const content =
+    count === 1
+      ? `삭제된 ${entityTypeKorea} 데이터는 복구할 수 없습니다.
+        ‘${name}’를 삭제하시겠습니까?`
+      : `삭제된 ${entityTypeKorea} 데이터는 복구할 수 없습니다.
+        ‘${name}’ 외 ${count - 1}개의 ${entityTypeKorea}를 삭제하시겠습니까?`
   return (
     <AlertModalLayout
       mode={'error'}
       onClose={onClose}
       title="경고"
-      content={`삭제된 ${KoreaType} 데이터는 복구할 수 없습니다.
-        ‘${name}’ 외 ${count - 1}개의 ${KoreaType}를 삭제하시겠습니까?`}
+      content={content}
       Icon={FillNotice}
     >
       <Flex
@@ -47,7 +52,10 @@ export default function DeleteConfirm({
           label={'삭제하기'}
           tone="necessary"
           typo="C3.Md"
-          onClick={onClick}
+          onClick={() => {
+            onClick()
+            onClose()
+          }}
         ></Button>
       </Flex>
     </AlertModalLayout>

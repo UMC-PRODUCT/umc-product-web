@@ -33,16 +33,12 @@ export default function Navigation({
         css={{
           backgroundColor: 'transparent',
           border: 'none',
-          cursor: `${currentPage == 1 ? 'not-allowed' : 'pointer'}`,
+          cursor: `${currentPage === 1 ? 'not-allowed' : 'pointer'}`,
         }}
         onClick={() => goToPage(Math.max(1, currentPage - 1))}
         disabled={currentPage <= 1}
       >
-        <Arrow
-          width={16}
-          css={{ transform: 'rotate(90deg)' }}
-          onClick={() => goToPage(Math.max(1, currentPage - 1))}
-        />
+        <Arrow width={16} css={{ transform: 'rotate(90deg)' }} />
       </button>
       {visiblePages.map((page) => (
         <button
@@ -70,11 +66,7 @@ export default function Navigation({
         onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage >= totalPages}
       >
-        <Arrow
-          width={16}
-          css={{ transform: 'rotate(-90deg)' }}
-          onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
-        />
+        <Arrow width={16} css={{ transform: 'rotate(-90deg)' }} />
       </button>
     </Flex>
   )
