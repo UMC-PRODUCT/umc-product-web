@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { useRouterState } from '@tanstack/react-router'
+import type { ComponentType } from 'react'
 
 import AlreadyExistAccount from '@/components/Modal/AlertModal/AlreadyExistAccount/AlreadyExistAccount'
 import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
-import type { ComponentType } from 'react'
 import useModalStore from '@/store/useModalStore'
 import AlertModal from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 import EmailSendModal from '@/components/Modal/AlertModal/EmailSendModal/EmailSendModal'
