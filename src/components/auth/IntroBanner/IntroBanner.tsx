@@ -68,7 +68,7 @@ export default function IntroBanner() {
     <>
       {isMdDown ? null : (
         <Flex
-          direction="column"
+          flexDirection="column"
           alignItems="center"
           justifyContent="center"
           maxHeight="100%"

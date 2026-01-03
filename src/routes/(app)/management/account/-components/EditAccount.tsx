@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import ManagementActionButton from '@/components/common/Button/Button'
+import { Button as ManagementActionButton } from '@/components/common/Button/Button'
+import type { Option } from '@/components/common/Dropdown/Dropdown'
+import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
-import type { Option } from '@/hooks/useSelectorInteractions'
 import {
   ACCOUNT_DELETE_MOCK,
   AFFILIATED_MOCK,
@@ -11,21 +12,24 @@ import {
 } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import * as S from '@/routes/(app)/management/account/-styles/shared'
-import useModalStore from '@/store/useModalStore'
 
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
 
 const totalAmounts = 10
 
+type DeleteModalState = {
+  isOpen: boolean
+  name: string
+  count: number
+  onConfirm: () => void
+}
+
 export default function EditAccount() {
   const [searchTerm, setSearchTerm] = useState('')
   const [affiliated, setAffiliated] = useState<Option | undefined>()
-  const [affiliatedOpen, setAffiliatedOpen] = useState(false)
   const [role, setRole] = useState<Option | undefined>()
-  const [roleOpen, setRoleOpen] = useState(false)
   const [status, setStatus] = useState<Option | undefined>()
-  const [statusOpen, setStatusOpen] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
@@ -34,7 +38,13 @@ export default function EditAccount() {
   }, [])
   const [page, setPage] = useState(initialPage)
   const totalPages = 12
-  const { openModal } = useModalStore()
+  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
+    isOpen: false,
+    name: '',
+    count: 0,
+    onConfirm: () => {},
+  })
+
   const affiliatedOptions = useMemo(
     () => [
       { label: '-- 전체 지부 --', id: 0 },
@@ -80,21 +90,22 @@ export default function EditAccount() {
       const count = targetId ? 1 : selectedIds.size
       if (count === 0) return
 
-      openModal({
-        modalType: 'DeleteConfirm',
-        modalProps: {
-          name: findAccountName(targetId),
-          type: 'account',
-          count,
-          onClick: () => {
-            // TODO: 선택된 계정 삭제 API 연동
-            console.log('delete target', targetId ?? Array.from(selectedIds))
-          },
+      setDeleteModal({
+        isOpen: true,
+        name: findAccountName(targetId),
+        count,
+        onConfirm: () => {
+          // TODO: 선택된 계정 삭제 API 연동
+          console.log('delete target', targetId ?? Array.from(selectedIds))
         },
       })
     },
-    [findAccountName, openModal, selectedIds],
+    [findAccountName, selectedIds],
   )
+
+  const closeDeleteModal = () => {
+    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+  }
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage)
@@ -138,6 +149,7 @@ export default function EditAccount() {
       </>
     )
   }
+
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -153,22 +165,16 @@ export default function EditAccount() {
             onSelectAffiliated={(option) =>
               setAffiliated(option.id === 0 ? undefined : option)
             }
-            affiliatedOpen={affiliatedOpen}
-            setAffiliatedOpen={setAffiliatedOpen}
             affiliatedOptions={affiliatedOptions}
             role={role}
             onSelectRole={(option) =>
               setRole(option.id === 0 ? undefined : option)
             }
-            roleOpen={roleOpen}
-            setRoleOpen={setRoleOpen}
             roleOptions={roleOptions}
             status={status}
             onSelectStatus={(option) =>
               setStatus(option.id === 0 ? undefined : option)
             }
-            statusOpen={statusOpen}
-            setStatusOpen={setStatusOpen}
             statusOptions={statusOptions}
           />
         </S.FilterWrapper>
@@ -191,6 +197,16 @@ export default function EditAccount() {
           />
         </ManagementTable>
       </S.TabHeader>
+
+      {deleteModal.isOpen && (
+        <DeleteConfirm
+          onClose={closeDeleteModal}
+          name={deleteModal.name}
+          type="account"
+          count={deleteModal.count}
+          onClick={deleteModal.onConfirm}
+        />
+      )}
     </>
   )
 }

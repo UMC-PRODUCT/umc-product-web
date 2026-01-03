@@ -1,25 +1,31 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import Search from '@/assets/icons/search.svg?react'
-import Button from '@/components/common/Button/Button'
-import Dropdown from '@/components/common/Dropdown/Dropdown'
+import { Button } from '@/components/common/Button/Button'
+import type { Option } from '@/components/common/Dropdown/Dropdown'
+import { Dropdown } from '@/components/common/Dropdown/Dropdown'
 import Flex from '@/components/common/Flex/Flex'
-import { TextField } from '@/components/common/LabelTextField/TextField'
+import { TextField } from '@/components/form/LabelTextField/TextField'
+import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
 import { DeleteSchoolTableHeaderLabel } from '@/constants/tableHeaders'
-import type { Option } from '@/hooks/useSelectorInteractions'
 import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
-import useModalStore from '@/store/useModalStore'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
 
 import * as S from '../School.style'
 import DeleteTableRow from './DeleteTableRow'
 
+type DeleteModalState = {
+  isOpen: boolean
+  name: string
+  count: number
+  onConfirm: () => void
+}
+
 export default function DeleteSchool() {
   const [searchTerm, setSearchTerm] = useState('')
   const [affiliated, setAffiliated] = useState<Option | undefined>()
-  const [affiliatedOpen, setAffiliatedOpen] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
@@ -27,7 +33,12 @@ export default function DeleteSchool() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
   }, [])
   const [page, setPage] = useState(initialPage)
-  const { openModal } = useModalStore()
+  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
+    isOpen: false,
+    name: '',
+    count: 0,
+    onConfirm: () => {},
+  })
 
   const affiliatedOptions = useMemo(
     () => [
@@ -37,37 +48,41 @@ export default function DeleteSchool() {
     [],
   )
 
-  const findSchoolName = (targetId?: number) => {
-    const selectedId =
-      targetId ??
-      (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+  const findSchoolName = useCallback(
+    (targetId?: number) => {
+      const selectedId =
+        targetId ??
+        (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
-    if (selectedId === undefined) return '학교 이름'
+      if (selectedId === undefined) return '학교 이름'
 
-    const matched = UNI_DELETE_MOCK.find((school) => school.id === selectedId)
-    return matched?.name ?? '학교 이름'
-  }
+      const matched = UNI_DELETE_MOCK.find((school) => school.id === selectedId)
+      return matched?.name ?? '학교 이름'
+    },
+    [selectedIds],
+  )
 
   const openDeleteConfirm = useCallback(
     (targetId?: number) => {
       const count = targetId ? 1 : selectedIds.size
       if (count === 0) return
 
-      openModal({
-        modalType: 'DeleteConfirm',
-        modalProps: {
-          name: findSchoolName(targetId),
-          type: 'school',
-          count,
-          onClick: () => {
-            // TODO: 선택된 학교 삭제 API 연동
-            console.log('delete target', targetId ?? Array.from(selectedIds))
-          },
+      setDeleteModal({
+        isOpen: true,
+        name: findSchoolName(targetId),
+        count,
+        onConfirm: () => {
+          // TODO: 선택된 학교 삭제 API 연동
+          console.log('delete target', targetId ?? Array.from(selectedIds))
         },
       })
     },
-    [findSchoolName, openModal, selectedIds],
+    [findSchoolName, selectedIds],
   )
+
+  const closeDeleteModal = () => {
+    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+  }
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage)
@@ -137,11 +152,9 @@ export default function DeleteSchool() {
               options={affiliatedOptions}
               placeholder="전체 지부"
               value={affiliated}
-              onClick={(option) =>
+              onChange={(option) =>
                 setAffiliated(option.id === 0 ? undefined : option)
               }
-              open={affiliatedOpen}
-              setOpen={setAffiliatedOpen}
             />
           </Flex>
         </S.FilterWrapper>
@@ -163,6 +176,16 @@ export default function DeleteSchool() {
           />
         </ManagementTable>
       </S.TabHeader>
+
+      {deleteModal.isOpen && (
+        <DeleteConfirm
+          onClose={closeDeleteModal}
+          name={deleteModal.name}
+          type="school"
+          count={deleteModal.count}
+          onClick={deleteModal.onConfirm}
+        />
+      )}
     </>
   )
 }

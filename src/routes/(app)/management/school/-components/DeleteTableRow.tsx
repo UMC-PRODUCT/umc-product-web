@@ -1,6 +1,6 @@
-import Badge from '@/components/common/Badge/Badge'
-import Button from '@/components/common/Button/Button'
-import Checkbox from '@/components/common/Checkbox/Checkbox'
+import { Badge } from '@/components/common/Badge/Badge'
+import { Button } from '@/components/common/Button/Button'
+import { Checkbox } from '@/components/common/Checkbox/Checkbox'
 import { UNI_DELETE_MOCK } from '@/mocks/mocks'
 
 import * as S from '../School.style'
@@ -20,7 +20,7 @@ export default function DeleteTableRow({
         <tr key={item.id}>
           <S.Td>
             <Checkbox
-              toggleCheck={() => {
+              onCheckedChange={() => {
                 setSelectedIds((prev: Set<number>) => {
                   const next = new Set(prev)
                   if (next.has(item.id)) {
@@ -31,7 +31,7 @@ export default function DeleteTableRow({
                   return next
                 })
               }}
-              value={selectedIds.has(item.id)}
+              checked={selectedIds.has(item.id)}
             />
           </S.Td>
           <S.Td>{item.name}</S.Td>
@@ -39,11 +39,12 @@ export default function DeleteTableRow({
           <S.Td>{item.date}</S.Td>
           <S.Td>
             <Badge
-              content={item.status}
               tone={item.status === '활성' ? 'lime' : 'gray'}
               variant="outline"
               typo="B4.Md"
-            />
+            >
+              {item.status}
+            </Badge>
           </S.Td>
           <S.Td>
             <Button

@@ -1,18 +1,29 @@
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Button from '@/components/common/Button/Button'
+import { Button } from '@/components/common/Button/Button'
 import Label from '@/components/common/Label/Label'
-import { LabelTextField } from '@/components/common/LabelTextField/LabelTextField'
-import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import { LabelTextField } from '@/components/form/LabelTextField/LabelTextField'
+import RegisterConfirm from '@/components/Modal/AlertModal/RegisterConfirm/RegisterConfirm'
 import type { SchoolRegisterForm } from '@/schema/management'
 import { schoolRegisterSchema } from '@/schema/management'
-import useModalStore from '@/store/useModalStore'
 
 import * as S from '../School.style'
 
+type ModalState = {
+  isOpen: boolean
+  schoolName: string
+  link: string
+}
+
 export default function AddSchool() {
-  const { openModal } = useModalStore()
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    schoolName: '',
+    link: '',
+  })
+
   const {
     register,
     handleSubmit,
@@ -23,15 +34,18 @@ export default function AddSchool() {
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
-    openModal({
-      modalType: MODAL_TYPES.RegisterConfirm,
-      modalProps: {
-        schoolName: data.schoolName,
-        link: `/management/school/edit?school=${data.schoolName}`,
-      },
+    setModal({
+      isOpen: true,
+      schoolName: data.schoolName,
+      link: `/management/school/edit?school=${data.schoolName}`,
     })
     console.log(data)
   }
+
+  const closeModal = () => {
+    setModal((prev) => ({ ...prev, isOpen: false }))
+  }
+
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -86,6 +100,14 @@ export default function AddSchool() {
           </S.SubmitButtonWrapper>
         </S.FormCard>
       </S.Form>
+
+      {modal.isOpen && (
+        <RegisterConfirm
+          onClose={closeModal}
+          schoolName={modal.schoolName}
+          link={modal.link}
+        />
+      )}
     </>
   )
 }

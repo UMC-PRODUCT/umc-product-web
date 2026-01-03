@@ -146,7 +146,7 @@ export const Td = styled.td`
   border-bottom: 1px solid #2a2a2a;
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
-  button {
+  button:not([role='checkbox']) {
     width: 57px;
     height: 28px;
   }

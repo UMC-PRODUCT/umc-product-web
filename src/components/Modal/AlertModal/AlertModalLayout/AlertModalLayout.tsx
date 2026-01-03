@@ -1,10 +1,9 @@
 import Close from '@/assets/icons/close.svg?react'
 import Flex from '@/components/common/Flex/Flex'
 import Instruction from '@/components/common/Instruction/Instruction'
-import Modal from '@/components/common/Modal/Modal'
+import { Modal } from '@/components/common/Modal'
+import * as S from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout.style'
 import { theme } from '@/styles/theme'
-
-import * as S from './AlertModalLayout.style'
 
 type AlertModalLayoutProps = {
   onClose: () => void
@@ -14,6 +13,7 @@ type AlertModalLayoutProps = {
   children: React.ReactNode
   mode: 'success' | 'error' | 'warning'
 }
+
 export default function AlertModalLayout({
   onClose,
   title,
@@ -23,54 +23,68 @@ export default function AlertModalLayout({
   mode,
 }: AlertModalLayoutProps) {
   return (
-    <Modal onClose={onClose}>
-      <Flex
-        direction="column"
-        gap={'16px'}
-        padding={'28px 28px 30px 34px'}
-        width="90vw"
-        minWidth="390px"
-        maxWidth="492px"
-        css={{
-          backgroundColor: theme.colors.gray[700],
-          borderRadius: '8px',
-        }}
-      >
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-          css={{
-            marginBottom: '33px',
-          }}
-        >
-          <Instruction
-            content={title}
-            typography="H2.Sb"
-            Icon={Icon}
-            iconSize={32}
-            mode={mode}
-          />
-          <S.ModalButton type="button" onClick={onClose} aria-label="모달 닫기">
-            <Close />
-          </S.ModalButton>
-        </Flex>
-        <Flex
-          justifyContent="flex-start"
-          width="100%"
-          minHeight="50px"
-          alignItems="center"
-          css={{
-            borderLeft: `4px solid ${theme.colors.white}`,
-            paddingLeft: '14px',
-            color: theme.colors.white,
-            whiteSpace: 'pre-line',
-            ...theme.typography.B3.Md,
-          }}
-        >
-          {content}
-        </Flex>
-        <Flex justifyContent="flex-end">{children}</Flex>
-      </Flex>
-    </Modal>
+    <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
+      <Modal.Portal>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Flex
+            flexDirection="column"
+            gap={'16px'}
+            padding={'28px 28px 30px 34px'}
+            width="90vw"
+            minWidth="390px"
+            maxWidth="492px"
+            css={{
+              backgroundColor: theme.colors.gray[700],
+              borderRadius: '8px',
+            }}
+          >
+            <Modal.Header>
+              <Flex
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                css={{ marginBottom: '33px' }}
+              >
+                <Modal.Title asChild>
+                  <Instruction
+                    content={title}
+                    typography="H2.Sb"
+                    Icon={Icon}
+                    iconSize={32}
+                    mode={mode}
+                  />
+                </Modal.Title>
+                <Modal.Close asChild>
+                  <S.ModalButton type="button" aria-label="모달 닫기">
+                    <Close />
+                  </S.ModalButton>
+                </Modal.Close>
+              </Flex>
+            </Modal.Header>
+            <Modal.Body>
+              <Flex
+                justifyContent="flex-start"
+                width="100%"
+                minHeight="50px"
+                alignItems="center"
+                css={{
+                  borderLeft: `4px solid ${theme.colors.white}`,
+                  paddingLeft: '14px',
+                  color: theme.colors.white,
+                  whiteSpace: 'pre-line',
+                  ...theme.typography.B3.Md,
+                }}
+              >
+                {content}
+              </Flex>
+            </Modal.Body>
+            <Modal.Footer>
+              <Flex justifyContent="flex-end">{children}</Flex>
+            </Modal.Footer>
+          </Flex>
+        </Modal.Content>
+      </Modal.Portal>
+    </Modal.Root>
   )
 }

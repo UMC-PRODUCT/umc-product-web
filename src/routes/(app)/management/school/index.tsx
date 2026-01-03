@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import * as yup from 'yup'
 
 import Flex from '@/components/common/Flex/Flex'
-import PageTitle from '@/components/common/PageTitle/PageTitle'
-import SectionTab from '@/components/common/SectionTab/SectionTab'
+import Tab from '@/components/common/Tab/Tab'
+import PageTitle from '@/components/layout/PageTitle/PageTitle'
 import type { ManageSchoolTabName } from '@/constants/tabNames'
 import { manageSchoolTabs, manageSchoolTabValues } from '@/constants/tabNames'
 
@@ -39,17 +39,13 @@ function RouteComponent() {
 
   return (
     <S.PageLayout>
-      <Flex direction="column" gap="32px" maxWidth="1170px">
+      <Flex flexDirection="column" gap="32px" maxWidth="1170px">
         <PageTitle title="학교 관리" />
-        <SectionTab
-          tabs={manageSchoolTabs}
-          currentTab={activeTab}
-          setCurrentTab={setTab}
-        >
+        <Tab tabs={manageSchoolTabs} value={activeTab} onValueChange={setTab}>
           {activeTab === 'add' && <AddSchool />}
           {activeTab === 'delete' && <DeleteSchool />}
           {activeTab === 'edit' && <EditSchool />}
-        </SectionTab>
+        </Tab>
       </Flex>
     </S.PageLayout>
   )
