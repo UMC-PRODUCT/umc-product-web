@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import Flex from '@/components/common/Flex/Flex'
-import Footer from '@/components/common/Footer/Footer'
-import ChallengerHeader from '@/components/Header/ChallengerHeader'
+import Footer from '@/components/layout/Footer/Footer'
+import ChallengerHeader from '@/components/layout/Header/ChallengerHeader'
 
 export const Route = createFileRoute('/(auth)/auth/_layout')({
   component: RouteComponent,
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/(auth)/auth/_layout')({
 
 function RouteComponent() {
   return (
-    <Flex direction="column" minHeight="100vh">
+    <Flex flexDirection="column" minHeight="100vh">
       <ChallengerHeader />
       <Flex css={{ flex: 1 }}>
         <Outlet />

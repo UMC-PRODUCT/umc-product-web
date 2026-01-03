@@ -55,3 +55,5 @@ export const LabelTextField = forwardRef<HTMLInputElement, LabelTextFieldProps>(
     )
   },
 )
+
+LabelTextField.displayName = 'LabelTextField'

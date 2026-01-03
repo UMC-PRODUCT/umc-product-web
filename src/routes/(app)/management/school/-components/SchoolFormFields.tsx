@@ -2,7 +2,7 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
 import Flex from '@/components/common/Flex/Flex'
 import Label from '@/components/common/Label/Label'
-import { LabelTextField } from '@/components/common/LabelTextField/LabelTextField'
+import { LabelTextField } from '@/components/form/LabelTextField/LabelTextField'
 import type { SchoolRegisterForm } from '@/schema/management'
 import { theme } from '@/styles/theme'
 

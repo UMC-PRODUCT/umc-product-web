@@ -1,11 +1,8 @@
 import styled from '@emotion/styled'
+import * as TabsPrimitive from '@radix-ui/react-tabs'
 
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-
-type TabButtonProps = {
-  $active: boolean
-}
 
 export const SectionWrapper = styled.div`
   width: 100%;
@@ -14,27 +11,29 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
 `
 
-export const TabList = styled.div`
+export const StyledList = styled(TabsPrimitive.List)`
   width: 100%;
   display: flex;
 `
 
-export const TabButton = styled.div<TabButtonProps>`
+export const StyledTrigger = styled(TabsPrimitive.Trigger)`
   flex: 1;
   border-radius: 20px 20px 0 0;
   padding: 14px 20px;
   cursor: pointer;
-  background-color: ${({ $active }) =>
-    $active ? theme.colors.lime : 'transparent'};
-  color: ${({ $active }) =>
-    $active ? theme.colors.black : theme.colors.white};
-  border: ${({ $active }) =>
-    $active
-      ? `1px solid ${theme.colors.lime}`
-      : `1px solid ${theme.colors.gray[700]}`};
+  background-color: transparent;
+  color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.gray[700]};
   border-bottom: 0;
   text-align: center;
   ${theme.typography.H4.Sb};
+
+  &[data-state='active'] {
+    background-color: ${theme.colors.lime};
+    color: ${theme.colors.black};
+    border-color: ${theme.colors.lime};
+  }
+
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.B5.Sb};
   }
@@ -49,6 +48,7 @@ export const Content = styled.div`
   border: 1px solid ${theme.colors.gray[700]};
   border-radius: 0 0 10px 10px;
   padding: 40px 46px;
+
   ${media.down(theme.breakPoints.desktop)} {
     padding: 20px 20px;
   }

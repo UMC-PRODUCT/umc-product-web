@@ -1,10 +1,9 @@
 import styled from '@emotion/styled'
 
 import LogoIcon from '@/assets/umc.svg?react'
+import Flex from '@/components/common/Flex/Flex'
 import { media } from '@/styles/media'
 import { theme } from '@/styles/theme'
-
-import Flex from '../Flex/Flex'
 
 export const Nav = styled.nav({
   maxWidth: '100vw',

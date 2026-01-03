@@ -5,8 +5,8 @@ import Arrow from '@/assets/icons/arrow.svg?react'
 import InstagramIcon from '@/assets/social/instagram.svg?react'
 import KakaoIcon from '@/assets/social/kakao-talk.svg?react'
 import YoutubeIcon from '@/assets/social/youtube.svg?react'
+import Flex from '@/components/common/Flex/Flex'
 
-import Flex from '../../../Flex/Flex'
 import * as S from './ExternalLink.style'
 
 const socialIconMap = {
@@ -68,7 +68,7 @@ export default function ExternalLink({
         </S.MenuItem>
         {subLinks.length > 0 && isOpen && (
           <S.SubMenu>
-            <S.ChildLinks direction="column" alignItems="flex-start">
+            <S.ChildLinks flexDirection="column" alignItems="flex-start">
               {subLinks.map((sub) => {
                 const SocialIcon = socialIconMap[sub.icon]
                 return (
@@ -78,7 +78,7 @@ export default function ExternalLink({
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <Flex direction="row" gap="6px" alignItems="center">
+                    <Flex flexDirection="row" gap="6px" alignItems="center">
                       <SocialIcon width={24} height={24} aria-hidden="true" />
                       {sub.label}
                     </Flex>

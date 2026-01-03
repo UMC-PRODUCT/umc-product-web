@@ -2,14 +2,13 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Button from '@/components/common/Button/Button'
-import Dropdown from '@/components/common/Dropdown/Dropdown'
-import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
-import type { Option } from '@/hooks/useSelectorInteractions'
+import { Button } from '@/components/common/Button/Button'
+import type { Option } from '@/components/common/Dropdown/Dropdown'
+import { Dropdown } from '@/components/common/Dropdown/Dropdown'
+import RegisterConfirm from '@/components/modal/AlertModal/RegisterConfirm/RegisterConfirm'
 import { UNI_LIST_MOCK } from '@/mocks/mocks'
 import type { SchoolRegisterForm } from '@/schema/management'
 import { schoolRegisterSchema } from '@/schema/management'
-import useModalStore from '@/store/useModalStore'
 
 import * as S from '../School.style'
 import { EmptySelectionNotice } from './EmptySelectionNotice'
@@ -17,14 +16,23 @@ import { SchoolFormFields } from './SchoolFormFields'
 
 type SchoolOption = Option
 
+type ModalState = {
+  isOpen: boolean
+  schoolName: string
+  link: string
+}
+
 const REGISTERED_AT = '2026.01.15'
 
 const formatDateToYMD = (date: Date) =>
   `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
 
 export default function EditSchool() {
-  const { openModal } = useModalStore()
-  const [open, setOpen] = useState(false)
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    schoolName: '',
+    link: '',
+  })
   const [school, setSchool] = useState<SchoolOption | undefined>(undefined)
   const {
     register,
@@ -37,14 +45,16 @@ export default function EditSchool() {
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
-    openModal({
-      modalType: MODAL_TYPES.RegisterConfirm,
-      modalProps: {
-        schoolName: data.schoolName,
-        link: `/management/school/edit?school=${data.schoolName}`,
-      },
+    setModal({
+      isOpen: true,
+      schoolName: data.schoolName,
+      link: `/management/school/edit?school=${data.schoolName}`,
     })
     console.log(data)
+  }
+
+  const closeModal = () => {
+    setModal((prev) => ({ ...prev, isOpen: false }))
   }
 
   const handleSelectSchool = ({ id, label }: SchoolOption) => {
@@ -69,10 +79,8 @@ export default function EditSchool() {
         <S.DropdownWrapper alignItems="flex-start">
           <Dropdown
             options={UNI_LIST_MOCK}
-            onClick={handleSelectSchool}
+            onChange={handleSelectSchool}
             placeholder="학교를 선택하세요."
-            open={open}
-            setOpen={setOpen}
             value={school}
           />
         </S.DropdownWrapper>
@@ -105,6 +113,14 @@ export default function EditSchool() {
           />
         </S.SubmitButtonWrapper>
       </S.FormCard>
+
+      {modal.isOpen && (
+        <RegisterConfirm
+          onClose={closeModal}
+          schoolName={modal.schoolName}
+          link={modal.link}
+        />
+      )}
     </>
   )
 }

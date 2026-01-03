@@ -1,6 +1,6 @@
 import ArrowUp from '@/assets/icons/arrow_up.svg?react'
-import ExternalLink from '@/components/common/Header/RightMenu/ExternalLink/ExternalLink'
-import Profile from '@/components/common/Header/RightMenu/Profile/Profile'
+import ExternalLink from '@/components/layout/Header/RightMenu/ExternalLink/ExternalLink'
+import Profile from '@/components/layout/Header/RightMenu/Profile/Profile'
 
 import * as S from './RightMenu.style'
 

@@ -1,8 +1,11 @@
+import { useState } from 'react'
+
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import Flex from '@/components/common/Flex/Flex'
-import { MODAL_TYPES } from '@/components/common/Modal/ModalProvider'
+import MarketingTerm from '@/components/modal/TermModal/MarketingTerm/MarketingTerm'
+import PrivacyTerm from '@/components/modal/TermModal/PrivacyTerm/PrivacyTerm'
+import ServiceTerm from '@/components/modal/TermModal/ServiceTerm/ServiceTerm'
 import type { TermKey } from '@/hooks/useRegisterForm'
-import useModalStore from '@/store/useModalStore'
 
 import { Term } from './Term'
 
@@ -19,6 +22,8 @@ type TermsSectionProps = {
   errors?: TermErrors
 }
 
+type ModalType = 'service' | 'privacy' | 'marketing' | null
+
 export function TermsSection({
   terms,
   onToggleAll,
@@ -27,47 +32,56 @@ export function TermsSection({
 }: TermsSectionProps) {
   const hasError =
     !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
-  const { openModal } = useModalStore()
+  const [openModal, setOpenModal] = useState<ModalType>(null)
+
+  const closeModal = () => setOpenModal(null)
+
   return (
-    <Flex
-      direction="column"
-      alignItems="flex-start"
-      gap="12px"
-      width="100%"
-      maxWidth="80vw"
-    >
-      <Term
-        toggleCheck={onToggleAll}
-        label="전체 동의"
-        value={terms.service && terms.privacy && terms.marketing}
-      ></Term>
-      <Term
-        toggleCheck={() => onToggle('service')}
-        onClick={() => openModal(MODAL_TYPES.ServiceTerm)}
-        termTitle="서비스이용약관"
-        label="동의"
-        necessary={true}
-        value={terms.service}
-      ></Term>
-      <Term
-        toggleCheck={() => onToggle('privacy')}
-        onClick={() => openModal(MODAL_TYPES.PrivacyTerm)}
-        termTitle="개인정보처리방침"
-        label="동의"
-        necessary={true}
-        value={terms.privacy}
-      ></Term>
-      <Term
-        toggleCheck={() => onToggle('marketing')}
-        onClick={() => openModal(MODAL_TYPES.MarketingTerm)}
-        termTitle="마케팅정보수신"
-        label="동의"
-        necessary={false}
-        value={terms.marketing}
-      ></Term>
-      {hasError && (
-        <ErrorMessage errorMessage="모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다."></ErrorMessage>
-      )}
-    </Flex>
+    <>
+      <Flex
+        flexDirection="column"
+        alignItems="flex-start"
+        gap="12px"
+        width="100%"
+        maxWidth="80vw"
+      >
+        <Term
+          onChange={onToggleAll}
+          label="전체 동의"
+          checked={terms.service && terms.privacy && terms.marketing}
+        />
+        <Term
+          onChange={() => onToggle('service')}
+          onClick={() => setOpenModal('service')}
+          termTitle="서비스이용약관"
+          label="동의"
+          necessary={true}
+          checked={terms.service}
+        />
+        <Term
+          onChange={() => onToggle('privacy')}
+          onClick={() => setOpenModal('privacy')}
+          termTitle="개인정보처리방침"
+          label="동의"
+          necessary={true}
+          checked={terms.privacy}
+        />
+        <Term
+          onChange={() => onToggle('marketing')}
+          onClick={() => setOpenModal('marketing')}
+          termTitle="마케팅정보수신"
+          label="동의"
+          necessary={false}
+          checked={terms.marketing}
+        />
+        {hasError && (
+          <ErrorMessage errorMessage="모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다." />
+        )}
+      </Flex>
+
+      {openModal === 'service' && <ServiceTerm onClose={closeModal} />}
+      {openModal === 'privacy' && <PrivacyTerm onClose={closeModal} />}
+      {openModal === 'marketing' && <MarketingTerm onClose={closeModal} />}
+    </>
   )
 }

@@ -1,7 +1,7 @@
 import FillNotice from '@/assets/icons/notice_fill.svg?react'
-import Button from '@/components/common/Button/Button'
+import { Button } from '@/components/common/Button/Button'
 import Flex from '@/components/common/Flex/Flex'
-import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
+import AlertModalLayout from '@/components/modal/AlertModal/AlertModalLayout/AlertModalLayout'
 
 export default function DeleteConfirm({
   onClose,

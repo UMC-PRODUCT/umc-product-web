@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 
 import Close from '@/assets/icons/close.svg?react'
 import Flex from '@/components/common/Flex/Flex'
+import { Modal } from '@/components/common/Modal'
 
 import * as S from './TermModalLayout.style'
 
@@ -45,30 +46,41 @@ export default function TermModalLayout({
   onClose,
 }: TermModalLayoutProps) {
   return (
-    <Flex
-      justifyContent="center"
-      direction="column"
-      alignItems="center"
-      width="1048px"
-      maxWidth="90vw"
-      height="720px"
-      maxHeight="90vh"
-    >
-      <S.Card>
-        <S.Header>
-          <Flex justifyContent="space-between" alignItems="center">
-            <S.Title>{title}</S.Title>
-            <Close css={{ cursor: 'pointer' }} onClick={onClose} />
+    <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
+      <Modal.Portal>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Flex
+            justifyContent="center"
+            flexDirection="column"
+            alignItems="center"
+            width="1048px"
+            maxWidth="90vw"
+            height="720px"
+            maxHeight="90vh"
+          >
+            <S.Card>
+              <S.Header>
+                <Flex justifyContent="space-between" alignItems="center">
+                  <Modal.Title asChild>
+                    <S.Title>{title}</S.Title>
+                  </Modal.Title>
+                  <Modal.Close asChild>
+                    <Close css={{ cursor: 'pointer' }} />
+                  </Modal.Close>
+                </Flex>
+              </S.Header>
+              <S.ContentWrapper>
+                <S.ContentSection>
+                  {content ? <TermMarkdown content={content} /> : children}
+                  <br />
+                </S.ContentSection>
+              </S.ContentWrapper>
+              <S.Blur />
+            </S.Card>
           </Flex>
-        </S.Header>
-        <S.ContentWrapper>
-          <S.ContentSection>
-            {content ? <TermMarkdown content={content} /> : children}
-            <br />
-          </S.ContentSection>
-        </S.ContentWrapper>
-        <S.Blur />
-      </S.Card>
-    </Flex>
+        </Modal.Content>
+      </Modal.Portal>
+    </Modal.Root>
   )
 }

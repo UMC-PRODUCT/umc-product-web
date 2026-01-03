@@ -1,14 +1,10 @@
 import styled from '@emotion/styled'
+import * as SelectPrimitive from '@radix-ui/react-select'
 
 import { inputShell } from '@/styles/formStyles'
 import { theme } from '@/styles/theme'
 
-const SelectWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-`
-const Trigger = styled.button<{ $open: boolean }>`
+export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   ${inputShell};
   padding: 12px 16px;
   display: flex;
@@ -17,42 +13,44 @@ const Trigger = styled.button<{ $open: boolean }>`
   gap: 12px;
   cursor: pointer;
   background-color: ${theme.colors.black};
-  transform: translateY(${({ $open }) => ($open ? '1px' : '0')});
+  width: 100%;
+
+  &[data-placeholder] {
+    color: ${theme.colors.gray[400]};
+  }
+
+  &[data-state='open'] {
+    transform: translateY(1px);
+  }
 `
-const Placeholder = styled.span`
-  color: ${theme.colors.gray[400]};
-`
-const ArrowBox = styled.span<{ $open: boolean }>`
+
+export const StyledIcon = styled(SelectPrimitive.Icon)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(${({ $open }) => ($open ? '180deg' : '0deg')});
   transition: transform 180ms ease;
-  pointer-events: none;
+
+  [data-state='open'] > & {
+    transform: rotate(180deg);
+  }
 `
-const Options = styled.ul<{ $open: boolean }>`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  margin: 0;
-  padding: 8px;
-  list-style: none;
+
+export const StyledContent = styled(SelectPrimitive.Content)`
   background: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  max-height: 220px;
-  overflow-y: auto;
-  opacity: ${({ $open }) => ($open ? 1 : 0)};
-  transform: translateY(${({ $open }) => ($open ? '0' : '4px')});
-  pointer-events: ${({ $open }) => ($open ? 'auto' : 'none')};
-  transition:
-    opacity 150ms ease,
-    transform 150ms ease;
+  max-height: var(--radix-select-content-available-height);
+  overflow: hidden;
   z-index: 20;
+  width: var(--radix-select-trigger-width);
 `
-const OptionItem = styled.li<{ $selected: boolean }>`
+
+export const StyledViewport = styled(SelectPrimitive.Viewport)`
+  padding: 8px;
+`
+
+export const StyledItem = styled(SelectPrimitive.Item)`
   padding: 10px 12px;
   border-radius: 8px;
   display: flex;
@@ -60,14 +58,13 @@ const OptionItem = styled.li<{ $selected: boolean }>`
   justify-content: space-between;
   cursor: pointer;
   color: ${theme.colors.white};
-  background: ${({ $selected }) =>
-    $selected ? theme.colors.gray[700] : 'transparent'};
-  transition:
-    background 120ms ease,
-    color 120ms ease;
+  outline: none;
 
-  &:hover {
+  &[data-highlighted] {
+    background: ${theme.colors.gray[700]};
+  }
+
+  &[data-state='checked'] {
     background: ${theme.colors.gray[700]};
   }
 `
-export { ArrowBox, OptionItem, Options, Placeholder, SelectWrapper, Trigger }

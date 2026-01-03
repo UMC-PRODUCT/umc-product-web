@@ -1,17 +1,25 @@
-import Header from '@/components/common/Header/Header'
+import Header from '@/components/layout/Header/Header'
 
 const left = [
   {
-    label: '모집 안내',
-    link: '/recruiting',
+    label: '데이터 관리',
+    link: '/management/data',
   },
   {
-    label: '지원하기',
-    link: '/apply',
+    label: '학교 관리',
+    link: '/management/school',
   },
   {
-    label: '마이 대시보드',
-    link: '/dashboard',
+    label: '계정 관리',
+    link: '/management/account',
+  },
+  {
+    label: '공지 관리',
+    link: '/management/notice',
+  },
+  {
+    label: '정책 관리',
+    link: '/management/policy',
   },
 ]
 // TODO: 데이터 수정 필요
@@ -37,12 +45,11 @@ const social = [
     icon: 'youtube' as const,
   },
 ]
-
 const nav = {
-  label: '자주 묻는 질문',
+  label: '시스템 관리',
   link: '/', // TODO: 링크 수정
 }
 
-export default function ChallengerHeader() {
+export default function SuperHeader() {
   return <Header leftChildren={left} social={social} nav={nav} />
 }

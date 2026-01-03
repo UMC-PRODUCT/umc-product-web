@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 
-import Badge from '@/components/common/Badge/Badge'
+import { Badge } from '@/components/common/Badge/Badge'
 import Flex from '@/components/common/Flex/Flex'
 
 import * as S from './Profile.style'
@@ -42,20 +42,24 @@ export default function Profile({ children }: { children?: React.ReactNode }) {
           <S.CloseButton onClick={() => setOpen(false)} />
           <Flex gap="12px">
             <S.Avatar />
-            <Flex direction="column" alignItems="flex-start" gap="4px">
+            <Flex flexDirection="column" alignItems="flex-start" gap="4px">
               <S.NameText>
                 {nickname}/{name}
               </S.NameText>
               <S.EmailText>{email}</S.EmailText>
             </Flex>
           </Flex>
-          <Flex direction="column" gap="12px">
+          <Flex flexDirection="column" gap="12px">
             <S.InfoRow gap="10px">
-              <Badge content="소속" tone="gray" variant="solid" typo="H5.Md" />
+              <Badge tone="gray" variant="solid" typo="H5.Md">
+                소속
+              </Badge>
               {school}
             </S.InfoRow>
             <S.InfoRow gap="10px">
-              <Badge content="권한" tone="gray" variant="solid" typo="H5.Md" />
+              <Badge tone="gray" variant="solid" typo="H5.Md">
+                권한
+              </Badge>
               {rights}
             </S.InfoRow>
           </Flex>

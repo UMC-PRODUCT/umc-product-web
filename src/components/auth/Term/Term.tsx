@@ -1,29 +1,29 @@
 import type { MouseEvent } from 'react'
 import { forwardRef } from 'react'
 
-import Checkbox from '@/components/common/Checkbox/Checkbox'
+import { Checkbox } from '@/components/common/Checkbox/Checkbox'
 import Flex from '@/components/common/Flex/Flex'
 
 import * as S from './Term.style'
 
 type TermProps = {
-  toggleCheck: () => void
+  onChange: () => void
   onClick?: () => void
   termTitle?: string
   label: string
   necessary?: boolean
-  value: boolean
+  checked: boolean
 }
 
-export const Term = forwardRef<HTMLInputElement, TermProps>(
+export const Term = forwardRef<HTMLButtonElement, TermProps>(
   (
     {
-      toggleCheck,
+      onChange,
       onClick,
       termTitle,
       label,
       necessary,
-      value,
+      checked,
       ...props
     }: TermProps,
     ref,
@@ -39,13 +39,13 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
         alignItems="center"
         gap="2px"
         width="fit-content"
-        onClick={toggleCheck}
+        onClick={onChange}
         css={{ cursor: 'pointer' }}
       >
         <Checkbox
-          toggleCheck={toggleCheck}
-          value={value}
-          innerRef={ref}
+          onCheckedChange={() => onChange()}
+          checked={checked}
+          ref={ref}
           {...props}
         />
         {termTitle && (
@@ -59,3 +59,5 @@ export const Term = forwardRef<HTMLInputElement, TermProps>(
     )
   },
 )
+
+Term.displayName = 'Term'

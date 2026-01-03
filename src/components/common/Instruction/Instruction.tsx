@@ -1,41 +1,33 @@
-import Flex from '@/components/common/Flex/Flex'
 import { theme } from '@/styles/theme'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
-export default function Instruction({
-  content,
-  typography,
-  Icon,
-  iconSize,
-  mode,
-}: {
+import * as S from './Instruction.style'
+
+type InstructionProps = {
   content: string
   typography: TypoToken
   Icon: React.FC<React.SVGProps<SVGSVGElement>>
   iconSize?: number
   mode: 'success' | 'error' | 'warning'
-}) {
+}
+
+export default function Instruction({
+  content,
+  typography,
+  Icon,
+  iconSize = 18,
+  mode,
+}: InstructionProps) {
   const textStyle = resolveTypo(theme, typography)
-  const color =
-    mode === 'success'
-      ? theme.colors.lime
-      : mode === 'error'
-        ? theme.colors.necessary
-        : theme.colors.caution
-  const IconWithColor = () => (
-    <Icon width={iconSize || 18} height={iconSize || 18} fill={color} />
-  )
+  const color = S.getColor(mode)
+
   return (
-    <Flex
-      alignItems="center"
-      width="fit-content"
-      css={{
-        alignSelf: 'center',
-      }}
-    >
-      <IconWithColor />
-      <span style={{ ...textStyle, marginLeft: '8px', color }}>{content}</span>
-    </Flex>
+    <S.Container>
+      <Icon width={iconSize} height={iconSize} fill={color} />
+      <S.Text color={color} style={textStyle}>
+        {content}
+      </S.Text>
+    </S.Container>
   )
 }

@@ -1,4 +1,4 @@
-import Checkbox from '@/components/common/Checkbox/Checkbox'
+import { Checkbox } from '@/components/common/Checkbox/Checkbox'
 import Flex from '@/components/common/Flex/Flex'
 import { theme } from '@/styles/theme'
 import { typography } from '@/styles/theme/typography'
@@ -50,7 +50,7 @@ export default function ManagementTable({
   return (
     <>
       <Flex
-        direction="column"
+        flexDirection="column"
         css={{
           border: `1px solid ${theme.colors.gray[600]}`,
           borderRadius: '12px',
@@ -68,9 +68,9 @@ export default function ManagementTable({
               <tr>
                 <S.Th>
                   <Checkbox
-                    toggleCheck={onToggleAll}
-                    value={isAllChecked}
-                  ></Checkbox>
+                    onCheckedChange={() => onToggleAll()}
+                    checked={isAllChecked}
+                  />
                 </S.Th>
                 {headerLabels.map((label) => (
                   <S.Th key={label}>{label}</S.Th>

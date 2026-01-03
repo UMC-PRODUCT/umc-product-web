@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 
-import LeftMenu from '@/components/common/Header/LeftMenu/LeftMenu'
-import RightMenu from '@/components/common/Header/RightMenu/RightMenu'
+import LeftMenu from '@/components/layout/Header/LeftMenu/LeftMenu'
+import RightMenu from '@/components/layout/Header/RightMenu/RightMenu'
 
 import * as S from './Header.style'
 

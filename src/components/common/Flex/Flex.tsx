@@ -1,62 +1,75 @@
 import type { Interpolation, Theme } from '@emotion/react'
-import type React from 'react'
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react'
 
-type FlexProps = {
-  children: React.ReactNode
-  direction?: 'row' | 'column'
-  alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'
-  justifyContent?:
-    | 'flex-start'
-    | 'center'
-    | 'flex-end'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly'
-  gap?: string
-  style?: React.CSSProperties
-  width?: '100%' | 'fit-content' | 'auto' | string
-  minWidth?: string
-  maxWidth?: string
-  height?: string
-  maxHeight?: string
-  minHeight?: string
-  padding?: string
+type FlexStyleProps = Pick<
+  CSSProperties,
+  | 'flexDirection'
+  | 'alignItems'
+  | 'justifyContent'
+  | 'gap'
+  | 'width'
+  | 'height'
+  | 'minWidth'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'maxHeight'
+  | 'padding'
+  | 'margin'
+  | 'flex'
+  | 'flexWrap'
+  | 'flexGrow'
+  | 'flexShrink'
+>
+
+type FlexProps = FlexStyleProps & {
+  children?: ReactNode
+  style?: CSSProperties
   css?: Interpolation<Theme>
-} & React.HTMLAttributes<HTMLDivElement>
+} & Omit<HTMLAttributes<HTMLDivElement>, 'style'>
 
 export default function Flex({
   children,
-  direction,
+  flexDirection,
   alignItems = 'center',
   justifyContent,
   gap,
-  style,
   width = '100%',
-  maxWidth,
-  padding,
   height,
-  maxHeight,
-  minHeight,
   minWidth,
-  css,
+  maxWidth,
+  minHeight,
+  maxHeight,
+  padding,
+  margin,
+  flex,
+  flexWrap,
+  flexGrow,
+  flexShrink,
+  style,
+  css: cssProp,
   ...props
 }: FlexProps) {
   return (
     <div
-      css={css}
+      css={cssProp}
       style={{
         display: 'flex',
-        flexDirection: direction,
-        alignItems: alignItems,
-        justifyContent: justifyContent,
-        gap: gap,
-        width: width,
-        padding: padding,
-        height: height,
-        maxHeight: maxHeight,
-        minHeight: minHeight,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
+        flexDirection,
+        alignItems,
+        justifyContent,
+        gap,
+        width,
+        height,
+        minWidth,
+        maxWidth,
+        minHeight,
+        maxHeight,
+        padding,
+        margin,
+        flex,
+        flexWrap,
+        flexGrow,
+        flexShrink,
         ...style,
       }}
       {...props}

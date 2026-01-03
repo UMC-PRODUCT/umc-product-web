@@ -1,6 +1,6 @@
-import Badge from '@/components/common/Badge/Badge'
-import Button from '@/components/common/Button/Button'
-import Checkbox from '@/components/common/Checkbox/Checkbox'
+import { Badge } from '@/components/common/Badge/Badge'
+import { Button } from '@/components/common/Button/Button'
+import { Checkbox } from '@/components/common/Checkbox/Checkbox'
 import Flex from '@/components/common/Flex/Flex'
 import { ACCOUNT_DELETE_MOCK } from '@/mocks/mocks'
 import * as S from '@/routes/(app)/management/account/-styles/shared'
@@ -34,8 +34,8 @@ export function AccountTableRows({
         <tr key={item.id}>
           <S.Td>
             <Checkbox
-              toggleCheck={() => toggleRow(item.id)}
-              value={selectedIds.has(item.id)}
+              onCheckedChange={() => toggleRow(item.id)}
+              checked={selectedIds.has(item.id)}
             />
           </S.Td>
           <S.Td>{item.name}</S.Td>
@@ -43,16 +43,12 @@ export function AccountTableRows({
           <S.Td>{item.school}</S.Td>
           <S.Td>{item.branch}</S.Td>
           <S.Td>
-            <Badge
-              content={KoreanRoleMap[item.role] ?? '-'}
-              tone="gray"
-              variant="solid"
-              typo="B4.Sb"
-            />
+            <Badge tone="gray" variant="solid" typo="B4.Sb">
+              {KoreanRoleMap[item.role] ?? '-'}
+            </Badge>
           </S.Td>
           <S.Td>
             <Badge
-              content={KoreanStatusMap[item.status] ?? '-'}
               tone={
                 item.status === 'ACTIVE'
                   ? 'lime'
@@ -62,7 +58,9 @@ export function AccountTableRows({
               }
               variant="outline"
               typo="B4.Md"
-            />
+            >
+              {KoreanStatusMap[item.status] ?? '-'}
+            </Badge>
           </S.Td>
           <S.Td>
             <Flex gap="10px">

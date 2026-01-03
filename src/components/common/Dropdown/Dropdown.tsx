@@ -1,96 +1,82 @@
 import type { Interpolation, Theme } from '@emotion/react'
+import * as SelectPrimitive from '@radix-ui/react-select'
+import { forwardRef } from 'react'
 
 import Arrow from '@/assets/icons/Arrow.svg?react'
-import type { Option } from '@/hooks/useSelectorInteractions'
-import { useSelectorInteractions } from '@/hooks/useSelectorInteractions'
 
 import * as S from './Dropdown.style'
+
+export type Option = { label: string; id: string | number }
 
 type DropdownProps = {
   placeholder?: string
   options: Array<Option>
   value?: Option
-  onClick: (option: Option) => void
-  setOpen: (open: boolean | ((prev: boolean) => boolean)) => void
-  open: boolean
+  defaultValue?: Option
+  onChange?: (option: Option) => void
   id?: string
   ariaLabelledby?: string
   css?: Interpolation<Theme>
+  className?: string
 }
-export default function Dropdown({
-  placeholder,
-  options,
-  value,
-  onClick,
-  setOpen,
-  open,
-  id,
-  ariaLabelledby,
-  css,
-}: DropdownProps) {
-  const {
-    wrapRef,
-    triggerRef,
-    optionRefs,
-    focusedIndex,
-    handleOptionSelect,
-    handleTriggerKeyDown,
-    handleOptionsKeyDown,
-  } = useSelectorInteractions({
-    options,
-    value,
-    open,
-    setOpen,
-    onSelect: onClick,
-  })
 
-  return (
-    <S.SelectWrapper ref={wrapRef} css={css}>
-      <S.Trigger
-        type="button"
-        id={id}
-        onClick={() => setOpen((v) => !v)}
-        onKeyDown={handleTriggerKeyDown}
-        $open={open}
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-labelledby={ariaLabelledby}
-        ref={triggerRef}
+export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
+  (
+    {
+      placeholder,
+      options,
+      value,
+      defaultValue,
+      onChange,
+      id,
+      ariaLabelledby,
+      className,
+      css,
+    },
+    ref,
+  ) => {
+    const handleValueChange = (selectedValue: string) => {
+      const selectedOption = options.find(
+        (opt) => String(opt.id) === selectedValue,
+      )
+      if (selectedOption) {
+        onChange?.(selectedOption)
+      }
+    }
+
+    return (
+      <SelectPrimitive.Root
+        value={value ? String(value.id) : undefined}
+        defaultValue={defaultValue ? String(defaultValue.id) : undefined}
+        onValueChange={handleValueChange}
       >
-        {value?.label.trim() !== '' && value ? (
-          <span>{value.label}</span>
-        ) : (
-          <S.Placeholder>{placeholder}</S.Placeholder>
-        )}
-        <S.ArrowBox $open={open}>
-          <Arrow width={16} height={16} aria-hidden />
-        </S.ArrowBox>
-      </S.Trigger>
-      <S.Options
-        $open={open}
-        role="listbox"
-        aria-labelledby={ariaLabelledby}
-        aria-hidden={!open}
-        onKeyDown={handleOptionsKeyDown}
-      >
-        {options.map((option, index) => (
-          <S.OptionItem
-            key={option.id}
-            onClick={() => {
-              handleOptionSelect(option)
-            }}
-            $selected={option.id === value?.id}
-            role="option"
-            aria-selected={option.id === value?.id}
-            tabIndex={focusedIndex === index ? 0 : -1}
-            ref={(el) => {
-              optionRefs.current[index] = el
-            }}
-          >
-            {option.label}
-          </S.OptionItem>
-        ))}
-      </S.Options>
-    </S.SelectWrapper>
-  )
-}
+        <S.StyledTrigger
+          ref={ref}
+          id={id}
+          aria-labelledby={ariaLabelledby}
+          className={className}
+          css={css}
+        >
+          <SelectPrimitive.Value placeholder={placeholder} />
+          <S.StyledIcon>
+            <Arrow width={16} height={16} aria-hidden />
+          </S.StyledIcon>
+        </S.StyledTrigger>
+
+        <SelectPrimitive.Portal>
+          <S.StyledContent position="popper" sideOffset={4}>
+            <S.StyledViewport>
+              {options.map((option) => (
+                <S.StyledItem key={option.id} value={String(option.id)}>
+                  <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                </S.StyledItem>
+              ))}
+            </S.StyledViewport>
+          </S.StyledContent>
+        </SelectPrimitive.Portal>
+      </SelectPrimitive.Root>
+    )
+  },
+)
+
+Dropdown.displayName = 'Dropdown'

@@ -2,7 +2,7 @@ import type { Interpolation, Theme } from '@emotion/react'
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
 import { forwardRef } from 'react'
 
-import Button from '@/components/common/Button/Button'
+import { Button } from '@/components/common/Button/Button'
 import type { SvgIconComponent } from '@/types/component'
 
 import * as S from './LabelTextField.style'
