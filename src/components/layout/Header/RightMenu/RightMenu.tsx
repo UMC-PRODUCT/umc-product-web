@@ -33,7 +33,7 @@ export default function RightMenu({
   return (
     <S.Container>
       <S.DesktopMenu>{Children}</S.DesktopMenu>
-      <Profile children={Children} />
+      <Profile>{Children}</Profile>
     </S.Container>
   )
 }

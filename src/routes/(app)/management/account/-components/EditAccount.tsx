@@ -119,22 +119,20 @@ export default function EditAccount() {
     })
   }
 
-  const Buttons = () => {
-    return (
-      <>
-        <ManagementActionButton
-          label="선택 취소"
-          tone="gray"
-          onClick={() => setSelectedIds(new Set())}
-        />
-        <ManagementActionButton
-          label="선택한 계정 삭제"
-          tone="necessary"
-          onClick={() => openDeleteConfirm()}
-        />
-      </>
-    )
-  }
+  const buttonChildren = (
+    <>
+      <ManagementActionButton
+        label="선택 취소"
+        tone="gray"
+        onClick={() => setSelectedIds(new Set())}
+      />
+      <ManagementActionButton
+        label="선택한 계정 삭제"
+        tone="necessary"
+        onClick={() => openDeleteConfirm()}
+      />
+    </>
+  )
 
   return (
     <>
@@ -167,7 +165,7 @@ export default function EditAccount() {
           totalPages={totalPages}
           onChangePage={handlePageChange}
           type="account"
-          buttonChildren={<Buttons />}
+          buttonChildren={buttonChildren}
         >
           <AccountTableRows
             selectedIds={selectedIds}

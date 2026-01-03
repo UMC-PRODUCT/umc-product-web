@@ -17,17 +17,21 @@ export default function EmailSendModal({ onClose }: { onClose: () => void }) {
         <span css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}>
           메일을 받지 못하셨나요?
         </span>
-        <a
+        <button
+          type="button"
           css={{
             color: theme.colors.lime,
             borderBottom: '1px solid',
             borderColor: theme.colors.lime,
             cursor: 'pointer',
+            background: 'none',
+            border: 'none',
+            padding: 0,
             ...theme.typography.B4.Sb,
           }}
         >
           인증 메일 재전송
-        </a>
+        </button>
       </Flex>
     </AlertModalLayout>
   )

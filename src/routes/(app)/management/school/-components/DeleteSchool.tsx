@@ -90,14 +90,12 @@ export default function DeleteSchool() {
     window.history.replaceState(null, '', url.toString())
   }
 
-  const Buttons = () => {
-    return (
-      <>
-        <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
-        <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
-      </>
-    )
-  }
+  const buttonChildren = (
+    <>
+      <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
+      <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
+    </>
+  )
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
@@ -154,7 +152,7 @@ export default function DeleteSchool() {
           currentPage={page}
           totalPages={5}
           onChangePage={handlePageChange}
-          buttonChildren={<Buttons />}
+          buttonChildren={buttonChildren}
         >
           <DeleteTableRow
             setSelectedIds={setSelectedIds}

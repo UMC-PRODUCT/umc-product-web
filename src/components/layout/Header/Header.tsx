@@ -32,7 +32,7 @@ export default function Header({
           <S.Logo
             aria-label="홈으로 이동"
             role="button"
-            tabIndex={1}
+            tabIndex={0}
             onClick={() =>
               navigate({
                 to: '/',
