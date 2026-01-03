@@ -35,9 +35,7 @@ export const LabelTextField = forwardRef<HTMLInputElement, LabelTextFieldProps>(
         <S.InputHeader>
           <Label label={label} necessary={necessary} htmlFor={id} />
 
-          {error?.error && (
-            <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
-          )}
+          {error?.error && <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>}
         </S.InputHeader>
         <TextField
           id={id}

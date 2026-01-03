@@ -10,9 +10,8 @@ export type SchoolRegisterForm = {
   note?: string
 }
 
-export const schoolRegisterSchema: yup.ObjectSchema<SchoolRegisterForm> =
-  yup.object({
-    schoolName,
-    affiliated,
-    note,
-  })
+export const schoolRegisterSchema: yup.ObjectSchema<SchoolRegisterForm> = yup.object({
+  schoolName,
+  affiliated,
+  note,
+})

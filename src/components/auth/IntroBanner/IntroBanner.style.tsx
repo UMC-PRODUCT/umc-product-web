@@ -78,16 +78,8 @@ const Blur = styled.div`
     inset: 0;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    mask-image: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba(22, 22, 22, 0) 0%,
-      rgba(22, 22, 22, 0.7) 100%
-    );
+    mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    background: linear-gradient(180deg, rgba(22, 22, 22, 0) 0%, rgba(22, 22, 22, 0.7) 100%);
     z-index: 0;
   }
 `

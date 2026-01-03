@@ -12,20 +12,18 @@ type LabelProps = React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
   size?: 'md' | 'lg'
 }
 
-export const Label = forwardRef<
-  React.ComponentRef<typeof LabelPrimitive.Root>,
-  LabelProps
->(({ label, necessary, size = 'md', ...props }, ref) => {
-  const fontSize =
-    size === 'md' ? theme.typography.C3.Md : theme.typography.B2.Md
+export const Label = forwardRef<React.ComponentRef<typeof LabelPrimitive.Root>, LabelProps>(
+  ({ label, necessary, size = 'md', ...props }, ref) => {
+    const fontSize = size === 'md' ? theme.typography.C3.Md : theme.typography.B2.Md
 
-  return (
-    <LabelPrimitive.Root ref={ref} css={LabelStyle({ fontSize })} {...props}>
-      {label}
-      {necessary && <Necessary />}
-    </LabelPrimitive.Root>
-  )
-})
+    return (
+      <LabelPrimitive.Root ref={ref} css={LabelStyle({ fontSize })} {...props}>
+        {label}
+        {necessary && <Necessary />}
+      </LabelPrimitive.Root>
+    )
+  },
+)
 
 Label.displayName = 'Label'
 

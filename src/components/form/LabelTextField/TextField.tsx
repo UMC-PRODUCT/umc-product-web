@@ -7,10 +7,7 @@ import type { SvgIconComponent } from '@/types/component'
 
 import * as S from './LabelTextField.style'
 
-export type TextFieldProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'type'
-> & {
+export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
   Icon?: SvgIconComponent
   error?: {
@@ -28,16 +25,7 @@ export type TextFieldProps = Omit<
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
-    {
-      type,
-      placeholder,
-      error,
-      Icon,
-      button,
-      autoComplete,
-      css: wrapperCss,
-      ...inputProps
-    },
+    { type, placeholder, error, Icon, button, autoComplete, css: wrapperCss, ...inputProps },
     ref,
   ) => {
     const { onChange, value, ...restInputProps } = inputProps
@@ -47,8 +35,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     }
 
     const trimmedValue = (typeof value === 'string' ? value : '').trim()
-    const isButtonDisabled =
-      !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
+    const isButtonDisabled = !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
 
     const controlledProps = value !== undefined ? { value } : undefined
 

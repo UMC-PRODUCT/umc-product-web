@@ -51,8 +51,7 @@ export default function DeleteSchool() {
   const findSchoolName = useCallback(
     (targetId?: number) => {
       const selectedId =
-        targetId ??
-        (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+        targetId ?? (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
       if (selectedId === undefined) return '학교 이름'
 
@@ -94,16 +93,8 @@ export default function DeleteSchool() {
   const Buttons = () => {
     return (
       <>
-        <Button
-          label="선택 취소"
-          tone="gray"
-          onClick={() => setSelectedIds(new Set())}
-        />
-        <Button
-          label="선택한 학교 삭제"
-          tone="necessary"
-          onClick={() => openDeleteConfirm()}
-        />
+        <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
+        <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
       </>
     )
   }
@@ -119,9 +110,7 @@ export default function DeleteSchool() {
     <>
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 삭제</S.TabTitle>
-        <S.TabSubtitle>
-          삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.
-        </S.TabSubtitle>
+        <S.TabSubtitle>삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.</S.TabSubtitle>
         <S.FilterWrapper>
           <Flex
             css={{
@@ -152,9 +141,7 @@ export default function DeleteSchool() {
               options={affiliatedOptions}
               placeholder="전체 지부"
               value={affiliated}
-              onChange={(option) =>
-                setAffiliated(option.id === 0 ? undefined : option)
-              }
+              onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
             />
           </Flex>
         </S.FilterWrapper>

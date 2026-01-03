@@ -5,9 +5,7 @@ import CheckIcon from '@/assets/icons/check.svg?react'
 
 import * as S from './Checkbox.style'
 
-type CheckboxProps = React.ComponentPropsWithoutRef<
-  typeof CheckboxPrimitive.Root
->
+type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
 
 export const Checkbox = forwardRef<
   React.ComponentRef<typeof CheckboxPrimitive.Root>,

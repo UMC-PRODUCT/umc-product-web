@@ -1,10 +1,4 @@
-export const DeleteSchoolTableHeaderLabel = [
-  '학교명',
-  '지부',
-  '등록일',
-  '상태',
-  '작업',
-]
+export const DeleteSchoolTableHeaderLabel = ['학교명', '지부', '등록일', '상태', '작업']
 
 export const DeleteAccountTableHeaderLabel = [
   '이름',

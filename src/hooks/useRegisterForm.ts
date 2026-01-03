@@ -62,11 +62,7 @@ export function useRegisterForm() {
     console.log(data)
   }
 
-  const [nameValue, nicknameValue, emailValue] = watch([
-    'name',
-    'nickname',
-    'email',
-  ])
+  const [nameValue, nicknameValue, emailValue] = watch(['name', 'nickname', 'email'])
 
   useEffect(() => {
     // reset confirmation when the email changes

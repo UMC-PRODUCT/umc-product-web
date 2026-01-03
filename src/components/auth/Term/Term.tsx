@@ -16,18 +16,7 @@ type TermProps = {
 }
 
 export const Term = forwardRef<HTMLButtonElement, TermProps>(
-  (
-    {
-      onChange,
-      onClick,
-      termTitle,
-      label,
-      necessary,
-      checked,
-      ...props
-    }: TermProps,
-    ref,
-  ) => {
+  ({ onChange, onClick, termTitle, label, necessary, checked, ...props }: TermProps, ref) => {
     const handleTermTitleClick = (event: MouseEvent<HTMLSpanElement>) => {
       event.stopPropagation()
       onClick?.()
@@ -42,15 +31,8 @@ export const Term = forwardRef<HTMLButtonElement, TermProps>(
         onClick={onChange}
         css={{ cursor: 'pointer' }}
       >
-        <Checkbox
-          onCheckedChange={() => onChange()}
-          checked={checked}
-          ref={ref}
-          {...props}
-        />
-        {termTitle && (
-          <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>
-        )}
+        <Checkbox onCheckedChange={() => onChange()} checked={checked} ref={ref} {...props} />
+        {termTitle && <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>}
         <S.Title>
           {label}
           {necessary !== undefined && ` (${necessary ? '필수' : '선택'})`}

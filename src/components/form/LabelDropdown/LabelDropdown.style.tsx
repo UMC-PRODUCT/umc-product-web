@@ -62,10 +62,8 @@ const OptionItem = styled.li<{ $selected: boolean }>`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  color: ${({ $selected }) =>
-    $selected ? theme.colors.white : theme.colors.gray[400]};
-  background: ${({ $selected }) =>
-    $selected ? theme.colors.gray[700] : 'transparent'};
+  color: ${({ $selected }) => ($selected ? theme.colors.white : theme.colors.gray[400])};
+  background: ${({ $selected }) => ($selected ? theme.colors.gray[700] : 'transparent')};
   transition:
     background 120ms ease,
     color 120ms ease;
@@ -82,12 +80,4 @@ const SelectHeader = styled.div`
   width: 100%;
 `
 
-export {
-  ArrowBox,
-  OptionItem,
-  Options,
-  Placeholder,
-  SelectHeader,
-  SelectWrapper,
-  Trigger,
-}
+export { ArrowBox, OptionItem, Options, Placeholder, SelectHeader, SelectWrapper, Trigger }

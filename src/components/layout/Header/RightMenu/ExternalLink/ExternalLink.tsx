@@ -72,12 +72,7 @@ export default function ExternalLink({
               {subLinks.map((sub) => {
                 const SocialIcon = socialIconMap[sub.icon]
                 return (
-                  <a
-                    key={sub.label}
-                    href={sub.link}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
+                  <a key={sub.label} href={sub.link} target="_blank" rel="noreferrer noopener">
                     <Flex flexDirection="row" gap="6px" alignItems="center">
                       <SocialIcon width={24} height={24} aria-hidden="true" />
                       {sub.label}

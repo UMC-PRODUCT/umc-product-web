@@ -11,10 +11,7 @@ import * as S from '@/routes/(app)/management/account/-styles/shared'
 import EditAccount from './-components/EditAccount'
 
 const tabSchema = yup.object({
-  tab: yup
-    .mixed<ManageAccountTabName>()
-    .oneOf(manageAccountTabValues)
-    .optional(),
+  tab: yup.mixed<ManageAccountTabName>().oneOf(manageAccountTabValues).optional(),
 })
 
 export const Route = createFileRoute('/(app)/management/account/')({

@@ -24,12 +24,5 @@ export type BadgeTone = 'lime' | 'gray' | 'white'
 export type BadgeVariant = 'solid' | 'outline'
 
 // Button 타입
-export type ButtonTone =
-  | 'white'
-  | 'lime'
-  | 'kakao'
-  | 'gray'
-  | 'darkGray'
-  | 'necessary'
-  | 'caution'
+export type ButtonTone = 'white' | 'lime' | 'kakao' | 'gray' | 'darkGray' | 'necessary' | 'caution'
 export type ButtonVariant = 'solid' | 'outline'

@@ -83,10 +83,7 @@ export default function AddSchool() {
           </S.InputRow>
           <S.TextAreaWrapper alignItems="flex-start">
             <Label label="비고" necessary={false}></Label>
-            <S.TextArea
-              placeholder="추가 정보를 입력하세요."
-              {...register('note')}
-            />
+            <S.TextArea placeholder="추가 정보를 입력하세요." {...register('note')} />
           </S.TextAreaWrapper>
           <S.SubmitButtonWrapper width="120px" height="41px">
             <Button
@@ -102,11 +99,7 @@ export default function AddSchool() {
       </S.Form>
 
       {modal.isOpen && (
-        <RegisterConfirm
-          onClose={closeModal}
-          schoolName={modal.schoolName}
-          link={modal.link}
-        />
+        <RegisterConfirm onClose={closeModal} schoolName={modal.schoolName} link={modal.link} />
       )}
     </>
   )

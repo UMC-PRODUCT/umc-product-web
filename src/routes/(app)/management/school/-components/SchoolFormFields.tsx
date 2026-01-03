@@ -52,10 +52,7 @@ export function SchoolFormFields({
       </S.InputRow>
       <S.TextAreaWrapper alignItems="flex-start">
         <Label label="비고" necessary={false}></Label>
-        <S.TextArea
-          placeholder="추가 정보를 입력하세요."
-          {...register('note')}
-        />
+        <S.TextArea placeholder="추가 정보를 입력하세요." {...register('note')} />
       </S.TextAreaWrapper>
       <Flex gap="42px" maxWidth="602px" css={{ alignSelf: 'flex-start' }}>
         <LabelTextField

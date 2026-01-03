@@ -13,14 +13,8 @@ export const registerSchema = yup.object().shape({
     .matches(/^[가-힣]{1,5}$/, '닉네임은 1~5글자의 한글이어야 합니다.')
     .required('양식이 올바르지 않습니다.'),
   email,
-  serviceTerm: yup
-    .boolean()
-    .oneOf([true], '서비스 이용 약관에 동의해 주세요.')
-    .required(),
-  privacyTerm: yup
-    .boolean()
-    .oneOf([true], '개인정보 처리 방침에 동의해 주세요.')
-    .required(),
+  serviceTerm: yup.boolean().oneOf([true], '서비스 이용 약관에 동의해 주세요.').required(),
+  privacyTerm: yup.boolean().oneOf([true], '개인정보 처리 방침에 동의해 주세요.').required(),
   marketingTerm: yup.boolean().required(),
 })
 

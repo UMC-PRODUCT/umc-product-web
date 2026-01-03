@@ -24,27 +24,15 @@ type TermsSectionProps = {
 
 type ModalType = 'service' | 'privacy' | 'marketing' | null
 
-export function TermsSection({
-  terms,
-  onToggleAll,
-  onToggle,
-  errors,
-}: TermsSectionProps) {
-  const hasError =
-    !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
+export function TermsSection({ terms, onToggleAll, onToggle, errors }: TermsSectionProps) {
+  const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
   const [openModal, setOpenModal] = useState<ModalType>(null)
 
   const closeModal = () => setOpenModal(null)
 
   return (
     <>
-      <Flex
-        flexDirection="column"
-        alignItems="flex-start"
-        gap="12px"
-        width="100%"
-        maxWidth="80vw"
-      >
+      <Flex flexDirection="column" alignItems="flex-start" gap="12px" width="100%" maxWidth="80vw">
         <Term
           onChange={onToggleAll}
           label="전체 동의"

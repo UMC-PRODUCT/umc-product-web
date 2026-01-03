@@ -13,15 +13,8 @@ export default function EmailSendModal({ onClose }: { onClose: () => void }) {
         메일함을 확인하여 회원가입을 완료해주세요.`}
       Icon={Notice}
     >
-      <Flex
-        gap="8px"
-        justifyContent="flex-end"
-        alignItems="center"
-        css={{ marginTop: '50px' }}
-      >
-        <span
-          css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}
-        >
+      <Flex gap="8px" justifyContent="flex-end" alignItems="center" css={{ marginTop: '50px' }}>
+        <span css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}>
           메일을 받지 못하셨나요?
         </span>
         <a
