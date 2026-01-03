@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -41,7 +41,7 @@ export default function EditSchool() {
     formState: { isValid, errors },
   } = useForm<SchoolRegisterForm>({
     mode: 'onChange',
-    resolver: yupResolver(schoolRegisterSchema),
+    resolver: zodResolver(schoolRegisterSchema),
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
