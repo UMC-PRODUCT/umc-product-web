@@ -28,7 +28,6 @@ export const Term = forwardRef<HTMLButtonElement, TermProps>(
         alignItems="center"
         gap="2px"
         width="fit-content"
-        onClick={onChange}
         css={{ cursor: 'pointer' }}
       >
         <Checkbox onCheckedChange={() => onChange()} checked={checked} ref={ref} {...props} />

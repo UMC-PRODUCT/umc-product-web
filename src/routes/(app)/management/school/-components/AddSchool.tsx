@@ -39,7 +39,6 @@ export default function AddSchool() {
       schoolName: data.schoolName,
       link: `/management/school/edit?school=${data.schoolName}`,
     })
-    console.log(data)
   }
 
   const closeModal = () => {

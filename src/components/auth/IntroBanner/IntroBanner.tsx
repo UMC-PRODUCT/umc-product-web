@@ -20,9 +20,9 @@ export default function IntroBanner() {
   const [current, setCurrent] = useState(0)
   const [isMdDown, setIsMdDown] = useState(() => {
     if (typeof window === 'undefined') return false
-    const tabletQuery = `(max-width: ${theme.breakPoints.tablet})`
+    const desktopQuery = `(max-width: ${theme.breakPoints.desktop})`
 
-    return window.matchMedia(tabletQuery).matches
+    return window.matchMedia(desktopQuery).matches
   })
 
   useEffect(() => {

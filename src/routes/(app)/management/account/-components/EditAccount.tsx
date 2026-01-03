@@ -114,7 +114,7 @@ export default function EditAccount() {
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === 6) return new Set()
+      if (prev.size === ACCOUNT_DELETE_MOCK.length) return new Set()
       return new Set(ACCOUNT_DELETE_MOCK.map((item) => item.id))
     })
   }

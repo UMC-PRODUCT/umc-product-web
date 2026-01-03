@@ -61,6 +61,10 @@ export default function DeleteSchool() {
     [selectedIds],
   )
 
+  const closeDeleteModal = useCallback(() => {
+    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+  }, [])
+
   const openDeleteConfirm = useCallback(
     (targetId?: number) => {
       const count = targetId ? 1 : selectedIds.size
@@ -73,15 +77,12 @@ export default function DeleteSchool() {
         onConfirm: () => {
           // TODO: 선택된 학교 삭제 API 연동
           console.log('delete target', targetId ?? Array.from(selectedIds))
+          closeDeleteModal()
         },
       })
     },
-    [findSchoolName, selectedIds],
+    [closeDeleteModal, findSchoolName, selectedIds],
   )
-
-  const closeDeleteModal = () => {
-    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
-  }
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage)
@@ -99,7 +100,7 @@ export default function DeleteSchool() {
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === 5) return new Set()
+      if (prev.size === UNI_DELETE_MOCK.length) return new Set()
       return new Set(UNI_DELETE_MOCK.map((item) => item.id))
     })
   }
@@ -144,7 +145,7 @@ export default function DeleteSchool() {
           </Flex>
         </S.FilterWrapper>
         <ManagementTable
-          isAllChecked={selectedIds.size === 5}
+          isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
           onToggleAll={() => toggleAll()}
           totalAmounts={UNI_DELETE_MOCK.length}
           headerLabels={DeleteSchoolTableHeaderLabel}
