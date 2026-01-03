@@ -68,31 +68,35 @@ const authAuthLoginIndexRoute = authAuthLoginIndexRouteImport.update({
   path: '/auth/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const appManagementSchoolIndexRoute = appManagementSchoolIndexRouteImport.update({
-  id: '/school/',
-  path: '/school/',
-  getParentRoute: () => appManagementRouteRoute,
-} as any)
-const appManagementPolicyIndexRoute = appManagementPolicyIndexRouteImport.update({
-  id: '/policy/',
-  path: '/policy/',
-  getParentRoute: () => appManagementRouteRoute,
-} as any)
-const appManagementNoticeIndexRoute = appManagementNoticeIndexRouteImport.update({
-  id: '/notice/',
-  path: '/notice/',
-  getParentRoute: () => appManagementRouteRoute,
-} as any)
+const appManagementSchoolIndexRoute =
+  appManagementSchoolIndexRouteImport.update({
+    id: '/school/',
+    path: '/school/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementPolicyIndexRoute =
+  appManagementPolicyIndexRouteImport.update({
+    id: '/policy/',
+    path: '/policy/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementNoticeIndexRoute =
+  appManagementNoticeIndexRouteImport.update({
+    id: '/notice/',
+    path: '/notice/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 const appManagementDataIndexRoute = appManagementDataIndexRouteImport.update({
   id: '/data/',
   path: '/data/',
   getParentRoute: () => appManagementRouteRoute,
 } as any)
-const appManagementAccountIndexRoute = appManagementAccountIndexRouteImport.update({
-  id: '/account/',
-  path: '/account/',
-  getParentRoute: () => appManagementRouteRoute,
-} as any)
+const appManagementAccountIndexRoute =
+  appManagementAccountIndexRouteImport.update({
+    id: '/account/',
+    path: '/account/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -317,9 +321,8 @@ const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
   appManagementSchoolIndexRoute: appManagementSchoolIndexRoute,
 }
 
-const appManagementRouteRouteWithChildren = appManagementRouteRoute._addFileChildren(
-  appManagementRouteRouteChildren,
-)
+const appManagementRouteRouteWithChildren =
+  appManagementRouteRoute._addFileChildren(appManagementRouteRouteChildren)
 
 interface appRouteRouteChildren {
   appManagementRouteRoute: typeof appManagementRouteRouteWithChildren
@@ -335,7 +338,9 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appRecruitingIndexRoute: appRecruitingIndexRoute,
 }
 
-const appRouteRouteWithChildren = appRouteRoute._addFileChildren(appRouteRouteChildren)
+const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
+  appRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
