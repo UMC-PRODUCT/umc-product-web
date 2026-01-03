@@ -1,4 +1,4 @@
-import TermModalLayout from '@/components/modal/TermModal/TermModalLayout'
+import TermModalLayout from '@/components/Modal/TermModal/TermModalLayout'
 import privacyTermContent from '@/constants/privacyTerm.md?raw'
 
 export default function PrivacyTerm({ onClose }: { onClose: () => void }) {

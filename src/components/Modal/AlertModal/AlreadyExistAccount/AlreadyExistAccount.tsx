@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import Notice from '@/assets/icons/notice.svg?react'
 import { Button } from '@/components/common/Button/Button'
 import Flex from '@/components/common/Flex/Flex'
-import AlertModalLayout from '@/components/modal/AlertModal/AlertModalLayout/AlertModalLayout'
+import AlertModalLayout from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout'
 
 export default function AlreadyExistAccount({
   onClose,

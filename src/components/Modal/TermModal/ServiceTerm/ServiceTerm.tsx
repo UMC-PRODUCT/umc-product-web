@@ -1,4 +1,4 @@
-import TermModalLayout from '@/components/modal/TermModal/TermModalLayout'
+import TermModalLayout from '@/components/Modal/TermModal/TermModalLayout'
 import serviceTermContent from '@/constants/serviceTerm.md?raw'
 
 export default function ServiceTerm({ onClose }: { onClose: () => void }) {

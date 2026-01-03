@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { Button as ManagementActionButton } from '@/components/common/Button/Button'
 import type { Option } from '@/components/common/Dropdown/Dropdown'
-import DeleteConfirm from '@/components/modal/AlertModal/DeleteConfirm/DeleteConfirm'
+import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
 import {
   ACCOUNT_DELETE_MOCK,

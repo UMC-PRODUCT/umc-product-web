@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/common/Button/Button'
 import Label from '@/components/common/Label/Label'
 import { LabelTextField } from '@/components/form/LabelTextField/LabelTextField'
-import RegisterConfirm from '@/components/modal/AlertModal/RegisterConfirm/RegisterConfirm'
+import RegisterConfirm from '@/components/Modal/AlertModal/RegisterConfirm/RegisterConfirm'
 import type { SchoolRegisterForm } from '@/schema/management'
 import { schoolRegisterSchema } from '@/schema/management'
 
