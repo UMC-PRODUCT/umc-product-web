@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -39,7 +39,7 @@ export function useRegisterForm() {
     formState: { isValid, errors },
   } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: yupResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       school: '',
       name: '',
@@ -62,11 +62,7 @@ export function useRegisterForm() {
     console.log(data)
   }
 
-  const [nameValue, nicknameValue, emailValue] = watch([
-    'name',
-    'nickname',
-    'email',
-  ])
+  const [nameValue, nicknameValue, emailValue] = watch(['name', 'nickname', 'email'])
 
   useEffect(() => {
     // reset confirmation when the email changes

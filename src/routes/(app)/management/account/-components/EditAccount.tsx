@@ -4,12 +4,7 @@ import { Button as ManagementActionButton } from '@/components/common/Button/But
 import type { Option } from '@/components/common/Dropdown/Dropdown'
 import DeleteConfirm from '@/components/Modal/AlertModal/DeleteConfirm/DeleteConfirm'
 import { DeleteAccountTableHeaderLabel } from '@/constants/tableHeaders'
-import {
-  ACCOUNT_DELETE_MOCK,
-  AFFILIATED_MOCK,
-  ROLE_MOCK,
-  STATUS_MOCK,
-} from '@/mocks/mocks'
+import { ACCOUNT_DELETE_MOCK, AFFILIATED_MOCK, ROLE_MOCK, STATUS_MOCK } from '@/mocks/mocks'
 import ManagementTable from '@/routes/(app)/management/-components/ManagementTable'
 import * as S from '@/routes/(app)/management/account/-styles/shared'
 
@@ -54,32 +49,23 @@ export default function EditAccount() {
   )
 
   const roleOptions = useMemo(
-    () => [
-      { label: '-- 전체 역할 --', id: 0 },
-      ...ROLE_MOCK.filter((option) => option.id !== 0),
-    ],
+    () => [{ label: '-- 전체 역할 --', id: 0 }, ...ROLE_MOCK.filter((option) => option.id !== 0)],
     [],
   )
 
   const statusOptions = useMemo(
-    () => [
-      { label: '-- 전체 상태 --', id: 0 },
-      ...STATUS_MOCK.filter((option) => option.id !== 0),
-    ],
+    () => [{ label: '-- 전체 상태 --', id: 0 }, ...STATUS_MOCK.filter((option) => option.id !== 0)],
     [],
   )
 
   const findAccountName = useCallback(
     (targetId?: number) => {
       const selectedId =
-        targetId ??
-        (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+        targetId ?? (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
       if (selectedId === undefined) return '계정 이름'
 
-      const matched = ACCOUNT_DELETE_MOCK.find(
-        (account) => account.id === selectedId,
-      )
+      const matched = ACCOUNT_DELETE_MOCK.find((account) => account.id === selectedId)
       return matched?.name ?? '계정 이름'
     },
     [selectedIds],
@@ -128,27 +114,25 @@ export default function EditAccount() {
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === 6) return new Set()
+      if (prev.size === ACCOUNT_DELETE_MOCK.length) return new Set()
       return new Set(ACCOUNT_DELETE_MOCK.map((item) => item.id))
     })
   }
 
-  const Buttons = () => {
-    return (
-      <>
-        <ManagementActionButton
-          label="선택 취소"
-          tone="gray"
-          onClick={() => setSelectedIds(new Set())}
-        />
-        <ManagementActionButton
-          label="선택한 계정 삭제"
-          tone="necessary"
-          onClick={() => openDeleteConfirm()}
-        />
-      </>
-    )
-  }
+  const buttonChildren = (
+    <>
+      <ManagementActionButton
+        label="선택 취소"
+        tone="gray"
+        onClick={() => setSelectedIds(new Set())}
+      />
+      <ManagementActionButton
+        label="선택한 계정 삭제"
+        tone="necessary"
+        onClick={() => openDeleteConfirm()}
+      />
+    </>
+  )
 
   return (
     <>
@@ -162,19 +146,13 @@ export default function EditAccount() {
             searchTerm={searchTerm}
             onChangeSearch={setSearchTerm}
             affiliated={affiliated}
-            onSelectAffiliated={(option) =>
-              setAffiliated(option.id === 0 ? undefined : option)
-            }
+            onSelectAffiliated={(option) => setAffiliated(option.id === 0 ? undefined : option)}
             affiliatedOptions={affiliatedOptions}
             role={role}
-            onSelectRole={(option) =>
-              setRole(option.id === 0 ? undefined : option)
-            }
+            onSelectRole={(option) => setRole(option.id === 0 ? undefined : option)}
             roleOptions={roleOptions}
             status={status}
-            onSelectStatus={(option) =>
-              setStatus(option.id === 0 ? undefined : option)
-            }
+            onSelectStatus={(option) => setStatus(option.id === 0 ? undefined : option)}
             statusOptions={statusOptions}
           />
         </S.FilterWrapper>
@@ -187,7 +165,7 @@ export default function EditAccount() {
           totalPages={totalPages}
           onChangePage={handlePageChange}
           type="account"
-          buttonChildren={<Buttons />}
+          buttonChildren={buttonChildren}
         >
           <AccountTableRows
             selectedIds={selectedIds}

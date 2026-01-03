@@ -38,11 +38,7 @@ export default function DeleteTableRow({
           <S.Td>{item.branch}</S.Td>
           <S.Td>{item.date}</S.Td>
           <S.Td>
-            <Badge
-              tone={item.status === '활성' ? 'lime' : 'gray'}
-              variant="outline"
-              typo="B4.Md"
-            >
+            <Badge tone={item.status === '활성' ? 'lime' : 'gray'} variant="outline" typo="B4.Md">
               {item.status}
             </Badge>
           </S.Td>

@@ -20,9 +20,9 @@ export default function IntroBanner() {
   const [current, setCurrent] = useState(0)
   const [isMdDown, setIsMdDown] = useState(() => {
     if (typeof window === 'undefined') return false
-    const tabletQuery = `(max-width: ${theme.breakPoints.tablet})`
+    const desktopQuery = `(max-width: ${theme.breakPoints.desktop})`
 
-    return window.matchMedia(tabletQuery).matches
+    return window.matchMedia(desktopQuery).matches
   })
 
   useEffect(() => {
@@ -41,9 +41,7 @@ export default function IntroBanner() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const mediaQuery = window.matchMedia(
-      `(max-width: ${theme.breakPoints.desktop})`,
-    )
+    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakPoints.desktop})`)
     const handleChange = (event: MediaQueryListEvent) => {
       setIsMdDown(event.matches)
     }
@@ -81,8 +79,7 @@ export default function IntroBanner() {
             {renderedSlides}
             <S.Blur>
               <S.Slogan>
-                Break the Rules! <br /> 세상의 틀을 깰 챌린저들이 하나로 모이는
-                곳
+                Break the Rules! <br /> 세상의 틀을 깰 챌린저들이 하나로 모이는 곳
               </S.Slogan>
               <S.Slider aria-hidden>
                 {slides.map((_, idx) => (

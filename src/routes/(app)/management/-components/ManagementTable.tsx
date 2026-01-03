@@ -67,10 +67,7 @@ export default function ManagementTable({
             >
               <tr>
                 <S.Th>
-                  <Checkbox
-                    onCheckedChange={() => onToggleAll()}
-                    checked={isAllChecked}
-                  />
+                  <Checkbox onCheckedChange={onToggleAll} checked={isAllChecked} />
                 </S.Th>
                 {headerLabels.map((label) => (
                   <S.Th key={label}>{label}</S.Th>

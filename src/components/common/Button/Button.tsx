@@ -1,20 +1,13 @@
 import { useTheme } from '@emotion/react'
 import { forwardRef } from 'react'
 
-import type {
-  ButtonTone,
-  ButtonVariant,
-  SvgIconComponent,
-} from '@/types/component'
+import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@/types/component'
 import type { TypoToken } from '@/types/typo'
 import { resolveTypo } from '@/utils/resolveTypo'
 
 import * as S from './Button.style'
 
-type ButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'children'
-> & {
+type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   label?: string
   tone: ButtonTone
   variant?: ButtonVariant

@@ -1,27 +1,21 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import * as yup from 'yup'
+import { z } from 'zod/v3'
 
 import Flex from '@/components/common/Flex/Flex'
 import Tab from '@/components/common/Tab/Tab'
 import PageTitle from '@/components/layout/PageTitle/PageTitle'
 import type { ManageAccountTabName } from '@/constants/tabNames'
-import { manageAccountTabs, manageAccountTabValues } from '@/constants/tabNames'
+import { manageAccountTabs } from '@/constants/tabNames'
 import * as S from '@/routes/(app)/management/account/-styles/shared'
 
 import EditAccount from './-components/EditAccount'
 
-const tabSchema = yup.object({
-  tab: yup
-    .mixed<ManageAccountTabName>()
-    .oneOf(manageAccountTabValues)
-    .optional(),
+const tabSchema = z.object({
+  tab: z.enum(['add', 'edit', 'level'] as const).optional(),
 })
 
 export const Route = createFileRoute('/(app)/management/account/')({
-  validateSearch: (search) =>
-    tabSchema.validateSync(search, {
-      stripUnknown: true,
-    }),
+  validateSearch: (search) => tabSchema.parse(search),
   component: RouteComponent,
 })
 
@@ -49,6 +43,8 @@ function RouteComponent() {
       >
         <PageTitle title="계정 관리" />
         <Tab tabs={manageAccountTabs} value={activeTab} onValueChange={setTab}>
+          {/* TODO: 'add' 탭 - CreateAccount 컴포넌트 구현 예정 */}
+          {/* TODO: 'level' 탭 - ManageLevelAccount 컴포넌트 구현 예정 */}
           {activeTab === 'edit' && <EditAccount />}
         </Tab>
       </Flex>

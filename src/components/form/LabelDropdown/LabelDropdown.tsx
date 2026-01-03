@@ -35,15 +35,8 @@ export default function LabelDropdown({
   return (
     <Field>
       <S.SelectHeader>
-        <Label
-          id={labelId}
-          htmlFor={triggerId}
-          label={label}
-          necessary={true}
-        />
-        {error?.error && (
-          <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>
-        )}
+        <Label id={labelId} htmlFor={triggerId} label={label} necessary={true} />
+        {error?.error && <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>}
       </S.SelectHeader>
       <Dropdown
         placeholder={placeholder}

@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -41,7 +41,7 @@ export default function EditSchool() {
     formState: { isValid, errors },
   } = useForm<SchoolRegisterForm>({
     mode: 'onChange',
-    resolver: yupResolver(schoolRegisterSchema),
+    resolver: zodResolver(schoolRegisterSchema),
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
@@ -71,9 +71,7 @@ export default function EditSchool() {
     <>
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 정보 수정</S.TabTitle>
-        <S.TabSubtitle>
-          수정할 학교를 선택하고 정보를 업데이트하세요.
-        </S.TabSubtitle>
+        <S.TabSubtitle>수정할 학교를 선택하고 정보를 업데이트하세요.</S.TabSubtitle>
       </S.TabHeader>
       <S.FormCard>
         <S.DropdownWrapper alignItems="flex-start">
@@ -115,11 +113,7 @@ export default function EditSchool() {
       </S.FormCard>
 
       {modal.isOpen && (
-        <RegisterConfirm
-          onClose={closeModal}
-          schoolName={modal.schoolName}
-          link={modal.link}
-        />
+        <RegisterConfirm onClose={closeModal} schoolName={modal.schoolName} link={modal.link} />
       )}
     </>
   )

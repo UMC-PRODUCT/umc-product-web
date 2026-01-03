@@ -16,9 +16,7 @@ function ModalRoot({ children, ...props }: ModalRootProps) {
 // ============================================================================
 // Modal.Trigger
 // ============================================================================
-type ModalTriggerProps = ComponentPropsWithoutRef<
-  typeof DialogPrimitive.Trigger
->
+type ModalTriggerProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>
 
 const ModalTrigger = forwardRef<HTMLButtonElement, ModalTriggerProps>(
   ({ children, ...props }, ref) => {
@@ -38,10 +36,7 @@ type ModalPortalProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>
 
 function ModalPortal({ children, ...props }: ModalPortalProps) {
   return (
-    <DialogPrimitive.Portal
-      container={document.getElementById('modal-root')}
-      {...props}
-    >
+    <DialogPrimitive.Portal container={document.getElementById('modal-root')} {...props}>
       {children}
     </DialogPrimitive.Portal>
   )
@@ -50,32 +45,22 @@ function ModalPortal({ children, ...props }: ModalPortalProps) {
 // ============================================================================
 // Modal.Overlay
 // ============================================================================
-type ModalOverlayProps = ComponentPropsWithoutRef<
-  typeof DialogPrimitive.Overlay
->
+type ModalOverlayProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 
-const ModalOverlay = forwardRef<HTMLDivElement, ModalOverlayProps>(
-  (props, ref) => {
-    return <S.StyledOverlay ref={ref} {...props} />
-  },
-)
+const ModalOverlay = forwardRef<HTMLDivElement, ModalOverlayProps>((props, ref) => {
+  return <S.StyledOverlay ref={ref} {...props} />
+})
 ModalOverlay.displayName = 'Modal.Overlay'
 
 // ============================================================================
 // Modal.Content
 // ============================================================================
-type ModalContentProps = ComponentPropsWithoutRef<
-  typeof DialogPrimitive.Content
->
+type ModalContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 
 const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
   ({ children, ...props }, ref) => {
     return (
-      <S.StyledContent
-        ref={ref}
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        {...props}
-      >
+      <S.StyledContent ref={ref} onOpenAutoFocus={(e) => e.preventDefault()} {...props}>
         {children}
       </S.StyledContent>
     )
@@ -91,15 +76,13 @@ type ModalHeaderProps = {
   className?: string
 }
 
-const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
-  ({ children, className }, ref) => {
-    return (
-      <S.Header ref={ref} className={className}>
-        {children}
-      </S.Header>
-    )
-  },
-)
+const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(({ children, className }, ref) => {
+  return (
+    <S.Header ref={ref} className={className}>
+      {children}
+    </S.Header>
+  )
+})
 ModalHeader.displayName = 'Modal.Header'
 
 // ============================================================================
@@ -121,20 +104,17 @@ ModalTitle.displayName = 'Modal.Title'
 // ============================================================================
 // Modal.Description
 // ============================================================================
-type ModalDescriptionProps = ComponentPropsWithoutRef<
-  typeof DialogPrimitive.Description
->
+type ModalDescriptionProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 
-const ModalDescription = forwardRef<
-  HTMLParagraphElement,
-  ModalDescriptionProps
->(({ children, ...props }, ref) => {
-  return (
-    <DialogPrimitive.Description ref={ref} {...props}>
-      {children}
-    </DialogPrimitive.Description>
-  )
-})
+const ModalDescription = forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
+  ({ children, ...props }, ref) => {
+    return (
+      <DialogPrimitive.Description ref={ref} {...props}>
+        {children}
+      </DialogPrimitive.Description>
+    )
+  },
+)
 ModalDescription.displayName = 'Modal.Description'
 
 // ============================================================================
@@ -145,15 +125,13 @@ type ModalBodyProps = {
   className?: string
 }
 
-const ModalBody = forwardRef<HTMLDivElement, ModalBodyProps>(
-  ({ children, className }, ref) => {
-    return (
-      <S.Body ref={ref} className={className}>
-        {children}
-      </S.Body>
-    )
-  },
-)
+const ModalBody = forwardRef<HTMLDivElement, ModalBodyProps>(({ children, className }, ref) => {
+  return (
+    <S.Body ref={ref} className={className}>
+      {children}
+    </S.Body>
+  )
+})
 ModalBody.displayName = 'Modal.Body'
 
 // ============================================================================
@@ -164,15 +142,13 @@ type ModalFooterProps = {
   className?: string
 }
 
-const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
-  ({ children, className }, ref) => {
-    return (
-      <S.Footer ref={ref} className={className}>
-        {children}
-      </S.Footer>
-    )
-  },
-)
+const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(({ children, className }, ref) => {
+  return (
+    <S.Footer ref={ref} className={className}>
+      {children}
+    </S.Footer>
+  )
+})
 ModalFooter.displayName = 'Modal.Footer'
 
 // ============================================================================

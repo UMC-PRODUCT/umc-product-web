@@ -22,23 +22,11 @@ type DropdownProps = {
 
 export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
   (
-    {
-      placeholder,
-      options,
-      value,
-      defaultValue,
-      onChange,
-      id,
-      ariaLabelledby,
-      className,
-      css,
-    },
+    { placeholder, options, value, defaultValue, onChange, id, ariaLabelledby, className, css },
     ref,
   ) => {
     const handleValueChange = (selectedValue: string) => {
-      const selectedOption = options.find(
-        (opt) => String(opt.id) === selectedValue,
-      )
+      const selectedOption = options.find((opt) => String(opt.id) === selectedValue)
       if (selectedOption) {
         onChange?.(selectedOption)
       }

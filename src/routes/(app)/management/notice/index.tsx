@@ -5,5 +5,5 @@ export const Route = createFileRoute('/(app)/management/notice/')({
 })
 
 function RouteComponent() {
-  return <div css={{ color: 'white' }}>Hello "/(app)/management/notice"!</div>
+  return <div css={{ color: 'white' }}>Hello /(app)/management/notice!</div>
 }

@@ -125,7 +125,6 @@ function Register() {
             />
             <Button
               type="submit"
-              onClick={handleSubmit(onSubmit)}
               label="회원가입"
               tone="lime"
               typo="B3.Sb"
@@ -136,9 +135,7 @@ function Register() {
         </form>
       </AuthSection>
 
-      {isEmailModalOpen && (
-        <EmailSendModal onClose={() => setIsEmailModalOpen(false)} />
-      )}
+      {isEmailModalOpen && <EmailSendModal onClose={() => setIsEmailModalOpen(false)} />}
     </>
   )
 }

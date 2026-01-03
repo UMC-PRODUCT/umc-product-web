@@ -1,26 +1,23 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import * as yup from 'yup'
+import { z } from 'zod/v3'
 
 import Flex from '@/components/common/Flex/Flex'
 import Tab from '@/components/common/Tab/Tab'
 import PageTitle from '@/components/layout/PageTitle/PageTitle'
 import type { ManageSchoolTabName } from '@/constants/tabNames'
-import { manageSchoolTabs, manageSchoolTabValues } from '@/constants/tabNames'
+import { manageSchoolTabs } from '@/constants/tabNames'
 
 import AddSchool from './-components/AddSchool'
 import DeleteSchool from './-components/DeleteSchool'
 import EditSchool from './-components/EditSchool'
 import * as S from './School.style'
 
-const tabSchema = yup.object({
-  tab: yup.mixed<ManageSchoolTabName>().oneOf(manageSchoolTabValues).optional(),
+const tabSchema = z.object({
+  tab: z.enum(['add', 'delete', 'edit'] as const).optional(),
 })
 
 export const Route = createFileRoute('/(app)/management/school/')({
-  validateSearch: (search) =>
-    tabSchema.validateSync(search, {
-      stripUnknown: true,
-    }),
+  validateSearch: (search) => tabSchema.parse(search),
   component: RouteComponent,
 })
 

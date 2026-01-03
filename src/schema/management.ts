@@ -1,18 +1,9 @@
-import * as yup from 'yup'
+import { z } from 'zod/v3'
 
-const schoolName = yup.string().required('학교명을 입력하지 않았습니다.')
-const affiliated = yup.string().optional()
-const note = yup.string().optional()
+export const schoolRegisterSchema = z.object({
+  schoolName: z.string().min(1, '학교명을 입력하지 않았습니다.'),
+  affiliated: z.string().optional(),
+  note: z.string().optional(),
+})
 
-export type SchoolRegisterForm = {
-  schoolName: string
-  affiliated?: string
-  note?: string
-}
-
-export const schoolRegisterSchema: yup.ObjectSchema<SchoolRegisterForm> =
-  yup.object({
-    schoolName,
-    affiliated,
-    note,
-  })
+export type SchoolRegisterForm = z.infer<typeof schoolRegisterSchema>

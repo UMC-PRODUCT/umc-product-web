@@ -50,11 +50,7 @@ export function AccountTableRows({
           <S.Td>
             <Badge
               tone={
-                item.status === 'ACTIVE'
-                  ? 'lime'
-                  : item.status === 'PENDING'
-                    ? 'white'
-                    : 'gray'
+                item.status === 'ACTIVE' ? 'lime' : item.status === 'PENDING' ? 'white' : 'gray'
               }
               variant="outline"
               typo="B4.Md"

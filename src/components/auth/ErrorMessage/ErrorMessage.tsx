@@ -8,10 +8,6 @@ const span = () =>
     ...theme.typography.C3.Md,
   })
 
-export default function ErrorMessage({
-  errorMessage,
-}: {
-  errorMessage: string
-}) {
+export default function ErrorMessage({ errorMessage }: { errorMessage: string }) {
   return <span css={span()}>{errorMessage}</span>
 }

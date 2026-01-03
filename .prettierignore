@@ -1,3 +1,19 @@
+# Lock files
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+# Auto-generated files
+src/**/*.gen.ts
+src/**/*.d.ts
+
+# Build output
+dist
+dist-ssr
+
+# Dependencies
+node_modules
+
+# Cache
+coverage
+.eslintcache

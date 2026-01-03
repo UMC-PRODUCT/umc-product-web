@@ -51,8 +51,7 @@ export default function DeleteSchool() {
   const findSchoolName = useCallback(
     (targetId?: number) => {
       const selectedId =
-        targetId ??
-        (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+        targetId ?? (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
 
       if (selectedId === undefined) return '학교 이름'
 
@@ -61,6 +60,10 @@ export default function DeleteSchool() {
     },
     [selectedIds],
   )
+
+  const closeDeleteModal = useCallback(() => {
+    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+  }, [])
 
   const openDeleteConfirm = useCallback(
     (targetId?: number) => {
@@ -74,15 +77,12 @@ export default function DeleteSchool() {
         onConfirm: () => {
           // TODO: 선택된 학교 삭제 API 연동
           console.log('delete target', targetId ?? Array.from(selectedIds))
+          closeDeleteModal()
         },
       })
     },
-    [findSchoolName, selectedIds],
+    [closeDeleteModal, findSchoolName, selectedIds],
   )
-
-  const closeDeleteModal = () => {
-    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
-  }
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage)
@@ -91,26 +91,16 @@ export default function DeleteSchool() {
     window.history.replaceState(null, '', url.toString())
   }
 
-  const Buttons = () => {
-    return (
-      <>
-        <Button
-          label="선택 취소"
-          tone="gray"
-          onClick={() => setSelectedIds(new Set())}
-        />
-        <Button
-          label="선택한 학교 삭제"
-          tone="necessary"
-          onClick={() => openDeleteConfirm()}
-        />
-      </>
-    )
-  }
+  const buttonChildren = (
+    <>
+      <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
+      <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
+    </>
+  )
 
   const toggleAll = () => {
     setSelectedIds((prev) => {
-      if (prev.size === 5) return new Set()
+      if (prev.size === UNI_DELETE_MOCK.length) return new Set()
       return new Set(UNI_DELETE_MOCK.map((item) => item.id))
     })
   }
@@ -119,9 +109,7 @@ export default function DeleteSchool() {
     <>
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 삭제</S.TabTitle>
-        <S.TabSubtitle>
-          삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.
-        </S.TabSubtitle>
+        <S.TabSubtitle>삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.</S.TabSubtitle>
         <S.FilterWrapper>
           <Flex
             css={{
@@ -152,14 +140,12 @@ export default function DeleteSchool() {
               options={affiliatedOptions}
               placeholder="전체 지부"
               value={affiliated}
-              onChange={(option) =>
-                setAffiliated(option.id === 0 ? undefined : option)
-              }
+              onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
             />
           </Flex>
         </S.FilterWrapper>
         <ManagementTable
-          isAllChecked={selectedIds.size === 5}
+          isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
           onToggleAll={() => toggleAll()}
           totalAmounts={UNI_DELETE_MOCK.length}
           headerLabels={DeleteSchoolTableHeaderLabel}
@@ -167,7 +153,7 @@ export default function DeleteSchool() {
           currentPage={page}
           totalPages={5}
           onChangePage={handlePageChange}
-          buttonChildren={<Buttons />}
+          buttonChildren={buttonChildren}
         >
           <DeleteTableRow
             setSelectedIds={setSelectedIds}
