@@ -23,6 +23,9 @@ const InputWrapper = styled.div`
   ${media.down(theme.breakPoints.mobile)} {
     gap: 8px;
   }
+  button {
+    width: 92px;
+  }
 `
 
 const IconBox = styled.span`

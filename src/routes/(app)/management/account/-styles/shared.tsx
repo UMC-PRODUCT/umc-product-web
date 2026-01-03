@@ -147,7 +147,7 @@ export const Td = styled.td`
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
   white-space: nowrap;
-  button {
+  button:not([role='checkbox']) {
     width: 57px;
     height: 28px;
   }

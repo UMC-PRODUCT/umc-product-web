@@ -81,18 +81,21 @@ export const StyledContent = styled(DialogPrimitive.Content)`
 
 export const Header = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 `
 
 export const Body = styled.div`
   flex: 1;
+  width: 100%;
 `
 
 export const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  width: 100%;
 `
 
 export const CloseButton = styled.button`

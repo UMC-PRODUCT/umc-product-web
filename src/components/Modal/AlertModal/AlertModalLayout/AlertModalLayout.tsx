@@ -2,9 +2,8 @@ import Close from '@/assets/icons/close.svg?react'
 import Flex from '@/components/common/Flex/Flex'
 import Instruction from '@/components/common/Instruction/Instruction'
 import { Modal } from '@/components/common/Modal'
+import * as S from '@/components/Modal/AlertModal/AlertModalLayout/AlertModalLayout.style'
 import { theme } from '@/styles/theme'
-
-import * as S from './AlertModalLayout.style'
 
 type AlertModalLayoutProps = {
   onClose: () => void
@@ -44,6 +43,7 @@ export default function AlertModalLayout({
               <Flex
                 justifyContent="space-between"
                 alignItems="center"
+                width="100%"
                 css={{ marginBottom: '33px' }}
               >
                 <Modal.Title asChild>

@@ -5,8 +5,7 @@ import remarkGfm from 'remark-gfm'
 import Close from '@/assets/icons/close.svg?react'
 import Flex from '@/components/common/Flex/Flex'
 import { Modal } from '@/components/common/Modal'
-
-import * as S from './TermModalLayout.style'
+import * as S from '@/components/Modal/TermModal/TermModalLayout.style'
 
 type TermModalLayoutProps = {
   title?: string
@@ -66,7 +65,9 @@ export default function TermModalLayout({
                     <S.Title>{title}</S.Title>
                   </Modal.Title>
                   <Modal.Close asChild>
-                    <Close css={{ cursor: 'pointer' }} />
+                    <Close
+                      css={{ cursor: 'pointer', width: '21px', height: '21px' }}
+                    />
                   </Modal.Close>
                 </Flex>
               </S.Header>

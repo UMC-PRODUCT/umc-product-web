@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import ErrorMessage from '@/components/auth/ErrorMessage/ErrorMessage'
 import Flex from '@/components/common/Flex/Flex'
-import MarketingTerm from '@/components/modal/TermModal/MarketingTerm/MarketingTerm'
-import PrivacyTerm from '@/components/modal/TermModal/PrivacyTerm/PrivacyTerm'
-import ServiceTerm from '@/components/modal/TermModal/ServiceTerm/ServiceTerm'
+import MarketingTerm from '@/components/Modal/TermModal/MarketingTerm/MarketingTerm'
+import PrivacyTerm from '@/components/Modal/TermModal/PrivacyTerm/PrivacyTerm'
+import ServiceTerm from '@/components/Modal/TermModal/ServiceTerm/ServiceTerm'
 import type { TermKey } from '@/hooks/useRegisterForm'
 
 import { Term } from './Term'

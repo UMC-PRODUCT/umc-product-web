@@ -24,7 +24,7 @@ export default function Instruction({
 
   return (
     <S.Container>
-      <Icon width={iconSize} height={iconSize} fill={color} />
+      <Icon width={iconSize} height={iconSize} fill={color} color={color} />
       <S.Text color={color} style={textStyle}>
         {content}
       </S.Text>
