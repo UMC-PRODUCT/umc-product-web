@@ -11,10 +11,6 @@ export const PageLayout = styled(Flex)`
   ${media.down(theme.breakPoints.tablet)} {
     padding: 20px 20px;
   }
-  span {
-    text-align: start;
-    ${theme.typography.B3.Md}
-  }
 `
 
 export const Info = styled.span`
@@ -58,7 +54,7 @@ export const BadgeWrapper = styled.div`
   margin-left: auto;
   min-width: 0;
   flex-wrap: nowrap;
-
+  gap: 18px;
   ${media.down(theme.breakPoints.tablet)} {
     display: none;
   }
@@ -100,4 +96,35 @@ export const SubmitContent = styled.div`
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.B4.Sb}
   }
+`
+
+export const BorderSection = styled(Flex)`
+  width: 100%;
+  border: 1.5px solid ${theme.colors.gray[700]};
+  color: ${theme.colors.gray[300]};
+  ${theme.typography.B3.Rg}
+  white-space: pre-wrap;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 956px;
+`
+
+export const QuestionLayout = styled(Flex)`
+  flex-direction: column;
+  gap: 16px;
+  background-color: ${theme.colors.gray[800]};
+  border: 1.5px solid ${theme.colors.gray[700]};
+  padding: 22px 28px;
+  border-radius: 8px;
+`
+
+export const QuestionTitle = styled.div`
+  color: ${theme.colors.white};
+  ${theme.typography.B2.Md}
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 12px;
+  width: 100%;
+  border-bottom: 1px solid ${theme.colors.gray[600]};
 `

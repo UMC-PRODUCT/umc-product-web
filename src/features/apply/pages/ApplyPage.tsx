@@ -7,14 +7,27 @@ import { Flex } from '@/shared/ui/common/Flex'
 
 import AfterSubmit from '../components/AfterSubmit'
 import BeforeSubmit from '../components/BeforeSubmit'
+import CautionConfirm from '../components/modals/CautionConfirm'
+
+type ModalState = {
+  isOpen: boolean
+  link: string
+}
 
 export function ApplyPage() {
-  const [alreadySubmitted, _setAlreadySubmitted] = useState(true) // TODO: 추후 API 연동 시 지원 여부에 따라 변경
+  const [alreadySubmitted, _setAlreadySubmitted] = useState(false) // TODO: 추후 API 연동 시 지원 여부에 따라 변경
   const schoolName = '중앙대학교'
   const classNumber = '10기'
   const recruitmentPeriod = '20xx년 x월 x일 ~ 20xx년 x월 x일'
   const activityPeriod = '20xx년 x월 ~ 20xx년 x월 (약 6개월)'
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    link: '',
+  })
 
+  const closeModal = () => {
+    setModal((prev) => ({ ...prev, isOpen: false }))
+  }
   return (
     <S.PageLayout>
       <Flex flexDirection="column" gap="35px" maxWidth={'868px'}>
@@ -25,8 +38,9 @@ export function ApplyPage() {
             <S.Info>활동 기간 | {activityPeriod}</S.Info>
           </Flex>
         </Flex>
-        {alreadySubmitted ? <AfterSubmit /> : <BeforeSubmit data={PART_INFO} />}
+        {alreadySubmitted ? <AfterSubmit /> : <BeforeSubmit data={PART_INFO} setModal={setModal} />}
       </Flex>
+      {modal.isOpen && <CautionConfirm onClose={closeModal} link={modal.link} />}
     </S.PageLayout>
   )
 }

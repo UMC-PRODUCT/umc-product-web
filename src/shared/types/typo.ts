@@ -11,5 +11,7 @@ export type TypoGroup =
   | 'C1'
   | 'C2'
   | 'C3'
+  | 'C4'
+  | 'C5'
   | 'Slogan'
 export type TypoToken = `${TypoGroup}.${'Sb' | 'Md' | 'Rg'}`

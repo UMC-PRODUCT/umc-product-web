@@ -20,7 +20,6 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     const toneMap = getTone(theme)
     const t = toneMap[tone][variant]
     const textStyle = resolveTypo(theme, typo)
-
     return (
       <span
         ref={ref}
