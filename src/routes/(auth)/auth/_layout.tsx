@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import Flex from '@/components/common/Flex/Flex'
-import Footer from '@/components/layout/Footer/Footer'
-import ChallengerHeader from '@/components/layout/Header/ChallengerHeader'
+import Footer from '@shared/layout/Footer/Footer'
+import ChallengerHeader from '@shared/layout/Header/ChallengerHeader'
+import Flex from '@shared/ui/common/Flex/Flex'
 
 export const Route = createFileRoute('/(auth)/auth/_layout')({
   component: RouteComponent,

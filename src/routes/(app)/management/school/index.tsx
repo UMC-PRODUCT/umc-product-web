@@ -1,16 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod/v3'
 
-import Flex from '@/components/common/Flex/Flex'
-import Tab from '@/components/common/Tab/Tab'
-import PageTitle from '@/components/layout/PageTitle/PageTitle'
-import type { ManageSchoolTabName } from '@/constants/tabNames'
-import { manageSchoolTabs } from '@/constants/tabNames'
-
-import AddSchool from './-components/AddSchool'
-import DeleteSchool from './-components/DeleteSchool'
-import EditSchool from './-components/EditSchool'
-import * as S from './School.style'
+import type { ManageSchoolTabName } from '@features/management/constants/tabNames'
+import { SchoolPage } from '@features/management/pages/SchoolPage'
 
 const tabSchema = z.object({
   tab: z.enum(['add', 'delete', 'edit'] as const).optional(),
@@ -34,16 +26,5 @@ function RouteComponent() {
     })
   }
 
-  return (
-    <S.PageLayout>
-      <Flex flexDirection="column" gap="32px" maxWidth="1170px">
-        <PageTitle title="학교 관리" />
-        <Tab tabs={manageSchoolTabs} value={activeTab} onValueChange={setTab}>
-          {activeTab === 'add' && <AddSchool />}
-          {activeTab === 'delete' && <DeleteSchool />}
-          {activeTab === 'edit' && <EditSchool />}
-        </Tab>
-      </Flex>
-    </S.PageLayout>
-  )
+  return <SchoolPage activeTab={activeTab} onTabChange={setTab} />
 }
