@@ -34,6 +34,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
           background: t.background,
           color: t.color,
           border: t.border,
+          whiteSpace: 'nowrap',
           ...textStyle,
         }}
         {...props}
