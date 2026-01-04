@@ -136,28 +136,42 @@ pnpm dev   # http://localhost:3000
 
 ```
 src/
-├── assets/           # 이미지, 아이콘 등 정적 자산
-├── components/       # 재사용 가능한 UI 컴포넌트
-│   ├── auth/         # 인증 관련 컴포넌트
-│   ├── common/       # 공통 컴포넌트 (Button, Modal, Tab 등)
-│   ├── form/         # 폼 컴포넌트 (LabelTextField 등)
-│   ├── layout/       # 레이아웃 컴포넌트 (Header, Footer)
-│   └── modal/        # 모달 컴포넌트
-├── constants/        # 상수 정의
-├── hooks/            # 커스텀 React 훅
-├── integrations/     # 외부 서비스 통합
-├── mocks/            # Mock 데이터
-├── routes/           # TanStack Router 파일 기반 라우트
+├── app/              # 엔트리/프로바이더/DevTools 등 앱 레벨
+│   ├── main.tsx
+│   ├── reportWebVitals.ts
+│   └── styles.css
+├── routes/           # TanStack Router 파일 기반 라우트 (얇은 어댑터)
 │   ├── (app)/        # 앱 레이아웃 그룹
 │   ├── (auth)/       # 인증 레이아웃 그룹
 │   └── __root.tsx    # 루트 레이아웃
-├── schema/           # Zod 유효성 검사 스키마
-├── store/            # Zustand 상태 관리
-├── styles/           # 스타일 시스템 (theme, global, media)
-├── types/            # TypeScript 타입 정의
-├── utils/            # 유틸리티 함수
-└── main.tsx          # 앱 진입점
+├── features/         # 기능 단위 모듈
+│   ├── auth/         # 로그인/회원가입
+│   ├── management/   # 계정/학교/정책/공지/데이터 관리
+│   ├── dashboard/
+│   ├── apply/
+│   ├── recruiting/
+│   └── home/
+├── shared/           # 전역 공유 자원
+│   ├── assets/       # 이미지, 아이콘 등 정적 자산
+│   ├── layout/       # 레이아웃 컴포넌트 (Header, Footer)
+│   ├── ui/           # 공용 UI (Button, Modal, Tab 등)
+│   ├── styles/       # 스타일 시스템 (theme, global, media)
+│   ├── types/        # TypeScript 타입 정의
+│   ├── utils/        # 유틸리티 함수
+│   └── mocks/        # 공유 Mock 데이터
+├── routeTree.gen.ts  # TanStack Router 자동 생성 트리
+└── vite-env.d.ts
 ```
+
+---
+
+### 경로 별칭
+
+- `@app/*` → `src/app/*`
+- `@features/*` → `src/features/*`
+- `@shared/*` → `src/shared/*`
+- `@routes/*` → `src/routes/*`
+- `@/*` → `src/*` (가능하면 위 별칭 우선 사용)
 
 ---
 
@@ -165,13 +179,15 @@ src/
 
 TanStack Router의 파일 기반 라우팅을 사용합니다.
 
+라우트 파일은 페이지 컴포넌트를 `@features/*/pages`에서 가져오는 얇은 어댑터로 유지합니다.
+
 ### 레이아웃 구조
 
 | 레이아웃                                | 설명                                    |
 | --------------------------------------- | --------------------------------------- |
 | `src/routes/(app)/route.tsx`            | 글로벌 레이아웃                         |
 | `src/routes/(app)/management/route.tsx` | 관리 전용 레이아웃 (헤더 없이 Outlet만) |
-| `src/routes/(auth)/route.tsx`           | 인증 레이아웃                           |
+| `src/routes/(auth)/auth/_layout.tsx`    | 인증 레이아웃                           |
 
 ### 헤더 분기
 
@@ -188,7 +204,7 @@ Emotion CSS-in-JS를 사용합니다.
 ### 디자인 토큰
 
 ```typescript
-import { theme } from '@/styles/theme'
+import { theme } from '@shared/styles/theme'
 
 // 색상
 theme.colors.primary
@@ -202,7 +218,7 @@ theme.typography.body2
 ### 반응형
 
 ```typescript
-import { media } from '@/styles/media'
+import { media } from '@shared/styles/media'
 
 // 미디어 쿼리
 ${media.down('tablet')} {
@@ -219,10 +235,12 @@ ${media.up('desktop')} {
 컴포넌트별 스타일은 `.style.tsx` 파일로 분리합니다:
 
 ```
-components/
-└── Button/
-    ├── Button.tsx
-    └── Button.style.tsx
+shared/
+└── ui/
+    └── common/
+        └── Button/
+            ├── Button.tsx
+            └── Button.style.tsx
 ```
 
 ---
@@ -231,8 +249,11 @@ components/
 
 ### 클라이언트 상태: Zustand
 
+스토어는 feature 내부에 둡니다 (예: `src/features/auth/store`).
+
 ```typescript
-import { useAuthStore } from '@/store/authStore'
+// 예시
+import { useAuthStore } from '@features/auth/store/authStore'
 
 const { user, login, logout } = useAuthStore()
 ```
@@ -261,12 +282,24 @@ react-hook-form + Zod를 사용합니다.
 ### 스키마 정의
 
 ```typescript
-// src/schema/loginSchema.ts
-import { z } from 'zod'
+// src/features/auth/schema/register.ts
+import { z } from 'zod/v3'
 
-export const loginSchema = z.object({
-  email: z.string().email('유효한 이메일을 입력하세요'),
-  password: z.string().min(8, '8자 이상 입력하세요'),
+export const registerSchema = z.object({
+  school: z.string().min(1, '학교를 선택하지 않았습니다.'),
+  name: z.string().min(1, '양식이 올바르지 않습니다.'),
+  nickname: z
+    .string()
+    .min(1, '양식이 올바르지 않습니다.')
+    .regex(/^[가-힣]{1,5}$/, '닉네임은 1~5글자의 한글이어야 합니다.'),
+  email: z.string().email('유효하지 않은 이메일 주소입니다.'),
+  serviceTerm: z.boolean().refine((val) => val === true, {
+    message: '서비스 이용 약관에 동의해 주세요.',
+  }),
+  privacyTerm: z.boolean().refine((val) => val === true, {
+    message: '개인정보 처리 방침에 동의해 주세요.',
+  }),
+  marketingTerm: z.boolean(),
 })
 ```
 
@@ -275,14 +308,14 @@ export const loginSchema = z.object({
 ```typescript
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema } from '@/schema/loginSchema'
+import { registerSchema } from '@features/auth/schema/register'
 
 const {
   register,
   handleSubmit,
   formState: { errors },
 } = useForm({
-  resolver: zodResolver(loginSchema),
+  resolver: zodResolver(registerSchema),
 })
 ```
 
@@ -380,13 +413,13 @@ Closes #123
 
 ## Code Convention
 
-| 구분      | 내용                                                                              |
-| --------- | --------------------------------------------------------------------------------- |
-| 브레이킹  | `BREAKING CHANGE:` 문구로 명시                                                    |
-| 포맷/린트 | `pnpm lint` 준수, 임포트 순서 규칙 준수, 경로는 `@/*` 사용                        |
-| 스타일    | Emotion 사용 시 `.style.tsx`로 분리, `theme.colors/typography`, `media` 우선 사용 |
-| 타입      | `Array<T>` 표기, 공용 유틸(`resolveTypo` 등)로 널 가드                            |
-| 컴포넌트  | 공용 Header/Modal/Badge 재사용, 반응형은 `media.down/up` 활용                     |
+| 구분      | 내용                                                                                                        |
+| --------- | ----------------------------------------------------------------------------------------------------------- |
+| 브레이킹  | `BREAKING CHANGE:` 문구로 명시                                                                              |
+| 포맷/린트 | `pnpm lint` 준수, 임포트 순서 규칙 준수, 경로는 `@shared/*`, `@features/*`, `@app/*`, `@routes/*` 우선 사용 |
+| 스타일    | Emotion 사용 시 `.style.tsx`로 분리, `theme.colors/typography`, `media` 우선 사용                           |
+| 타입      | `Array<T>` 표기, 공용 유틸(`resolveTypo` 등)로 널 가드                                                      |
+| 컴포넌트  | 공용 Header/Modal/Badge 재사용, 반응형은 `media.down/up` 활용                                               |
 
 ---
 

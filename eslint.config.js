@@ -22,7 +22,33 @@ export default [
       'simple-import-sort': simpleImportSortPlugin,
     },
     rules: {
-      'simple-import-sort/imports': 'error',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // Side effect imports.
+            ['^\\u0000'],
+            // Node.js builtins.
+            ['^node:'],
+            // External packages.
+            ['^react', '^@(?!app/|routes/|features/|shared/|/)', '^\\w'],
+            // App-level modules.
+            ['^@app/'],
+            // Routes layer.
+            ['^@routes/'],
+            // Feature modules.
+            ['^@features/'],
+            // Shared modules.
+            ['^@shared/'],
+            // Fallback root alias.
+            ['^@/'],
+            // Relative imports.
+            ['^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+            // Style imports.
+            ['^.+\\.s?css$'],
+          ],
+        },
+      ],
       'simple-import-sort/exports': 'error',
       'import/order': 'off',
       'sort-imports': 'off',

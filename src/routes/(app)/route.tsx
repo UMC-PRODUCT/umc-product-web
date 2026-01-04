@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router'
 
-import Flex from '@/components/common/Flex/Flex'
-import Footer from '@/components/layout/Footer/Footer'
-import ChallengerHeader from '@/components/layout/Header/ChallengerHeader'
-import SuperHeader from '@/components/layout/Header/SuperHeader'
+import Footer from '@shared/layout/Footer/Footer'
+import ChallengerHeader from '@shared/layout/Header/ChallengerHeader'
+import SuperHeader from '@shared/layout/Header/SuperHeader'
+import Flex from '@shared/ui/common/Flex/Flex'
 
 export const Route = createFileRoute('/(app)')({
   component: RouteComponent,

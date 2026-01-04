@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/(app)/management/data/')({
-  component: RouteComponent,
-})
+import { DataPage } from '@features/management/pages/DataPage'
 
-function RouteComponent() {
-  return <div>Hello /(management)/management/Data!</div>
-}
+export const Route = createFileRoute('/(app)/management/data/')({
+  component: DataPage,
+})
