@@ -59,7 +59,6 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
           </S.Grid>
         )}
 
-        {/* 2. 드롭존 영역 */}
         <Section
           variant="dashed"
           onClick={() => fileInputRef.current?.click()}
@@ -89,8 +88,6 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
             </span>
           </S.FileWrapper>
         </Section>
-
-        {/* 3. 링크 입력 영역 */}
         <S.InputWrapper>
           {value.links.map((link, i) => (
             <LinkItem

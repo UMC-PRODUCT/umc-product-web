@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
+
 import { theme } from '@/shared/styles/theme'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
-import { Flex } from '@/shared/ui/common/Flex'
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 
 interface CheckChoiceProps {
   content: string
@@ -11,21 +13,13 @@ interface CheckChoiceProps {
 
 export const CheckChoice = ({ content, isChecked, onToggle }: CheckChoiceProps) => {
   return (
-    <Flex
-      role="button"
-      tabIndex={0}
-      alignItems="center"
-      gap={14}
-      onClick={onToggle}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          onToggle()
-        }
-      }}
-      css={{ cursor: 'pointer', padding: '4px 0' }}
-    >
-      <Checkbox checked={isChecked} onCheckedChange={onToggle} tabIndex={-1} />
+    <button css={containerStyle} onClick={() => onToggle()} type="button">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        css={{ pointerEvents: 'none', display: 'flex', alignItems: 'center' }}
+      >
+        <Checkbox checked={isChecked} onCheckedChange={() => {}} tabIndex={-1} />
+      </div>
       <span
         css={{
           color: theme.colors.white,
@@ -35,6 +29,21 @@ export const CheckChoice = ({ content, isChecked, onToggle }: CheckChoiceProps) 
       >
         {content}
       </span>
-    </Flex>
+    </button>
   )
 }
+const containerStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+  width: 100%;
+  background-color: inherit;
+  border: none;
+  &:focus-visible {
+    box-shadow: 0 0 0 2px ${theme.colors.lime};
+    border-radius: 4px;
+  }
+`
