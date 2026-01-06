@@ -62,9 +62,5 @@ export type QuestionList = {
   id: number
   title: string
   description: string
-  pages: {
-    length: number
-    forEach: (arg0: (page: any) => void) => unknown
-    [pageNumber: number]: QuestionPage
-  }
+  pages: Array<QuestionPage>
 }

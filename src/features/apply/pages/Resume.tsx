@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useEffect, useMemo, useState } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import * as S from '@/features/apply/components/shared'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -7,9 +7,10 @@ import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import CautionSubmit from '../components/modals/CautionSubmit'
 import { Question } from '../components/question/Question'
 import ResumeNavigation from '../components/ResumeNavigation'
-import type { QuestionList, QuestionUnion } from '../type/question'
+import type { QuestionList, QuestionPage, QuestionUnion } from '../type/question'
 
 type FormValues = Record<string, unknown>
 
@@ -30,30 +31,92 @@ export default function Resume({
   const currentPageIndex = Math.min(Math.max(pageNumber - 1, 0), Math.max(totalPages - 1, 0))
   const currentPage = data.pages[currentPageIndex] ?? data.pages[0]
   const currentQuestions = currentPage.questions
-
-  const defaultValues = useMemo(() => {
-    const values: FormValues = {}
-    data.pages.forEach((p) => {
-      p.questions.forEach((q: QuestionUnion) => {
-        values[q.id] = q.answer
-      })
-    })
-    return values
-  }, [data])
+  const [isCautionSubmitModalOpen, setIsCautionSubmitModalOpen] = useState(false)
 
   const {
     control,
     handleSubmit,
+    trigger,
+    getValues,
+    register,
     formState: { errors },
   } = useForm<FormValues>({
     mode: 'onChange',
-    defaultValues,
+    defaultValues: useMemo(() => {
+      const values: FormValues = {}
+      data.pages.forEach((p) =>
+        p.questions.forEach((q: QuestionUnion) => {
+          values[q.id] = q.answer
+        }),
+      )
+      return values
+    }, [data]),
     shouldUnregister: false,
   })
 
-  const onSubmit = (formValues: Record<string, unknown>) => {
-    console.log('제출 데이터:', formValues)
-    // API POST 호출 (formId와 answers 전송)
+  // 실시간 값 감시
+  const allValues = useWatch({ control })
+
+  const isFormIncomplete = useMemo(() => {
+    return data.pages
+      .flatMap((p) => p.questions)
+      .some((q) => {
+        if (!q.necessary) return false
+        const val = allValues[q.id]
+
+        if (!val) return true
+
+        // 배열 타입 체크 (multipleChoice 등)
+        if (Array.isArray(val) && val.length === 0) return true
+
+        // 타임테이블 특수 체크
+        if (q.type === 'timeTable') {
+          const timeValues = Object.values(val as Record<string, Array<unknown>>)
+          return timeValues.every((v) => v.length === 0)
+        }
+
+        return false
+      })
+  }, [allValues, data])
+  useEffect(() => {
+    data.pages.forEach((p) => {
+      p.questions.forEach((q: QuestionUnion) => {
+        register(`${q.id}`, { required: q.necessary })
+      })
+    })
+  }, [data, register])
+
+  const onInvalid = (formErrors: any) => {
+    const errorFieldIds = Object.keys(formErrors)
+    if (errorFieldIds.length > 0) {
+      const firstErrorId = errorFieldIds[0]
+      const errorPageIndex = data.pages.findIndex((p: QuestionPage) =>
+        p.questions.some((q: QuestionUnion) => String(q.id) === firstErrorId),
+      )
+
+      if (errorPageIndex !== -1) {
+        setPage(errorPageIndex + 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+  }
+
+  const handleFinalSubmit = async () => {
+    const allFieldIds = data.pages.flatMap((p) =>
+      p.questions.map((q: QuestionUnion) => String(q.id)),
+    )
+
+    const result = await trigger(allFieldIds as any)
+
+    if (result) {
+      handleSubmit((vals) => {
+        console.log('최종 제출 데이터:', vals)
+        setIsCautionSubmitModalOpen(false)
+      })()
+    } else {
+      setIsCautionSubmitModalOpen(false)
+      onInvalid(control._formState.errors)
+    }
   }
 
   return (
@@ -61,9 +124,7 @@ export default function Resume({
       <Flex maxWidth={'956px'}>
         <PageTitle title={`UMC ${schoolName} ${classNumber} 지원서`} />
       </Flex>
-      <S.BorderSection alignItems="flex-start">
-        {`지원자 안내 사항, 운영진 인사말 등\n지원자 안내 사항, 운영진 인사말 등 \n지원자 안내 사항, 운영진 인사말 등`}
-      </S.BorderSection>
+      <S.BorderSection alignItems="flex-start">{`지원자 안내 사항...`}</S.BorderSection>
       <S.BorderSection>
         <Flex justifyContent="flex-end">
           <Flex width={'380px'} justifyContent="flex-end" alignItems="center" gap={'18px'}>
@@ -71,7 +132,6 @@ export default function Resume({
             <Badge
               typo="C2.Md"
               tone="lime"
-              role="button"
               variant="outline"
               onClick={() => {}}
               css={{ cursor: 'pointer' }}
@@ -83,35 +143,14 @@ export default function Resume({
       </S.BorderSection>
 
       <S.BorderSection>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {currentQuestions.map((q) => (
+        <form onSubmit={(e) => e.preventDefault()}>
+          {currentQuestions.map((q: QuestionUnion) => (
             <Flex key={q.id} flexDirection="column" gap={8} width="100%">
               <Controller
                 name={`${q.id}`}
                 control={control}
                 rules={{
                   required: q.necessary ? '응답 필수 항목입니다.' : false,
-                  validate: (value: any) => {
-                    if (q.type === 'fileUpload' && value.links.length > 0) {
-                      const isValidLinks = value.links.every((link: string) =>
-                        link.startsWith('https://'),
-                      )
-                      if (!isValidLinks) {
-                        return '올바르지 않은 링크 형식입니다. (https://로 시작해야 합니다.)'
-                      }
-                    }
-                    if (q.type === 'timeTable') {
-                      const hasSelection = value && Object.keys(value).length > 0
-                      if (!hasSelection) return '면접 가능한 시간을 최소 하나 이상 선택해주세요.'
-
-                      // 추가 검증: 날짜 키는 있지만 선택된 시간 배열이 모두 비어있는 경우 체크
-                      const hasTimeSelected = Object.values(value).some(
-                        (times: any) => times.length > 0,
-                      )
-                      if (!hasTimeSelected) return '면접 가능한 시간을 최소 하나 이상 선택해주세요.'
-                    }
-                    return true
-                  },
                 }}
                 render={({ field }) => (
                   <Question
@@ -125,11 +164,26 @@ export default function Resume({
             </Flex>
           ))}
           <ResumeNavigation page={page} setPage={setPage} totalPages={totalPages} />
+
+          {/* 지원하기 버튼: 필수값 미입력 시 비활성화 및 회색 표시 */}
           <Flex justifyContent="center" css={{ marginTop: '40px' }}>
-            <Button type="submit" label="지원하기" tone="lime" />
+            <Button
+              type="button"
+              label="지원하기"
+              tone={isFormIncomplete ? 'gray' : 'lime'}
+              disabled={isFormIncomplete}
+              onClick={() => setIsCautionSubmitModalOpen(true)}
+            />
           </Flex>
         </form>
       </S.BorderSection>
+
+      {isCautionSubmitModalOpen && (
+        <CautionSubmit
+          onClose={() => setIsCautionSubmitModalOpen(false)}
+          onSubmit={handleFinalSubmit}
+        />
+      )}
     </S.PageLayout>
   )
 }
