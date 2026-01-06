@@ -8,6 +8,7 @@ export type TypoGroup =
   | 'B2'
   | 'B3'
   | 'B4'
+  | 'B5'
   | 'C1'
   | 'C2'
   | 'C3'

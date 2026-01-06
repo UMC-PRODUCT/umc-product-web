@@ -100,6 +100,7 @@ export const SubmitContent = styled.div`
 
 export const BorderSection = styled(Flex)`
   width: 100%;
+  flex-direction: column;
   border: 1.5px solid ${theme.colors.gray[700]};
   color: ${theme.colors.gray[300]};
   ${theme.typography.B3.Rg}
@@ -107,6 +108,16 @@ export const BorderSection = styled(Flex)`
   padding: 24px;
   border-radius: 8px;
   max-width: 956px;
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 10px 8px;
+    ${theme.typography.B4.Rg}
+  }
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 `
 
 export const QuestionLayout = styled(Flex)`
@@ -126,5 +137,25 @@ export const QuestionTitle = styled.div`
   align-items: center;
   padding-bottom: 12px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   border-bottom: 1px solid ${theme.colors.gray[600]};
+  span {
+    margin-left: 4px;
+  }
+`
+
+export const NavigationButtonWrapper = styled.div`
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 8px;
+  align-items: center;
+  display: flex;
+  ${theme.typography.B2.Md}
+`
+export const PageWrapper = styled.div`
+  display: flex;
+  ${theme.typography.C2.Md}
 `

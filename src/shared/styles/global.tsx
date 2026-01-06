@@ -10,6 +10,12 @@ export const GlobalStyle = () => (
       body {
         background: ${theme.colors.black};
         font-family: ${theme.typography.fontFamily.base};
+        input:focus {
+          outline: none;
+        }
+        textarea:focus {
+          outline: none;
+        }
       }
     `}
   />
