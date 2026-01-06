@@ -111,6 +111,11 @@ export const typography = {
       lineHeight: '130%',
       fontWeight: 600,
     },
+    Md: {
+      fontSize: '12px',
+      lineHeight: '130%',
+      fontWeight: 500,
+    },
     Rg: {
       fontSize: '12px',
       lineHeight: '150%',
