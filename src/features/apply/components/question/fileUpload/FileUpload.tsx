@@ -3,8 +3,11 @@ import { useRef, useState } from 'react'
 
 import type { FileInfo } from '@/features/apply/hooks/useFileUpload'
 import { useFileUpload } from '@/features/apply/hooks/useFileUpload'
+import ErrorIcon from '@/shared/assets/icons/notice.svg?react'
 import Upload from '@/shared/assets/icons/upload.svg?react'
+import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { formatFileSize } from '@/shared/utils/formatFileSize'
@@ -22,7 +25,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [linkInput, setLinkInput] = useState('')
   const [isDraggingOver, setIsDraggingOver] = useState(false)
-
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   // 커스텀 훅 사용
   const { setLocalFiles, handleProcessFiles, uploadFile, updateStatus } = useFileUpload(
     value.files,
@@ -32,8 +35,16 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
 
   // 링크 관련 핸들러
   const handleAddLink = () => {
-    if (!linkInput.trim()) return
-    onChange?.({ ...value, links: [...value.links, linkInput.trim()] })
+    const trimmed = linkInput.trim()
+    if (!trimmed) {
+      return
+    }
+    if (!trimmed.startsWith('https://')) {
+      setErrorMessage('링크 주소가 올바르지 않습니다.')
+      return
+    }
+    setErrorMessage(null)
+    onChange?.({ ...value, links: [...value.links, trimmed] })
     setLinkInput('')
   }
 
@@ -102,11 +113,23 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
             <input
               placeholder="링크 붙여 넣기"
               value={linkInput}
-              onChange={(e) => setLinkInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddLink()}
+              onChange={(e) => {
+                const next = e.target.value
+                if (errorMessage && (next === '' || next.startsWith('https://'))) {
+                  setErrorMessage(null)
+                }
+                setLinkInput(next)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleAddLink()
+                }
+              }}
               css={S.inputStyle}
             />
             <Button
+              type="button"
               className="add-button"
               typo="B4.Md"
               tone="gray"
@@ -115,6 +138,16 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
               css={{ borderRadius: '20px' }}
             />
           </Flex>
+          {errorMessage && (
+            <Flex
+              gap={2}
+              alignItems="center"
+              css={{ position: 'absolute', bottom: '6px', left: '12px' }}
+            >
+              <ErrorIcon width={14} color={theme.colors.necessary} />
+              <ErrorMessage typo="C5.Md" errorMessage={errorMessage} />
+            </Flex>
+          )}
         </S.InputWrapper>
       </Section>
     </Flex>

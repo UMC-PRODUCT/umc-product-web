@@ -48,6 +48,7 @@ export default function Resume({
   } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
+    shouldUnregister: false,
   })
 
   const onSubmit = (formValues: Record<string, unknown>) => {
@@ -70,6 +71,7 @@ export default function Resume({
             <Badge
               typo="C2.Md"
               tone="lime"
+              role="button"
               variant="outline"
               onClick={() => {}}
               css={{ cursor: 'pointer' }}

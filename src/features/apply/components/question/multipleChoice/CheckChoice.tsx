@@ -12,8 +12,23 @@ interface CheckChoiceProps {
 }
 
 export const CheckChoice = ({ content, isChecked, onToggle }: CheckChoiceProps) => {
+  const handleClick = () => {
+    onToggle()
+  }
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      onToggle()
+    }
+  }
   return (
-    <button css={containerStyle} onClick={() => onToggle()} type="button">
+    <div
+      css={containerStyle}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       <div
         onClick={(e) => e.stopPropagation()}
         css={{ pointerEvents: 'none', display: 'flex', alignItems: 'center' }}
@@ -29,7 +44,7 @@ export const CheckChoice = ({ content, isChecked, onToggle }: CheckChoiceProps) 
       >
         {content}
       </span>
-    </button>
+    </div>
   )
 }
 const containerStyle = css`
@@ -43,7 +58,9 @@ const containerStyle = css`
   background-color: inherit;
   border: none;
   &:focus-visible {
-    box-shadow: 0 0 0 2px ${theme.colors.lime};
-    border-radius: 4px;
+    button {
+      box-shadow: 0 0 0 2px ${theme.colors.lime};
+      border-radius: 4px;
+    }
   }
 `

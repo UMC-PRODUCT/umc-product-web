@@ -7,9 +7,11 @@ import { Flex } from '@/shared/ui/common/Flex'
 export const InputWrapper = styled(Flex)`
   gap: 20px;
   border-top: 1px solid ${theme.colors.gray[600]};
-  padding: 20px 0;
+  padding: 20px 0 40px 0;
   width: 100%;
+  position: relative;
   flex-direction: column;
+
   input {
     max-width: 654px;
     background-color: ${theme.colors.gray[800]};
@@ -144,5 +146,5 @@ export const inputStyle = {
   color: 'white',
   outline: 'none',
   padding: '8px 0',
-  '&:focus': { borderBottomColor: theme.colors.lime },
+  '&:focus': { border: `1px solid ${theme.colors.lime}` },
 }
