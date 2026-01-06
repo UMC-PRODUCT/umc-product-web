@@ -50,7 +50,7 @@ export default function Resume() {
             startHour={16}
             endHour={22}
             disabledSlots={disabled}
-            onChange={(data) => console.log('Selected Data:', data)}
+            onChange={() => {}}
           />
         </FormQuestion>
       </S.BorderSection>
