@@ -5,7 +5,11 @@ import { PART } from '../constants/umc'
 export const MOCKFORMSDATA: QuestionList = {
   id: 101,
   title: '2024 신입 부원 모집 설문',
-  description: '동아리에 지원해주셔서 감사합니다.',
+  description: `동아리에 지원해주셔서 감사합니다. 
+지원서 작성 시 아래 안내 사항을 꼭 확인해 주세요.
+  1. 모든 질문에 성실히 답변해 주세요.
+  2. 면접 일정은 추후 개별 연락 드립니다.
+  3. 포트폴리오가 없더라도 지원 가능합니다.`,
   pages: [
     {
       page: 1,
@@ -106,7 +110,11 @@ export const MOCKFORMSDATA: QuestionList = {
 export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
   id: 101,
   title: '2024 신입 부원 모집 설문',
-  description: '동아리에 지원해주셔서 감사합니다.',
+  description: `동아리에 지원해주셔서 감사합니다. 
+지원서 작성 시 아래 안내 사항을 꼭 확인해 주세요.
+  1. 모든 질문에 성실히 답변해 주세요.
+  2. 면접 일정은 추후 개별 연락 드립니다.
+  3. 포트폴리오가 없더라도 지원 가능합니다.`,
   pages: [
     {
       page: 1,

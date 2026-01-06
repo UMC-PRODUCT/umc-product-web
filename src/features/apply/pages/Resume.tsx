@@ -10,6 +10,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import CautionSubmit from '../components/modals/CautionSubmit'
 import { Question } from '../components/question/Question'
 import ResumeNavigation from '../components/ResumeNavigation'
+import { useAutoSave } from '../hooks/useAutoSave'
 import type { QuestionList, QuestionPage, QuestionUnion } from '../type/question'
 
 type FormValues = Record<string, unknown>
@@ -54,6 +55,12 @@ export default function Resume({
     shouldUnregister: false,
   })
 
+  const { lastSavedTime, handleSave } = useAutoSave({
+    getValues,
+    key: `umc_resume_${data.id || 'temp'}`,
+    interval: 60000,
+  })
+
   // 실시간 값 감시
   const allValues = useWatch({ control })
 
@@ -66,10 +73,8 @@ export default function Resume({
 
         if (!val) return true
 
-        // 배열 타입 체크 (multipleChoice 등)
         if (Array.isArray(val) && val.length === 0) return true
 
-        // 타임테이블 특수 체크
         if (q.type === 'timeTable') {
           const timeValues = Object.values(val as Record<string, Array<unknown>>)
           return timeValues.every((v) => v.length === 0)
@@ -78,6 +83,7 @@ export default function Resume({
         return false
       })
   }, [allValues, data])
+
   useEffect(() => {
     data.pages.forEach((p) => {
       p.questions.forEach((q: QuestionUnion) => {
@@ -124,16 +130,16 @@ export default function Resume({
       <Flex maxWidth={'956px'}>
         <PageTitle title={`UMC ${schoolName} ${classNumber} 지원서`} />
       </Flex>
-      <S.BorderSection alignItems="flex-start">{`지원자 안내 사항...`}</S.BorderSection>
+      <S.BorderSection alignItems="flex-start">{data.description}</S.BorderSection>
       <S.BorderSection>
         <Flex justifyContent="flex-end">
           <Flex width={'380px'} justifyContent="flex-end" alignItems="center" gap={'18px'}>
-            <span>20xx년 x월 x일 xx:xx에 마지막으로 저장됨.</span>
+            {lastSavedTime && <span>{lastSavedTime}에 마지막으로 저장됨.</span>}
             <Badge
               typo="C2.Md"
               tone="lime"
               variant="outline"
-              onClick={() => {}}
+              onClick={handleSave}
               css={{ cursor: 'pointer' }}
             >
               저장하기
