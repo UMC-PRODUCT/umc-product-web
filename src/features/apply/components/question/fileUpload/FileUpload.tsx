@@ -24,7 +24,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
   const [isDraggingOver, setIsDraggingOver] = useState(false)
 
   // 커스텀 훅 사용
-  const { localFiles, setLocalFiles, handleProcessFiles, uploadFile, updateStatus } = useFileUpload(
+  const { setLocalFiles, handleProcessFiles, uploadFile, updateStatus } = useFileUpload(
     value.files,
     value,
     onChange,

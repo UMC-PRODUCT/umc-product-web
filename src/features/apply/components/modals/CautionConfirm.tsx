@@ -28,7 +28,7 @@ export default function CautionConfirm({ onClose, link }: { onClose: () => void;
         <Button
           onClick={() => {
             onClose()
-            navigate({ to: '/apply/new' })
+            navigate({ to: '/apply/new', search: { page: 1 } })
           }}
           label="새로 작성하기"
           tone="gray"
