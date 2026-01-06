@@ -1,3 +1,5 @@
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+
 export function DataPage() {
-  return <div>Hello /(management)/management/Data!</div>
+  return <PageLayout title="데이터 관리">Hello /(management)/management/Data!</PageLayout>
 }
