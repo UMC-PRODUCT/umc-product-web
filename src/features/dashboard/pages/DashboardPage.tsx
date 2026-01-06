@@ -1,3 +1,5 @@
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+
 export function DashboardPage() {
-  return <div>Hello /(app)/dashboard/!</div>
+  return <PageLayout title="대시보드">Hello /(app)/dashboard/!</PageLayout>
 }

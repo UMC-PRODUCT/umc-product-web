@@ -14,6 +14,8 @@ import {
 import { Button as ManagementActionButton } from '@shared/ui/common/Button/Button'
 import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 
+import Section from '@/shared/ui/common/Section/Section'
+
 import { AccountFilters } from './AccountFilters'
 import { AccountTableRows } from './AccountTableRows'
 
@@ -147,7 +149,13 @@ export default function EditAccount() {
         <S.TabSubtitle>
           계정을 수정하거나 삭제할 수 있습니다. 삭제 시 복구가 불가능합니다.
         </S.TabSubtitle>
-        <S.FilterWrapper>
+        <Section
+          variant="solid"
+          flexDirection="row"
+          padding="12px 14px"
+          margin="30px 0 16px 0"
+          gap="12px"
+        >
           <AccountFilters
             searchTerm={searchTerm}
             onChangeSearch={setSearchTerm}
@@ -161,7 +169,7 @@ export default function EditAccount() {
             onSelectStatus={(option) => setStatus(option.id === 0 ? undefined : option)}
             statusOptions={statusOptions}
           />
-        </S.FilterWrapper>
+        </Section>
         <ManagementTable
           isAllChecked={selectedIds.size === 6}
           onToggleAll={toggleAll}

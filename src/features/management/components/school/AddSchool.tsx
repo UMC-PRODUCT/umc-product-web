@@ -10,6 +10,8 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Label from '@shared/ui/common/Label/Label'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
+import Section from '@/shared/ui/common/Section/Section'
+
 import * as S from './School.style'
 
 type ModalState = {
@@ -53,7 +55,7 @@ export default function AddSchool() {
         <S.TabSubtitle>새로운 학교를 시스템에 등록합니다.</S.TabSubtitle>
       </S.TabHeader>
       <S.Form>
-        <S.FormCard>
+        <Section variant="solid">
           <S.InputRow>
             <LabelTextField
               type="text"
@@ -95,7 +97,7 @@ export default function AddSchool() {
               typo="C2.Md"
             />
           </S.SubmitButtonWrapper>
-        </S.FormCard>
+        </Section>
       </S.Form>
 
       {modal.isOpen && (

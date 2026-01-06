@@ -1,3 +1,5 @@
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+
 export function PolicyPage() {
-  return <div>Hello /(app)/management/policy/!</div>
+  return <PageLayout title="정책 관리">Hello /(app)/management/policy/!</PageLayout>
 }
