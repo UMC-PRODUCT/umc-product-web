@@ -10,29 +10,29 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import PartBadge from './PartBadge'
 
-export default function RecrutingNotification({
-  PARTS,
-  TITLE,
-  CONTENT,
+export default function RecruitingNotification({
+  parts,
+  title,
+  content,
 }: {
-  TITLE: string
-  PARTS: Array<Part>
-  CONTENT: string
+  title: string
+  parts: Array<Part>
+  content: string
 }) {
   const navigate = useNavigate()
   return (
     <Flex flexDirection="column" gap="24px">
       <PageTitle title="모집 공지" />
       <Section variant="solid" alignItems="flex-start" gap="24px">
-        <PageTitle title={TITLE} />
-        <P>{CONTENT}</P>
+        <PageTitle title={title} />
+        <P>{content}</P>
         <Span>모집 파트</Span>
         <Flex
           gap="15px"
           flexWrap="wrap"
           css={{ borderBottom: `1px solid ${theme.colors.gray[700]}`, paddingBottom: '20px' }}
         >
-          {PARTS.map((part) => (
+          {parts.map((part) => (
             <PartBadge key={part} partName={part} />
           ))}
         </Flex>

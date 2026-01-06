@@ -4,8 +4,6 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
-import 'react-calendar/dist/Calendar.css'
-
 const Header = styled(Flex)`
   width: 100%;
 

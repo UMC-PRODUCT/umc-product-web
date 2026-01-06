@@ -10,7 +10,7 @@ import { RAW_EVENTS } from '@/shared/mocks/apply'
 import { Flex } from '@/shared/ui/common/Flex'
 import { getEventDateText, processEventsIntoSegments } from '@/shared/utils/calendar'
 
-import * as S from './RecruitingCalenar.style'
+import * as S from './RecruitingCalendar.style'
 
 import 'react-calendar/dist/Calendar.css'
 

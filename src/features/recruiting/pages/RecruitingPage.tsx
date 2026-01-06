@@ -1,10 +1,9 @@
-import RecrutingNotification from '@/features/recruiting/components/recrutingNotification/RecruitingNotification'
+import PartCurriculum from '@/features/recruiting/components/partCurriculum/PartCurriculum'
+import RecruitingCalendar from '@/features/recruiting/components/recruitingCalendar/RecruitingCalendar'
+import RecruitingNotification from '@/features/recruiting/components/recrutingNotification/RecruitingNotification'
 import { PART } from '@/shared/constants/umc'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { Flex } from '@/shared/ui/common/Flex'
-
-import PartCurriculum from '../components/partCurriculum/PartCurriculum'
-import RecruitingCalendar from '../components/recruitingCalendar/RecruitingCalendar'
 
 export function RecruitingPage() {
   const TITLE = 'UMC 11기 챌린저 모집'
@@ -16,7 +15,7 @@ export function RecruitingPage() {
   return (
     <PageLayout>
       <Flex flexDirection="column" gap={112}>
-        <RecrutingNotification TITLE={TITLE} CONTENT={CONTENT} PARTS={PART} />
+        <RecruitingNotification title={TITLE} content={CONTENT} parts={PART} />
         <RecruitingCalendar />
         <PartCurriculum />
       </Flex>
