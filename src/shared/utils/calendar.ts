@@ -2,8 +2,6 @@ import { addDays, endOfWeek, format, isAfter, isSameDay, parseISO, startOfDay } 
 
 import type { CalendarEvents, EventSegment } from '@/shared/mocks/apply'
 
-import 'react-calendar/dist/Calendar.css'
-
 // --- 로직: 이벤트 세그먼트 생성 ---
 export const processEventsIntoSegments = (events: CalendarEvents): Array<EventSegment> => {
   const segments: Array<EventSegment> = []
