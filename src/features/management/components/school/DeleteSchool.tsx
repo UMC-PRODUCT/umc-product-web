@@ -14,6 +14,8 @@ import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 
+import Section from '@/shared/ui/common/Section/Section'
+
 import DeleteTableRow from './DeleteTableRow'
 import * as S from './School.style'
 
@@ -111,7 +113,13 @@ export default function DeleteSchool() {
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 삭제</S.TabTitle>
         <S.TabSubtitle>삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.</S.TabSubtitle>
-        <S.FilterWrapper>
+        <Section
+          variant="solid"
+          flexDirection="row"
+          padding="12px 14px"
+          margin="30px 0 16px 0"
+          gap="12px"
+        >
           <Flex
             css={{
               maxWidth: '240px',
@@ -144,7 +152,7 @@ export default function DeleteSchool() {
               onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
             />
           </Flex>
-        </S.FilterWrapper>
+        </Section>
         <ManagementTable
           isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
           onToggleAll={() => toggleAll()}

@@ -91,7 +91,7 @@ export default function EditSchool() {
             updatedAt={updatedAt}
           />
         ) : (
-          <EmptySelectionNotice />
+          <EmptySelectionNotice variant="outline" />
         )}
         <S.SubmitButtonWrapper width="250px" height="41px" gap="20px">
           <Button

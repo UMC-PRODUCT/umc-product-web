@@ -1,20 +1,19 @@
 import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
 
-export function EmptySelectionNotice() {
+import Section from '@/shared/ui/common/Section/Section'
+
+export function EmptySelectionNotice({ variant = 'solid' }: { variant?: 'solid' | 'outline' }) {
   return (
-    <Flex
-      width="100%"
-      justifyContent="center"
-      css={{
-        border: `1px solid ${theme.colors.gray[600]}`,
-        borderRadius: '8px',
-        padding: '80px 0',
-        color: theme.colors.gray[300],
-        ...theme.typography.B3.Rg,
-      }}
-    >
-      선택된 학교가 없습니다.
-    </Flex>
+    <Section variant={variant}>
+      <span
+        css={{
+          padding: '80px 0',
+          color: theme.colors.gray[300],
+          ...theme.typography.B3.Rg,
+        }}
+      >
+        선택된 학교가 없습니다.
+      </span>
+    </Section>
   )
 }
