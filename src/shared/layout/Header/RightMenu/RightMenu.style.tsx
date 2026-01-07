@@ -1,17 +1,11 @@
 import styled from '@emotion/styled'
+import { Link } from '@tanstack/react-router'
 
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-export const Container = styled.nav({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '49px',
-  height: 'fit-content',
-})
-
-export const NavLink = styled.a({
+const navLinkStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -30,7 +24,20 @@ export const NavLink = styled.a({
       height: '16px',
     },
   },
+} as const
+
+export const Container = styled.nav({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '49px',
+  height: 'fit-content',
 })
+
+// ✅ 외부 링크(진짜 a)
+export const NavAnchor = styled.a(navLinkStyle)
+
+// ✅ 내부 링크(라우터 Link) — 이게 useBlocker에 걸림
+export const NavRouterLink = styled(Link)(navLinkStyle)
 
 export const DesktopMenu = styled.div({
   display: 'flex',

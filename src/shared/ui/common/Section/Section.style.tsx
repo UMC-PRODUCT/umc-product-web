@@ -4,7 +4,7 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex/index'
 
-export const Section = styled(Flex)<{ variant?: 'solid' | 'outline' | 'none' }>`
+export const Section = styled(Flex)<{ variant?: 'solid' | 'outline' | 'none' | 'both' | 'dashed' }>`
   width: 100%;
   height: 100%;
   flex-direction: column;
@@ -15,7 +15,13 @@ export const Section = styled(Flex)<{ variant?: 'solid' | 'outline' | 'none' }>`
     padding: 20px 20px;
   }
 
-  ${({ variant }) => (variant === 'outline' ? `border: 1px solid ${theme.colors.gray[600]};` : '')}
   ${({ variant }) =>
-    variant === 'solid' ? `background-color: ${theme.colors.gray[800]};` : 'inherit'}
+    variant === 'outline' || variant === 'both'
+      ? `border: 1px solid ${theme.colors.gray[600]};`
+      : ''}
+  ${({ variant }) => (variant === 'dashed' ? `border: 2px dashed ${theme.colors.gray[600]};` : '')}
+  ${({ variant }) =>
+    variant === 'solid' || variant === 'both'
+      ? `background-color: ${theme.colors.gray[800]};`
+      : 'inherit'}
 `

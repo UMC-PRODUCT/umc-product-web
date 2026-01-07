@@ -22,14 +22,21 @@ export default function RightMenu({
 }) {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
-      {nav && (
-        <S.NavLink href={nav.link}>
-          {nav.label} <ArrowUp />
-        </S.NavLink>
-      )}
+      {nav &&
+        (nav.link.startsWith('/') ? (
+          <S.NavRouterLink to={nav.link}>
+            {nav.label} <ArrowUp />
+          </S.NavRouterLink>
+        ) : (
+          <S.NavAnchor href={nav.link} target="_blank" rel="noreferrer noopener">
+            {nav.label} <ArrowUp />
+          </S.NavAnchor>
+        ))}
+
       <ExternalLink subLinks={social || []} />
     </S.MenuWrapper>
   )
+
   return (
     <S.Container>
       <S.DesktopMenu>{Children}</S.DesktopMenu>
