@@ -27,13 +27,32 @@ export const InputWrapper = styled(Flex)`
     width: 80px;
     height: 35px;
   }
+
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 16px 0 0 0;
+  }
 `
 export const FileWrapper = styled(Flex)`
   width: 100%;
   cursor: pointer;
   ${theme.typography.B4.Rg}
+  .desktop-text {
+    display: inline;
+  }
+  .mobile-text {
+    display: none;
+  }
   input {
     display: none;
+  }
+
+  .file-notification {
+    ${theme.typography.C5.Rg}
+  }
+  span {
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.C5.Rg}
+    }
   }
 
   &:hover {
@@ -41,6 +60,18 @@ export const FileWrapper = styled(Flex)`
   }
   .bold {
     ${theme.typography.B4.Sb}
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.B4.Rg}
+    }
+  }
+
+  ${media.down(theme.breakPoints.tablet)} {
+    .desktop-text {
+      display: none;
+    }
+    .mobile-text {
+      display: inline;
+    }
   }
 `
 
@@ -65,13 +96,28 @@ export const Item = styled.div`
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 20px;
   height: 37px;
-  width: 100%;
   max-width: 654px;
   align-items: center;
   display: flex;
   color: ${theme.colors.white};
   padding: 0 20px;
+  flex: 1;
+  min-width: 0;
+  > span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-wrap: nowrap;
   ${theme.typography.B4.Rg};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B5.Rg};
+  }
 `
 export const FileItemWrapper = styled.div<{ isError?: boolean }>`
   background-color: ${theme.colors.gray[600]};
@@ -87,6 +133,10 @@ export const FileItemWrapper = styled.div<{ isError?: boolean }>`
   gap: 8px;
   justify-content: space-between;
   ${theme.typography.B4.Rg};
+
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 0 14px;
+  }
 `
 export const Grid = styled.div`
   display: grid;
@@ -112,6 +162,9 @@ export const FileInfoWrapper = styled(Flex)`
     white-space: nowrap;
     width: 100%;
     min-width: 80px;
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.B4.Md}
+    }
   }
   .fileSize {
     ${theme.typography.B5.Rg}
@@ -123,6 +176,9 @@ export const FileInfoWrapper = styled(Flex)`
 export const File = styled(Flex)`
   flex: 1;
   gap: 12px;
+  ${media.down(theme.breakPoints.tablet)} {
+    gap: 8px;
+  }
 `
 
 export const sectionStyle = {
@@ -148,3 +204,10 @@ export const inputStyle = {
   padding: '8px 0',
   '&:focus': { border: `1px solid ${theme.colors.lime}` },
 }
+
+export const LinkItemWrapper = styled(Flex)`
+  ${media.down(theme.breakPoints.tablet)} {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+`

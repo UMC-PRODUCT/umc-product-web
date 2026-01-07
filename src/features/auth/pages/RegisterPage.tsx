@@ -105,6 +105,7 @@ export function RegisterPage() {
               }}
             />
             <Button
+              className="submit-button"
               type="submit"
               label="회원가입"
               tone="lime"
@@ -124,8 +125,11 @@ export function RegisterPage() {
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   width: 100%;
+  .submit-button {
+    height: 45px;
+  }
 `
 
 const ResponsiveLogo = styled(Logo)`

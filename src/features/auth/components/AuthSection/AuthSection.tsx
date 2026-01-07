@@ -10,7 +10,7 @@ const Section = styled.section<{ $size: 'md' | 'lg' }>`
   flex-direction: column;
   align-items: center;
   padding: 24px;
-  gap: ${({ $size }) => ($size === 'md' ? '48px' : '33px')};
+  gap: ${({ $size }) => ($size === 'md' ? '48px' : '24px')};
   width: ${({ $size }) => ($size === 'md' ? '420px' : '452px')};
   max-width: 90vw;
   min-height: 100vh;

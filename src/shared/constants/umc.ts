@@ -9,3 +9,9 @@ export const PART: Array<Part> = [
   'SpringBoot',
   'Node.js',
 ]
+
+export const FOOTER_INFO = {
+  email: 'email.umc@example.com',
+  generation: 10,
+  master: '홍길동',
+}

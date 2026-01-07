@@ -1,30 +1,25 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
+
 import Delete from '@/shared/assets/icons/delete.svg?react'
 import Document from '@/shared/assets/icons/document.svg?react'
 import ErrorIcon from '@/shared/assets/icons/notice.svg?react' // 에러 아이콘 가정
 import RetryIcon from '@/shared/assets/icons/retry.svg?react' // 재시도 아이콘 가정
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import { ProgressCircle } from '../../ProgressCircle'
 import * as S from './shared'
 
-const ProgressCircle = ({ progress }: { progress: number }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24" style={{ transform: 'rotate(-90deg)' }}>
-    <circle cx="12" cy="12" r="10" stroke={theme.colors.gray[600]} fill="none" strokeWidth="2" />
-    <circle
-      cx="12"
-      cy="12"
-      r="10"
-      stroke={theme.colors.white}
-      fill="none"
-      strokeWidth="2"
-      strokeDasharray={2 * Math.PI * 10}
-      strokeDashoffset={2 * Math.PI * 10 * (1 - progress / 100)}
-      style={{ transition: 'stroke-dashoffset 0.3s' }}
-      strokeLinecap="round"
-    />
-  </svg>
-)
+interface FileItemProps {
+  fileName: string
+  fileSize: string
+  removeFile: () => void
+  status: 'loading' | 'success' | 'error'
+  progress: number
+  onRetry: () => void
+}
 
 export default function FileItem({
   fileName,
@@ -33,22 +28,15 @@ export default function FileItem({
   status,
   progress,
   onRetry,
-}: {
-  fileName: string
-  fileSize: string
-  removeFile: () => void
-  status: 'loading' | 'success' | 'error'
-  progress: number
-  onRetry: () => void
-}) {
+}: FileItemProps) {
   return (
     <S.FileItemWrapper isError={status === 'error'}>
       <S.File height="30px" width={'calc(100% - 40px)'}>
-        <Flex width={'30px'}>
+        <Flex width={'fit-content'} css={fileIconStyle}>
           {status === 'loading' ? (
             <ProgressCircle progress={progress} />
           ) : status === 'error' ? (
-            <ErrorIcon width={28} height={28} color="white" />
+            <ErrorIcon color="white" />
           ) : (
             <Document />
           )}
@@ -64,32 +52,77 @@ export default function FileItem({
           <button
             type="button"
             onClick={onRetry}
-            css={{
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              background: 'none',
-              border: 'none',
-            }}
+            css={[
+              retryIconStyle,
+              {
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                background: 'none',
+                border: 'none',
+              },
+            ]}
           >
-            <RetryIcon width={25} height={25} fill={theme.colors.lime} />
+            <RetryIcon fill={theme.colors.lime} />
           </button>
         )}
 
         <button
           type="button"
           onClick={removeFile}
-          css={{
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            background: 'none',
-            border: 'none',
-          }}
+          css={[
+            actionIconStyle,
+            {
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              background: 'none',
+              border: 'none',
+            },
+          ]}
         >
-          <Delete color={theme.colors.gray[300]} width={20} height={20} />
+          <Delete color={theme.colors.gray[300]} />
         </button>
       </Flex>
     </S.FileItemWrapper>
   )
 }
+
+const fileIconStyle = css`
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+`
+
+const actionIconStyle = css`
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`
+
+const retryIconStyle = css`
+  svg {
+    width: 25px;
+    height: 25px;
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+`
