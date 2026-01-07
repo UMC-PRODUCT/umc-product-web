@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { FieldErrors } from 'react-hook-form'
 
 import * as S from '@/features/apply/components/shared'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -13,6 +14,8 @@ import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import type { QuestionList, QuestionPage, QuestionUnion } from '../type/question'
 import ResumeFormSection from './resume/ResumeFormSection'
 import { useResumeForm } from './resume/useResumeForm'
+
+type FormValues = Record<string, unknown>
 
 export default function Resume({
   data,
@@ -45,12 +48,11 @@ export default function Resume({
   // 1분마다 자동 저장
   const { lastSavedTime, handleSave } = useAutoSave({
     getValues,
-    key: `umc_resume_${data.id || 'temp'}`,
     interval: 60000,
   })
 
   // 모든 페이지에 대해서 유효성 검사
-  const onInvalid = (formErrors: any) => {
+  const onInvalid = (formErrors: FieldErrors<FormValues>) => {
     const errorFieldIds = Object.keys(formErrors)
     if (errorFieldIds.length > 0) {
       const firstErrorId = errorFieldIds[0]
@@ -71,7 +73,7 @@ export default function Resume({
       p.questions.map((q: QuestionUnion) => String(q.id)),
     )
 
-    const result = await trigger(allFieldIds as any)
+    const result = await trigger(allFieldIds)
 
     if (result) {
       handleSubmit((vals) => {
@@ -81,7 +83,7 @@ export default function Resume({
       })()
     } else {
       setIsCautionSubmitModalOpen(false)
-      onInvalid((control as any)._formState?.errors)
+      onInvalid(errors)
     }
   }
 

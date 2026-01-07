@@ -12,7 +12,7 @@ export default function ResumeNavigation({
   totalPages: number
   onPageChange: (next: number) => void
 }) {
-  const isPrevDisabled = page == 1
+  const isPrevDisabled = page === 1
   const isNextDisabled = page >= totalPages
 
   return (

@@ -44,7 +44,7 @@ export default function ResumeFormSection({
                 data={q}
                 value={field.value}
                 onChange={(_, val) => field.onChange(val, { shouldDirty: true, shouldTouch: true })}
-                errorMessage={errors[`${q.id}`]?.message as any}
+                errorMessage={errors[`${q.id}`]?.message}
               />
             )}
           />

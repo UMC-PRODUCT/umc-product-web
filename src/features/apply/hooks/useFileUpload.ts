@@ -8,7 +8,7 @@ export interface FileInfo {
   size: number
   status: FileStatus
   progress: number
-  fileObject?: File
+  fileObject: File
 }
 
 export const useFileUpload = (initialFiles: Array<FileInfo>, value: any, onChange: any) => {

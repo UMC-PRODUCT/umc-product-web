@@ -3,11 +3,10 @@ import type { UseFormGetValues } from 'react-hook-form'
 
 interface UseAutoSaveProps {
   getValues: UseFormGetValues<any>
-  key: string
   interval?: number
 }
 
-export const useAutoSave = ({ getValues, key, interval = 60000 }: UseAutoSaveProps) => {
+export const useAutoSave = ({ getValues, interval = 60000 }: UseAutoSaveProps) => {
   const [lastSavedTime, setLastSavedTime] = useState<string>('')
 
   const handleSave = useCallback(() => {
@@ -23,7 +22,7 @@ export const useAutoSave = ({ getValues, key, interval = 60000 }: UseAutoSavePro
 
     setLastSavedTime(formattedTime)
     console.log(`[AutoSave] ${formattedTime} 저장 완료`)
-  }, [getValues, key])
+  }, [getValues])
 
   useEffect(() => {
     const timer = setInterval(() => {
