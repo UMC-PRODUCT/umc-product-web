@@ -38,4 +38,16 @@ export const getTone = (theme: Theme) =>
         border: `1px solid ${theme.colors.white}`,
       },
     },
+    necessary: {
+      solid: {
+        background: theme.colors.necessary,
+        color: theme.colors.black,
+        border: 'none',
+      },
+      outline: {
+        background: 'transparent',
+        color: theme.colors.necessary,
+        border: `1px solid ${theme.colors.necessary}`,
+      },
+    },
   }) as const

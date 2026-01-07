@@ -2,8 +2,9 @@
 import type { ForwardedRef } from 'react'
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
 
-import * as S from '@/features/apply/components/question/timeTable/TimeTable.style'
 import { Badge } from '@/shared/ui/common/Badge'
+
+import * as S from './TimeTable.style'
 
 interface ScheduleSelectorProps {
   dates: Array<string>
@@ -11,12 +12,14 @@ interface ScheduleSelectorProps {
   disabledSlots?: Partial<Record<string, Array<string>>>
   value?: Partial<Record<string, Array<string>>>
   onChange?: (selected: Record<string, Array<string>>) => void
+  mode: 'view' | 'edit'
 }
 
 const TimeTableComponent = (
-  { dates, timeRange, disabledSlots = {}, value = {}, onChange }: ScheduleSelectorProps,
+  { dates, timeRange, disabledSlots = {}, value = {}, onChange, mode }: ScheduleSelectorProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) => {
+  const isEditable = mode === 'edit'
   const [isDragging, setIsDragging] = useState(false)
   const [dragMode, setDragMode] = useState(true)
 
@@ -171,11 +174,46 @@ const TimeTableComponent = (
 
     return `(${dayName})`
   }
+
+  const handleHeaderClick = (date: string) => {
+    if (!isEditable) return
+    const disabledSet = disabledIdxMap[date]
+    const availableCount = totalSlots - disabledSet.size
+    if (availableCount <= 0) return
+
+    const newIndices = { ...selectedIndices }
+    const isAllSelected = newIndices[date].size === availableCount
+    const nextSet = new Set<number>()
+    if (!isAllSelected) {
+      for (let i = 0; i < totalSlots; i++) {
+        if (!disabledSet.has(i)) nextSet.add(i)
+      }
+    }
+    newIndices[date] = nextSet
+    setSelectedIndices(newIndices)
+    notifyChange(newIndices)
+  }
+
+  const handleMouseDown = (date: string, idx: number) => {
+    if (!isEditable) return
+    setIsDragging(true)
+    handleInteraction(date, idx, true)
+  }
+
+  const handleMouseEnter = (date: string, idx: number) => {
+    if (!isEditable || !isDragging) return
+    handleInteraction(date, idx, false)
+  }
+
+  const handleStopDrag = () => {
+    setIsDragging(false)
+  }
+
   return (
     <S.Container
       ref={ref}
-      onMouseUp={() => setIsDragging(false)}
-      onMouseLeave={() => setIsDragging(false)}
+      onMouseUp={isEditable ? handleStopDrag : undefined}
+      onMouseLeave={isEditable ? handleStopDrag : undefined}
     >
       <S.TableWrapper>
         <S.TimeLabelsColumn>
@@ -190,27 +228,12 @@ const TimeTableComponent = (
             {dates.map((d) => (
               <S.HeaderCell
                 key={d}
-                onClick={() => {
-                  const disabledSet = disabledIdxMap[d]
-                  const availableCount = totalSlots - disabledSet.size
-                  if (availableCount <= 0) return
-
-                  const newIndices = { ...selectedIndices }
-                  const isAllSelected = newIndices[d].size === availableCount
-                  const nextSet = new Set<number>()
-                  if (!isAllSelected) {
-                    for (let i = 0; i < totalSlots; i++) {
-                      if (!disabledSet.has(i)) nextSet.add(i)
-                    }
-                  }
-                  newIndices[d] = nextSet
-                  setSelectedIndices(newIndices)
-                  notifyChange(newIndices)
-                }}
+                onClick={() => handleHeaderClick(d)}
                 isAllSelected={
                   selectedIndices[d].size > 0 &&
                   selectedIndices[d].size === totalSlots - disabledIdxMap[d].size
                 }
+                isInteractive={isEditable}
               >
                 <Badge
                   typo="C5.Md"
@@ -238,11 +261,9 @@ const TimeTableComponent = (
                   isSelected={selectedIndices[date].has(idx)}
                   isDisabled={disabledIdxMap[date].has(idx)}
                   isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
-                  onMouseDown={() => {
-                    setIsDragging(true)
-                    handleInteraction(date, idx, true)
-                  }}
-                  onMouseEnter={() => isDragging && handleInteraction(date, idx, false)}
+                  isInteractive={isEditable}
+                  onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
+                  onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
                 />
               )),
             )}

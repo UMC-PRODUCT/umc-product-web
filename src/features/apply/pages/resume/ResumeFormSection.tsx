@@ -3,8 +3,8 @@ import { Controller } from 'react-hook-form'
 
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import { Question } from '@/shared/ui/common/question/Question'
 
-import { Question } from '../../components/question/Question'
 import ResumeNavigation from '../../components/ResumeNavigation'
 import type { QuestionUnion } from '../../type/question'
 
@@ -41,6 +41,7 @@ export default function ResumeFormSection({
             }}
             render={({ field }) => (
               <Question
+                mode="edit"
                 data={q}
                 value={field.value}
                 onChange={(_, val) => field.onChange(val, { shouldDirty: true, shouldTouch: true })}

@@ -64,3 +64,11 @@ export type QuestionList = {
   description: string
   pages: Array<QuestionPage>
 }
+
+export type ResumeType = {
+  id: number
+  title: string
+  description: string
+  lastSavedTime: string
+  pages: Array<QuestionPage>
+}

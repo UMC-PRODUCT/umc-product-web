@@ -23,6 +23,7 @@ import { Route as appManagementPolicyIndexRouteImport } from './routes/(app)/man
 import { Route as appManagementNoticeIndexRouteImport } from './routes/(app)/management/notice/index'
 import { Route as appManagementDataIndexRouteImport } from './routes/(app)/management/data/index'
 import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
+import { Route as appDashboardResumeIdIndexRouteImport } from './routes/(app)/dashboard/$resumeId/index'
 import { Route as appApplyNewIndexRouteImport } from './routes/(app)/apply/new/index'
 import { Route as appApplyResumeIdIndexRouteImport } from './routes/(app)/apply/$resumeId/index'
 
@@ -99,6 +100,12 @@ const appManagementAccountIndexRoute =
     path: '/account/',
     getParentRoute: () => appManagementRouteRoute,
   } as any)
+const appDashboardResumeIdIndexRoute =
+  appDashboardResumeIdIndexRouteImport.update({
+    id: '/dashboard/$resumeId/',
+    path: '/dashboard/$resumeId/',
+    getParentRoute: () => appRouteRoute,
+  } as any)
 const appApplyNewIndexRoute = appApplyNewIndexRouteImport.update({
   id: '/apply/new/',
   path: '/apply/new/',
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/recruiting': typeof appRecruitingIndexRoute
   '/apply/$resumeId': typeof appApplyResumeIdIndexRoute
   '/apply/new': typeof appApplyNewIndexRoute
+  '/dashboard/$resumeId': typeof appDashboardResumeIdIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
   '/management/data': typeof appManagementDataIndexRoute
   '/management/notice': typeof appManagementNoticeIndexRoute
@@ -136,6 +144,7 @@ export interface FileRoutesByTo {
   '/recruiting': typeof appRecruitingIndexRoute
   '/apply/$resumeId': typeof appApplyResumeIdIndexRoute
   '/apply/new': typeof appApplyNewIndexRoute
+  '/dashboard/$resumeId': typeof appDashboardResumeIdIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
   '/management/data': typeof appManagementDataIndexRoute
   '/management/notice': typeof appManagementNoticeIndexRoute
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   '/(app)/recruiting/': typeof appRecruitingIndexRoute
   '/(app)/apply/$resumeId/': typeof appApplyResumeIdIndexRoute
   '/(app)/apply/new/': typeof appApplyNewIndexRoute
+  '/(app)/dashboard/$resumeId/': typeof appDashboardResumeIdIndexRoute
   '/(app)/management/account/': typeof appManagementAccountIndexRoute
   '/(app)/management/data/': typeof appManagementDataIndexRoute
   '/(app)/management/notice/': typeof appManagementNoticeIndexRoute
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/recruiting'
     | '/apply/$resumeId'
     | '/apply/new'
+    | '/dashboard/$resumeId'
     | '/management/account'
     | '/management/data'
     | '/management/notice'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/recruiting'
     | '/apply/$resumeId'
     | '/apply/new'
+    | '/dashboard/$resumeId'
     | '/management/account'
     | '/management/data'
     | '/management/notice'
@@ -209,6 +221,7 @@ export interface FileRouteTypes {
     | '/(app)/recruiting/'
     | '/(app)/apply/$resumeId/'
     | '/(app)/apply/new/'
+    | '/(app)/dashboard/$resumeId/'
     | '/(app)/management/account/'
     | '/(app)/management/data/'
     | '/(app)/management/notice/'
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appManagementAccountIndexRouteImport
       parentRoute: typeof appManagementRouteRoute
     }
+    '/(app)/dashboard/$resumeId/': {
+      id: '/(app)/dashboard/$resumeId/'
+      path: '/dashboard/$resumeId'
+      fullPath: '/dashboard/$resumeId'
+      preLoaderRoute: typeof appDashboardResumeIdIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
     '/(app)/apply/new/': {
       id: '/(app)/apply/new/'
       path: '/apply/new'
@@ -369,6 +389,7 @@ interface appRouteRouteChildren {
   appRecruitingIndexRoute: typeof appRecruitingIndexRoute
   appApplyResumeIdIndexRoute: typeof appApplyResumeIdIndexRoute
   appApplyNewIndexRoute: typeof appApplyNewIndexRoute
+  appDashboardResumeIdIndexRoute: typeof appDashboardResumeIdIndexRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
@@ -378,6 +399,7 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appRecruitingIndexRoute: appRecruitingIndexRoute,
   appApplyResumeIdIndexRoute: appApplyResumeIdIndexRoute,
   appApplyNewIndexRoute: appApplyNewIndexRoute,
+  appDashboardResumeIdIndexRoute: appDashboardResumeIdIndexRoute,
 }
 
 const appRouteRouteWithChildren = appRouteRoute._addFileChildren(

@@ -29,10 +29,10 @@ const HeaderRow = styled.div<{ cols: number }>`
   width: max-content;
 `
 
-const HeaderCell = styled.div<{ isAllSelected: boolean }>`
+const HeaderCell = styled.div<{ isAllSelected: boolean; isInteractive?: boolean }>`
   display: flex;
   justify-content: center;
-  cursor: pointer;
+  cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
 `
 
 const TimeLabelsColumn = styled.div`
@@ -61,7 +61,12 @@ const GridBody = styled.div<{ cols: number }>`
   width: max-content;
 `
 
-const SlotCell = styled.div<{ isSelected: boolean; isDisabled: boolean; isHourBoundary: boolean }>`
+const SlotCell = styled.div<{
+  isSelected: boolean
+  isDisabled: boolean
+  isHourBoundary: boolean
+  isInteractive?: boolean
+}>`
   height: 25px;
   box-sizing: border-box;
   background-color: ${(p) =>
@@ -71,7 +76,10 @@ const SlotCell = styled.div<{ isSelected: boolean; isDisabled: boolean; isHourBo
     p.isHourBoundary
       ? `1px solid ${theme.colors.gray[500]}`
       : `1px solid ${theme.colors.gray[600]}`};
-  cursor: ${(p) => (p.isDisabled ? 'not-allowed' : 'pointer')};
+  cursor: ${(p) => {
+    if (!p.isInteractive) return 'default'
+    return p.isDisabled ? 'not-allowed' : 'pointer'
+  }};
 
   ${(p) =>
     p.isDisabled &&
@@ -81,7 +89,7 @@ const SlotCell = styled.div<{ isSelected: boolean; isDisabled: boolean; isHourBo
   `}
 
   &:hover {
-    ${(p) => !p.isDisabled && 'filter: brightness(1.2);'}
+    ${(p) => p.isInteractive && !p.isDisabled && 'filter: brightness(1.2);'}
   }
 `
 export {

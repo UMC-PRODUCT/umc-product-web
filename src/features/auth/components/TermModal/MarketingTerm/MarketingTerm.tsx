@@ -1,5 +1,6 @@
-import TermModalLayout from '@features/auth/components/TermModal/TermModalLayout'
 import marketingTermContent from '@features/auth/constants/terms/marketingTerm.md?raw'
+
+import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
 
 export default function MarketingTerm({ onClose }: { onClose: () => void }) {
   return (

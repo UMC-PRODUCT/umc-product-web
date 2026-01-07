@@ -6,7 +6,15 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
-export default function CautionConfirm({ onClose, link }: { onClose: () => void; link: string }) {
+export default function CautionConfirm({
+  onClose,
+  createNewResume,
+  existingResumeId,
+}: {
+  onClose: () => void
+  createNewResume: () => void
+  existingResumeId: number
+}) {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -27,8 +35,14 @@ export default function CautionConfirm({ onClose, link }: { onClose: () => void;
       >
         <Button
           onClick={() => {
+            createNewResume()
             onClose()
-            navigate({ to: '/apply/new', search: { page: 1 } })
+            const resumeId = 1 // TODO: 새로 생성된 지원서 ID로 변경
+            navigate({
+              to: `/apply/$resumeId`,
+              params: { resumeId: String(resumeId) },
+              search: { page: 1 },
+            })
           }}
           label="새로 작성하기"
           tone="gray"
@@ -36,8 +50,13 @@ export default function CautionConfirm({ onClose, link }: { onClose: () => void;
         />
         <Button
           onClick={() => {
+            const resumeId = existingResumeId
+            navigate({
+              to: `/apply/$resumeId`,
+              params: { resumeId: String(resumeId) },
+              search: { page: 1 },
+            })
             onClose()
-            navigate({ to: link })
           }}
           label="이어서 작성하기"
           tone="lime"

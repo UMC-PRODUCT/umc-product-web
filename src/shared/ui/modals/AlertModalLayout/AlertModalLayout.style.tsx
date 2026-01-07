@@ -20,7 +20,8 @@ const ModalButton = styled.button`
 const ContentWrapper = styled(Flex)`
   padding-left: 14px;
   border-left: 4px solid ${(props) => props.theme.colors.white};
-  white-space: pre-line;
+  white-space: pre-wrap;
+  word-break: keep-all;
   color: ${(props) => props.theme.colors.white};
   ${(props) => props.theme.typography.B3.Md}
   ${media.down(theme.breakPoints.tablet)} {

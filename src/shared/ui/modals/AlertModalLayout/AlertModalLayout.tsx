@@ -29,8 +29,8 @@ export default function AlertModalLayout({
           <S.ModalContentWrapper
             flexDirection="column"
             width="fit-content"
-            minWidth="360px"
             maxWidth="90vw"
+            padding="24px"
           >
             <Modal.Header>
               <Flex
@@ -58,7 +58,7 @@ export default function AlertModalLayout({
             <Modal.Body>
               <S.ContentWrapper
                 justifyContent="flex-start"
-                width="100%"
+                width={'fit-content'}
                 minHeight="50px"
                 alignItems="center"
               >

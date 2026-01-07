@@ -6,9 +6,16 @@ interface ChoiceProps {
   value?: string
   onChange?: (value: any) => void
   options: Array<string>
+  mode: 'view' | 'edit'
 }
 
-export const Choice = ({ value, onChange, options }: ChoiceProps) => {
+export const Choice = ({ value, onChange, options, mode }: ChoiceProps) => {
+  const isEditable = mode === 'edit'
+
+  const handleSelect = (option: string) => {
+    onChange?.(option)
+  }
+
   return (
     <Flex flexDirection="column" gap={10}>
       {options.map((option, index) => (
@@ -16,7 +23,8 @@ export const Choice = ({ value, onChange, options }: ChoiceProps) => {
           content={option}
           value={value}
           key={index}
-          onClick={() => onChange?.(option)}
+          mode={mode}
+          onClick={isEditable ? () => handleSelect(option) : undefined}
         />
       ))}
     </Flex>

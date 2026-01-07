@@ -6,9 +6,10 @@ interface MultipleChoiceProps {
   value?: Array<string>
   onChange?: (value: Array<string>) => void
   options: Array<string>
+  mode: 'view' | 'edit'
 }
 
-export const MultipleChoice = ({ options, value = [], onChange }: MultipleChoiceProps) => {
+export const MultipleChoice = ({ options, value = [], onChange, mode }: MultipleChoiceProps) => {
   // value가 undefined일 경우를 대비해 로컬 변수화
   const selected = Array.isArray(value) ? value : []
 
@@ -30,6 +31,7 @@ export const MultipleChoice = ({ options, value = [], onChange }: MultipleChoice
           // 불필요한 객체나 함수 생성을 최소화하여 전달
           isChecked={selected.includes(option)}
           onToggle={() => handleToggle(option)}
+          mode={mode}
         />
       ))}
     </Flex>
