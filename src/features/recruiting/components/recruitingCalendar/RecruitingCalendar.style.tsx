@@ -25,7 +25,6 @@ const StyledCalendarWrapper = styled.div`
     background: transparent;
     border: none;
     width: 100%;
-    /* 달력 내부 컨테이너들의 쌓임 맥락을 해제하기 위해 설정 */
     overflow: visible;
   }
 
@@ -106,6 +105,13 @@ const StyledCalendarWrapper = styled.div`
 
   .react-calendar__tile:has(.event-bar-container) {
     z-index: 100 !important;
+  }
+
+  .react-calendar__month-view__weekdays {
+    color: ${theme.colors.white};
+    abbr {
+      text-decoration: none;
+    }
   }
 
   .react-calendar__tile--now {

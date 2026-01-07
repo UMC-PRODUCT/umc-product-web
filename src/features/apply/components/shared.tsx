@@ -112,6 +112,14 @@ export const BorderSection = styled(Flex)`
     padding: 10px 8px;
     ${theme.typography.B4.Rg}
   }
+
+  .last-saved-time {
+    ${theme.typography.B3.Rg}
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.B5.Rg}
+    }
+  }
+
   form {
     width: 100%;
     display: flex;
@@ -127,6 +135,9 @@ export const QuestionLayout = styled(Flex)`
   border: 1.5px solid ${theme.colors.gray[700]};
   padding: 22px 28px;
   border-radius: 8px;
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 16px 16px;
+  }
 `
 
 export const QuestionTitle = styled.div`
@@ -142,6 +153,14 @@ export const QuestionTitle = styled.div`
   align-items: flex-start;
   gap: 8px;
   border-bottom: 1px solid ${theme.colors.gray[600]};
+  .title {
+    display: flex;
+    align-items: center;
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.B3.Md};
+    }
+    gap: 4px;
+  }
   span {
     margin-left: 4px;
   }
@@ -150,12 +169,17 @@ export const QuestionTitle = styled.div`
 export const NavigationButtonWrapper = styled.div`
   justify-content: flex-end;
   gap: 4px;
-  margin-top: 8px;
   align-items: center;
   display: flex;
   ${theme.typography.B2.Md}
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B4.Md}
+  }
 `
 export const PageWrapper = styled.div`
   display: flex;
   ${theme.typography.C2.Md}
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B4.Md}
+  }
 `

@@ -1,5 +1,4 @@
 import Close from '@shared/assets/icons/close.svg?react'
-import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 import Instruction from '@shared/ui/common/Instruction/Instruction'
 import { Modal } from '@shared/ui/common/Modal'
@@ -27,17 +26,11 @@ export default function AlertModalLayout({
       <Modal.Portal>
         <Modal.Overlay />
         <Modal.Content>
-          <Flex
+          <S.ModalContentWrapper
             flexDirection="column"
-            gap={'16px'}
-            padding={'28px 28px 30px 34px'}
-            width="90vw"
-            minWidth="390px"
-            maxWidth="492px"
-            css={{
-              backgroundColor: theme.colors.gray[700],
-              borderRadius: '8px',
-            }}
+            width="fit-content"
+            minWidth="360px"
+            maxWidth="90vw"
           >
             <Modal.Header>
               <Flex
@@ -63,26 +56,19 @@ export default function AlertModalLayout({
               </Flex>
             </Modal.Header>
             <Modal.Body>
-              <Flex
+              <S.ContentWrapper
                 justifyContent="flex-start"
                 width="100%"
                 minHeight="50px"
                 alignItems="center"
-                css={{
-                  borderLeft: `4px solid ${theme.colors.white}`,
-                  paddingLeft: '14px',
-                  color: theme.colors.white,
-                  whiteSpace: 'pre-line',
-                  ...theme.typography.B3.Md,
-                }}
               >
                 {content}
-              </Flex>
+              </S.ContentWrapper>
             </Modal.Body>
             <Modal.Footer>
               <Flex justifyContent="flex-end">{children}</Flex>
             </Modal.Footer>
-          </Flex>
+          </S.ModalContentWrapper>
         </Modal.Content>
       </Modal.Portal>
     </Modal.Root>

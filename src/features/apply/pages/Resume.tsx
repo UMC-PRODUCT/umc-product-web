@@ -3,6 +3,8 @@ import type { FieldErrors } from 'react-hook-form'
 
 import * as S from '@/features/apply/components/shared'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -97,14 +99,21 @@ export default function Resume({
 
       <S.BorderSection>
         <Flex justifyContent="flex-end">
-          <Flex width={'380px'} justifyContent="flex-end" alignItems="center" gap={'18px'}>
-            {lastSavedTime && <span>{lastSavedTime}에 마지막으로 저장됨.</span>}
+          <Flex justifyContent="flex-end" alignItems="center" gap={'18px'}>
+            {lastSavedTime && (
+              <span className="last-saved-time">{lastSavedTime}에 마지막으로 저장됨.</span>
+            )}
             <Badge
-              typo="C2.Md"
+              typo="B3.Md"
               tone="lime"
               variant="outline"
               onClick={handleSave}
-              css={{ cursor: 'pointer' }}
+              css={{
+                cursor: 'pointer',
+                [media.down(theme.breakPoints.tablet)]: {
+                  ...theme.typography.B4.Md,
+                },
+              }}
             >
               저장하기
             </Badge>

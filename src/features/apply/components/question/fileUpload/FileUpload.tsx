@@ -62,7 +62,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
                 progress={file.progress}
                 onRetry={() => {
                   updateStatus(file.id, 'loading', 0)
-                  if (file.fileObject) uploadFile(file.id, file.fileObject)
+                  uploadFile(file.id, file.fileObject)
                 }}
                 removeFile={() => setLocalFiles((prev) => prev.filter((f) => f.id !== file.id))}
               />
@@ -85,7 +85,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
           }}
           css={S.dropzoneStyle(isDraggingOver)}
         >
-          <S.FileWrapper justifyContent="center" gap={6}>
+          <S.FileWrapper alignItems="center" justifyContent="center" gap={6} flexDirection="column">
             <input
               type="file"
               ref={fileInputRef}
@@ -93,10 +93,14 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
               multiple
               hidden
             />
-            <Upload />
-            <span>
-              클릭 또는 드래그 하여 <span className="bold">파일 추가</span>
-            </span>
+            <Flex alignItems="center" gap={8} width={'fit-content'}>
+              <Upload />
+              <span className="desktop-text">
+                클릭 또는 드래그 하여 <span className="bold">파일 추가</span>
+              </span>
+              <span className="mobile-text">클릭하여 파일 추가</span>
+            </Flex>
+            <span className="file-notification">파일 용량 10MB 제한</span>
           </S.FileWrapper>
         </Section>
         <S.InputWrapper>
@@ -109,7 +113,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
               }
             />
           ))}
-          <Flex flexDirection="row" width="100%" gap={21} alignItems="center">
+          <S.LinkItemWrapper flexDirection="row" width="100%" gap={21} alignItems="center">
             <input
               placeholder="링크 붙여 넣기"
               value={linkInput}
@@ -137,7 +141,7 @@ export const FileUpload = ({ value = { files: [], links: [] }, onChange }: FileU
               onClick={handleAddLink}
               css={{ borderRadius: '20px' }}
             />
-          </Flex>
+          </S.LinkItemWrapper>
           {errorMessage && (
             <Flex
               gap={2}
