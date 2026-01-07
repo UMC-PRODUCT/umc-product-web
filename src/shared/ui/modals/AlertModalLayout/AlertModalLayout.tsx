@@ -26,7 +26,12 @@ export default function AlertModalLayout({
       <Modal.Portal>
         <Modal.Overlay />
         <Modal.Content>
-          <S.ModalContentWrapper flexDirection="column" width="390px" maxWidth="90vw">
+          <S.ModalContentWrapper
+            flexDirection="column"
+            width="fit-content"
+            minWidth="360px"
+            maxWidth="90vw"
+          >
             <Modal.Header>
               <Flex
                 justifyContent="space-between"

@@ -23,7 +23,6 @@ const ContentWrapper = styled(Flex)`
   white-space: pre-line;
   color: ${(props) => props.theme.colors.white};
   ${(props) => props.theme.typography.B3.Md}
-
   ${media.down(theme.breakPoints.tablet)} {
     padding-left: 10px;
     border-left: 3px solid ${(props) => props.theme.colors.white};
