@@ -6,11 +6,11 @@ import * as S from './shared'
 export default function ResumeNavigation({
   page,
   totalPages,
-  setPage,
+  onPageChange,
 }: {
   page: number
   totalPages: number
-  setPage: (page: number) => void
+  onPageChange: (next: number) => void
 }) {
   const isPrevDisabled = page == 1
   const isNextDisabled = page >= totalPages
@@ -25,7 +25,7 @@ export default function ResumeNavigation({
         }}
         onClick={() => {
           if (isPrevDisabled) return
-          setPage(page - 1)
+          onPageChange(page - 1)
         }}
       >
         <ArrowDefault css={{ transform: 'rotate(180deg)' }} />
@@ -40,7 +40,7 @@ export default function ResumeNavigation({
         }}
         onClick={() => {
           if (isNextDisabled) return
-          setPage(page + 1)
+          onPageChange(page + 1)
         }}
       >
         다음
