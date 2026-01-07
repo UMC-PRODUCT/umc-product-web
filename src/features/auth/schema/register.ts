@@ -1,20 +1,24 @@
 import { z } from 'zod/v3'
 
-const email = z.string().email('유효하지 않은 이메일 주소입니다.')
+const email = z.string().email('유효한 이메일 주소를 입력해 주세요.')
 
 export const registerSchema = z.object({
-  school: z.string().min(1, '학교를 선택하지 않았습니다.'),
-  name: z.string().min(1, '양식이 올바르지 않습니다.'),
+  school: z.string().min(1, '학교를 선택해 주세요.'),
+  name: z
+    .string()
+    .min(1, '이름을 입력해주세요.')
+    .regex(/^[가-힣]{2,5}$/, '이름은 한글로만 입력해 주세요.'),
   nickname: z
     .string()
-    .min(1, '양식이 올바르지 않습니다.')
-    .regex(/^[가-힣]{1,5}$/, '닉네임은 1~5글자의 한글이어야 합니다.'),
+    .min(1, '닉네임을 입력해주세요.')
+    .regex(/^[가-힣]{1,5}$/, '닉네임은 한글로만 입력해 주세요.'),
+
   email,
   serviceTerm: z.boolean().refine((val) => val === true, {
-    message: '서비스 이용 약관에 동의해 주세요.',
+    message: '모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다.',
   }),
   privacyTerm: z.boolean().refine((val) => val === true, {
-    message: '개인정보 처리 방침에 동의해 주세요.',
+    message: '모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다.',
   }),
   marketingTerm: z.boolean(),
 })
