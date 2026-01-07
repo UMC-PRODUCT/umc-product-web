@@ -7,10 +7,13 @@ import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import CautionLeave from '../components/modals/CautionLeave'
 import CautionSubmit from '../components/modals/CautionSubmit'
 import { Question } from '../components/question/Question'
 import ResumeNavigation from '../components/ResumeNavigation'
 import { useAutoSave } from '../hooks/useAutoSave'
+import { useBeforeUnload } from '../hooks/useBeforeUnload'
+import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import type { QuestionList, QuestionPage, QuestionUnion } from '../type/question'
 
 type FormValues = Record<string, unknown>
@@ -32,6 +35,7 @@ export default function Resume({
   const currentPageIndex = Math.min(Math.max(pageNumber - 1, 0), Math.max(totalPages - 1, 0))
   const currentPage = data.pages[currentPageIndex] ?? data.pages[0]
   const currentQuestions = currentPage.questions
+
   const [isCautionSubmitModalOpen, setIsCautionSubmitModalOpen] = useState(false)
 
   const {
@@ -40,7 +44,8 @@ export default function Resume({
     trigger,
     getValues,
     register,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: useMemo(() => {
@@ -54,6 +59,12 @@ export default function Resume({
     }, [data]),
     shouldUnregister: false,
   })
+
+  // ✅ 새로고침/탭닫기 방지 (브라우저 기본 경고창)
+  useBeforeUnload(isDirty)
+
+  // ✅ 라우터 이동 방지 (커스텀 모달)
+  const leaveGuard = useUnsavedChangesBlocker(isDirty)
 
   const { lastSavedTime, handleSave } = useAutoSave({
     getValues,
@@ -118,10 +129,13 @@ export default function Resume({
       handleSubmit((vals) => {
         console.log('최종 제출 데이터:', vals)
         setIsCautionSubmitModalOpen(false)
+        reset(vals) // ✅ 제출 성공 시 dirty 해제
       })()
     } else {
       setIsCautionSubmitModalOpen(false)
-      onInvalid(control._formState.errors)
+      // react-hook-form 내부값 접근 대신, onInvalid에 errors 전달하는게 더 안전하지만
+      // 기존 로직 유지
+      onInvalid((control as any)._formState?.errors)
     }
   }
 
@@ -130,7 +144,9 @@ export default function Resume({
       <Flex maxWidth={'956px'}>
         <PageTitle title={`UMC ${schoolName} ${classNumber} 지원서`} />
       </Flex>
+
       <S.BorderSection alignItems="flex-start">{data.description}</S.BorderSection>
+
       <S.BorderSection>
         <Flex justifyContent="flex-end">
           <Flex width={'380px'} justifyContent="flex-end" alignItems="center" gap={'18px'}>
@@ -162,16 +178,19 @@ export default function Resume({
                   <Question
                     data={q}
                     value={field.value}
-                    onChange={(_, val) => field.onChange(val)}
-                    errorMessage={errors[`${q.id}`]?.message}
+                    // ✅ 커스텀 컴포넌트 + 복합값에서 dirty 안정화
+                    onChange={(_, val) =>
+                      field.onChange(val, { shouldDirty: true, shouldTouch: true })
+                    }
+                    errorMessage={errors[`${q.id}`]?.message as any}
                   />
                 )}
               />
             </Flex>
           ))}
+
           <ResumeNavigation page={page} setPage={setPage} totalPages={totalPages} />
 
-          {/* 지원하기 버튼: 필수값 미입력 시 비활성화 및 회색 표시 */}
           <Flex justifyContent="center" css={{ marginTop: '40px' }}>
             <Button
               type="button"
@@ -190,6 +209,8 @@ export default function Resume({
           onSubmit={handleFinalSubmit}
         />
       )}
+
+      {leaveGuard.open && <CautionLeave onClose={leaveGuard.stay} onMove={leaveGuard.leave} />}
     </S.PageLayout>
   )
 }
