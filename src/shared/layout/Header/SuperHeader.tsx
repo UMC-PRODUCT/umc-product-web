@@ -50,6 +50,8 @@ const nav = {
   link: '/', // TODO: 링크 수정
 }
 
-export default function SuperHeader() {
+const SuperHeader = () => {
   return <Header leftChildren={left} social={social} nav={nav} />
 }
+
+export default SuperHeader

@@ -23,12 +23,12 @@ type AccountTableRowsProps = {
   onDelete: (id: number) => void
 }
 
-export function AccountTableRows({
+export const AccountTableRows = ({
   selectedIds,
   toggleRow,
   onEdit,
   onDelete,
-}: AccountTableRowsProps) {
+}: AccountTableRowsProps) => {
   return (
     <>
       {ACCOUNT_DELETE_MOCK.map((item) => (

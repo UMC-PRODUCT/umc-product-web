@@ -9,22 +9,42 @@ interface MyRouterContext {
   queryClient: QueryClient
 }
 
-export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
+const RootErrorComponent = () => {
+  // TODO: 추후 작업 필요
+  return <div>TODO: 추후 작업 필요 - error UI</div>
+}
+
+const RootNotFoundComponent = () => {
+  // TODO: 추후 작업 필요
+  return <div>TODO: 추후 작업 필요 - not found UI</div>
+}
+
+const RootComponent = () => {
+  const shouldShowDevtools = import.meta.env.DEV
+
+  return (
     <>
       <Outlet />
-      <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-          TanStackQueryDevtools,
-        ]}
-      />
+      {shouldShowDevtools ? (
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
+      ) : null}
     </>
-  ),
+  )
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  component: RootComponent,
+  errorComponent: RootErrorComponent,
+  notFoundComponent: RootNotFoundComponent,
 })

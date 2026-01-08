@@ -8,12 +8,7 @@ const tabSchema = z.object({
   tab: z.enum(['add', 'edit', 'level'] as const).optional(),
 })
 
-export const Route = createFileRoute('/(app)/management/account/')({
-  validateSearch: (search) => tabSchema.parse(search),
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+const RouteComponent = () => {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
   const activeTab: ManageAccountTabName = tab ?? 'add'
@@ -28,3 +23,8 @@ function RouteComponent() {
 
   return <AccountPage activeTab={activeTab} onTabChange={setTab} />
 }
+
+export const Route = createFileRoute('/(app)/management/account/')({
+  validateSearch: (search) => tabSchema.parse(search),
+  component: RouteComponent,
+})

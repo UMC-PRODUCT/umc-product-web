@@ -1,32 +1,36 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
+import { MOCK_VIEW_RESUME_DATA } from '@/features/dashboard/mocks/viewResume'
 import ViewResume from '@/features/dashboard/pages/ViewResume'
-import { MOCK_VIEW_RESUME_DATA } from '@/shared/mocks/questions'
 
-type ResumeSearch = {
+type ViewResumeSearch = {
   page: number
 }
 
-export const Route = createFileRoute('/(app)/dashboard/$resumeId/')({
-  validateSearch: (search: Record<string, unknown>): ResumeSearch => {
-    return {
-      page: Number(search.page ?? 1),
-    }
-  },
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+const RouteComponent = () => {
   const navigate = useNavigate()
-  const { resumeId } = Route.useParams()
   const { page = 1 } = Route.useSearch()
+  const params = Route.useParams()
+  const { resumeData } = Route.useLoaderData()
+
   const setPage = (next: number) => {
     navigate({
       to: Route.to,
-      params: { resumeId },
+      params,
       search: (prev) => ({ ...prev, page: next }),
       replace: false,
     })
   }
-  return <ViewResume data={MOCK_VIEW_RESUME_DATA} page={page} setPage={setPage} />
+
+  return <ViewResume resumeData={resumeData} currentPage={page} onPageChange={setPage} />
 }
+
+export const Route = createFileRoute('/(app)/dashboard/$resumeId/')({
+  validateSearch: (search: Record<string, unknown>): ViewResumeSearch => {
+    return {
+      page: Number(search.page ?? 1),
+    }
+  },
+  loader: () => ({ resumeData: MOCK_VIEW_RESUME_DATA }),
+  component: RouteComponent,
+})

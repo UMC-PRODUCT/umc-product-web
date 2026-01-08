@@ -1,54 +1,67 @@
-import ResumeNavigation from '@/features/apply/components/ResumeNavigation'
-import type { ResumeType } from '@/features/apply/type/question'
-import * as S from '@/features/dashboard/components/shared'
+import * as S from '@/features/dashboard/components/ViewResumePage.style'
+import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import type { ResumeData } from '@/shared/types/question'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
+import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
-export default function ViewResume({
-  data,
-  page,
-  setPage,
-}: {
-  data: ResumeType
-  page: number
-  setPage: (next: number) => void
-}) {
-  const schoolName = '중앙대학교'
-  const classNumber = '10기'
+interface ViewResumeProps {
+  resumeData: ResumeData
+  currentPage: number
+  onPageChange: (nextPage: number) => void
+}
 
-  const totalPages = data.pages.length
-  const pageNumber = Number.isFinite(page) && page > 0 ? page : 1
-  const currentPageIndex = Math.min(Math.max(pageNumber - 1, 0), Math.max(totalPages - 1, 0))
-  const currentPage = data.pages[currentPageIndex] ?? data.pages[0]
-  const currentQuestions = currentPage.questions
+function calculateCurrentPageIndex(pageNumber: number, totalPages: number): number {
+  const validatedPageNumber = Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1
+  const maxPageIndex = Math.max(totalPages - 1, 0)
+  return Math.min(Math.max(validatedPageNumber - 1, 0), maxPageIndex)
+}
+
+const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) => {
+  const { schoolName, generation } = RECRUITMENT_INFO
+
+  const totalPages = resumeData.pages.length
+  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
+  const currentPageData = resumeData.pages[currentPageIndex] ?? resumeData.pages[0]
+  const currentQuestions = currentPageData.questions
+
+  const pageTitle = `UMC ${schoolName} ${generation} 지원서`
+  const submittedTimeText = resumeData.lastSavedTime
+    ? `${resumeData.lastSavedTime}에 제출됨.`
+    : null
 
   return (
     <S.PageLayout>
-      <Flex maxWidth={'956px'}>
-        <PageTitle title={`UMC ${schoolName} ${classNumber} 지원서`} />
+      <Flex maxWidth="956px">
+        <PageTitle title={pageTitle} />
       </Flex>
 
-      <S.BorderSection alignItems="flex-start">{data.description}</S.BorderSection>
+      <S.BorderSection alignItems="flex-start">{resumeData.description}</S.BorderSection>
 
       <S.BorderSection>
         <Flex justifyContent="flex-end">
-          <Flex justifyContent="flex-end" alignItems="center" gap={'18px'}>
-            {data.lastSavedTime && (
-              <span className="last-saved-time">{data.lastSavedTime}에 제출됨.</span>
-            )}
+          <Flex justifyContent="flex-end" alignItems="center" gap="18px">
+            {submittedTimeText && <span className="last-saved-time">{submittedTimeText}</span>}
           </Flex>
         </Flex>
       </S.BorderSection>
 
       <S.BorderSection>
-        {currentQuestions.map((q) => (
-          <Flex key={q.id} flexDirection="column" gap={8} width="100%">
-            <Question data={q} value={q.answer} mode="view" />
+        {currentQuestions.map((question) => (
+          <Flex key={question.id} flexDirection="column" gap={8} width="100%">
+            <Question data={question} value={question.answer} mode="view" />
           </Flex>
         ))}
-        <ResumeNavigation page={page} totalPages={totalPages} onPageChange={setPage} />
+
+        <ResumeNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       </S.BorderSection>
     </S.PageLayout>
   )
 }
+
+export default ViewResume

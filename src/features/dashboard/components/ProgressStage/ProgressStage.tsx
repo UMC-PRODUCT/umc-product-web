@@ -14,7 +14,7 @@ const Step = [
   { label: '최종 결과 발표' },
 ]
 
-export default function ProgressStage() {
+const ProgressStage = () => {
   const currentStepIndex = 4
   return (
     <Section
@@ -32,3 +32,5 @@ export default function ProgressStage() {
     </Section>
   )
 }
+
+export default ProgressStage

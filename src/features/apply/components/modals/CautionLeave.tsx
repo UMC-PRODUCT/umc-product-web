@@ -4,13 +4,7 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
-export default function CautionLeave({
-  onClose,
-  onMove,
-}: {
-  onClose: () => void
-  onMove: () => void
-}) {
+const CautionLeave = ({ onClose, onMove }: { onClose: () => void; onMove: () => void }) => {
   return (
     <AlertModalLayout
       mode="warning"
@@ -34,3 +28,5 @@ export default function CautionLeave({
     </AlertModalLayout>
   )
 }
+
+export default CautionLeave

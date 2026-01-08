@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { ProgressCircle } from '@/features/apply/components/ProgressCircle'
 import Delete from '@/shared/assets/icons/delete.svg?react'
 import Document from '@/shared/assets/icons/document.svg?react'
 import ErrorIcon from '@/shared/assets/icons/notice.svg?react' // 에러 아이콘 가정
 import RetryIcon from '@/shared/assets/icons/retry.svg?react' // 재시도 아이콘 가정
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
+import { ProgressCircle } from '@/shared/ui/common/ProgressCircle'
 
 import {
   actionIconStyle,
@@ -26,7 +26,7 @@ interface FileItemProps {
   mode: 'view' | 'edit'
 }
 
-export default function FileItem({
+const FileItem = ({
   fileName,
   fileSize,
   removeFile,
@@ -34,11 +34,11 @@ export default function FileItem({
   progress,
   onRetry,
   mode,
-}: FileItemProps) {
+}: FileItemProps) => {
   const isEditable = mode === 'edit'
 
   return (
-    <FileItemWrapper isError={status === 'error'}>
+    <FileItemWrapper $isError={status === 'error'}>
       <File height="30px" width={'calc(100% - 40px)'}>
         <Flex width={'fit-content'} css={fileIconStyle}>
           {status === 'loading' ? (
@@ -97,3 +97,5 @@ export default function FileItem({
     </FileItemWrapper>
   )
 }
+
+export default FileItem

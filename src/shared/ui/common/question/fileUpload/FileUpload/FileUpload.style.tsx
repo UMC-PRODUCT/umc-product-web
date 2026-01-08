@@ -4,9 +4,11 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
-export const FileWrapper = styled(Flex)<{ isEditable: boolean }>`
+export const FileWrapper = styled(Flex, {
+  shouldForwardProp: (prop) => prop !== '$isEditable',
+})<{ $isEditable: boolean }>`
   width: 100%;
-  cursor: ${({ isEditable }) => (isEditable ? 'pointer' : 'default')};
+  cursor: ${({ $isEditable }) => ($isEditable ? 'pointer' : 'default')};
   ${theme.typography.B4.Rg}
   .desktop-text {
     display: inline;
@@ -28,7 +30,8 @@ export const FileWrapper = styled(Flex)<{ isEditable: boolean }>`
   }
 
   &:hover {
-    background-color: ${({ isEditable }) => (isEditable ? theme.colors.gray[700] : 'transparent')};
+    background-color: ${({ $isEditable }) =>
+      $isEditable ? theme.colors.gray[700] : 'transparent'};
   }
   .bold {
     ${theme.typography.B4.Sb}

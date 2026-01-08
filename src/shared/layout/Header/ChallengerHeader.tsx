@@ -43,6 +43,8 @@ const nav = {
   link: '/', // TODO: 링크 수정
 }
 
-export default function ChallengerHeader() {
+const ChallengerHeader = () => {
   return <Header leftChildren={left} social={social} nav={nav} />
 }
+
+export default ChallengerHeader

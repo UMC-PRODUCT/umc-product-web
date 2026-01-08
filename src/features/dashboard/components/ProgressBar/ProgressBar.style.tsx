@@ -21,10 +21,10 @@ const ProgressLineContainer = styled.div`
   z-index: 1;
 `
 
-const ActiveLine = styled.div<{ progressWidth: number }>`
+const ActiveLine = styled.div<{ $progressWidth: number }>`
   height: 100%;
   background-color: ${theme.colors.lime};
-  width: ${({ progressWidth }) => progressWidth}%;
+  width: ${({ $progressWidth }) => $progressWidth}%;
   transition: width 0.3s ease-in-out;
 `
 
@@ -37,12 +37,12 @@ const StepItem = styled.div`
   flex: 1;
 `
 
-const Dot = styled.div<{ isActive: boolean }>`
+const Dot = styled.div<{ $isActive: boolean }>`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${({ isActive }) =>
-    isActive ? `${theme.colors.lime}` : `${theme.colors.gray[600]}`};
+  background-color: ${({ $isActive }) =>
+    $isActive ? `${theme.colors.lime}` : `${theme.colors.gray[600]}`};
   margin-bottom: 12px;
   transition: background-color 0.3s ease;
   ${media.down(theme.breakPoints.tablet)} {
@@ -50,9 +50,9 @@ const Dot = styled.div<{ isActive: boolean }>`
   }
 `
 
-const Label = styled.span<{ isActive: boolean }>`
+const Label = styled.span<{ $isActive: boolean }>`
   font-size: 13px;
-  color: ${({ isActive }) => (isActive ? `${theme.colors.lime}` : `${theme.colors.gray[400]}`)};
+  color: ${({ $isActive }) => ($isActive ? `${theme.colors.lime}` : `${theme.colors.gray[400]}`)};
   text-align: center;
   white-space: nowrap;
   ${theme.typography.C5.Md}

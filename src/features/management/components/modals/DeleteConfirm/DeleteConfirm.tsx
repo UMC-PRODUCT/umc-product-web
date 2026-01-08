@@ -3,7 +3,7 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-export default function DeleteConfirm({
+const DeleteConfirm = ({
   onClose,
   name,
   onClick,
@@ -15,7 +15,7 @@ export default function DeleteConfirm({
   name: string
   type: 'school' | 'account'
   count: number
-}) {
+}) => {
   const entityTypeKorea = type === 'school' ? '학교' : '계정'
   const content =
     count === 1
@@ -61,3 +61,5 @@ export default function DeleteConfirm({
     </AlertModalLayout>
   )
 }
+
+export default DeleteConfirm

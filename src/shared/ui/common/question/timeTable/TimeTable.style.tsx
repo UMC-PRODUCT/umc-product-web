@@ -20,19 +20,19 @@ const MainArea = styled.div`
   width: 100%;
 `
 
-const HeaderRow = styled.div<{ cols: number }>`
+const HeaderRow = styled.div<{ $cols: number }>`
   display: grid;
-  grid-template-columns: repeat(${(props) => props.cols}, 100px);
+  grid-template-columns: repeat(${(props) => props.$cols}, 100px);
   min-height: 52px;
   align-items: center;
   margin-bottom: 0px;
   width: max-content;
 `
 
-const HeaderCell = styled.div<{ isAllSelected: boolean; isInteractive?: boolean }>`
+const HeaderCell = styled.div<{ $isAllSelected: boolean; $isInteractive?: boolean }>`
   display: flex;
   justify-content: center;
-  cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
+  cursor: ${({ $isInteractive }) => ($isInteractive ? 'pointer' : 'default')};
 `
 
 const TimeLabelsColumn = styled.div`
@@ -41,20 +41,20 @@ const TimeLabelsColumn = styled.div`
   padding-top: 68px;
 `
 
-const TimeLabel = styled.div<{ top: number }>`
+const TimeLabel = styled.div<{ $top: number }>`
   position: absolute;
   right: 0px;
-  top: ${(props) => props.top}px;
+  top: ${(props) => props.$top}px;
   transform: translateY(-50%); /* 시간 글자 중심을 그리드 가로선에 맞춤 */
   color: ${theme.colors.gray[400]};
   white-space: nowrap;
   ${theme.typography.C5.Md}
 `
 
-const GridBody = styled.div<{ cols: number }>`
+const GridBody = styled.div<{ $cols: number }>`
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(${(props) => props.cols}, 100px);
+  grid-template-columns: repeat(${(props) => props.$cols}, 100px);
   border-top: 1px solid ${theme.colors.gray[600]};
   border-left: 1px solid ${theme.colors.gray[600]};
   gap: 0;
@@ -62,34 +62,34 @@ const GridBody = styled.div<{ cols: number }>`
 `
 
 const SlotCell = styled.div<{
-  isSelected: boolean
-  isDisabled: boolean
-  isHourBoundary: boolean
-  isInteractive?: boolean
+  $isSelected: boolean
+  $isDisabled: boolean
+  $isHourBoundary: boolean
+  $isInteractive?: boolean
 }>`
   height: 25px;
   box-sizing: border-box;
   background-color: ${(p) =>
-    p.isDisabled ? '#0a0a0a' : p.isSelected ? theme.colors.lime : theme.colors.gray[800]};
+    p.$isDisabled ? '#0a0a0a' : p.$isSelected ? theme.colors.lime : theme.colors.gray[800]};
   border-right: 1px solid ${theme.colors.gray[600]};
   border-bottom: ${(p) =>
-    p.isHourBoundary
+    p.$isHourBoundary
       ? `1px solid ${theme.colors.gray[500]}`
       : `1px solid ${theme.colors.gray[600]}`};
   cursor: ${(p) => {
-    if (!p.isInteractive) return 'default'
-    return p.isDisabled ? 'not-allowed' : 'pointer'
+    if (!p.$isInteractive) return 'default'
+    return p.$isDisabled ? 'not-allowed' : 'pointer'
   }};
 
   ${(p) =>
-    p.isDisabled &&
+    p.$isDisabled &&
     `
     background-image: linear-gradient(45deg, #121212 25%, transparent 25%, transparent 50%, #121212 50%, #121212 75%, transparent 75%, transparent);
     background-size: 4px 4px;
   `}
 
   &:hover {
-    ${(p) => p.isInteractive && !p.isDisabled && 'filter: brightness(1.2);'}
+    ${(p) => p.$isInteractive && !p.$isDisabled && 'filter: brightness(1.2);'}
   }
 `
 export {

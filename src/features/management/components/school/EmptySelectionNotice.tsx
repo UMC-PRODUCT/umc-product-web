@@ -2,7 +2,7 @@ import { theme } from '@shared/styles/theme'
 
 import Section from '@/shared/ui/common/Section/Section'
 
-export function EmptySelectionNotice({ variant = 'solid' }: { variant?: 'solid' | 'outline' }) {
+export const EmptySelectionNotice = ({ variant = 'solid' }: { variant?: 'solid' | 'outline' }) => {
   return (
     <Section variant={variant}>
       <span

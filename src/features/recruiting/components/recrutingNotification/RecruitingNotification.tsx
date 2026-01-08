@@ -10,7 +10,7 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import PartBadge from './PartBadge'
 
-export default function RecruitingNotification({
+const RecruitingNotification = ({
   parts,
   title,
   content,
@@ -18,7 +18,7 @@ export default function RecruitingNotification({
   title: string
   parts: Array<Part>
   content: string
-}) {
+}) => {
   const navigate = useNavigate()
   return (
     <Flex flexDirection="column" gap="24px">
@@ -66,3 +66,5 @@ const Span = styled.span`
   ${theme.typography.B3.Md}
   color: ${theme.colors.white};
 `
+
+export default RecruitingNotification

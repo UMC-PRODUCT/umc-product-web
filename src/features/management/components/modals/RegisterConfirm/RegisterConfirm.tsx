@@ -5,7 +5,7 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-export default function RegisterConfirm({
+const RegisterConfirm = ({
   onClose,
   schoolName,
   link,
@@ -13,7 +13,7 @@ export default function RegisterConfirm({
   onClose: () => void
   schoolName: string
   link: string
-}) {
+}) => {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -45,3 +45,5 @@ export default function RegisterConfirm({
     </AlertModalLayout>
   )
 }
+
+export default RegisterConfirm

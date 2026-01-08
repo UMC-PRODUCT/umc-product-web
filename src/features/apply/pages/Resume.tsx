@@ -1,107 +1,125 @@
 import { useState } from 'react'
 import type { FieldErrors } from 'react-hook-form'
 
-import * as S from '@/features/apply/components/shared'
+import * as S from '@/features/apply/components/ResumePage.style'
+import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
-import CautionLeave from '../components/modals/CautionLeave'
-import CautionSubmit from '../components/modals/CautionSubmit'
+import LeaveConfirmModal from '../components/modals/CautionLeave'
+import SubmitConfirmModal from '../components/modals/CautionSubmit'
 import { useAutoSave } from '../hooks/useAutoSave'
 import { useBeforeUnload } from '../hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
-import type { QuestionList, QuestionPage, QuestionUnion } from '../type/question'
+import type { QuestionList, QuestionPage, QuestionUnion } from '../types/question'
 import ResumeFormSection from './resume/ResumeFormSection'
 import { useResumeForm } from './resume/useResumeForm'
 
+const AUTO_SAVE_INTERVAL_MS = 60_000
+
 type FormValues = Record<string, unknown>
 
-export default function Resume({
-  data,
-  page,
-  setPage,
-}: {
-  data: QuestionList
-  page: number
-  setPage: (next: number) => void
-}) {
-  const schoolName = '중앙대학교'
-  const classNumber = '10기'
+interface ResumeProps {
+  questionData: QuestionList
+  currentPage: number
+  onPageChange: (nextPage: number) => void
+}
 
-  const totalPages = data.pages.length
-  const pageNumber = Number.isFinite(page) && page > 0 ? page : 1
-  const currentPageIndex = Math.min(Math.max(pageNumber - 1, 0), Math.max(totalPages - 1, 0))
-  const currentPage = data.pages[currentPageIndex] ?? data.pages[0]
-  const currentQuestions = currentPage.questions
+function calculateCurrentPageIndex(pageNumber: number, totalPages: number): number {
+  const validatedPageNumber = Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1
+  const maxPageIndex = Math.max(totalPages - 1, 0)
+  return Math.min(Math.max(validatedPageNumber - 1, 0), maxPageIndex)
+}
 
-  const [isCautionSubmitModalOpen, setIsCautionSubmitModalOpen] = useState(false)
+function findFirstErrorPageIndex(
+  formErrors: FieldErrors<FormValues>,
+  pages: Array<QuestionPage>,
+): number {
+  const errorFieldIds = Object.keys(formErrors)
+  if (errorFieldIds.length === 0) return -1
+
+  const firstErrorFieldId = errorFieldIds[0]
+  return pages.findIndex((page: QuestionPage) =>
+    page.questions.some((question: QuestionUnion) => String(question.id) === firstErrorFieldId),
+  )
+}
+
+function getAllQuestionFieldIds(pages: Array<QuestionPage>): Array<string> {
+  return pages.flatMap((page) =>
+    page.questions.map((question: QuestionUnion) => String(question.id)),
+  )
+}
+
+const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
+  const { schoolName, generation } = RECRUITMENT_INFO
+
+  const totalPages = questionData.pages.length
+  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
+  const currentPageData = questionData.pages[currentPageIndex] ?? questionData.pages[0]
+  const currentQuestions = currentPageData.questions
+
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
 
   const { control, handleSubmit, trigger, getValues, reset, errors, isDirty, isFormIncomplete } =
-    useResumeForm(data)
+    useResumeForm(questionData)
 
-  // 새로고침 및 페이지 이탈 방지
   useBeforeUnload(isDirty)
-  // 작성 중인 내용이 있을 때, 라우트 변경 방지
-  const leaveGuard = useUnsavedChangesBlocker(isDirty)
+  const navigationBlocker = useUnsavedChangesBlocker(isDirty)
 
-  // 1분마다 자동 저장
   const { lastSavedTime, handleSave } = useAutoSave({
     getValues,
-    interval: 60000,
+    interval: AUTO_SAVE_INTERVAL_MS,
   })
 
-  // 모든 페이지에 대해서 유효성 검사
-  const onInvalid = (formErrors: FieldErrors<FormValues>) => {
-    const errorFieldIds = Object.keys(formErrors)
-    if (errorFieldIds.length > 0) {
-      const firstErrorId = errorFieldIds[0]
-      const errorPageIndex = data.pages.findIndex((p: QuestionPage) =>
-        p.questions.some((q: QuestionUnion) => String(q.id) === firstErrorId),
-      )
+  const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
+    const errorPageIndex = findFirstErrorPageIndex(formErrors, questionData.pages)
 
-      if (errorPageIndex !== -1) {
-        setPage(errorPageIndex + 1)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
+    if (errorPageIndex !== -1) {
+      onPageChange(errorPageIndex + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
-  // 최종 제출 처리
   const handleFinalSubmit = async () => {
-    const allFieldIds = data.pages.flatMap((p) =>
-      p.questions.map((q: QuestionUnion) => String(q.id)),
-    )
+    const allFieldIds = getAllQuestionFieldIds(questionData.pages)
+    const isValid = await trigger(allFieldIds)
 
-    const result = await trigger(allFieldIds)
-
-    if (result) {
-      handleSubmit((vals) => {
-        console.log('최종 제출 데이터:', vals)
-        setIsCautionSubmitModalOpen(false)
-        reset(vals) // 제출 성공 시 dirty 해제
+    if (isValid) {
+      handleSubmit((formValues) => {
+        console.log('최종 제출 데이터:', formValues)
+        setIsSubmitModalOpen(false)
+        reset(formValues)
       })()
     } else {
-      setIsCautionSubmitModalOpen(false)
-      onInvalid(errors)
+      setIsSubmitModalOpen(false)
+      navigateToFirstErrorPage(errors)
     }
+  }
+
+  const openSubmitModal = () => setIsSubmitModalOpen(true)
+  const closeSubmitModal = () => setIsSubmitModalOpen(false)
+
+  const handlePageNavigation = (nextPage: number) => {
+    navigationBlocker.allowNextNavigationOnce()
+    onPageChange(nextPage)
   }
 
   return (
     <S.PageLayout>
-      <Flex maxWidth={'956px'}>
-        <PageTitle title={`UMC ${schoolName} ${classNumber} 지원서`} />
+      <Flex maxWidth="956px">
+        <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
       </Flex>
 
-      <S.BorderSection alignItems="flex-start">{data.description}</S.BorderSection>
+      <S.BorderedSection alignItems="flex-start">{questionData.description}</S.BorderedSection>
 
-      <S.BorderSection>
+      <S.BorderedSection>
         <Flex justifyContent="flex-end">
-          <Flex justifyContent="flex-end" alignItems="center" gap={'18px'}>
+          <Flex justifyContent="flex-end" alignItems="center" gap="18px">
             {lastSavedTime && (
-              <span className="last-saved-time">{lastSavedTime}에 마지막으로 저장됨.</span>
+              <S.LastSavedTime>{lastSavedTime}에 마지막으로 저장됨.</S.LastSavedTime>
             )}
             <Badge
               typo="B3.Md"
@@ -119,32 +137,30 @@ export default function Resume({
             </Badge>
           </Flex>
         </Flex>
-      </S.BorderSection>
+      </S.BorderedSection>
 
-      <S.BorderSection>
+      <S.BorderedSection>
         <ResumeFormSection
-          currentQuestions={currentQuestions}
+          questions={currentQuestions}
           control={control}
           errors={errors}
-          page={page}
+          currentPage={currentPage}
           totalPages={totalPages}
-          isFormIncomplete={isFormIncomplete}
-          onOpenSubmitModal={() => setIsCautionSubmitModalOpen(true)}
-          onPageChange={(next) => {
-            leaveGuard.allowNextNavigationOnce()
-            setPage(next)
-          }}
+          isSubmitDisabled={isFormIncomplete}
+          onOpenSubmitModal={openSubmitModal}
+          onPageChange={handlePageNavigation}
         />
-      </S.BorderSection>
+      </S.BorderedSection>
 
-      {isCautionSubmitModalOpen && (
-        <CautionSubmit
-          onClose={() => setIsCautionSubmitModalOpen(false)}
-          onSubmit={handleFinalSubmit}
-        />
+      {isSubmitModalOpen && (
+        <SubmitConfirmModal onClose={closeSubmitModal} onSubmit={handleFinalSubmit} />
       )}
 
-      {leaveGuard.open && <CautionLeave onClose={leaveGuard.stay} onMove={leaveGuard.leave} />}
+      {navigationBlocker.isOpen && (
+        <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
+      )}
     </S.PageLayout>
   )
 }
+
+export default Resume

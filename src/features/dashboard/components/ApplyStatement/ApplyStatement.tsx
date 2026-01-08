@@ -14,7 +14,7 @@ interface ApplyStatementProps {
   final: '미정' | '예정' | '평가 중' | '최종 합격' | '불합격'
 }
 
-export default function ApplyStatement({ parts, document, final }: ApplyStatementProps) {
+const ApplyStatement = ({ parts, document, final }: ApplyStatementProps) => {
   const documentColor =
     document === '미정'
       ? 'gray'
@@ -80,3 +80,5 @@ export default function ApplyStatement({ parts, document, final }: ApplyStatemen
     </Section>
   )
 }
+
+export default ApplyStatement

@@ -2,21 +2,34 @@ import { forwardRef } from 'react'
 
 import * as S from './Text.style'
 
-interface TextProps {
-  value?: any
-  onChange?: (value: any) => void
-  mode: 'view' | 'edit'
+type QuestionMode = 'view' | 'edit'
+
+interface TextQuestionProps {
+  value?: string
+  onChange?: (newValue: string) => void
+  mode: QuestionMode
 }
-export const Text = forwardRef<HTMLTextAreaElement, TextProps>(({ value, onChange, mode }, ref) => {
-  return (
-    <S.TextArea
-      placeholder="자유롭게 작성해주세요."
-      value={value}
-      onChange={(e) => onChange?.(e.target.value)}
-      ref={ref}
-      readOnly={mode === 'view'}
-    />
-  )
-})
+
+const PLACEHOLDER_TEXT = '자유롭게 작성해주세요.'
+
+export const Text = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
+  ({ value, onChange, mode }, ref) => {
+    const isReadOnly = mode === 'view'
+
+    const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange?.(event.target.value)
+    }
+
+    return (
+      <S.TextArea
+        placeholder={PLACEHOLDER_TEXT}
+        value={value}
+        onChange={handleTextChange}
+        ref={ref}
+        readOnly={isReadOnly}
+      />
+    )
+  },
+)
 
 Text.displayName = 'Text'

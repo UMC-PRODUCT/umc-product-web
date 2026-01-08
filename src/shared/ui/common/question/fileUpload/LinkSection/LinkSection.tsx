@@ -15,7 +15,7 @@ type LinkSectionProps = {
   onLinksChange: (nextLinks: Array<string>) => void
 }
 
-export default function LinkSection({ links, mode, onLinksChange }: LinkSectionProps) {
+const LinkSection = ({ links, mode, onLinksChange }: LinkSectionProps) => {
   const isEditable = mode === 'edit'
   const [linkInput, setLinkInput] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -90,3 +90,5 @@ export default function LinkSection({ links, mode, onLinksChange }: LinkSectionP
     </S.InputWrapper>
   )
 }
+
+export default LinkSection

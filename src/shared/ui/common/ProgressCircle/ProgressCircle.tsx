@@ -1,6 +1,10 @@
 import { theme } from '@/shared/styles/theme'
 
-export const ProgressCircle = ({ progress }: { progress: number }) => (
+type ProgressCircleProps = {
+  progress: number
+}
+
+const ProgressCircle = ({ progress }: ProgressCircleProps) => (
   <svg width="24" height="24" viewBox="0 0 24 24" style={{ transform: 'rotate(-90deg)' }}>
     <circle cx="12" cy="12" r="10" stroke={theme.colors.gray[600]} fill="none" strokeWidth="2" />
     <circle
@@ -17,3 +21,5 @@ export const ProgressCircle = ({ progress }: { progress: number }) => (
     />
   </svg>
 )
+
+export default ProgressCircle

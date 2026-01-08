@@ -10,13 +10,13 @@ type TabProps<T extends string> = {
   children?: React.ReactNode
 }
 
-export default function Tab<T extends string>({
+const Tab = <T extends string>({
   tabs,
   value,
   defaultValue,
   onValueChange,
   children,
-}: TabProps<T>) {
+}: TabProps<T>) => {
   return (
     <TabsPrimitive.Root
       value={value}
@@ -39,3 +39,5 @@ export default function Tab<T extends string>({
 }
 
 export { TabsPrimitive as Tabs }
+
+export default Tab

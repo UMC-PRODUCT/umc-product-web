@@ -7,41 +7,49 @@ import { TermsSection } from '@features/auth/components/Term/TermsSection'
 import { useRegisterForm } from '@features/auth/hooks/useRegisterForm'
 
 import Logo from '@shared/assets/brand_logo.svg?react'
-import { UNI_LIST_MOCK } from '@shared/mocks/universities'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
 import LabelDropdown from '@shared/ui/form/LabelDropdown/LabelDropdown'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-export function RegisterPage() {
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
+
+export const RegisterPage = () => {
+  const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)
+
   const {
     register,
     handleSubmit,
     errors,
     isValid,
-    confirmButton,
-    school,
-    handleSelectSchool,
-    terms,
-    toggleTerm,
-    toggleAllTerms,
+    emailVerification,
+    selectedSchool,
+    handleSchoolSelect,
+    termsAgreement,
+    toggleTermAgreement,
+    toggleAllTermsAgreement,
     onSubmit,
-    values,
+    formFieldValues,
   } = useRegisterForm()
 
-  const sendEmail = () => {
-    confirmButton.toggle()
-    setIsEmailModalOpen(true)
+  const handleSendVerificationEmail = () => {
+    emailVerification.toggleVerification()
+    setIsEmailVerificationModalOpen(true)
   }
+
+  const closeEmailVerificationModal = () => {
+    setIsEmailVerificationModalOpen(false)
+  }
+
+  const emailVerificationButtonLabel = emailVerification.isVerified ? '인증완료' : '인증하기'
 
   return (
     <>
       <AuthSection size="lg">
         <ResponsiveLogo />
         <form onSubmit={handleSubmit(onSubmit)} css={{ width: '100%' }}>
-          <InputWrapper>
+          <FormFieldsContainer>
             <LabelDropdown
               label="학교"
               placeholder="학교를 선택해 주세요."
@@ -50,9 +58,10 @@ export function RegisterPage() {
                 error: !!errors.school,
                 errorMessage: errors.school?.message || '',
               }}
-              onChange={handleSelectSchool}
-              value={school}
+              onChange={handleSchoolSelect}
+              value={selectedSchool}
             />
+
             <LabelTextField
               autoComplete="name"
               type="text"
@@ -62,9 +71,10 @@ export function RegisterPage() {
                 error: !!errors.name,
                 errorMessage: errors.name?.message || '',
               }}
-              value={values.name}
+              value={formFieldValues.name}
               {...register('name')}
             />
+
             <LabelTextField
               autoComplete="nickname"
               type="text"
@@ -74,9 +84,10 @@ export function RegisterPage() {
                 error: !!errors.nickname,
                 errorMessage: errors.nickname?.message || '',
               }}
-              value={values.nickname}
+              value={formFieldValues.nickname}
               {...register('nickname')}
             />
+
             <LabelTextField
               autoComplete="email"
               type="email"
@@ -87,23 +98,25 @@ export function RegisterPage() {
                 errorMessage: errors.email?.message || '',
               }}
               button={{
-                buttonMessage: confirmButton.state ? '인증완료' : '인증하기',
-                buttonClick: sendEmail,
-                validation: confirmButton.state,
+                buttonMessage: emailVerificationButtonLabel,
+                buttonClick: handleSendVerificationEmail,
+                validation: emailVerification.isVerified,
               }}
-              value={values.email}
+              value={formFieldValues.email}
               {...register('email')}
             />
+
             <TermsSection
-              terms={terms}
-              onToggleAll={toggleAllTerms}
-              onToggle={toggleTerm}
+              terms={termsAgreement}
+              onToggleAll={toggleAllTermsAgreement}
+              onToggle={toggleTermAgreement}
               errors={{
                 serviceTerm: errors.serviceTerm?.message,
                 privacyTerm: errors.privacyTerm?.message,
                 marketingTerm: errors.marketingTerm?.message,
               }}
             />
+
             <Button
               className="submit-button"
               type="submit"
@@ -113,20 +126,21 @@ export function RegisterPage() {
               variant="solid"
               disabled={!isValid}
             />
-          </InputWrapper>
+          </FormFieldsContainer>
         </form>
       </AuthSection>
 
-      {isEmailModalOpen && <EmailSendModal onClose={() => setIsEmailModalOpen(false)} />}
+      {isEmailVerificationModalOpen && <EmailSendModal onClose={closeEmailVerificationModal} />}
     </>
   )
 }
 
-const InputWrapper = styled.div`
+const FormFieldsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
   width: 100%;
+
   .submit-button {
     height: 45px;
   }

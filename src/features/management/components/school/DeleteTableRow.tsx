@@ -6,7 +6,7 @@ import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
 
 import * as S from './School.style'
 
-export default function DeleteTableRow({
+const DeleteTableRow = ({
   setSelectedIds,
   selectedIds,
   openDeleteConfirm,
@@ -14,7 +14,7 @@ export default function DeleteTableRow({
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>
   selectedIds: Set<number>
   openDeleteConfirm: (targetId?: number) => void
-}) {
+}) => {
   return (
     <>
       {UNI_DELETE_MOCK.map((item) => (
@@ -57,3 +57,5 @@ export default function DeleteTableRow({
     </>
   )
 }
+
+export default DeleteTableRow

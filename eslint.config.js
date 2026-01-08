@@ -57,6 +57,14 @@ export default [
 
   ...tanstackConfig,
 
+  // React Hooks 플러그인 등록 (.ts 포함)
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooksPlugin,
+    },
+  },
+
   // ✅ React 플러그인 설정 (JSX/TSX 파일)
   {
     files: ['**/*.{jsx,tsx}'],

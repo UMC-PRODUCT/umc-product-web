@@ -1,31 +1,39 @@
-import * as S from '@/features/apply/components/shared'
+import * as S from '@/features/apply/components/ApplyPage.style'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
-export default function PartInfoCard({
-  part,
-  state,
-  ability,
-}: {
-  part: string
-  state: string
-  ability: Array<string>
-}) {
+interface PartInfoCardProps {
+  partName: string
+  recruitmentState: string
+  requiredAbilities: Array<string>
+}
+
+const RECRUITMENT_STATE = {
+  OPEN: '모집 중',
+} as const
+
+const PartInfoCard = ({ partName, recruitmentState, requiredAbilities }: PartInfoCardProps) => {
+  const isRecruiting = recruitmentState === RECRUITMENT_STATE.OPEN
+  const buttonTone = isRecruiting ? 'lime' : 'darkGray'
+
   return (
-    <S.PartInfoCardLayout>
-      <S.PartInfo width={'fit-content'}>
-        <S.ButtonWrapper>
-          <Button label={state} tone={state === '모집 중' ? 'lime' : 'darkGray'} />
-        </S.ButtonWrapper>
-        {part}
-      </S.PartInfo>
-      <S.BadgeWrapper>
-        {ability.map((skill) => (
-          <Badge tone="lime" variant="outline" typo={'B4.Md'} key={skill}>
-            {skill}
+    <S.PartInfoCardContainer>
+      <S.PartInfoContent width="fit-content">
+        <S.PartButtonWrapper>
+          <Button label={recruitmentState} tone={buttonTone} />
+        </S.PartButtonWrapper>
+        {partName}
+      </S.PartInfoContent>
+
+      <S.BadgeGroup>
+        {requiredAbilities.map((ability) => (
+          <Badge tone="lime" variant="outline" typo="B4.Md" key={ability}>
+            {ability}
           </Badge>
         ))}
-      </S.BadgeWrapper>
-    </S.PartInfoCardLayout>
+      </S.BadgeGroup>
+    </S.PartInfoCardContainer>
   )
 }
+
+export default PartInfoCard

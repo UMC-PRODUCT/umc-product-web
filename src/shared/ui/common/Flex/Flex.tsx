@@ -27,7 +27,7 @@ type FlexProps = FlexStyleProps & {
   css?: Interpolation<Theme>
 } & Omit<HTMLAttributes<HTMLDivElement>, 'style'>
 
-export default function Flex({
+const Flex = ({
   children,
   flexDirection,
   alignItems = 'center',
@@ -48,7 +48,7 @@ export default function Flex({
   style,
   css: cssProp,
   ...props
-}: FlexProps) {
+}: FlexProps) => {
   return (
     <div
       css={cssProp}
@@ -78,3 +78,5 @@ export default function Flex({
     </div>
   )
 }
+
+export default Flex

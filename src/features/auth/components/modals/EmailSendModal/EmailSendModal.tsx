@@ -3,7 +3,7 @@ import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-export default function EmailSendModal({ onClose }: { onClose: () => void }) {
+const EmailSendModal = ({ onClose }: { onClose: () => void }) => {
   return (
     <AlertModalLayout
       mode={'success'}
@@ -36,3 +36,5 @@ export default function EmailSendModal({ onClose }: { onClose: () => void }) {
     </AlertModalLayout>
   )
 }
+
+export default EmailSendModal

@@ -35,7 +35,7 @@ type ManagementTableProps = {
   totalAmounts: number
 }
 
-export default function ManagementTable({
+const ManagementTable = ({
   headerLabels,
   children,
   isAllChecked,
@@ -46,7 +46,7 @@ export default function ManagementTable({
   totalPages,
   onChangePage,
   totalAmounts,
-}: ManagementTableProps) {
+}: ManagementTableProps) => {
   return (
     <>
       <Flex
@@ -94,3 +94,5 @@ export default function ManagementTable({
     </>
   )
 }
+
+export default ManagementTable

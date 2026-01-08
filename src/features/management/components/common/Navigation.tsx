@@ -2,7 +2,7 @@ import Arrow from '@shared/assets/icons/arrow.svg?react'
 import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-export default function Navigation({
+const Navigation = ({
   currentPage,
   totalPages,
   onChangePage,
@@ -10,7 +10,7 @@ export default function Navigation({
   currentPage: number
   totalPages: number
   onChangePage: (page: number) => void
-}) {
+}) => {
   const windowSize = 6
   const blockStart = Math.floor((currentPage - 1) / windowSize) * windowSize + 1
   const blockEnd = Math.min(blockStart + windowSize - 1, totalPages)
@@ -71,3 +71,5 @@ export default function Navigation({
     </Flex>
   )
 }
+
+export default Navigation

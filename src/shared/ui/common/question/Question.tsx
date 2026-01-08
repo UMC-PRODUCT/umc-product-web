@@ -1,4 +1,4 @@
-import type { QuestionUnion } from '@/features/apply/type/question'
+import type { FileUploadAnswer, QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
@@ -7,45 +7,80 @@ import { Text } from './text/Text'
 import { TimeTable } from './timeTable/TimeTable'
 import QuestionLayout from './QuestionLayout'
 
-type QuestionProps = {
+type QuestionMode = 'view' | 'edit'
+
+interface QuestionProps {
   data: QuestionUnion
-  value?: any
-  mode: 'view' | 'edit'
-  onChange?: (id: number, value: any) => void
-  errorMessage?: string | undefined
+  value?: QuestionAnswerValue
+  mode: QuestionMode
+  onChange?: (questionId: number, newValue: QuestionAnswerValue) => void
+  errorMessage?: string
 }
 
 export const Question = ({ data, value, onChange, errorMessage, mode }: QuestionProps) => {
-  const handleChange = (newValue: any) => {
+  const handleValueChange = (newValue: QuestionAnswerValue) => {
     onChange?.(data.id, newValue)
   }
+
+  const renderQuestionInput = () => {
+    switch (data.type) {
+      case 'text':
+        return <Text value={value as string | undefined} onChange={handleValueChange} mode={mode} />
+
+      case 'multipleChoice':
+        return (
+          <MultipleChoice
+            options={data.options}
+            value={value as Array<string> | undefined}
+            onChange={handleValueChange}
+            mode={mode}
+          />
+        )
+
+      case 'timeTable':
+        return (
+          <TimeTable
+            dates={data.dates}
+            timeRange={data.timeRange}
+            value={(value ?? {}) as Record<string, Array<string>>}
+            disabledSlots={data.disabled ?? {}}
+            onChange={handleValueChange}
+            mode={mode}
+          />
+        )
+
+      case 'fileUpload':
+        return (
+          <FileUpload
+            value={value as FileUploadAnswer | undefined}
+            onChange={handleValueChange}
+            mode={mode}
+          />
+        )
+
+      case 'choice':
+        return (
+          <Choice
+            value={value as string | undefined}
+            onChange={handleValueChange}
+            options={data.options}
+            mode={mode}
+          />
+        )
+
+      default:
+        return null
+    }
+  }
+
   return (
     <QuestionLayout
-      necessary={data.necessary}
-      question={data.question}
+      isRequired={data.necessary}
+      questionText={data.question}
       questionNumber={data.questionNumber}
       errorMessage={errorMessage}
     >
-      {data.type === 'text' && <Text value={value} onChange={handleChange} mode={mode} />}
-      {data.type === 'multipleChoice' && (
-        <MultipleChoice options={data.options} value={value} onChange={handleChange} mode={mode} />
-      )}
-      {data.type === 'timeTable' && (
-        <TimeTable
-          dates={data.dates}
-          timeRange={data.timeRange}
-          value={value || {}}
-          disabledSlots={data.disabled || {}}
-          onChange={handleChange}
-          mode={mode}
-        />
-      )}
-      {data.type === 'fileUpload' && (
-        <FileUpload value={value} onChange={handleChange} mode={mode} />
-      )}
-      {data.type === 'choice' && (
-        <Choice value={value} onChange={handleChange} options={data.options} mode={mode} />
-      )}
+      {renderQuestionInput()}
     </QuestionLayout>
   )
 }

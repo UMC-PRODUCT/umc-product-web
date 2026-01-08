@@ -11,7 +11,7 @@ type AccountPageProps = {
   onTabChange: (next: ManageAccountTabName) => void
 }
 
-export function AccountPage({ activeTab, onTabChange }: AccountPageProps) {
+export const AccountPage = ({ activeTab, onTabChange }: AccountPageProps) => {
   return (
     <PageLayout title="계정 관리">
       <Tab tabs={manageAccountTabs} value={activeTab} onValueChange={onTabChange}>

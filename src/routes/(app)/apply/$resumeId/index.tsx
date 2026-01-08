@@ -1,10 +1,28 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
+import { MOCKFORMSDATA_WITH_ANSWER } from '@/features/apply/mocks/questions'
 import Resume from '@/features/apply/pages/Resume'
-import { MOCKFORMSDATA_WITH_ANSWER } from '@/shared/mocks/questions'
 
 type ResumeSearch = {
   page: number
+}
+
+const RouteComponent = () => {
+  const navigate = useNavigate()
+  const { page = 1 } = Route.useSearch()
+  const params = Route.useParams()
+  const { questionData } = Route.useLoaderData()
+
+  const setPage = (next: number) => {
+    navigate({
+      to: Route.to,
+      params,
+      search: (prev) => ({ ...prev, page: next }),
+      replace: false,
+    })
+  }
+
+  return <Resume questionData={questionData} currentPage={page} onPageChange={setPage} />
 }
 
 export const Route = createFileRoute('/(app)/apply/$resumeId/')({
@@ -13,20 +31,6 @@ export const Route = createFileRoute('/(app)/apply/$resumeId/')({
       page: Number(search.page ?? 1),
     }
   },
+  loader: () => ({ questionData: MOCKFORMSDATA_WITH_ANSWER }),
   component: RouteComponent,
 })
-
-function RouteComponent() {
-  const navigate = useNavigate()
-  const { resumeId } = Route.useParams()
-  const { page = 1 } = Route.useSearch()
-  const setPage = (next: number) => {
-    navigate({
-      to: Route.to,
-      params: { resumeId },
-      search: (prev) => ({ ...prev, page: next }),
-      replace: false,
-    })
-  }
-  return <Resume data={MOCKFORMSDATA_WITH_ANSWER} page={page} setPage={setPage} />
-}

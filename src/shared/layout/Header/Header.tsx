@@ -5,7 +5,7 @@ import RightMenu from '@shared/layout/Header/RightMenu/RightMenu'
 
 import * as S from './Header.style'
 
-export default function Header({
+const Header = ({
   leftChildren,
   social,
   nav,
@@ -23,22 +23,23 @@ export default function Header({
     label: string
     link: string
   }
-}) {
+}) => {
   const navigate = useNavigate()
   return (
     <header css={{ minWidth: '100vw', maxWidth: '100vw' }}>
       <S.Nav aria-label="Main Navigation">
         <S.LeftWrapper>
-          <S.Logo
+          <S.LogoButton
+            type="button"
             aria-label="홈으로 이동"
-            role="button"
-            tabIndex={0}
             onClick={() =>
               navigate({
                 to: '/',
               })
             }
-          />
+          >
+            <S.Logo />
+          </S.LogoButton>
           <LeftMenu>{leftChildren}</LeftMenu>
         </S.LeftWrapper>
         <S.RightWrapper>
@@ -48,3 +49,5 @@ export default function Header({
     </header>
   )
 }
+
+export default Header

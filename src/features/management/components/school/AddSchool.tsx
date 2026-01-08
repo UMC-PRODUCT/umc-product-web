@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import RegisterConfirm from '@features/management/components/modals/RegisterConfirm/RegisterConfirm'
-import type { SchoolRegisterForm } from '@features/management/schema/management'
-import { schoolRegisterSchema } from '@features/management/schema/management'
+import type { SchoolRegisterForm } from '@features/management/schemas/management'
+import { schoolRegisterSchema } from '@features/management/schemas/management'
 
 import { Button } from '@shared/ui/common/Button/Button'
 import Label from '@shared/ui/common/Label/Label'
@@ -20,7 +20,7 @@ type ModalState = {
   link: string
 }
 
-export default function AddSchool() {
+const AddSchool = () => {
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     schoolName: '',
@@ -106,3 +106,5 @@ export default function AddSchool() {
     </>
   )
 }
+
+export default AddSchool

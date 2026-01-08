@@ -21,7 +21,7 @@ type AccountFiltersProps = {
   statusOptions: Array<Option>
 }
 
-export function AccountFilters({
+export const AccountFilters = ({
   searchTerm,
   onChangeSearch,
   affiliated,
@@ -33,7 +33,7 @@ export function AccountFilters({
   status,
   onSelectStatus,
   statusOptions,
-}: AccountFiltersProps) {
+}: AccountFiltersProps) => {
   return (
     <Flex gap="12px" css={{ flexWrap: 'wrap' }}>
       <Flex

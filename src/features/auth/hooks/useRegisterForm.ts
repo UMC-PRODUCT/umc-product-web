@@ -2,41 +2,56 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import type { RegisterForm } from '@features/auth/schema/register'
-import { registerSchema } from '@features/auth/schema/register'
+import type { RegisterForm } from '@features/auth/schemas/register'
+import { registerSchema } from '@features/auth/schemas/register'
 
-export type TermKey = 'service' | 'privacy' | 'marketing'
+export type TermsAgreementKey = 'service' | 'privacy' | 'marketing'
 
-type School = {
+interface SchoolOption {
   id: string | number
   label: string
 }
 
-type TermsState = Record<TermKey, boolean>
+type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
-const initialTerms: TermsState = {
+const INITIAL_TERMS_STATE: TermsAgreementState = {
   service: false,
   privacy: false,
   marketing: false,
 }
 
-const termFieldMap: Record<TermKey, keyof RegisterForm> = {
+const EMPTY_SCHOOL: SchoolOption = { id: '', label: '' }
+
+const TERM_TO_FORM_FIELD_MAP: Record<TermsAgreementKey, keyof RegisterForm> = {
   service: 'serviceTerm',
   privacy: 'privacyTerm',
   marketing: 'marketingTerm',
 }
 
+const ALL_TERM_KEYS: Array<TermsAgreementKey> = ['service', 'privacy', 'marketing']
+
+interface EmailVerificationState {
+  isVerified: boolean
+  toggleVerification: () => void
+}
+
+interface FormFieldValues {
+  name: string
+  nickname: string
+  email: string
+}
+
 export function useRegisterForm() {
-  const [confirm, setConfirm] = useState(false)
-  const [school, setSchool] = useState<School>({ id: '', label: '' })
-  const [terms, setTerms] = useState<TermsState>(initialTerms)
+  const [isEmailVerified, setIsEmailVerified] = useState(false)
+  const [selectedSchool, setSelectedSchool] = useState<SchoolOption>(EMPTY_SCHOOL)
+  const [termsAgreement, setTermsAgreement] = useState<TermsAgreementState>(INITIAL_TERMS_STATE)
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { isValid, errors },
+    formState: { isValid: isFormValid, errors: formErrors },
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: zodResolver(registerSchema),
@@ -58,69 +73,82 @@ export function useRegisterForm() {
     register('marketingTerm')
   }, [register])
 
-  const onSubmit = (data: RegisterForm) => {
-    console.log(data)
+  const handleFormSubmit = (formData: RegisterForm) => {
+    console.log('회원가입 제출 데이터:', formData)
   }
 
-  const [nameValue, nicknameValue, emailValue] = watch(['name', 'nickname', 'email'])
+  const [watchedName, watchedNickname, watchedEmail] = watch(['name', 'nickname', 'email'])
 
+  // 이메일이 변경되면 인증 상태 초기화
   useEffect(() => {
-    // reset confirmation when the email changes
-    setConfirm(false)
-  }, [emailValue])
+    setIsEmailVerified(false)
+  }, [watchedEmail])
 
-  const handleSelectSchool = ({ id, label }: School) => {
-    setSchool({ id, label })
+  const handleSchoolSelect = ({ id, label }: SchoolOption) => {
+    setSelectedSchool({ id, label })
     setValue('school', label, {
       shouldValidate: true,
       shouldDirty: true,
     })
   }
 
-  const setTermValue = (key: TermKey, next: boolean) => {
-    setTerms((prev) => ({ ...prev, [key]: next }))
-    setValue(termFieldMap[key], next, {
+  const updateTermAgreement = (termKey: TermsAgreementKey, isAgreed: boolean) => {
+    setTermsAgreement((previousState) => ({
+      ...previousState,
+      [termKey]: isAgreed,
+    }))
+
+    const formFieldName = TERM_TO_FORM_FIELD_MAP[termKey]
+    setValue(formFieldName, isAgreed, {
       shouldValidate: true,
       shouldDirty: true,
     })
   }
 
-  const toggleTerm = (key: TermKey) => {
-    setTermValue(key, !terms[key])
+  const toggleTermAgreement = (termKey: TermsAgreementKey) => {
+    const currentValue = termsAgreement[termKey]
+    updateTermAgreement(termKey, !currentValue)
   }
 
-  const toggleAllTerms = () => {
-    const allChecked = terms.service && terms.privacy && terms.marketing
-    const next = !allChecked
-    ;(['service', 'privacy', 'marketing'] as Array<TermKey>).forEach((key) =>
-      setTermValue(key, next),
-    )
+  const toggleAllTermsAgreement = () => {
+    const areAllTermsAgreed =
+      termsAgreement.service && termsAgreement.privacy && termsAgreement.marketing
+
+    const nextAgreementValue = !areAllTermsAgreed
+
+    ALL_TERM_KEYS.forEach((termKey) => {
+      updateTermAgreement(termKey, nextAgreementValue)
+    })
   }
 
-  const confirmButton = useMemo(
+  const emailVerification: EmailVerificationState = useMemo(
     () => ({
-      state: confirm,
-      toggle: () => setConfirm((prev) => !prev),
+      isVerified: isEmailVerified,
+      toggleVerification: () => setIsEmailVerified((previous) => !previous),
     }),
-    [confirm],
+    [isEmailVerified],
   )
+
+  const isRegistrationValid = isFormValid && isEmailVerified
+
+  const formFieldValues: FormFieldValues = {
+    name: watchedName,
+    nickname: watchedNickname,
+    email: watchedEmail,
+  }
 
   return {
     register,
     handleSubmit,
-    errors,
-    isValid: isValid && confirm,
-    confirmButton,
-    school,
-    handleSelectSchool,
-    terms,
-    toggleTerm,
-    toggleAllTerms,
-    onSubmit,
-    values: {
-      name: nameValue,
-      nickname: nicknameValue,
-      email: emailValue,
-    },
+    errors: formErrors,
+    isValid: isRegistrationValid,
+    emailVerification,
+    selectedSchool,
+    handleSchoolSelect,
+    termsAgreement,
+    toggleTermAgreement,
+    toggleAllTermsAgreement,
+    onSubmit: handleFormSubmit,
+    formFieldValues,
   }
 }

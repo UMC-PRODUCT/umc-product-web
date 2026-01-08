@@ -9,9 +9,9 @@ export const Container = styled.div`
   align-self: center;
 `
 
-export const Text = styled.span<{ color: string }>`
+export const Text = styled.span<{ $color: string }>`
   margin-left: 8px;
-  color: ${({ color }) => color};
+  color: ${({ $color }) => $color};
 `
 
 export const getColor = (mode: 'success' | 'error' | 'warning') => {

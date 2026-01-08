@@ -3,15 +3,15 @@ import { useState } from 'react'
 import Logo from '@shared/assets/umc_gray.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-import PrivacyTerm from '@/features/auth/components/TermModal/PrivacyTerm/PrivacyTerm'
-import ServiceTerm from '@/features/auth/components/TermModal/ServiceTerm/ServiceTerm'
 import { FOOTER_INFO } from '@/shared/constants/umc'
+import PrivacyTerm from '@/shared/ui/modals/terms/PrivacyTerm'
+import ServiceTerm from '@/shared/ui/modals/terms/ServiceTerm'
 
 import * as S from './Footer.style'
 
 type ModalType = 'service' | 'privacy' | null
 
-export default function Footer() {
+const Footer = () => {
   const [openModal, setOpenModal] = useState<ModalType>(null)
   const closeModal = () => setOpenModal(null)
 
@@ -50,3 +50,5 @@ export default function Footer() {
     </S.FooterContainer>
   )
 }
+
+export default Footer
