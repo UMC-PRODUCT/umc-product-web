@@ -1,5 +1,6 @@
+import { Question } from '@/shared/ui/common/question/Question'
+
 import type { QuestionPage } from '../type/question'
-import { Question } from './question/Question'
 
 export const ResumeForm = ({
   data,
@@ -15,6 +16,7 @@ export const ResumeForm = ({
       {data.questions.map((q) => {
         return (
           <Question
+            mode="edit"
             key={q.id}
             data={q}
             value={answers[q.id]}

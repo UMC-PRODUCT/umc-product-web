@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
 
-export const RadioChoiceInput = styled.input<{ isChecked?: boolean }>`
+export const RadioChoiceInput = styled.input<{ isChecked?: boolean; isInteractive?: boolean }>`
   appearance: none;
   -webkit-appearance: none;
   margin: 0;
@@ -11,7 +11,7 @@ export const RadioChoiceInput = styled.input<{ isChecked?: boolean }>`
   border: 2px solid ${theme.colors.gray[500]};
   border-radius: 50%;
   background-color: transparent;
-  cursor: pointer;
+  cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,16 +36,8 @@ export const RadioChoiceInput = styled.input<{ isChecked?: boolean }>`
     border-color: ${({ isChecked }) => (isChecked ? theme.colors.white : theme.colors.gray[300])};
   }
 `
-// 라벨과 라디오를 묶어주는 컨테이너 (이미지처럼 정렬하기 위함)
-export const RadioLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  color: ${theme.colors.white};
-  ${theme.typography.B3.Md}; /* 텍스트 스타일 적용 */
 
-  &:hover ${RadioChoiceInput} {
-    border-color: ${theme.colors.gray[300]};
-  }
+export const RadioChoiceText = styled.span`
+  color: ${theme.colors.white};
+  ${theme.typography.B3.Rg}
 `

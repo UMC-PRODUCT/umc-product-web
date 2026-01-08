@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-import * as S from '@features/auth/components/TermModal/TermModalLayout.style'
-
 import Close from '@shared/assets/icons/close.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { Modal } from '@shared/ui/common/Modal'
+
+import * as S from '@/shared/ui/modals/TermModalLayout/TermModalLayout.style'
 
 type TermModalLayoutProps = {
   title?: string

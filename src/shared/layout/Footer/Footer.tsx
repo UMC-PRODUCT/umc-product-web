@@ -27,9 +27,13 @@ export default function Footer() {
           <S.Content>이메일 : {FOOTER_INFO.email}</S.Content>
         </S.UmcInfo>
         <Flex gap="10px">
-          <S.Content onClick={() => setOpenModal('service')}>서비스이용약관</S.Content>
+          <S.Content onClick={() => setOpenModal('service')} css={{ cursor: 'pointer' }}>
+            서비스이용약관
+          </S.Content>
           <S.TextDivider />
-          <S.Content onClick={() => setOpenModal('privacy')}>개인정보처리방침</S.Content>
+          <S.Content onClick={() => setOpenModal('privacy')} css={{ cursor: 'pointer' }}>
+            개인정보처리방침
+          </S.Content>
         </Flex>
       </Flex>
       <Flex gap="0px" flexDirection="column">

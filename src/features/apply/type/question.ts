@@ -35,6 +35,7 @@ export interface FileUploadQuestion extends BaseQuestion {
       size: number
       status: 'loading' | 'success' | 'error'
       progress: number
+      file: File
     }>
     links: Array<string>
   }
@@ -62,5 +63,13 @@ export type QuestionList = {
   id: number
   title: string
   description: string
+  pages: Array<QuestionPage>
+}
+
+export type ResumeType = {
+  id: number
+  title: string
+  description: string
+  lastSavedTime: string
   pages: Array<QuestionPage>
 }

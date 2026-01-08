@@ -1,5 +1,59 @@
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { MOCK_APPLY_DATA } from '@/shared/mocks/apply'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import type { Part } from '@/shared/types/umc/part'
+import { Flex } from '@/shared/ui/common/Flex'
+import Section from '@/shared/ui/common/Section/Section'
+
+import ApplyResumeCard from '../components/ApplyResumeCard/ApplyResumeCard'
+import ApplyStatement from '../components/ApplyStatement/ApplyStatement'
+import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
+import ProgressStage from '../components/ProgressStage/ProgressStage'
 
 export function DashboardPage() {
-  return <PageLayout title="대시보드">Hello /(app)/dashboard/!</PageLayout>
+  const nickname = '코튼'
+  const fullName = '김연진'
+  const parts: Array<Part | '미정'> = ['SpringBoot', 'Web']
+  const document = '미정'
+  const final = '미정'
+  const sectionBorder = {
+    border: `1px solid ${theme.colors.gray[700]}`,
+    [media.down(theme.breakPoints.tablet)]: {
+      padding: '14px 14px',
+    },
+  }
+
+  return (
+    <PageLayout>
+      <Flex flexDirection="column" gap={96}>
+        <Flex gap={22} flexDirection="column">
+          <PageTitle title={`${nickname}/${fullName} 님의 지원 현황`} />
+          <Section
+            variant="outline"
+            padding={16}
+            css={{
+              flexDirection: 'row',
+              ...sectionBorder,
+              [media.down(theme.breakPoints.tablet)]: { flexDirection: 'column' },
+            }}
+          >
+            <div css={gridStyle}>
+              <ApplyStatement parts={parts} document={document} final={final} />
+              <ProgressStage />
+            </div>
+          </Section>
+        </Flex>
+        <Flex flexDirection="column" gap={22}>
+          <PageTitle title={`${nickname}/${fullName} 님의 지원서`} />
+          <Section variant="outline" gap={16} css={sectionBorder}>
+            {MOCK_APPLY_DATA.map(({ title, resumeId, state }) => (
+              <ApplyResumeCard key={resumeId} title={title} resumeId={resumeId} state={state} />
+            ))}
+          </Section>
+        </Flex>
+      </Flex>
+    </PageLayout>
+  )
 }
