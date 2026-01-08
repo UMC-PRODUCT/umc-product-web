@@ -1,31 +1,37 @@
-import * as S from '@/features/apply/components/shared'
-import Necessary from '@/shared/assets/icons/necessary.svg?react'
+import RequiredIcon from '@/shared/assets/icons/necessary.svg?react'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+
+import * as S from './QuestionLayout.style'
 
 interface QuestionLayoutProps {
   children: React.ReactNode
-  question: string
+  questionText: string
   questionNumber: number
-  necessary: boolean
-  errorMessage?: string | undefined
+  isRequired: boolean
+  errorMessage?: string
 }
 
-export default function QuestionLayout({
+const QuestionLayout = ({
   children,
-  question,
+  questionText,
   questionNumber,
-  necessary,
+  isRequired,
   errorMessage,
-}: QuestionLayoutProps) {
+}: QuestionLayoutProps) => {
+  const formattedQuestion = `${questionNumber}. ${questionText}`
+
   return (
-    <S.QuestionLayout alignItems="flex-start">
-      <S.QuestionTitle>
+    <S.Container alignItems="flex-start">
+      <S.Header>
         <div className="title">
-          {`${questionNumber}. ${question}`} {necessary ? <Necessary /> : ''}
+          {formattedQuestion}
+          {isRequired && <RequiredIcon />}
         </div>
         {errorMessage && <ErrorMessage typo="B5.Md" errorMessage={errorMessage} />}
-      </S.QuestionTitle>
+      </S.Header>
       {children}
-    </S.QuestionLayout>
+    </S.Container>
   )
 }
+
+export default QuestionLayout

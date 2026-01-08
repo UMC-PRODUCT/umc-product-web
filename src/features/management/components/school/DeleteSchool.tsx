@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import ManagementTable from '@features/management/components/common/ManagementTable'
-import DeleteConfirm from '@features/management/components/modals/DeleteConfirm/DeleteConfirm'
+import DeleteConfirmModal from '@features/management/components/modals/DeleteConfirm/DeleteConfirm'
 import { DeleteSchoolTableHeaderLabel } from '@features/management/constants/tableHeaders'
 import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@features/management/mocks/managementMocks'
 
-import Search from '@shared/assets/icons/search.svg?react'
+import SearchIcon from '@shared/assets/icons/search.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
@@ -19,100 +19,141 @@ import Section from '@/shared/ui/common/Section/Section'
 import DeleteTableRow from './DeleteTableRow'
 import * as S from './School.style'
 
-type DeleteModalState = {
+const ALL_BRANCHES_OPTION = { label: '-- 전체 지부 --', id: 0 }
+const DEFAULT_SCHOOL_NAME = '학교 이름'
+const TOTAL_PAGES = 5 // TODO: API 연동 시 서버에서 받아오도록 변경
+
+interface DeleteConfirmModalState {
   isOpen: boolean
-  name: string
-  count: number
+  schoolName: string
+  selectedCount: number
   onConfirm: () => void
 }
 
-export default function DeleteSchool() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [affiliated, setAffiliated] = useState<Option | undefined>()
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  const initialPage = useMemo(() => {
-    const pageParam = new URLSearchParams(window.location.search).get('page')
-    const parsed = Number(pageParam)
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
-  }, [])
-  const [page, setPage] = useState(initialPage)
-  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
-    isOpen: false,
-    name: '',
-    count: 0,
-    onConfirm: () => {},
-  })
+const INITIAL_MODAL_STATE: DeleteConfirmModalState = {
+  isOpen: false,
+  schoolName: '',
+  selectedCount: 0,
+  onConfirm: () => {},
+}
 
-  const affiliatedOptions = useMemo(
-    () => [
-      { label: '-- 전체 지부 --', id: 0 },
-      ...AFFILIATED_MOCK.filter((option) => option.id !== 0),
-    ],
+function getInitialPageFromUrl(): number {
+  const pageParam = new URLSearchParams(window.location.search).get('page')
+  const parsedPage = Number(pageParam)
+  return Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+}
+
+function updateUrlPageParam(pageNumber: number): void {
+  const url = new URL(window.location.href)
+  url.searchParams.set('page', String(pageNumber))
+  window.history.replaceState(null, '', url.toString())
+}
+
+const DeleteSchool = () => {
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [selectedBranch, setSelectedBranch] = useState<Option | undefined>()
+  const [selectedSchoolIds, setSelectedSchoolIds] = useState<Set<number>>(new Set())
+  const [currentPage, setCurrentPage] = useState(() => getInitialPageFromUrl())
+  const [deleteModalState, setDeleteModalState] =
+    useState<DeleteConfirmModalState>(INITIAL_MODAL_STATE)
+
+  const branchFilterOptions = useMemo(
+    () => [ALL_BRANCHES_OPTION, ...AFFILIATED_MOCK.filter((option) => option.id !== 0)],
     [],
   )
 
-  const findSchoolName = useCallback(
-    (targetId?: number) => {
-      const selectedId =
-        targetId ?? (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
+  const findSchoolNameById = useCallback(
+    (targetSchoolId?: number): string => {
+      const schoolIdToFind =
+        targetSchoolId ??
+        (selectedSchoolIds.size > 0 ? Math.min(...Array.from(selectedSchoolIds)) : undefined)
 
-      if (selectedId === undefined) return '학교 이름'
+      if (schoolIdToFind === undefined) {
+        return DEFAULT_SCHOOL_NAME
+      }
 
-      const matched = UNI_DELETE_MOCK.find((school) => school.id === selectedId)
-      return matched?.name ?? '학교 이름'
+      const matchedSchool = UNI_DELETE_MOCK.find((school) => school.id === schoolIdToFind)
+      return matchedSchool?.name ?? DEFAULT_SCHOOL_NAME
     },
-    [selectedIds],
+    [selectedSchoolIds],
   )
 
   const closeDeleteModal = useCallback(() => {
-    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
+    setDeleteModalState((previousState) => ({ ...previousState, isOpen: false }))
   }, [])
 
-  const openDeleteConfirm = useCallback(
-    (targetId?: number) => {
-      const count = targetId ? 1 : selectedIds.size
-      if (count === 0) return
+  const openDeleteConfirmModal = useCallback(
+    (targetSchoolId?: number) => {
+      const deleteCount = targetSchoolId ? 1 : selectedSchoolIds.size
 
-      setDeleteModal({
+      if (deleteCount === 0) return
+
+      setDeleteModalState({
         isOpen: true,
-        name: findSchoolName(targetId),
-        count,
+        schoolName: findSchoolNameById(targetSchoolId),
+        selectedCount: deleteCount,
         onConfirm: () => {
-          // TODO: 선택된 학교 삭제 API 연동
-          console.log('delete target', targetId ?? Array.from(selectedIds))
+          const idsToDelete = targetSchoolId ?? Array.from(selectedSchoolIds)
+          // TODO: 학교 삭제 API 연동
+          console.log('삭제 대상 학교 ID:', idsToDelete)
           closeDeleteModal()
         },
       })
     },
-    [closeDeleteModal, findSchoolName, selectedIds],
+    [closeDeleteModal, findSchoolNameById, selectedSchoolIds],
   )
 
   const handlePageChange = (nextPage: number) => {
-    setPage(nextPage)
-    const url = new URL(window.location.href)
-    url.searchParams.set('page', String(nextPage))
-    window.history.replaceState(null, '', url.toString())
+    setCurrentPage(nextPage)
+    updateUrlPageParam(nextPage)
   }
 
-  const buttonChildren = (
-    <>
-      <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
-      <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
-    </>
-  )
+  const handleSearchKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(event.target.value)
+  }
 
-  const toggleAll = () => {
-    setSelectedIds((prev) => {
-      if (prev.size === UNI_DELETE_MOCK.length) return new Set()
-      return new Set(UNI_DELETE_MOCK.map((item) => item.id))
+  const handleBranchFilterChange = (selectedOption: Option) => {
+    const isAllBranchesSelected = selectedOption.id === 0
+    setSelectedBranch(isAllBranchesSelected ? undefined : selectedOption)
+  }
+
+  const clearSelection = () => {
+    setSelectedSchoolIds(new Set())
+  }
+
+  const toggleSelectAll = () => {
+    setSelectedSchoolIds((previousIds) => {
+      const isAllSelected = previousIds.size === UNI_DELETE_MOCK.length
+      if (isAllSelected) {
+        return new Set()
+      }
+      return new Set(UNI_DELETE_MOCK.map((school) => school.id))
     })
   }
+
+  const isAllSchoolsSelected = selectedSchoolIds.size === UNI_DELETE_MOCK.length
+  const totalSchoolCount = UNI_DELETE_MOCK.length
+
+  const filterContainerStyle = {
+    maxWidth: '240px',
+    [media.down(theme.breakPoints.tablet)]: {
+      maxWidth: '100%',
+    },
+  }
+
+  const actionButtons = (
+    <>
+      <Button label="선택 취소" tone="gray" onClick={clearSelection} />
+      <Button label="선택한 학교 삭제" tone="necessary" onClick={() => openDeleteConfirmModal()} />
+    </>
+  )
 
   return (
     <>
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 삭제</S.TabTitle>
         <S.TabSubtitle>삭제할 학교를 선택하세요. 삭제 시 복구가 불가능합니다.</S.TabSubtitle>
+
         <Section
           variant="solid"
           flexDirection="row"
@@ -120,67 +161,57 @@ export default function DeleteSchool() {
           margin="30px 0 16px 0"
           gap="12px"
         >
-          <Flex
-            css={{
-              maxWidth: '240px',
-              [media.down(theme.breakPoints.tablet)]: {
-                maxWidth: '100%',
-              },
-            }}
-          >
+          <Flex css={filterContainerStyle}>
             <TextField
               type="text"
               autoComplete="off"
               placeholder="학교명으로 검색"
-              Icon={Search}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              Icon={SearchIcon}
+              value={searchKeyword}
+              onChange={handleSearchKeywordChange}
             />
           </Flex>
-          <Flex
-            css={{
-              maxWidth: '240px',
-              [media.down(theme.breakPoints.tablet)]: {
-                maxWidth: '100%',
-              },
-            }}
-          >
+
+          <Flex css={filterContainerStyle}>
             <Dropdown
-              options={affiliatedOptions}
+              options={branchFilterOptions}
               placeholder="전체 지부"
-              value={affiliated}
-              onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
+              value={selectedBranch}
+              onChange={handleBranchFilterChange}
             />
           </Flex>
         </Section>
+
         <ManagementTable
-          isAllChecked={selectedIds.size === UNI_DELETE_MOCK.length}
-          onToggleAll={() => toggleAll()}
-          totalAmounts={UNI_DELETE_MOCK.length}
+          isAllChecked={isAllSchoolsSelected}
+          onToggleAll={toggleSelectAll}
+          totalAmounts={totalSchoolCount}
           headerLabels={DeleteSchoolTableHeaderLabel}
           type="school"
-          currentPage={page}
-          totalPages={5}
+          currentPage={currentPage}
+          totalPages={TOTAL_PAGES}
           onChangePage={handlePageChange}
-          buttonChildren={buttonChildren}
+          buttonChildren={actionButtons}
         >
           <DeleteTableRow
-            setSelectedIds={setSelectedIds}
-            selectedIds={selectedIds}
-            openDeleteConfirm={openDeleteConfirm}
+            setSelectedIds={setSelectedSchoolIds}
+            selectedIds={selectedSchoolIds}
+            openDeleteConfirm={openDeleteConfirmModal}
           />
         </ManagementTable>
       </S.TabHeader>
 
-      {deleteModal.isOpen && (
-        <DeleteConfirm
+      {deleteModalState.isOpen && (
+        <DeleteConfirmModal
           onClose={closeDeleteModal}
-          name={deleteModal.name}
+          name={deleteModalState.schoolName}
           type="school"
-          count={deleteModal.count}
-          onClick={deleteModal.onConfirm}
+          count={deleteModalState.selectedCount}
+          onClick={deleteModalState.onConfirm}
         />
       )}
     </>
   )
 }
+
+export default DeleteSchool

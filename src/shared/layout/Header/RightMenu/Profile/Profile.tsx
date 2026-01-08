@@ -6,7 +6,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 
 import * as S from './Profile.style'
 
-export default function Profile({ children }: { children?: React.ReactNode }) {
+const Profile = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -70,3 +70,5 @@ export default function Profile({ children }: { children?: React.ReactNode }) {
     </S.Container>
   )
 }
+
+export default Profile

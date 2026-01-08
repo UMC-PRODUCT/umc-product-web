@@ -14,7 +14,7 @@ interface ApplyResumeCardProps {
   state: '제출 완료' | '지난 모집'
 }
 
-export default function ApplyResumeCard({ title, resumeId, state }: ApplyResumeCardProps) {
+const ApplyResumeCard = ({ title, resumeId, state }: ApplyResumeCardProps) => {
   const navigate = useNavigate()
   return (
     <S.CardWrapper variant="solid" flexDirection="row">
@@ -66,3 +66,5 @@ export default function ApplyResumeCard({ title, resumeId, state }: ApplyResumeC
     </S.CardWrapper>
   )
 }
+
+export default ApplyResumeCard

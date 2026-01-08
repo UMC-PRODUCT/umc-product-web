@@ -12,15 +12,15 @@ const TabList = styled.div`
   gap: 24px;
 `
 
-const TabItem = styled.button<{ active: boolean }>`
+const TabItem = styled.button<{ $active: boolean }>`
   background: none;
   border: none;
-  color: ${(props) => (props.active ? `${theme.colors.lime}` : `${theme.colors.white}`)};
+  color: ${(props) => (props.$active ? `${theme.colors.lime}` : `${theme.colors.white}`)};
   font-size: 18px;
   font-weight: bold;
   padding: 10px 0;
   cursor: pointer;
-  border-bottom: ${(props) => (props.active ? `2px solid ${theme.colors.lime}` : 'none')};
+  border-bottom: ${(props) => (props.$active ? `2px solid ${theme.colors.lime}` : 'none')};
   white-space: nowrap;
 `
 
@@ -49,7 +49,7 @@ const TimelineGrid = styled.div`
   }
 `
 
-const FirstColumn = styled.div<{ indexLength: number }>`
+const FirstColumn = styled.div<{ $indexLength: number }>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -62,7 +62,7 @@ const FirstColumn = styled.div<{ indexLength: number }>`
     top: 20px;
     bottom: 0px;
     width: 2px;
-    height: ${(props) => (props.indexLength === 7 ? `315px` : '270px')};
+    height: ${(props) => (props.$indexLength === 7 ? `315px` : '270px')};
     background: linear-gradient(
       to bottom,
       ${theme.colors.lime} 0%,
@@ -72,13 +72,13 @@ const FirstColumn = styled.div<{ indexLength: number }>`
     opacity: 0.5;
 
     ${media.down(theme.breakPoints.tablet)} {
-      height: ${(props) => (props.indexLength === 7 ? `316px` : '268px')};
+      height: ${(props) => (props.$indexLength === 7 ? `316px` : '268px')};
       background: ${theme.colors.lime};
       bottom: 20px;
     }
   }
 `
-const SecondColumn = styled.div<{ lastIndex: number }>`
+const SecondColumn = styled.div<{ $lastIndex: number }>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -89,7 +89,7 @@ const SecondColumn = styled.div<{ lastIndex: number }>`
     top: 0px;
     bottom: 80px;
     width: 2px;
-    height: ${(props) => (props.lastIndex === 3 ? `170px` : '260px')};
+    height: ${(props) => (props.$lastIndex === 3 ? `170px` : '260px')};
     background: linear-gradient(
       to top,
       ${theme.colors.lime} 0%,
@@ -99,7 +99,7 @@ const SecondColumn = styled.div<{ lastIndex: number }>`
     opacity: 0.5;
 
     ${media.down(theme.breakPoints.tablet)} {
-      height: ${(props) => (props.lastIndex === 3 ? `170px` : '260px')};
+      height: ${(props) => (props.$lastIndex === 3 ? `170px` : '260px')};
       background: ${theme.colors.lime};
       bottom: 20px;
     }

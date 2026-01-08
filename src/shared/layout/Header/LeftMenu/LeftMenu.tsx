@@ -2,14 +2,14 @@ import { useRouterState } from '@tanstack/react-router'
 
 import * as S from './LeftMenu.style'
 
-export default function LeftMenu({
+const LeftMenu = ({
   children,
 }: {
   children?: Array<{
     label: string
     link: string
   }>
-}) {
+}) => {
   const currentPath = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -30,3 +30,5 @@ export default function LeftMenu({
     </S.Container>
   )
 }
+
+export default LeftMenu

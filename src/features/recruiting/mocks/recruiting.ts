@@ -1,6 +1,8 @@
-import type { PartData } from '@/features/recruiting/components/partCurriculum/PartCurriculum'
+import type { CalendarEvents } from '@/shared/types/calendar'
 
-export const RAW_EVENTS = [
+import type { PartData } from '../types/partCurriculum'
+
+export const RAW_EVENTS: CalendarEvents = [
   { id: 1, title: '서류 모집', startDate: '2026-01-02', endDate: '2026-01-06' },
   { id: 4, title: '면접 진행', startDate: '2026-01-12', endDate: '2026-01-16' },
   {
@@ -17,27 +19,15 @@ export const RAW_EVENTS = [
   },
 ]
 
-export type CalendarEvents = Array<CalendarEvent>
-
-export type CalendarEvent = {
-  id: number
-  title: string
-  startDate: string // 'YYYY-MM-DD' 형식
-  endDate: string // 'YYYY-MM-DD' 형식
+export const RECRUITING_NOTICE = {
+  title: 'UMC 11기 챌린저 모집',
+  content: `안녕하세요, 회장단입니다.
+  2026년 11기 신입 회원을 모집합니다. 열정과 책임감을 가지고 함께 성장할 분들을 찾고 있습니다.
+  실제 서비스 개발 경험을 쌓고, 다양한 파트의 사람들과 협업하며 개발 역량을 키워나갈 수 있습니다.
+  관심 있으신 분들의 많은 지원 부탁드립니다! `,
 }
 
-export type EventSegment = {
-  id: number
-  title: string
-  originalStart: Date
-  originalEnd: Date
-  segmentStart: Date
-  segmentEnd: Date
-  span: number // 일정이 차지하는 일수
-  isStart: boolean // 실제 일정 시작일인가?
-}
-
-export const MOCK_DATA: Array<PartData> = [
+export const MOCK_PART_CURRICULUM: Array<PartData> = [
   {
     id: 'Plan',
     label: 'Plan',
@@ -75,15 +65,4 @@ export const MOCK_DATA: Array<PartData> = [
       { week: 10, content: '디자인 직무의 이해' },
     ],
   },
-]
-
-type ApplyType = {
-  title: string
-  resumeId: number
-  state: '제출 완료' | '지난 모집'
-}
-export const MOCK_APPLY_DATA: Array<ApplyType> = [
-  { title: 'UMC 중앙대학교 10기 추가모집', resumeId: 1, state: '제출 완료' },
-  { title: 'UMC 중앙대학교 9기 모집', resumeId: 2, state: '지난 모집' },
-  { title: 'UMC 중앙대학교 8기 모집', resumeId: 3, state: '지난 모집' },
 ]

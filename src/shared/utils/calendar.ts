@@ -1,32 +1,43 @@
-import { addDays, endOfWeek, format, isAfter, isSameDay, parseISO, startOfDay } from 'date-fns'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 
-import type { CalendarEvents, EventSegment } from '@/shared/mocks/apply'
+import type { CalendarEvents, EventSegment } from '@/shared/types/calendar'
+
+const toStartOfDay = (value: string | Date) => dayjs(value).startOf('day')
+
+const isSameDay = (left: Date, right: Date) => dayjs(left).isSame(right, 'day')
+
+const isAfterDay = (left: Dayjs, right: Dayjs) => left.isAfter(right, 'day')
+
+const getWeekEnd = (current: Dayjs) => {
+  const dayOfWeek = current.day() // 0: Sunday ... 6: Saturday
+  return current.add(6 - dayOfWeek, 'day').startOf('day')
+}
 
 // --- 로직: 이벤트 세그먼트 생성 ---
 export const processEventsIntoSegments = (events: CalendarEvents): Array<EventSegment> => {
   const segments: Array<EventSegment> = []
   events.forEach((event) => {
-    const start = startOfDay(parseISO(event.startDate))
-    const end = startOfDay(parseISO(event.endDate))
+    const start = toStartOfDay(event.startDate)
+    const end = toStartOfDay(event.endDate)
     let current = start
 
-    while (!isAfter(current, end)) {
-      const weekEnd = startOfDay(endOfWeek(current, { weekStartsOn: 0 }))
-      const segmentEnd = isAfter(weekEnd, end) ? end : weekEnd
-      const span =
-        Math.round((segmentEnd.getTime() - current.getTime()) / (1000 * 60 * 60 * 24)) + 1
+    while (!isAfterDay(current, end)) {
+      const weekEnd = getWeekEnd(current)
+      const segmentEnd = isAfterDay(weekEnd, end) ? end : weekEnd
+      const span = segmentEnd.diff(current, 'day') + 1
 
       segments.push({
         id: event.id,
         title: event.title,
-        originalStart: start,
-        originalEnd: end,
-        segmentStart: current,
-        segmentEnd: segmentEnd,
+        originalStart: start.toDate(),
+        originalEnd: end.toDate(),
+        segmentStart: current.toDate(),
+        segmentEnd: segmentEnd.toDate(),
         span: span,
-        isStart: isSameDay(current, start),
+        isStart: current.isSame(start, 'day'),
       })
-      current = addDays(segmentEnd, 1)
+      current = segmentEnd.add(1, 'day')
     }
   })
   return segments
@@ -34,7 +45,7 @@ export const processEventsIntoSegments = (events: CalendarEvents): Array<EventSe
 
 // --- 유틸: 날짜 텍스트 생성 ---
 export const getEventDateText = (start: Date, end: Date, separator: string = ' ~ ') => {
-  const startText = format(start, 'MM.dd')
-  const endText = format(end, 'MM.dd')
+  const startText = dayjs(start).format('MM.DD')
+  const endText = dayjs(end).format('MM.DD')
   return isSameDay(start, end) ? startText : `${startText}${separator}${endText}`
 }

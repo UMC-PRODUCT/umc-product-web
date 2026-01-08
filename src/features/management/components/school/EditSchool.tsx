@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import RegisterConfirm from '@features/management/components/modals/RegisterConfirm/RegisterConfirm'
-import type { SchoolRegisterForm } from '@features/management/schema/management'
-import { schoolRegisterSchema } from '@features/management/schema/management'
+import type { SchoolRegisterForm } from '@features/management/schemas/management'
+import { schoolRegisterSchema } from '@features/management/schemas/management'
 
-import { UNI_LIST_MOCK } from '@shared/mocks/universities'
 import { Button } from '@shared/ui/common/Button/Button'
 import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
+
+import { UNI_LIST_MOCK } from '@/features/management/mocks/universities'
 
 import { EmptySelectionNotice } from './EmptySelectionNotice'
 import * as S from './School.style'
@@ -28,7 +29,7 @@ const REGISTERED_AT = '2026.01.15'
 const formatDateToYMD = (date: Date) =>
   `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
 
-export default function EditSchool() {
+const EditSchool = () => {
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     schoolName: '',
@@ -119,3 +120,5 @@ export default function EditSchool() {
     </>
   )
 }
+
+export default EditSchool

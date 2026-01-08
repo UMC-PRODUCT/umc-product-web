@@ -5,7 +5,7 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-export default function AlreadyExistAccount({ onClose }: { onClose: () => void }) {
+const AlreadyExistAccount = ({ onClose }: { onClose: () => void }) => {
   const navigate = useNavigate({ from: '/auth/login' })
   return (
     <AlertModalLayout
@@ -42,3 +42,5 @@ export default function AlreadyExistAccount({ onClose }: { onClose: () => void }
     </AlertModalLayout>
   )
 }
+
+export default AlreadyExistAccount

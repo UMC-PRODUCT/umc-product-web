@@ -1,4 +1,12 @@
-export const PART_INFO = [
+import type { Part } from '@/shared/types/umc/part'
+
+type PartInfo = {
+  part: Part
+  state: string
+  ability: Array<string>
+}
+
+export const PART_INFO_MOCK: Array<PartInfo> = [
   {
     part: 'Plan',
     state: '모집 중',

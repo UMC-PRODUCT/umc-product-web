@@ -20,14 +20,14 @@ type LabelDropdownProps = {
   }
 }
 
-export default function LabelDropdown({
+const LabelDropdown = ({
   label,
   placeholder,
   options,
   value,
   error,
   onChange,
-}: LabelDropdownProps) {
+}: LabelDropdownProps) => {
   const baseId = useId()
   const triggerId = `${baseId}-selector`
   const labelId = `${baseId}-label`
@@ -49,3 +49,5 @@ export default function LabelDropdown({
     </Field>
   )
 }
+
+export default LabelDropdown

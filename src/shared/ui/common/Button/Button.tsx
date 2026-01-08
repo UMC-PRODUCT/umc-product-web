@@ -7,7 +7,11 @@ import { resolveTypo } from '@shared/utils/resolveTypo'
 
 import * as S from './Button.style'
 
-type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
+const DEFAULT_BORDER_RADIUS = 6
+const DEFAULT_TYPOGRAPHY: TypoToken = 'B3.Md'
+const ICON_SIZE = 20
+
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   label?: string
   tone: ButtonTone
   variant?: ButtonVariant
@@ -24,45 +28,48 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       tone,
       variant = 'solid',
-      rounded = 6,
+      rounded = DEFAULT_BORDER_RADIUS,
       disabled = false,
-      typo = 'B3.Md',
+      typo = DEFAULT_TYPOGRAPHY,
       Icon,
       className,
-      ...props
+      ...restProps
     },
     ref,
   ) => {
     const theme = useTheme()
-    const toneMap = S.getTone(theme)
+    const toneStyleMap = S.getTone(theme)
 
-    const radius = rounded
-    const t = toneMap[tone][variant]
+    const borderRadius = rounded
+    const currentToneStyle = toneStyleMap[tone][variant]
+    const typographyStyle = resolveTypo(theme, typo)
 
-    const textStyle = resolveTypo(theme, typo)
+    const handleClick = disabled ? undefined : onClick
+
+    const buttonStyles = [
+      S.baseButton(disabled),
+      {
+        borderRadius,
+        background: currentToneStyle.background,
+        color: currentToneStyle.color,
+        border: currentToneStyle.border,
+        flexWrap: 'nowrap' as const,
+        whiteSpace: 'nowrap' as const,
+        ...typographyStyle,
+      },
+    ]
 
     return (
       <button
         ref={ref}
         type={type}
-        onClick={disabled ? undefined : onClick}
+        onClick={handleClick}
         disabled={disabled}
         className={className}
-        css={[
-          S.baseButton(disabled),
-          {
-            borderRadius: radius,
-            background: t.background,
-            color: t.color,
-            border: t.border,
-            flexWrap: 'nowrap',
-            whiteSpace: 'nowrap',
-            ...textStyle,
-          },
-        ]}
-        {...props}
+        css={buttonStyles}
+        {...restProps}
       >
-        {Icon && <Icon width={20} height={20} aria-hidden />}
+        {Icon && <Icon width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
         {label}
       </button>
     )

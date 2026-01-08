@@ -5,9 +5,10 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
-export const FileItemWrapper = styled.div<{ isError?: boolean }>`
+export const FileItemWrapper = styled.div<{ $isError?: boolean }>`
   background-color: ${theme.colors.gray[600]};
-  border: 1px solid ${({ isError }) => (isError ? theme.colors.necessary : theme.colors.gray[600])};
+  border: 1px solid
+    ${({ $isError }) => ($isError ? theme.colors.necessary : theme.colors.gray[600])};
   border-radius: 4px;
   height: 64px;
   width: 100%;

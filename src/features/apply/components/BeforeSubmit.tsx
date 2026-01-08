@@ -1,39 +1,68 @@
 import { useState } from 'react'
 
-import * as S from '@/features/apply/components/shared'
+import * as S from '@/features/apply/components/ApplyPage.style'
+import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import type { Part } from '@/shared/types/umc/part'
 import { Button } from '@/shared/ui/common/Button'
 
-import CautionConfirm from './modals/CautionConfirm'
+import ConfirmApplicationModal from './modals/CautionConfirm'
 import PartInfoCard from './PartInfoCard'
 
-interface BeforeSubmitProps {
-  data: Array<{ part: string; state: string; ability: Array<string> }>
+interface PartInfo {
+  part: Part
+  state: string
+  ability: Array<string>
 }
 
-export default function BeforeSubmit({ data }: BeforeSubmitProps) {
-  const [isNowRecruiting, _setIsNowRecruiting] = useState(true) // TODO: 추후 API 연동 시 모집 여부에 따라 변경
-  const [modal, setModal] = useState(false)
+interface BeforeSubmitProps {
+  partInfoList: Array<PartInfo>
+}
 
-  const closeModal = () => {
-    setModal(false)
+// TODO: API 연동 시 useRecruitmentStatus 훅으로 대체
+const getRecruitmentOpenState = (): boolean => {
+  return true
+}
+
+const BeforeSubmit = ({ partInfoList }: BeforeSubmitProps) => {
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const isRecruitmentOpen = getRecruitmentOpenState()
+
+  const openConfirmModal = () => setIsConfirmModalOpen(true)
+  const closeConfirmModal = () => setIsConfirmModalOpen(false)
+
+  const handleApplyClick = () => {
+    openConfirmModal()
   }
 
   return (
     <>
-      <S.PartInfoCardWrapper gap={'16px'} flexDirection="column">
-        {data.map(({ part, state, ability }) => (
-          <PartInfoCard key={part} part={part} state={state} ability={ability} />
+      <S.PartInfoListContainer gap="16px" flexDirection="column">
+        {partInfoList.map(({ part, state, ability }) => (
+          <PartInfoCard
+            key={part}
+            partName={part}
+            recruitmentState={state}
+            requiredAbilities={ability}
+          />
         ))}
-      </S.PartInfoCardWrapper>
+      </S.PartInfoListContainer>
+
       <Button
-        label="UMC 10기 지원하기"
-        tone={isNowRecruiting ? 'lime' : 'darkGray'}
-        disabled={!isNowRecruiting}
-        onClick={() => setModal(!modal)}
+        label={`UMC ${RECRUITMENT_INFO.generation} 지원하기`}
+        tone={isRecruitmentOpen ? 'lime' : 'darkGray'}
+        disabled={!isRecruitmentOpen}
+        onClick={handleApplyClick}
       />
-      {modal && (
-        <CautionConfirm onClose={closeModal} createNewResume={() => {}} existingResumeId={1} />
+
+      {isConfirmModalOpen && (
+        <ConfirmApplicationModal
+          onClose={closeConfirmModal}
+          createNewResume={() => {}}
+          existingResumeId={1}
+        />
       )}
     </>
   )
 }
+
+export default BeforeSubmit

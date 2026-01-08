@@ -5,11 +5,7 @@ import ChallengerHeader from '@shared/layout/Header/ChallengerHeader'
 import SuperHeader from '@shared/layout/Header/SuperHeader'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-export const Route = createFileRoute('/(app)')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+const RouteComponent = () => {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -25,3 +21,7 @@ function RouteComponent() {
     </Flex>
   )
 }
+
+export const Route = createFileRoute('/(app)')({
+  component: RouteComponent,
+})

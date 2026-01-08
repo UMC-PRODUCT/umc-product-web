@@ -15,7 +15,7 @@ const socialIconMap = {
   youtube: YoutubeIcon,
 } as const
 
-export default function ExternalLink({
+const ExternalLink = ({
   subLinks,
 }: {
   subLinks: Array<{
@@ -23,7 +23,7 @@ export default function ExternalLink({
     link: string
     icon: 'kakao' | 'instagram' | 'youtube'
   }>
-}) {
+}) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => {
@@ -87,3 +87,5 @@ export default function ExternalLink({
     </>
   )
 }
+
+export default ExternalLink

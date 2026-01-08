@@ -14,7 +14,7 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Divider from '@shared/ui/common/Divider/Divider'
 import Instruction from '@shared/ui/common/Instruction/Instruction'
 
-export function LoginPage() {
+export const LoginPage = () => {
   return (
     <Main>
       <IntroBanner></IntroBanner>

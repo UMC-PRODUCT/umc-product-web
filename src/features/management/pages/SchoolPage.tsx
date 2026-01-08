@@ -13,7 +13,7 @@ type SchoolPageProps = {
   onTabChange: (next: ManageSchoolTabName) => void
 }
 
-export function SchoolPage({ activeTab, onTabChange }: SchoolPageProps) {
+export const SchoolPage = ({ activeTab, onTabChange }: SchoolPageProps) => {
   return (
     <PageLayout title="학교 관리">
       <Tab tabs={manageSchoolTabs} value={activeTab} onValueChange={onTabChange}>

@@ -137,9 +137,9 @@ const TimeTableComponent = (
     if (disabledIdxMap[date].has(idx)) return
     const newIndices = { ...selectedIndices }
     const dateSet = new Set(newIndices[date])
-    const mode = isInitial ? !dateSet.has(idx) : dragMode
-    if (isInitial) setDragMode(mode)
-    mode ? dateSet.add(idx) : dateSet.delete(idx)
+    const nextMode = isInitial ? !dateSet.has(idx) : dragMode
+    if (isInitial) setDragMode(nextMode)
+    nextMode ? dateSet.add(idx) : dateSet.delete(idx)
     newIndices[date] = dateSet
     setSelectedIndices(newIndices)
     notifyChange(newIndices)
@@ -218,22 +218,22 @@ const TimeTableComponent = (
       <S.TableWrapper>
         <S.TimeLabelsColumn>
           {timeLabels.map((item, i) => (
-            <S.TimeLabel key={i} top={item.top}>
+            <S.TimeLabel key={i} $top={item.top}>
               {item.text}
             </S.TimeLabel>
           ))}
         </S.TimeLabelsColumn>
         <S.MainArea>
-          <S.HeaderRow cols={dates.length}>
+          <S.HeaderRow $cols={dates.length}>
             {dates.map((d) => (
               <S.HeaderCell
                 key={d}
                 onClick={() => handleHeaderClick(d)}
-                isAllSelected={
+                $isAllSelected={
                   selectedIndices[d].size > 0 &&
                   selectedIndices[d].size === totalSlots - disabledIdxMap[d].size
                 }
-                isInteractive={isEditable}
+                $isInteractive={isEditable}
               >
                 <Badge
                   typo="C5.Md"
@@ -253,15 +253,15 @@ const TimeTableComponent = (
               </S.HeaderCell>
             ))}
           </S.HeaderRow>
-          <S.GridBody cols={dates.length}>
+          <S.GridBody $cols={dates.length}>
             {Array.from({ length: totalSlots }).map((_, idx) =>
               dates.map((date) => (
                 <S.SlotCell
                   key={`${date}-${idx}`}
-                  isSelected={selectedIndices[date].has(idx)}
-                  isDisabled={disabledIdxMap[date].has(idx)}
-                  isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
-                  isInteractive={isEditable}
+                  $isSelected={selectedIndices[date].has(idx)}
+                  $isDisabled={disabledIdxMap[date].has(idx)}
+                  $isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
+                  $isInteractive={isEditable}
                   onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
                   onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
                 />

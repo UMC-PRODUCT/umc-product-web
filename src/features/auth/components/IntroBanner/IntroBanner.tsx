@@ -16,7 +16,7 @@ const slides: Array<Slide> = [
 ]
 const total = slides.length
 
-export default function IntroBanner() {
+const IntroBanner = () => {
   const [current, setCurrent] = useState(0)
   const [isMdDown, setIsMdDown] = useState(() => {
     if (typeof window === 'undefined') return false
@@ -93,3 +93,5 @@ export default function IntroBanner() {
     </>
   )
 }
+
+export default IntroBanner

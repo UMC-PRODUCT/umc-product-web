@@ -15,7 +15,7 @@ type TermModalLayoutProps = {
   onClose: () => void
 }
 
-function TermMarkdown({ content }: { content: string }) {
+const TermMarkdown = ({ content }: { content: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -39,12 +39,7 @@ function TermMarkdown({ content }: { content: string }) {
   )
 }
 
-export default function TermModalLayout({
-  title = '약관',
-  content,
-  children,
-  onClose,
-}: TermModalLayoutProps) {
+const TermModalLayout = ({ title = '약관', content, children, onClose }: TermModalLayoutProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -84,3 +79,5 @@ export default function TermModalLayout({
     </Modal.Root>
   )
 }
+
+export default TermModalLayout

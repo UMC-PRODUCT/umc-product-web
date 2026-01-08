@@ -1,6 +1,6 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
-import type { SchoolRegisterForm } from '@features/management/schema/management'
+import type { SchoolRegisterForm } from '@features/management/schemas/management'
 
 import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
@@ -16,12 +16,12 @@ type SchoolFormFieldsProps = {
   updatedAt: string
 }
 
-export function SchoolFormFields({
+export const SchoolFormFields = ({
   register,
   errors,
   registeredAt,
   updatedAt,
-}: SchoolFormFieldsProps) {
+}: SchoolFormFieldsProps) => {
   return (
     <S.Form>
       <S.InputRow>

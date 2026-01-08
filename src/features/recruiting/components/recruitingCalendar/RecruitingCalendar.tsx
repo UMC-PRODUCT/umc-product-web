@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
+import type { ComponentProps, ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import Calendar from 'react-calendar'
-import { addMonths, format, isSameDay, isWithinInterval, startOfDay } from 'date-fns'
+import dayjs from 'dayjs'
 
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import CalendarIcon from '@/shared/assets/icons/calendar.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import { RAW_EVENTS } from '@/shared/mocks/apply'
+import type { CalendarEvents } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
 import { getEventDateText, processEventsIntoSegments } from '@/shared/utils/calendar'
 
@@ -14,25 +15,49 @@ import * as S from './RecruitingCalendar.style'
 
 import 'react-calendar/dist/Calendar.css'
 
-export default function RecruitingCalendar() {
-  const today = useMemo(() => startOfDay(new Date()), [])
-  const allSegments = useMemo(() => processEventsIntoSegments(RAW_EVENTS), [])
+type RecruitingCalendarProps = {
+  events: CalendarEvents
+}
+
+const toStartOfDay = (value: Date) => dayjs(value).startOf('day')
+
+const isSameDay = (left: Date, right: Date) => dayjs(left).isSame(right, 'day')
+
+const isWithinRange = (target: Date, start: Date, end: Date) => {
+  const time = toStartOfDay(target).valueOf()
+  return time >= toStartOfDay(start).valueOf() && time <= toStartOfDay(end).valueOf()
+}
+
+const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
+  const today = useMemo(() => toStartOfDay(new Date()).toDate(), [])
+  const allSegments = useMemo(() => processEventsIntoSegments(events), [events])
 
   const [activeStartDate, setActiveStartDate] = useState<Date>(today)
   const [selectedDate, setSelectedDate] = useState<Date>(today)
 
+  const handleDateChange: ComponentProps<typeof Calendar>['onChange'] = (value) => {
+    const nextValue = Array.isArray(value) ? value[0] : value
+    if (!nextValue) return
+    setSelectedDate(toStartOfDay(nextValue).toDate())
+  }
+
+  const handleActiveStartDateChange: ComponentProps<typeof Calendar>['onActiveStartDateChange'] = ({
+    activeStartDate: nextDate,
+  }) => {
+    if (!nextDate) return
+    setActiveStartDate(nextDate)
+  }
+
   // 선택된 날짜의 이벤트 필터링
   const selectedEvents = useMemo(() => {
     return allSegments
-      .filter((seg) =>
-        isWithinInterval(selectedDate, { start: seg.originalStart, end: seg.originalEnd }),
-      )
+      .filter((seg) => isWithinRange(selectedDate, seg.originalStart, seg.originalEnd))
       .filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i)
   }, [selectedDate, allSegments])
 
   // 월 이동 핸들러
   const handleMonth = (offset: number) => {
-    setActiveStartDate((prev) => addMonths(prev, offset))
+    setActiveStartDate((prev) => dayjs(prev).add(offset, 'month').toDate())
   }
 
   return (
@@ -42,7 +67,7 @@ export default function RecruitingCalendar() {
         <PageTitle title="모집 일정" />
         <S.DateNavigator width="fit-content">
           <Arrow css={{ transform: 'rotate(90deg)' }} onClick={() => handleMonth(-1)} />
-          {format(activeStartDate, 'yyyy년 M월')}
+          {dayjs(activeStartDate).format('YYYY년 M월')}
           <Arrow css={{ transform: 'rotate(270deg)' }} onClick={() => handleMonth(1)} />
         </S.DateNavigator>
       </S.Header>
@@ -58,33 +83,36 @@ export default function RecruitingCalendar() {
           nextLabel={null} // 네비게이션 숨김
           value={selectedDate}
           activeStartDate={activeStartDate}
-          onActiveStartDateChange={({ activeStartDate: nextDate }) =>
-            nextDate && setActiveStartDate(nextDate)
-          }
-          onChange={(val) => setSelectedDate(startOfDay(val as Date))}
-          formatDay={(_, date) => format(date, 'd')}
-          tileContent={({ date, view }) => {
+          onActiveStartDateChange={handleActiveStartDateChange}
+          onChange={handleDateChange}
+          formatDay={(_: string | undefined, date: Date) => dayjs(date).format('D')}
+          tileContent={({
+            date,
+            view,
+          }: {
+            date: Date
+            view: 'month' | 'year' | 'decade' | 'century'
+          }): ReactNode => {
             if (view !== 'month') return null
             const segment = allSegments.find((seg) => isSameDay(seg.segmentStart, date))
             if (!segment) return null
 
-            const isHighlighted = isWithinInterval(today, {
-              start: segment.originalStart,
-              end: segment.originalEnd,
-            })
+            const isHighlighted = isWithinRange(today, segment.originalStart, segment.originalEnd)
 
             return (
               <S.EventBarContainer>
                 <S.EventBar
-                  span={segment.span}
-                  isHighlighted={isHighlighted}
-                  isStart={segment.isStart}
+                  $span={segment.span}
+                  $isHighlighted={isHighlighted}
+                  $isStart={segment.isStart}
                 >
                   {segment.isStart && (
                     <span className="event-title">
                       {segment.title}
                       {!isSameDay(segment.originalStart, segment.originalEnd) &&
-                        ` (${format(segment.originalStart, 'MM/dd')}~${format(segment.originalEnd, 'MM/dd')})`}
+                        ` (${dayjs(segment.originalStart).format('MM/DD')}~${dayjs(
+                          segment.originalEnd,
+                        ).format('MM/DD')})`}
                     </span>
                   )}
                 </S.EventBar>
@@ -99,10 +127,7 @@ export default function RecruitingCalendar() {
         {selectedEvents.map((event) => (
           <S.EventItem
             key={event.id}
-            isHighlighted={isWithinInterval(today, {
-              start: event.originalStart,
-              end: event.originalEnd,
-            })}
+            $isHighlighted={isWithinRange(today, event.originalStart, event.originalEnd)}
           >
             <div className="icon">
               <CalendarIcon />
@@ -119,3 +144,5 @@ export default function RecruitingCalendar() {
     </Flex>
   )
 }
+
+export default RecruitingCalendar

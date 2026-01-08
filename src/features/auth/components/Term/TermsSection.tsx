@@ -1,16 +1,17 @@
 import { useState } from 'react'
 
-import MarketingTerm from '@features/auth/components/TermModal/MarketingTerm/MarketingTerm'
-import PrivacyTerm from '@features/auth/components/TermModal/PrivacyTerm/PrivacyTerm'
-import ServiceTerm from '@features/auth/components/TermModal/ServiceTerm/ServiceTerm'
-import type { TermKey } from '@features/auth/hooks/useRegisterForm'
+import type { TermsAgreementKey } from '@features/auth/hooks/useRegisterForm'
 
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Flex from '@shared/ui/common/Flex/Flex'
 
+import MarketingTerm from '@/shared/ui/modals/terms/MarketingTerm'
+import PrivacyTerm from '@/shared/ui/modals/terms/PrivacyTerm'
+import ServiceTerm from '@/shared/ui/modals/terms/ServiceTerm'
+
 import { Term } from './Term'
 
-type TermsState = Record<TermKey, boolean>
+type TermsState = Record<TermsAgreementKey, boolean>
 
 type TermErrors = Partial<
   Record<'serviceTerm' | 'privacyTerm' | 'marketingTerm', string | undefined>
@@ -19,13 +20,13 @@ type TermErrors = Partial<
 type TermsSectionProps = {
   terms: TermsState
   onToggleAll: () => void
-  onToggle: (key: TermKey) => void
+  onToggle: (key: TermsAgreementKey) => void
   errors?: TermErrors
 }
 
 type ModalType = 'service' | 'privacy' | 'marketing' | null
 
-export function TermsSection({ terms, onToggleAll, onToggle, errors }: TermsSectionProps) {
+export const TermsSection = ({ terms, onToggleAll, onToggle, errors }: TermsSectionProps) => {
   const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
   const [openModal, setOpenModal] = useState<ModalType>(null)
 

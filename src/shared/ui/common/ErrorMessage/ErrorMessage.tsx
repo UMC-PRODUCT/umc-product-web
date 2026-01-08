@@ -19,12 +19,8 @@ const span = ({ typo }: { typo: TypoToken | undefined }) => {
   })
 }
 
-export default function ErrorMessage({
-  errorMessage,
-  typo,
-}: {
-  errorMessage: string
-  typo?: TypoToken
-}) {
+const ErrorMessage = ({ errorMessage, typo }: { errorMessage: string; typo?: TypoToken }) => {
   return <span css={span({ typo })}>{errorMessage}</span>
 }
+
+export default ErrorMessage

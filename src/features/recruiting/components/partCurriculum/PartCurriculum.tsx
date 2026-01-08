@@ -2,31 +2,23 @@
 import { useState } from 'react'
 
 import { PART_REQUIRED_SKILL } from '@/features/recruiting/constants/partRequiredSkill'
+import type { PartData } from '@/features/recruiting/types/partCurriculum'
 import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import { MOCK_DATA } from '@/shared/mocks/apply'
 import { theme } from '@/shared/styles/theme'
 import type { Part } from '@/shared/types/umc/part'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import * as S from './PartCurriculum.style'
 
-export interface CurriculumItem {
-  week: number
-  content: string | null
+type PartCurriculumProps = {
+  curriculum: Array<PartData>
 }
 
-export interface PartData {
-  id: string
-  label: string
-  requiredSkill?: string
-  curriculum: Array<CurriculumItem>
-}
-
-export default function PartCurriculum() {
+const PartCurriculum = ({ curriculum }: PartCurriculumProps) => {
   const [activeTab, setActiveTab] = useState<Part>('Plan')
-  const currentData = MOCK_DATA.find((d) => d.id === activeTab) || MOCK_DATA[0] // TODO: 데이터 수정 예정
+  const currentData = curriculum.find((d) => d.id === activeTab) || curriculum[0] // TODO: 데이터 수정 예정
 
   const firstColWeeks = currentData.curriculum.filter((item) => item.week <= 6)
   const secondColWeeks = currentData.curriculum.filter((item) => item.week >= 7)
@@ -40,7 +32,7 @@ export default function PartCurriculum() {
       <Flex flexDirection="column">
         <S.TabList>
           {PART.map((id) => (
-            <S.TabItem key={id} active={activeTab === id} onClick={() => setActiveTab(id)}>
+            <S.TabItem key={id} $active={activeTab === id} onClick={() => setActiveTab(id)}>
               {id}
             </S.TabItem>
           ))}
@@ -61,7 +53,7 @@ export default function PartCurriculum() {
         </S.Requirement>
 
         <S.TimelineGrid>
-          <S.FirstColumn indexLength={lenFirstColumn}>
+          <S.FirstColumn $indexLength={lenFirstColumn}>
             {firstColWeeks.map((item) => (
               <S.WeekRow key={item.week}>
                 <S.Dot />
@@ -71,7 +63,7 @@ export default function PartCurriculum() {
             ))}
           </S.FirstColumn>
 
-          <S.SecondColumn lastIndex={secondLastIndex}>
+          <S.SecondColumn $lastIndex={secondLastIndex}>
             {secondColWeeks.map((item) => (
               <S.WeekRow key={item.week}>
                 <S.Dot />
@@ -85,3 +77,5 @@ export default function PartCurriculum() {
     </Flex>
   )
 }
+
+export default PartCurriculum

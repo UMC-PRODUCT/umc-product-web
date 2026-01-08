@@ -2,38 +2,49 @@ import { Flex } from '@/shared/ui/common/Flex'
 
 import { CheckChoice } from './CheckChoice'
 
-interface MultipleChoiceProps {
+type QuestionMode = 'view' | 'edit'
+
+interface MultipleChoiceQuestionProps {
   value?: Array<string>
-  onChange?: (value: Array<string>) => void
+  onChange?: (selectedOptions: Array<string>) => void
   options: Array<string>
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }
 
-export const MultipleChoice = ({ options, value = [], onChange, mode }: MultipleChoiceProps) => {
-  // value가 undefined일 경우를 대비해 로컬 변수화
-  const selected = Array.isArray(value) ? value : []
+export const MultipleChoice = ({
+  options,
+  value = [],
+  onChange,
+  mode,
+}: MultipleChoiceQuestionProps) => {
+  const selectedOptions = Array.isArray(value) ? value : []
 
-  const handleToggle = (option: string) => {
-    // 클릭 시점에 딱 한 번만 계산해서 부모에게 전달
-    const nextValue = selected.includes(option)
-      ? selected.filter((item) => item !== option)
-      : [...selected, option]
+  const handleOptionToggle = (toggledOption: string) => {
+    const isCurrentlySelected = selectedOptions.includes(toggledOption)
 
-    onChange?.(nextValue)
+    const updatedSelection = isCurrentlySelected
+      ? selectedOptions.filter((option) => option !== toggledOption)
+      : [...selectedOptions, toggledOption]
+
+    onChange?.(updatedSelection)
   }
 
   return (
     <Flex flexDirection="column" gap={10}>
-      {options.map((option, index) => (
-        <CheckChoice
-          key={`${option}-${index}`}
-          content={option}
-          // 불필요한 객체나 함수 생성을 최소화하여 전달
-          isChecked={selected.includes(option)}
-          onToggle={() => handleToggle(option)}
-          mode={mode}
-        />
-      ))}
+      {options.map((option, optionIndex) => {
+        const isOptionSelected = selectedOptions.includes(option)
+        const uniqueKey = `${option}-${optionIndex}`
+
+        return (
+          <CheckChoice
+            key={uniqueKey}
+            content={option}
+            isChecked={isOptionSelected}
+            onToggle={() => handleOptionToggle(option)}
+            mode={mode}
+          />
+        )
+      })}
     </Flex>
   )
 }

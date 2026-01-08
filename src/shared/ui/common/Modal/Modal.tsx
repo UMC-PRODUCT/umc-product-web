@@ -9,7 +9,7 @@ import * as S from './Modal.style'
 // ============================================================================
 type ModalRootProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Root>
 
-function ModalRoot({ children, ...props }: ModalRootProps) {
+const ModalRoot = ({ children, ...props }: ModalRootProps) => {
   return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>
 }
 
@@ -34,7 +34,7 @@ ModalTrigger.displayName = 'Modal.Trigger'
 // ============================================================================
 type ModalPortalProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>
 
-function ModalPortal({ children, ...props }: ModalPortalProps) {
+const ModalPortal = ({ children, ...props }: ModalPortalProps) => {
   return (
     <DialogPrimitive.Portal container={document.getElementById('modal-root')} {...props}>
       {children}

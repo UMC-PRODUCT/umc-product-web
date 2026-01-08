@@ -13,14 +13,14 @@ type AlertModalLayoutProps = {
   mode: 'success' | 'error' | 'warning'
 }
 
-export default function AlertModalLayout({
+const AlertModalLayout = ({
   onClose,
   title,
   content,
   Icon,
   children,
   mode,
-}: AlertModalLayoutProps) {
+}: AlertModalLayoutProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -74,3 +74,5 @@ export default function AlertModalLayout({
     </Modal.Root>
   )
 }
+
+export default AlertModalLayout

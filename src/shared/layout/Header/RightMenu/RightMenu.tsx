@@ -10,7 +10,7 @@ type SocialLink = {
   icon: 'kakao' | 'instagram' | 'youtube'
 }
 
-export default function RightMenu({
+const RightMenu = ({
   nav,
   social,
 }: {
@@ -19,7 +19,7 @@ export default function RightMenu({
     link: string
   }
   social?: Array<SocialLink>
-}) {
+}) => {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
       {nav &&
@@ -44,3 +44,5 @@ export default function RightMenu({
     </S.Container>
   )
 }
+
+export default RightMenu

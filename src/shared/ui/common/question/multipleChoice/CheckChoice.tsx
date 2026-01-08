@@ -28,7 +28,7 @@ export const CheckChoice = ({ content, isChecked, onToggle, mode }: CheckChoiceP
   }
   return (
     <ChoiceContainer
-      isEditable={isEditable}
+      $isEditable={isEditable}
       onClick={isEditable ? handleClick : undefined}
       role={isEditable ? 'checkbox' : undefined}
       tabIndex={isEditable ? 0 : -1}
@@ -54,11 +54,11 @@ export const CheckChoice = ({ content, isChecked, onToggle, mode }: CheckChoiceP
   )
 }
 
-const ChoiceContainer = styled.div<{ isEditable: boolean }>`
+const ChoiceContainer = styled.div<{ $isEditable: boolean }>`
   display: flex;
   align-items: center;
   gap: 14px;
-  cursor: ${({ isEditable }) => (isEditable ? 'pointer' : 'default')};
+  cursor: ${({ $isEditable }) => ($isEditable ? 'pointer' : 'default')};
   padding: 4px 0;
   outline: none;
   width: 100%;

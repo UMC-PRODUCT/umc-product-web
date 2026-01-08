@@ -4,11 +4,7 @@ import Footer from '@shared/layout/Footer/Footer'
 import ChallengerHeader from '@shared/layout/Header/ChallengerHeader'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-export const Route = createFileRoute('/(auth)/auth/_layout')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+const RouteComponent = () => {
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <ChallengerHeader />
@@ -19,3 +15,7 @@ function RouteComponent() {
     </Flex>
   )
 }
+
+export const Route = createFileRoute('/(auth)/auth/_layout')({
+  component: RouteComponent,
+})

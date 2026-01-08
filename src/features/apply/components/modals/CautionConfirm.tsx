@@ -6,7 +6,7 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
-export default function CautionConfirm({
+const CautionConfirm = ({
   onClose,
   createNewResume,
   existingResumeId,
@@ -14,7 +14,7 @@ export default function CautionConfirm({
   onClose: () => void
   createNewResume: () => void
   existingResumeId: number
-}) {
+}) => {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -65,3 +65,5 @@ export default function CautionConfirm({
     </AlertModalLayout>
   )
 }
+
+export default CautionConfirm

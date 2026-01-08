@@ -28,7 +28,7 @@ type DeleteModalState = {
   onConfirm: () => void
 }
 
-export default function EditAccount() {
+const EditAccount = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [affiliated, setAffiliated] = useState<Option | undefined>()
   const [role, setRole] = useState<Option | undefined>()
@@ -202,3 +202,5 @@ export default function EditAccount() {
     </>
   )
 }
+
+export default EditAccount

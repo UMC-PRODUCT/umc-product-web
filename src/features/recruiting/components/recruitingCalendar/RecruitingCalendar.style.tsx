@@ -200,11 +200,11 @@ const EventBarContainer = styled.div`
   z-index: 50;
 `
 
-const EventBar = styled.div<{ isHighlighted: boolean; isStart: boolean; span: number }>`
+const EventBar = styled.div<{ $isHighlighted: boolean; $isStart: boolean; $span: number }>`
   position: absolute;
   top: 45px;
   left: 0;
-  width: calc(${(props) => props.span} * 100% + (${(props) => props.span - 1} * 0.5px));
+  width: calc(${(props) => props.$span} * 100% + (${(props) => props.$span - 1} * 0.5px));
   height: 36px;
   display: flex;
   align-items: center;
@@ -219,10 +219,10 @@ const EventBar = styled.div<{ isHighlighted: boolean; isStart: boolean; span: nu
     rgba(43, 43, 43, 0.7) 80%,
     rgba(43, 43, 43, 0.4) 100%
   );
-  color: ${(props) => (props.isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`)};
+  color: ${(props) => (props.$isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`)};
   border-left: ${(props) =>
-    props.isStart
-      ? `4px solid ${props.isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`}`
+    props.$isStart
+      ? `4px solid ${props.$isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`}`
       : 'none'};
   overflow: hidden;
   text-overflow: ellipsis;
@@ -240,7 +240,7 @@ const EventBar = styled.div<{ isHighlighted: boolean; isStart: boolean; span: nu
   }
 `
 
-const EventItem = styled.div<{ isHighlighted?: boolean }>`
+const EventItem = styled.div<{ $isHighlighted?: boolean }>`
   display: none;
   flex-direction: row;
   align-items: center;
@@ -259,7 +259,7 @@ const EventItem = styled.div<{ isHighlighted?: boolean }>`
     display: flex;
     align-items: center;
     border-radius: 50%;
-    background-color: ${(props) => (props.isHighlighted ? theme.colors.lime : theme.colors.white)};
+    background-color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
   }
 
   svg {
@@ -267,12 +267,12 @@ const EventItem = styled.div<{ isHighlighted?: boolean }>`
   }
 `
 
-const EventDot = styled.div<{ isHighlighted: boolean }>`
+const EventDot = styled.div<{ $isHighlighted: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: ${(props) =>
-    props.isHighlighted ? theme.colors.lime : theme.colors.gray[400]};
+    props.$isHighlighted ? theme.colors.lime : theme.colors.gray[400]};
 `
 
 const EventInfo = styled.div`

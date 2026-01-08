@@ -23,12 +23,8 @@ const Section = styled.section<{ $size: 'md' | 'lg' }>`
   overflow-y: auto;
 `
 
-export default function AuthSection({
-  children,
-  size,
-}: {
-  children: React.ReactNode
-  size: 'md' | 'lg'
-}) {
+const AuthSection = ({ children, size }: { children: React.ReactNode; size: 'md' | 'lg' }) => {
   return <Section $size={size}>{children}</Section>
 }
+
+export default AuthSection

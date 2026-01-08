@@ -1,17 +1,17 @@
-import type { FileInfo } from '@/features/apply/hooks/useFileUpload'
+import type { UploadedFile } from '@/shared/types/question'
 import { formatFileSize } from '@/shared/utils/formatFileSize'
 
 import FileItem from '../FileItem/FileItem'
 import * as S from './FileList.style'
 
 type FileListProps = {
-  files: Array<FileInfo>
+  files: Array<UploadedFile>
   mode: 'view' | 'edit'
-  onRetry: (file: FileInfo) => void
+  onRetry: (file: UploadedFile) => void
   onRemove: (fileId: string) => void
 }
 
-export default function FileList({ files, mode, onRetry, onRemove }: FileListProps) {
+const FileList = ({ files, mode, onRetry, onRemove }: FileListProps) => {
   if (files.length === 0) return null
 
   return (
@@ -31,3 +31,5 @@ export default function FileList({ files, mode, onRetry, onRemove }: FileListPro
     </S.Grid>
   )
 }
+
+export default FileList

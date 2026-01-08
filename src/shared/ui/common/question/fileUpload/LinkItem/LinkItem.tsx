@@ -4,7 +4,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import * as S from './LinkItem.style'
 import { CancelIcon } from './LinkItem.style'
 
-export default function LinkItem({
+const LinkItem = ({
   value,
   onRemove,
   mode,
@@ -12,7 +12,7 @@ export default function LinkItem({
   value: string
   onRemove: () => void
   mode: 'view' | 'edit'
-}) {
+}) => {
   const isEditable = mode === 'edit'
   return (
     <Flex gap={10} width="100%" maxWidth={'100%'}>
@@ -30,3 +30,5 @@ export default function LinkItem({
     </Flex>
   )
 }
+
+export default LinkItem

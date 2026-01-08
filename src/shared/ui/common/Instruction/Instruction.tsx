@@ -12,22 +12,18 @@ type InstructionProps = {
   mode: 'success' | 'error' | 'warning'
 }
 
-export default function Instruction({
-  content,
-  typography,
-  Icon,
-  iconSize = 18,
-  mode,
-}: InstructionProps) {
+const Instruction = ({ content, typography, Icon, iconSize = 18, mode }: InstructionProps) => {
   const textStyle = resolveTypo(theme, typography)
   const color = S.getColor(mode)
 
   return (
     <S.Container>
       <Icon width={iconSize} height={iconSize} fill={color} color={color} />
-      <S.Text color={color} style={textStyle}>
+      <S.Text $color={color} style={textStyle}>
         {content}
       </S.Text>
     </S.Container>
   )
 }
+
+export default Instruction

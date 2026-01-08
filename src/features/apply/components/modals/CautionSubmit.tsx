@@ -6,13 +6,7 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
-export default function CautionSubmit({
-  onClose,
-  onSubmit,
-}: {
-  onClose: () => void
-  onSubmit: () => void
-}) {
+const CautionSubmit = ({ onClose, onSubmit }: { onClose: () => void; onSubmit: () => void }) => {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -55,3 +49,5 @@ export default function CautionSubmit({
     </AlertModalLayout>
   )
 }
+
+export default CautionSubmit

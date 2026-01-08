@@ -41,6 +41,16 @@ export const RightWrapper = styled(Flex)({
   width: 'fit-content',
 })
 
+export const LogoButton = styled.button({
+  padding: 0,
+  border: 'none',
+  background: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  lineHeight: 0,
+  cursor: 'pointer',
+})
+
 export const Logo = styled(LogoIcon)({
   width: 82,
   minWidth: 82,
