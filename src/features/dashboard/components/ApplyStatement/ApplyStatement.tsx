@@ -54,7 +54,7 @@ export default function ApplyStatement({ parts, document, final }: ApplyStatemen
             <Button
               key={index}
               variant="solid"
-              tone={part == '미정' ? 'gray' : 'lime'}
+              tone={part === '미정' ? 'gray' : 'lime'}
               label={part}
               onClick={() => {}}
               typo="B5.Md"

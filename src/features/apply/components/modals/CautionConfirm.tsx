@@ -22,7 +22,7 @@ export default function CautionConfirm({
       onClose={onClose}
       title="주의"
       content={`이미 작성 중인 지원서가 존재합니다. 이어서 작성하시겠습니까?
-        ‘새로 작성하기’를 선택하실 경우, 기존 지원서는 삭제됩니다.`}
+‘새로 작성하기’를 선택하실 경우, 기존 지원서는 삭제됩니다.`}
       Icon={Caution}
     >
       <Flex
@@ -50,10 +50,9 @@ export default function CautionConfirm({
         />
         <Button
           onClick={() => {
-            const resumeId = existingResumeId
             navigate({
               to: `/apply/$resumeId`,
-              params: { resumeId: String(resumeId) },
+              params: { resumeId: String(existingResumeId) },
               search: { page: 1 },
             })
             onClose()

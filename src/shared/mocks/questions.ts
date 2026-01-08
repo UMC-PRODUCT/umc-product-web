@@ -177,6 +177,7 @@ export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
                 size: 5484052,
                 status: 'success',
                 progress: 100,
+                file: new File([], 'my_portfolio.pdf'),
               },
             ],
             links: ['https://github.com/example/my-project'],
@@ -236,7 +237,7 @@ export const MOCK_VIEW_RESUME_DATA: ResumeType = {
           timeRange: ['16:30', '22:00'],
           dates: ['1/4', '1/5', '1/6', '1/7'],
           disabled: {
-            '1/4': ['16:00', '16:30', '17:00'],
+            '1/4': ['16:30', '17:00'],
             '1/5': ['18:00', '18:30'],
           },
           answer: {
@@ -258,6 +259,7 @@ export const MOCK_VIEW_RESUME_DATA: ResumeType = {
                 size: 5484052,
                 status: 'success',
                 progress: 100,
+                file: new File([], 'my_portfolio.pdf'),
               },
             ],
             links: ['https://github.com/example/my-project'],

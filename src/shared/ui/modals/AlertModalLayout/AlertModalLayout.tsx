@@ -58,7 +58,7 @@ export default function AlertModalLayout({
             <Modal.Body>
               <S.ContentWrapper
                 justifyContent="flex-start"
-                width={'fit-content'}
+                width="fit-content"
                 minHeight="50px"
                 alignItems="center"
               >

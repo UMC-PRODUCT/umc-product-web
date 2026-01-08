@@ -8,14 +8,6 @@ interface StepperProps {
   steps: Array<Step>
   currentStepIndex: number
 }
-export const STEPS = [
-  '지원 전',
-  '서류 평가 중',
-  '서류 결과 발표',
-  '면접 대기 중',
-  '최종 평가 중',
-  '최종 결과 발표',
-] as const
 
 export default function ProgressBar({ steps, currentStepIndex }: StepperProps) {
   const progressWidth = (currentStepIndex / (steps.length - 1)) * 100
@@ -24,12 +16,12 @@ export default function ProgressBar({ steps, currentStepIndex }: StepperProps) {
       <S.ProgressLineContainer>
         <S.ActiveLine progressWidth={progressWidth} />
       </S.ProgressLineContainer>
-      {STEPS.map((label, index) => {
+      {steps.map((step, index) => {
         const isActive = index <= currentStepIndex
         return (
-          <S.StepItem key={label}>
+          <S.StepItem key={step.label}>
             <S.Dot isActive={isActive} />
-            <S.Label isActive={isActive}>{label}</S.Label>
+            <S.Label isActive={isActive}>{step.label}</S.Label>
           </S.StepItem>
         )
       })}

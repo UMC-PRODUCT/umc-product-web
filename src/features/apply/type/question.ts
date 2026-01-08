@@ -35,6 +35,7 @@ export interface FileUploadQuestion extends BaseQuestion {
       size: number
       status: 'loading' | 'success' | 'error'
       progress: number
+      file: File
     }>
     links: Array<string>
   }
