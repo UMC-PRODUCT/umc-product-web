@@ -70,7 +70,11 @@ const SlotCell = styled.div<{
   height: 25px;
   box-sizing: border-box;
   background-color: ${(p) =>
-    p.$isDisabled ? '#0a0a0a' : p.$isSelected ? theme.colors.lime : theme.colors.gray[800]};
+    p.$isDisabled
+      ? theme.colors.gray[800]
+      : p.$isSelected
+        ? theme.colors.lime
+        : theme.colors.black};
   border-right: 1px solid ${theme.colors.gray[600]};
   border-bottom: ${(p) =>
     p.$isHourBoundary

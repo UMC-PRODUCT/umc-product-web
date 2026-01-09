@@ -12,6 +12,9 @@ export const LabelStyle = ({
     alignItems: 'center',
     color: theme.colors.white,
     gap: 4,
-    marginBottom: 10,
+    flexWrap: 'nowrap',
+    whiteSpace: 'nowrap',
+    minWidth: 'fit-content',
+
     ...fontSize,
   })

@@ -52,4 +52,7 @@ export const Content = styled.div`
   ${media.down(theme.breakPoints.desktop)} {
     padding: 20px 20px;
   }
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 12px 12px;
+  }
 `

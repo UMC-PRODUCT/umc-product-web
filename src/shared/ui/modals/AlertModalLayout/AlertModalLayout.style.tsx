@@ -37,10 +37,14 @@ const ModalContentWrapper = styled(Flex)`
   background-color: ${(props) => props.theme.colors.gray[700]};
   border-radius: 8px;
   padding: 28px 28px 30px 34px;
+  min-width: 492px;
   ${media.down(theme.breakPoints.tablet)} {
     gap: 8px;
     margin-top: 6px;
     padding: 28px 20px 28px 20px;
+  }
+  ${media.down(theme.breakPoints.mobile)} {
+    min-width: 90vw;
   }
 `
 export { ContentWrapper, ModalButton, ModalContentWrapper }

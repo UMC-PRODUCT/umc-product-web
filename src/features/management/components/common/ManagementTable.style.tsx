@@ -19,14 +19,14 @@ const Table = styled.table`
 const Th = styled.th`
   padding: 16px;
   text-align: left;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid ${theme.colors.gray[700]};
   color: ${theme.colors.white};
   ${theme.typography.B3.Sb};
 `
 
 const Td = styled.td`
   padding: 16px;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid ${theme.colors.gray[700]};
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
   button {
