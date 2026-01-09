@@ -20,9 +20,9 @@ const DeleteConfirm = ({
   const content =
     count === 1
       ? `삭제된 ${entityTypeKorea} 데이터는 복구할 수 없습니다.
-        ‘${name}’를 삭제하시겠습니까?`
+‘${name}’를 삭제하시겠습니까?`
       : `삭제된 ${entityTypeKorea} 데이터는 복구할 수 없습니다.
-        ‘${name}’ 외 ${count - 1}개의 ${entityTypeKorea}를 삭제하시겠습니까?`
+‘${name}’ 외 ${count - 1}개의 ${entityTypeKorea}를 삭제하시겠습니까?`
   return (
     <AlertModalLayout
       mode={'error'}

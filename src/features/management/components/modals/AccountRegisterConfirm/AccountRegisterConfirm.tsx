@@ -5,23 +5,15 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-const RegisterConfirm = ({
-  onClose,
-  schoolName,
-  link,
-}: {
-  onClose: () => void
-  schoolName: string
-  link: string
-}) => {
+const AccountRegisterConfirm = ({ onClose, link }: { onClose: () => void; link: string }) => {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
       mode={'success'}
       onClose={onClose}
-      title="등록 완료"
-      content={`‘${schoolName}’가 시스템에 정상적으로 등록되었습니다.
-        등록된 학교의 정보는 ‘학교 정보 수정'에서 확인할 수 있습니다.`}
+      title="생성 완료"
+      content={`계정이 시스템에 정상적으로 등록되었습니다.
+계정 정보는 ‘계정 수정 및 삭제’에서 확인할 수 있습니다.`}
       Icon={Check}
     >
       <Flex
@@ -37,7 +29,7 @@ const RegisterConfirm = ({
             onClose()
             navigate({ to: link })
           }}
-          label="학교 정보 확인하기"
+          label="계정 정보 확인하기"
           tone="lime"
           typo="C3.Md"
         />
@@ -46,4 +38,4 @@ const RegisterConfirm = ({
   )
 }
 
-export default RegisterConfirm
+export default AccountRegisterConfirm
