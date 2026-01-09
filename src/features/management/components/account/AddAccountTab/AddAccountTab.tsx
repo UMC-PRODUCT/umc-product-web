@@ -36,7 +36,7 @@ const AddAccountTab = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { isValid, errors },
   } = useForm<AccountRegisterForm>({
     mode: 'onChange',
@@ -87,7 +87,7 @@ const AddAccountTab = () => {
   }
 
   const handleSendVerificationEmail = () => {
-    setVerifiedEmail(watchedEmail ?? '')
+    setVerifiedEmail(watchedEmail)
   }
 
   const isEmailVerified = verifiedEmail !== '' && verifiedEmail === watchedEmail
