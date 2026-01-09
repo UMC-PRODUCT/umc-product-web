@@ -8,26 +8,26 @@ import Label from '@shared/ui/common/Label/Label'
 
 import * as S from './LabelDropdown.style'
 
-type LabelDropdownProps = {
+type LabelDropdownProps<T> = {
   label: string
   placeholder?: string
-  options: Array<Option>
-  value?: Option
-  onChange: (option: Option) => void
+  options: Array<Option<T>>
+  value?: Option<T>
+  onChange: (option: Option<T>) => void
   error?: {
     error: boolean
     errorMessage: string
   }
 }
 
-const LabelDropdown = ({
+const LabelDropdown = <T,>({
   label,
   placeholder,
   options,
   value,
   error,
   onChange,
-}: LabelDropdownProps) => {
+}: LabelDropdownProps<T>) => {
   const baseId = useId()
   const triggerId = `${baseId}-selector`
   const labelId = `${baseId}-label`
@@ -36,7 +36,13 @@ const LabelDropdown = ({
     <Field>
       <S.SelectHeader>
         <Label id={labelId} htmlFor={triggerId} label={label} necessary={true} />
-        {error?.error && <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>}
+        {error?.error && (
+          <ErrorMessage
+            typo="B4.Md"
+            responsiveTypo={{ tablet: 'C5.Md' }}
+            errorMessage={error.errorMessage}
+          ></ErrorMessage>
+        )}
       </S.SelectHeader>
       <Dropdown
         placeholder={placeholder}

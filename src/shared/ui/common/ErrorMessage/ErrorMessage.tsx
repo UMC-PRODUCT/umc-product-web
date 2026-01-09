@@ -1,26 +1,47 @@
 import { css } from '@emotion/react'
 
+import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 
 import type { TypoToken } from '@/shared/types/typo'
 import { resolveTypo } from '@/shared/utils/resolveTypo'
 
-const span = ({ typo }: { typo: TypoToken | undefined }) => {
-  if (!typo) {
-    return css({
-      color: theme.colors.necessary,
-      ...theme.typography.B3.Md,
-    })
-  }
-  const textStyle = resolveTypo(theme, typo)
+type ResponsiveTypo = Partial<Record<'desktop' | 'tablet' | 'mobile', TypoToken>>
+
+const span = ({
+  typo,
+  responsiveTypo,
+}: {
+  typo: TypoToken | undefined
+  responsiveTypo?: ResponsiveTypo
+}) => {
+  const baseStyle = typo ? resolveTypo(theme, typo) : theme.typography.B3.Md
+
   return css({
     color: theme.colors.necessary,
-    ...textStyle,
+    ...baseStyle,
+    ...(responsiveTypo?.desktop && {
+      [media.up(theme.breakPoints.desktop)]: resolveTypo(theme, responsiveTypo.desktop),
+    }),
+    ...(responsiveTypo?.tablet && {
+      [media.down(theme.breakPoints.tablet)]: resolveTypo(theme, responsiveTypo.tablet),
+    }),
+    ...(responsiveTypo?.mobile && {
+      [media.down(theme.breakPoints.mobile)]: resolveTypo(theme, responsiveTypo.mobile),
+    }),
   })
 }
 
-const ErrorMessage = ({ errorMessage, typo }: { errorMessage: string; typo?: TypoToken }) => {
-  return <span css={span({ typo })}>{errorMessage}</span>
+const ErrorMessage = ({
+  errorMessage,
+  typo,
+  responsiveTypo,
+}: {
+  errorMessage: string
+  typo?: TypoToken
+  responsiveTypo?: ResponsiveTypo
+}) => {
+  return <span css={span({ typo, responsiveTypo })}>{errorMessage}</span>
 }
 
 export default ErrorMessage

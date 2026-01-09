@@ -1,5 +1,5 @@
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 
 import type { SvgIconComponent } from '@shared/types/component'
@@ -29,12 +29,20 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     ref,
   ) => {
     const { onChange, value, ...restInputProps } = inputProps
+    const [internalValue, setInternalValue] = useState(
+      typeof restInputProps.defaultValue === 'string' ? restInputProps.defaultValue : '',
+    )
+    const isControlled = value !== undefined
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+      if (!isControlled) {
+        setInternalValue(event.target.value)
+      }
       onChange?.(event)
     }
 
-    const trimmedValue = (typeof value === 'string' ? value : '').trim()
+    const currentValue = isControlled ? value : internalValue
+    const trimmedValue = (typeof currentValue === 'string' ? currentValue : '').trim()
     const isButtonDisabled = !!button?.validation || !!error?.error || trimmedValue === '' // 이메일 인증이 완료된 후 disabled 처리
 
     const controlledProps = value !== undefined ? { value } : undefined

@@ -42,6 +42,7 @@ export const StyledContent = styled(SelectPrimitive.Content)`
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   max-height: var(--radix-select-content-available-height);
   overflow: hidden;
+  max-height: 238px;
   z-index: 20;
   width: var(--radix-select-trigger-width);
 `
