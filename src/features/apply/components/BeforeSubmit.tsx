@@ -2,15 +2,16 @@ import { useState } from 'react'
 
 import * as S from '@/features/apply/components/ApplyPage.style'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
-import type { Part } from '@/shared/types/umc/part'
+import type { PartType, RecruitingType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
+import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
 
 import ConfirmApplicationModal from './modals/CautionConfirm'
 import PartInfoCard from './PartInfoCard'
 
 interface PartInfo {
-  part: Part
-  state: string
+  part: PartType
+  state: RecruitingType
   ability: Array<string>
 }
 
@@ -41,7 +42,7 @@ const BeforeSubmit = ({ partInfoList }: BeforeSubmitProps) => {
           <PartInfoCard
             key={part}
             partName={part}
-            recruitmentState={state}
+            recruitmentState={transformResumeStatusKorean(state)}
             requiredAbilities={ability}
           />
         ))}

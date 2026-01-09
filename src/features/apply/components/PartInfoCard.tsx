@@ -1,19 +1,16 @@
 import * as S from '@/features/apply/components/ApplyPage.style'
+import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
 interface PartInfoCardProps {
-  partName: string
+  partName: PartType
   recruitmentState: string
   requiredAbilities: Array<string>
 }
 
-const RECRUITMENT_STATE = {
-  OPEN: '모집 중',
-} as const
-
 const PartInfoCard = ({ partName, recruitmentState, requiredAbilities }: PartInfoCardProps) => {
-  const isRecruiting = recruitmentState === RECRUITMENT_STATE.OPEN
+  const isRecruiting = recruitmentState === '모집 중'
   const buttonTone = isRecruiting ? 'lime' : 'darkGray'
 
   return (

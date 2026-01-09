@@ -1,6 +1,6 @@
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { Part } from '@/shared/types/umc/part'
+import type { DocumentStatusType, FinalStatusType, PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -9,9 +9,9 @@ import Section from '@/shared/ui/common/Section/Section'
 import { spanStyle } from './ApplyStatement.style'
 
 interface ApplyStatementProps {
-  parts: Array<Part | '미정'>
-  document: '미정' | '평가 중' | '서류 합격' | '불합격'
-  final: '미정' | '예정' | '평가 중' | '최종 합격' | '불합격'
+  parts: Array<PartType | '미정'>
+  document: DocumentStatusType
+  final: FinalStatusType
 }
 
 const ApplyStatement = ({ parts, document, final }: ApplyStatementProps) => {
