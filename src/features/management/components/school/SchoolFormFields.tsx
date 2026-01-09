@@ -7,7 +7,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 import Label from '@shared/ui/common/Label/Label'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from './School.style'
+import * as S from './shared'
 
 type SchoolFormFieldsProps = {
   register: UseFormRegister<SchoolRegisterForm>

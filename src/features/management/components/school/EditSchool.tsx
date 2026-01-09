@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import RegisterConfirm from '@features/management/components/modals/RegisterConfirm/RegisterConfirm'
 import type { SchoolRegisterForm } from '@features/management/schemas/management'
 import { schoolRegisterSchema } from '@features/management/schemas/management'
 
@@ -10,13 +9,14 @@ import { Button } from '@shared/ui/common/Button/Button'
 import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 
+import RegisterConfirm from '@/features/management/components/modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
 import { UNI_LIST_MOCK } from '@/features/management/mocks/universities'
 
 import { EmptySelectionNotice } from './EmptySelectionNotice'
-import * as S from './School.style'
 import { SchoolFormFields } from './SchoolFormFields'
+import * as S from './shared'
 
-type SchoolOption = Option
+type SchoolOption = Option<string>
 
 type ModalState = {
   isOpen: boolean

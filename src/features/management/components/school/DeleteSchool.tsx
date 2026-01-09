@@ -17,7 +17,7 @@ import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 import Section from '@/shared/ui/common/Section/Section'
 
 import DeleteTableRow from './DeleteTableRow'
-import * as S from './School.style'
+import * as S from './shared'
 
 const ALL_BRANCHES_OPTION = { label: '-- 전체 지부 --', id: 0 }
 const DEFAULT_SCHOOL_NAME = '학교 이름'
@@ -51,7 +51,7 @@ function updateUrlPageParam(pageNumber: number): void {
 
 const DeleteSchool = () => {
   const [searchKeyword, setSearchKeyword] = useState('')
-  const [selectedBranch, setSelectedBranch] = useState<Option | undefined>()
+  const [selectedBranch, setSelectedBranch] = useState<Option<string> | undefined>()
   const [selectedSchoolIds, setSelectedSchoolIds] = useState<Set<number>>(new Set())
   const [currentPage, setCurrentPage] = useState(() => getInitialPageFromUrl())
   const [deleteModalState, setDeleteModalState] =
@@ -112,7 +112,7 @@ const DeleteSchool = () => {
     setSearchKeyword(event.target.value)
   }
 
-  const handleBranchFilterChange = (selectedOption: Option) => {
+  const handleBranchFilterChange = (selectedOption: Option<string>) => {
     const isAllBranchesSelected = selectedOption.id === 0
     setSelectedBranch(isAllBranchesSelected ? undefined : selectedOption)
   }
