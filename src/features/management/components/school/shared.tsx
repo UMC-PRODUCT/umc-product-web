@@ -103,10 +103,6 @@ export const TextArea = styled.textarea`
   }
 `
 
-export const inputStyle = {
-  backgroundColor: theme.colors.black,
-}
-
 export const FilterWrapper = styled(Flex)`
   display: flex;
   gap: 12px;

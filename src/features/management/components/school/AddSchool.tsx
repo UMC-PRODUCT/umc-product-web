@@ -62,7 +62,6 @@ const AddSchool = () => {
               label="학교명"
               autoComplete="off"
               placeholder="학교명을 입력하세요."
-              css={S.inputStyle}
               error={{
                 error: !!errors.schoolName,
                 errorMessage: errors.schoolName?.message || '',
@@ -74,7 +73,6 @@ const AddSchool = () => {
               label="지부"
               autoComplete="off"
               placeholder="지부를 입력하세요."
-              css={S.inputStyle}
               error={{
                 error: !!errors.affiliated,
                 errorMessage: errors.affiliated?.message || '',
