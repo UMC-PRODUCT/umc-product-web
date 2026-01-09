@@ -6,6 +6,7 @@ import { AccountPage } from '@features/management/pages/AccountPage'
 
 const tabSchema = z.object({
   tab: z.enum(['add', 'edit', 'level'] as const).optional(),
+  accountId: z.string().optional(),
 })
 
 const RouteComponent = () => {

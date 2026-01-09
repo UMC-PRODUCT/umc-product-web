@@ -1,4 +1,3 @@
-import * as S from '@features/management/components/account/shared'
 import { ACCOUNT_DELETE_MOCK } from '@features/management/mocks/managementMocks'
 
 import { Badge } from '@shared/ui/common/Badge/Badge'
@@ -6,27 +5,21 @@ import { Button } from '@shared/ui/common/Button/Button'
 import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-const KoreanRoleMap: Record<string, string> = {
-  ADMIN: '관리자',
-  CHALLENGER: '챌린저',
-}
-const KoreanStatusMap: Record<string, string> = {
-  ACTIVE: '활성',
-  SUSPENDED: '정지',
-  PENDING: '대기',
-}
+import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
+
+import * as S from './AccountTableRows.style'
 
 type AccountTableRowsProps = {
   selectedIds: Set<number>
   toggleRow: (id: number) => void
-  onEdit: (id: number) => void
   onDelete: (id: number) => void
+  setIsEditMode: (isEditMode: boolean) => void
 }
 
 export const AccountTableRows = ({
   selectedIds,
   toggleRow,
-  onEdit,
+  setIsEditMode,
   onDelete,
 }: AccountTableRowsProps) => {
   return (
@@ -45,7 +38,7 @@ export const AccountTableRows = ({
           <S.Td>{item.branch}</S.Td>
           <S.Td>
             <Badge tone="gray" variant="solid" typo="B4.Sb">
-              {KoreanRoleMap[item.role] ?? '-'}
+              {transformRoleKorean(item.role)}
             </Badge>
           </S.Td>
           <S.Td>
@@ -56,7 +49,7 @@ export const AccountTableRows = ({
               variant="outline"
               typo="B4.Md"
             >
-              {KoreanStatusMap[item.status] ?? '-'}
+              {transformStateKorean(item.status)}
             </Badge>
           </S.Td>
           <S.Td>
@@ -65,7 +58,7 @@ export const AccountTableRows = ({
                 key={`edit-${item.id}`}
                 label="수정"
                 tone="caution"
-                onClick={() => onEdit(item.id)}
+                onClick={() => setIsEditMode(true)}
                 typo="C2.Md"
               />
               <Button

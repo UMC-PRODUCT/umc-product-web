@@ -7,21 +7,21 @@ import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 
-type AccountFiltersProps = {
+type AccountFiltersProps<TAffiliated, TRole, TStatus> = {
   searchTerm: string
   onChangeSearch: (value: string) => void
-  affiliated?: Option
-  onSelectAffiliated: (option: Option) => void
-  affiliatedOptions: Array<Option>
-  role?: Option
-  onSelectRole: (option: Option) => void
-  roleOptions: Array<Option>
-  status?: Option
-  onSelectStatus: (option: Option) => void
-  statusOptions: Array<Option>
+  affiliated?: Option<TAffiliated>
+  onSelectAffiliated: (option: Option<TAffiliated>) => void
+  affiliatedOptions: Array<Option<TAffiliated>>
+  role?: Option<TRole>
+  onSelectRole: (option: Option<TRole>) => void
+  roleOptions: Array<Option<TRole>>
+  status?: Option<TStatus>
+  onSelectStatus: (option: Option<TStatus>) => void
+  statusOptions: Array<Option<TStatus>>
 }
 
-export const AccountFilters = ({
+export const AccountFilters = <TAffiliated, TRole, TStatus>({
   searchTerm,
   onChangeSearch,
   affiliated,
@@ -33,7 +33,7 @@ export const AccountFilters = ({
   status,
   onSelectStatus,
   statusOptions,
-}: AccountFiltersProps) => {
+}: AccountFiltersProps<TAffiliated, TRole, TStatus>) => {
   return (
     <Flex gap="12px" css={{ flexWrap: 'wrap' }}>
       <Flex

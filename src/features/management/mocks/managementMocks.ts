@@ -1,61 +1,78 @@
-export const AFFILIATED_MOCK = [
+import type { AccountLevelType, AccountStateType, SchoolStateType } from '@/shared/types/umc'
+import type { Option } from '@/shared/ui/common/Dropdown'
+
+export const AFFILIATED_MOCK: Array<Option<string>> = [
   { label: '-- 전체 지부 --', id: 0 },
   { label: 'Leo', id: 1 },
   { label: 'Scorpio', id: 2 },
   { label: '지부이름뭐있지', id: 3 },
 ]
 
-export const ROLE_MOCK = [
+export const ROLE_MOCK: Array<Option<AccountLevelType | '-- 전체 역할 --'>> = [
   { label: '-- 전체 역할 --', id: 0 },
   { label: 'ADMIN', id: 1 },
   { label: 'USER', id: 2 },
 ]
 
-export const STATUS_MOCK = [
+export const STATUS_MOCK: Array<Option<AccountStateType | '-- 전체 상태 --'>> = [
   { label: '-- 전체 상태 --', id: 0 },
-  { label: '활성', id: 1 },
-  { label: '비활성', id: 2 },
+  { label: 'ACTIVE', id: 1 },
+  { label: 'INACTIVE', id: 2 },
 ]
 
-export const UNI_DELETE_MOCK = [
+export const UNI_DELETE_MOCK: Array<{
+  id: number
+  name: string
+  branch: string
+  date: string
+  status: SchoolStateType
+}> = [
   {
     id: 1,
     name: '서울대학교',
     branch: 'Ain 지부',
     date: '2025.12.31',
-    status: '활성',
+    status: 'ACTIVE',
   },
   {
     id: 2,
     name: '연세대학교',
     branch: 'Ain 지부',
     date: '2025.12.29',
-    status: '활성',
+    status: 'ACTIVE',
   },
   {
     id: 3,
     name: '고려대학교',
     branch: 'Ain 지부',
     date: '2025.12.30',
-    status: '비활성',
+    status: 'INACTIVE',
   },
   {
     id: 4,
     name: '한양대학교',
     branch: 'Ain 지부',
     date: '2025.12.29',
-    status: '활성',
+    status: 'ACTIVE',
   },
   {
     id: 5,
     name: '성균관대학교',
     branch: 'Ain 지부',
     date: '2025.12.29',
-    status: '비활성',
+    status: 'INACTIVE',
   },
 ]
 
-export const ACCOUNT_DELETE_MOCK = [
+export const ACCOUNT_DELETE_MOCK: Array<{
+  id: number
+  name: string
+  email: string
+  school: string
+  branch: string
+  role: AccountLevelType
+  status: AccountStateType
+}> = [
   {
     id: 1,
     name: '성이름',
@@ -81,7 +98,7 @@ export const ACCOUNT_DELETE_MOCK = [
     school: '고려대학교',
     branch: 'Ain 지부',
     role: 'ADMIN',
-    status: 'SUSPENDED',
+    status: 'INACTIVE',
   },
   {
     id: 4,
