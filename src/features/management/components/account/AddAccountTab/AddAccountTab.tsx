@@ -9,12 +9,13 @@ import { Button } from '@shared/ui/common/Button/Button'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
 import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
+import AccountInviteConfirm from '@/features/management/components/modals/AccountInviteConfirm/AccountInviteConfirm'
+import AccountRegisterConfirm from '@/features/management/components/modals/AccountRegisterConfirm/AccountRegisterConfirm'
 import useAccountLevelOptions from '@/shared/hooks/useAccountLevelOptions'
 import type { Option } from '@/shared/ui/common/Dropdown/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
-import AccountRegisterConfirm from '../../modals/AccountRegisterConfirm/AccountRegisterConfirm'
 import * as Shared from '../shared'
 import * as S from './AddAccountTab.style'
 
@@ -27,6 +28,7 @@ const AddAccountTab = () => {
   const [selectedAccount, setSelectedAccount] = useState<Option<string>>()
   const [verifiedEmail, setVerifiedEmail] = useState('')
   const [selectedSchool, setSelectedSchool] = useState<Option<string>>()
+  const [inviteConfirmModal, setInviteConfirmModal] = useState(false)
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     link: '',
@@ -181,7 +183,7 @@ const AddAccountTab = () => {
           />
         </S.SubmitButtonWrapper>
       </S.Form>
-
+      {inviteConfirmModal && <AccountInviteConfirm onClose={() => setInviteConfirmModal(false)} />}
       {modal.isOpen && <AccountRegisterConfirm onClose={closeModal} link={modal.link} />}
     </>
   )
