@@ -2,16 +2,18 @@ import { useNavigate } from '@tanstack/react-router'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { ResumeType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import { transformRecruitingKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './ApplyResumeCard.style'
 
 interface ApplyResumeCardProps {
   title: string
   resumeId: number
-  state: '제출 완료' | '지난 모집'
+  state: ResumeType
 }
 
 const ApplyResumeCard = ({ title, resumeId, state }: ApplyResumeCardProps) => {
@@ -28,15 +30,15 @@ const ApplyResumeCard = ({ title, resumeId, state }: ApplyResumeCardProps) => {
         <Button
           className="status"
           variant="solid"
-          tone={state === '제출 완료' ? 'lime' : 'gray'}
-          label={state}
+          tone={state === 'NOW' ? 'lime' : 'gray'}
+          label={transformRecruitingKorean(state)}
           onClick={() => {}}
           css={{
             ...theme.typography.B4.Sb,
             cursor: 'default',
             [media.down(theme.breakPoints.tablet)]: { ...theme.typography.B5.Sb },
           }}
-        ></Button>
+        />
         <span className="title">{title}</span>
       </Flex>
       <Badge
