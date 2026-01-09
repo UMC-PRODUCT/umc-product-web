@@ -25,7 +25,7 @@ const AccountActivate = ({
         gap="8px"
         justifyContent="flex-end"
         alignItems="center"
-        width="138px"
+        width="194px"
         height="32px"
         css={{ marginTop: '50px' }}
       >
@@ -43,7 +43,7 @@ const AccountActivate = ({
             onActivate()
           }}
           label="활성화하기"
-          tone="necessary"
+          tone="lime"
           typo="C3.Md"
         />
       </Flex>

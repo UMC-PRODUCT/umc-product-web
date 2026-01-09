@@ -16,6 +16,6 @@ export const EDIT_ACCOUNT_MOCKS: TResponse = {
   lastModifiedDate: '2024-01-01',
   status: {
     id: 1,
-    label: 'ACTIVE',
+    label: 'INACTIVE',
   },
 }
