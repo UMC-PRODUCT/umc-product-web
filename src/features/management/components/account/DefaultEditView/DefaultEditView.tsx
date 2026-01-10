@@ -10,8 +10,8 @@ import {
   ROLE_MOCK,
   STATUS_MOCK,
 } from '@/features/management/mocks/managementMocks'
+import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
-import type { Option } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
 

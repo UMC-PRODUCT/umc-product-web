@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import type { AccountEditForm } from '@/features/management/schemas/management'
 import { accountEditSchema } from '@/features/management/schemas/management'
+import type { Option } from '@/shared/types/form'
 import type { AccountLevelType } from '@/shared/types/umc'
-import type { Option } from '@/shared/ui/common/Dropdown'
 
 type EditAccountInitialValues = {
   school?: Option<string>

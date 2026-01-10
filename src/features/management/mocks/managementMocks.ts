@@ -1,5 +1,5 @@
+import type { Option } from '@/shared/types/form'
 import type { AccountLevelType, AccountStateType, SchoolStateType } from '@/shared/types/umc'
-import type { Option } from '@/shared/ui/common/Dropdown'
 
 export const AFFILIATED_MOCK: Array<Option<string>> = [
   { label: '-- 전체 지부 --', id: 0 },

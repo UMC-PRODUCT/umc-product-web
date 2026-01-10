@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { ACCOUNT_LEVEL } from '@/shared/constants/umc'
+import type { Option } from '@/shared/types/form'
 import type { AccountLevelType } from '@/shared/types/umc'
-import type { Option } from '@/shared/ui/common/Dropdown'
 import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
 const useAccountLevelOptions = () => {
