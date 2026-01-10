@@ -4,9 +4,9 @@ import * as SelectPrimitive from '@radix-ui/react-select'
 
 import Arrow from '@shared/assets/icons/arrow.svg?react'
 
-import * as S from './Dropdown.style'
+import type { Option } from '@/shared/types/form'
 
-export type Option<T> = { label: T; id: string | number }
+import * as S from './Dropdown.style'
 
 type DropdownProps<T> = {
   placeholder?: string

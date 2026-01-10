@@ -40,7 +40,6 @@ export const StyledContent = styled(SelectPrimitive.Content)`
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  max-height: var(--radix-select-content-available-height);
   overflow: hidden;
   max-height: 238px;
   z-index: 20;

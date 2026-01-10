@@ -1,10 +1,11 @@
 import { useId } from 'react'
 
 import { Field } from '@shared/styles/formStyles'
-import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Label from '@shared/ui/common/Label/Label'
+
+import type { Option } from '@/shared/types/form'
 
 import * as S from './LabelDropdown.style'
 

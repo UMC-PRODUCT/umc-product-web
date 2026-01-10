@@ -12,7 +12,7 @@ import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
 import AccountInviteConfirm from '@/features/management/components/modals/AccountInviteConfirm/AccountInviteConfirm'
 import AccountRegisterConfirm from '@/features/management/components/modals/AccountRegisterConfirm/AccountRegisterConfirm'
 import useAccountLevelOptions from '@/shared/hooks/useAccountLevelOptions'
-import type { Option } from '@/shared/ui/common/Dropdown/Dropdown'
+import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
@@ -38,6 +38,8 @@ const AddAccountTab = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
+    reset,
     control,
     formState: { isValid, errors },
   } = useForm<AccountRegisterForm>({
@@ -47,14 +49,13 @@ const AddAccountTab = () => {
 
   const watchedEmail = useWatch({ control, name: 'email' })
 
-  const onSubmit = (data: AccountRegisterForm) => {
-    console.log(data)
-    const response = {
-      accountId: 1,
-    }
+  const onSubmit = (_data: AccountRegisterForm) => {
+    // const response = {
+    //   accountId: 1,
+    // }
     setModal({
       isOpen: true,
-      link: `/management/account/edit/${response.accountId}`,
+      link: `/management/account?tab=edit`,
     })
   }
 
@@ -78,17 +79,14 @@ const AddAccountTab = () => {
   }
   const closeModal = () => {
     setModal((prev) => ({ ...prev, isOpen: false }))
-    setValue('schoolName', '')
-    setValue('level', '' as never)
-    setValue('name', '')
-    setValue('nickname', '')
-    setValue('email', '')
+    reset({ ...getValues(), level: undefined })
     setSelectedSchool(undefined)
     setSelectedAccount(undefined)
     setVerifiedEmail('')
   }
 
   const handleSendVerificationEmail = () => {
+    setInviteConfirmModal(true)
     setVerifiedEmail(watchedEmail)
   }
 
@@ -168,7 +166,9 @@ const AddAccountTab = () => {
                 {...register('email')}
               />
             </S.EmailWrapper>
-            {isEmailVerified && <S.Span>초대 메일 재발송</S.Span>}
+            {isEmailVerified && (
+              <S.Span onClick={handleSendVerificationEmail}>초대 메일 재발송</S.Span>
+            )}
           </S.EmailSection>
         </Section>
 

@@ -26,8 +26,8 @@ const AccountEditConfirm = ({ onClose }: { onClose: () => void }) => {
       >
         <Button
           onClick={() => {
-            window.location.reload()
             onClose()
+            window.location.reload()
           }}
           label="확인"
           tone="lime"

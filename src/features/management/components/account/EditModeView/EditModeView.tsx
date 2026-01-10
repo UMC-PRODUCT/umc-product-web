@@ -10,6 +10,7 @@ import type { Option } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
+import { transformStateKorean } from '@/shared/utils/transformKorean'
 
 import AccountActivate from '../../modals/AccountActivate/AccountActivate'
 import AccountEditConfirm from '../../modals/AccountEditConfirm/AccountEditConfirm'
@@ -61,8 +62,8 @@ const EditModeView = () => {
   return (
     <>
       <Shared.TabHeader alignItems="flex-start">
-        <Shared.TabTitle>계정 생성</Shared.TabTitle>
-        <Shared.TabSubtitle>새로운 계정을 시스템에 등록합니다.</Shared.TabSubtitle>
+        <Shared.TabTitle>계정 수정</Shared.TabTitle>
+        <Shared.TabSubtitle>계정을 수정할 수 있습니다.</Shared.TabSubtitle>
       </Shared.TabHeader>
       <S.Form>
         <Section variant="solid">
@@ -160,7 +161,7 @@ const EditModeView = () => {
                 type="text"
                 label="상태"
                 necessary={false}
-                value={'활성'}
+                value={transformStateKorean(EDIT_ACCOUNT_MOCKS.status.label)}
                 readOnly
               />
               <S.SpanConditional
@@ -199,13 +200,13 @@ const EditModeView = () => {
           <AccountSuspended
             onClose={() => setAccountActivate({ isOpen: false })}
             onSuspend={() => {}}
-            name="User"
+            name={EDIT_ACCOUNT_MOCKS.name}
           />
         ) : (
           <AccountActivate
             onClose={() => setAccountActivate({ isOpen: false })}
             onActivate={() => {}}
-            name="User"
+            name={EDIT_ACCOUNT_MOCKS.name}
           />
         ))}
     </>

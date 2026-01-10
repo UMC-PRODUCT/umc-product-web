@@ -16,7 +16,7 @@ type EditAccountInitialValues = {
   email?: string
 }
 
-const emptyOption: Option<string> = { id: '', label: '' }
+const emptyOption: Option<string> = { id: undefined as unknown as string, label: '' }
 
 type EditAccountFormReturn = UseFormReturn<AccountEditForm, unknown, AccountEditForm> & {
   handleAccountSelect: (option: Option<string>) => void
