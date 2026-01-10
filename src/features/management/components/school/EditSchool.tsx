@@ -6,11 +6,11 @@ import type { SchoolRegisterForm } from '@features/management/schemas/management
 import { schoolRegisterSchema } from '@features/management/schemas/management'
 
 import { Button } from '@shared/ui/common/Button/Button'
-import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 
 import RegisterConfirm from '@/features/management/components/modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
 import { UNI_LIST_MOCK } from '@/features/management/mocks/universities'
+import type { Option } from '@/shared/types/form'
 
 import { EmptySelectionNotice } from './EmptySelectionNotice'
 import { SchoolFormFields } from './SchoolFormFields'

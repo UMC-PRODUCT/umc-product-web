@@ -9,11 +9,11 @@ import SearchIcon from '@shared/assets/icons/search.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
-import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 
+import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 
 import DeleteTableRow from './DeleteTableRow'
