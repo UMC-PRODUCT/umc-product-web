@@ -9,15 +9,15 @@ import SearchIcon from '@shared/assets/icons/search.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
-import type { Option } from '@shared/ui/common/Dropdown/Dropdown'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 
+import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 
 import DeleteTableRow from './DeleteTableRow'
-import * as S from './School.style'
+import * as S from './shared'
 
 const ALL_BRANCHES_OPTION = { label: '-- 전체 지부 --', id: 0 }
 const DEFAULT_SCHOOL_NAME = '학교 이름'
@@ -51,7 +51,7 @@ function updateUrlPageParam(pageNumber: number): void {
 
 const DeleteSchool = () => {
   const [searchKeyword, setSearchKeyword] = useState('')
-  const [selectedBranch, setSelectedBranch] = useState<Option | undefined>()
+  const [selectedBranch, setSelectedBranch] = useState<Option<string> | undefined>()
   const [selectedSchoolIds, setSelectedSchoolIds] = useState<Set<number>>(new Set())
   const [currentPage, setCurrentPage] = useState(() => getInitialPageFromUrl())
   const [deleteModalState, setDeleteModalState] =
@@ -112,7 +112,7 @@ const DeleteSchool = () => {
     setSearchKeyword(event.target.value)
   }
 
-  const handleBranchFilterChange = (selectedOption: Option) => {
+  const handleBranchFilterChange = (selectedOption: Option<string>) => {
     const isAllBranchesSelected = selectedOption.id === 0
     setSelectedBranch(isAllBranchesSelected ? undefined : selectedOption)
   }

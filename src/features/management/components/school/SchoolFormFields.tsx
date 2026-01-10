@@ -7,7 +7,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 import Label from '@shared/ui/common/Label/Label'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from './School.style'
+import * as S from './shared'
 
 type SchoolFormFieldsProps = {
   register: UseFormRegister<SchoolRegisterForm>
@@ -30,7 +30,6 @@ export const SchoolFormFields = ({
           label="학교명"
           autoComplete="off"
           placeholder="학교명을 입력하세요."
-          css={S.inputStyle}
           error={{
             error: !!errors.schoolName,
             errorMessage: errors.schoolName?.message || '',
@@ -42,7 +41,6 @@ export const SchoolFormFields = ({
           label="지부"
           autoComplete="off"
           placeholder="지부를 입력하세요."
-          css={S.inputStyle}
           error={{
             error: !!errors.affiliated,
             errorMessage: errors.affiliated?.message || '',

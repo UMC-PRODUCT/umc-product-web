@@ -1,45 +1,46 @@
-import type { Part } from '@/shared/types/umc/part'
+import { PART_ABILITY } from '@/shared/constants/umc'
+import type { PartType, RecruitingType } from '@/shared/types/umc'
 
 type PartInfo = {
-  part: Part
-  state: string
+  part: PartType
+  state: RecruitingType
   ability: Array<string>
 }
 
 export const PART_INFO_MOCK: Array<PartInfo> = [
   {
     part: 'Plan',
-    state: '모집 중',
-    ability: ['PM', 'Figma'],
+    state: 'OPEN',
+    ability: PART_ABILITY['Plan'],
   },
   {
     part: 'Design',
-    state: '모집 중',
-    ability: ['UX/UI', 'Figma'],
+    state: 'OPEN',
+    ability: PART_ABILITY['Design'],
   },
   {
     part: 'Android',
-    state: '모집 중',
-    ability: ['Front-End', 'Kotlin'],
+    state: 'OPEN',
+    ability: PART_ABILITY['Android'],
   },
   {
     part: 'iOS',
-    state: '모집 중',
-    ability: ['Front-End', 'Swift'],
+    state: 'OPEN',
+    ability: PART_ABILITY['iOS'],
   },
   {
     part: 'Web',
-    state: '모집 마감',
-    ability: ['Front-End', 'HTML', 'CSS', 'JavaScript'],
+    state: 'CLOSED',
+    ability: PART_ABILITY['Web'],
   },
   {
     part: 'SpringBoot',
-    state: '모집 중',
-    ability: ['Back-End', 'Java'],
+    state: 'CLOSED',
+    ability: PART_ABILITY['SpringBoot'],
   },
   {
     part: 'Node.js',
-    state: '모집 중',
-    ability: ['Back-End', 'JavaScript'],
+    state: 'CLOSED',
+    ability: PART_ABILITY['Node.js'],
   },
 ]

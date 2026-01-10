@@ -11,6 +11,6 @@ export const PageLayout = styled(Flex)`
   ${media.down(theme.breakPoints.desktop)} {
     padding: 20px 20px;
   }
-  max-width: 1170px;
+  max-width: 1200px;
   width: 100%;
 `

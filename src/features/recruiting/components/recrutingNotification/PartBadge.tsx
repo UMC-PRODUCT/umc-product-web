@@ -1,8 +1,8 @@
-import type { Part } from '@/shared/types/umc/part'
+import type { PartType } from '@/shared/types/umc'
 
 import * as S from './PartBadge.style'
 
-const PartBadge = ({ partName }: { partName: Part }) => {
+const PartBadge = ({ partName }: { partName: PartType }) => {
   return <S.PartBadge>{partName}</S.PartBadge>
 }
 

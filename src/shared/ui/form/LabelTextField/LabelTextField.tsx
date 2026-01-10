@@ -24,6 +24,7 @@ export const LabelTextField = forwardRef<HTMLInputElement, LabelTextFieldProps>(
       button,
       autoComplete,
       necessary = true,
+      className,
       ...inputProps
     },
     ref,
@@ -31,11 +32,17 @@ export const LabelTextField = forwardRef<HTMLInputElement, LabelTextFieldProps>(
     const id = useId()
 
     return (
-      <Field>
+      <Field className={className}>
         <S.InputHeader>
           <Label label={label} necessary={necessary} htmlFor={id} />
 
-          {error?.error && <ErrorMessage errorMessage={error.errorMessage}></ErrorMessage>}
+          {error?.error && (
+            <ErrorMessage
+              typo="B4.Md"
+              responsiveTypo={{ tablet: 'B4.Md' }}
+              errorMessage={error.errorMessage}
+            />
+          )}
         </S.InputHeader>
         <TextField
           id={id}

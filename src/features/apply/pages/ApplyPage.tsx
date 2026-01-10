@@ -5,7 +5,7 @@ import {
   RECRUITMENT_INFO,
 } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { Part } from '@/shared/types/umc/part'
+import type { PartType, RecruitingType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import AfterSubmit from '../components/AfterSubmit'
@@ -13,8 +13,8 @@ import BeforeSubmit from '../components/BeforeSubmit'
 
 type ApplyPageProps = {
   partInfoList: Array<{
-    part: Part
-    state: string
+    part: PartType
+    state: RecruitingType
     ability: Array<string>
   }>
   isAlreadySubmitted: boolean

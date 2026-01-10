@@ -5,7 +5,7 @@ type QuestionBase = {
   description?: string
 }
 
-type Option = { value: string; label: string }
+export type Option<T> = { label: T; id: string | number }
 
 export type Question =
   | (QuestionBase & {
@@ -15,11 +15,11 @@ export type Question =
     })
   | (QuestionBase & {
       type: 'single'
-      options: Array<Option> // 라디오
+      options: Array<Option<string>> // 라디오
     })
   | (QuestionBase & {
       type: 'multi'
-      options: Array<Option> // 체크박스
+      options: Array<Option<string>> // 체크박스
       minSelected?: number
       maxSelected?: number
     })

@@ -6,11 +6,16 @@ import { theme } from '@shared/styles/theme'
 
 const Input = styled.input`
   ${inputShell};
-  padding: 10px 0 10px 20px;
+  padding: 10px 10px 10px 20px;
   ::placeholder {
     color: ${theme.colors.gray[400]};
   }
   flex: 1;
+  overflow-x: auto;
+
+  ${media.down(theme.breakPoints.mobile)} {
+    padding: 10px 8px 10px 12px;
+  }
 `
 const InputWrapper = styled.div`
   display: flex;
@@ -43,5 +48,6 @@ const InputHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-bottom: 10px;
 `
 export { IconBox, Input, InputHeader, InputWrapper }

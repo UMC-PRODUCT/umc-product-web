@@ -16,7 +16,7 @@ export const Section = styled(Flex, {
   padding: 34px 38px;
   border-radius: 10px;
   ${media.down(theme.breakPoints.tablet)} {
-    padding: 20px 20px;
+    padding: 15px 15px;
   }
 
   ${({ $variant }) =>

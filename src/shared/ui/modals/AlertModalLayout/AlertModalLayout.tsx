@@ -26,12 +26,7 @@ const AlertModalLayout = ({
       <Modal.Portal>
         <Modal.Overlay />
         <Modal.Content>
-          <S.ModalContentWrapper
-            flexDirection="column"
-            width="fit-content"
-            maxWidth="90vw"
-            padding="24px"
-          >
+          <S.ModalContentWrapper flexDirection="column" padding="24px">
             <Modal.Header>
               <Flex
                 justifyContent="space-between"

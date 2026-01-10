@@ -50,7 +50,7 @@ export const RegisterPage = () => {
         <ResponsiveLogo />
         <form onSubmit={handleSubmit(onSubmit)} css={{ width: '100%' }}>
           <FormFieldsContainer>
-            <LabelDropdown
+            <LabelDropdown<string>
               label="학교"
               placeholder="학교를 선택해 주세요."
               options={UNI_LIST_MOCK}

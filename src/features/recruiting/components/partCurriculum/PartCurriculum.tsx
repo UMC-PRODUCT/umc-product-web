@@ -7,7 +7,7 @@ import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
-import type { Part } from '@/shared/types/umc/part'
+import type { PartType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import * as S from './PartCurriculum.style'
@@ -17,7 +17,7 @@ type PartCurriculumProps = {
 }
 
 const PartCurriculum = ({ curriculum }: PartCurriculumProps) => {
-  const [activeTab, setActiveTab] = useState<Part>('Plan')
+  const [activeTab, setActiveTab] = useState<PartType>('Plan')
   const currentData = curriculum.find((d) => d.id === activeTab) || curriculum[0] // TODO: 데이터 수정 예정
 
   const firstColWeeks = currentData.curriculum.filter((item) => item.week <= 6)

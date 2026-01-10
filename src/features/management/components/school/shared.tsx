@@ -103,10 +103,6 @@ export const TextArea = styled.textarea`
   }
 `
 
-export const inputStyle = {
-  backgroundColor: theme.colors.black,
-}
-
 export const FilterWrapper = styled(Flex)`
   display: flex;
   gap: 12px;
@@ -143,7 +139,7 @@ export const BottomButtonGroup = styled.div`
 
 export const Td = styled.td`
   padding: 16px;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid ${theme.colors.gray[700]};
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
   button:not([role='checkbox']) {

@@ -4,7 +4,9 @@ import { Badge } from '@shared/ui/common/Badge/Badge'
 import { Button } from '@shared/ui/common/Button/Button'
 import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
 
-import * as S from './School.style'
+import { transformStateKorean } from '@/shared/utils/transformKorean'
+
+import * as S from './shared'
 
 const DeleteTableRow = ({
   setSelectedIds,
@@ -39,8 +41,8 @@ const DeleteTableRow = ({
           <S.Td>{item.branch}</S.Td>
           <S.Td>{item.date}</S.Td>
           <S.Td>
-            <Badge tone={item.status === '활성' ? 'lime' : 'gray'} variant="outline" typo="B4.Md">
-              {item.status}
+            <Badge tone={item.status === 'ACTIVE' ? 'lime' : 'gray'} variant="outline" typo="B4.Md">
+              {transformStateKorean(item.status)}
             </Badge>
           </S.Td>
           <S.Td>

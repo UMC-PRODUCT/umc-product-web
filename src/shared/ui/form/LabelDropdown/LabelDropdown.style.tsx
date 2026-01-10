@@ -78,6 +78,7 @@ const SelectHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-bottom: 10px;
 `
 
 export { ArrowBox, OptionItem, Options, Placeholder, SelectHeader, SelectWrapper, Trigger }
