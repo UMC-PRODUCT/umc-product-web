@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as appSchoolRouteRouteImport } from './routes/(app)/school/route'
 import { Route as appManagementRouteRouteImport } from './routes/(app)/management/route'
 import { Route as appRecruitingIndexRouteImport } from './routes/(app)/recruiting/index'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
@@ -18,6 +19,9 @@ import { Route as appApplyIndexRouteImport } from './routes/(app)/apply/index'
 import { Route as authAuthLayoutRouteImport } from './routes/(auth)/auth/_layout'
 import { Route as authAuthRegisterIndexRouteImport } from './routes/(auth)/auth/register/index'
 import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/login/index'
+import { Route as appSchoolRecruitingIndexRouteImport } from './routes/(app)/school/recruiting/index'
+import { Route as appSchoolEvaluationIndexRouteImport } from './routes/(app)/school/evaluation/index'
+import { Route as appSchoolDashboardIndexRouteImport } from './routes/(app)/school/dashboard/index'
 import { Route as appManagementSchoolIndexRouteImport } from './routes/(app)/management/school/index'
 import { Route as appManagementPolicyIndexRouteImport } from './routes/(app)/management/policy/index'
 import { Route as appManagementNoticeIndexRouteImport } from './routes/(app)/management/notice/index'
@@ -35,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const appSchoolRouteRoute = appSchoolRouteRouteImport.update({
+  id: '/school',
+  path: '/school',
+  getParentRoute: () => appRouteRoute,
 } as any)
 const appManagementRouteRoute = appManagementRouteRouteImport.update({
   id: '/management',
@@ -70,6 +79,23 @@ const authAuthLoginIndexRoute = authAuthLoginIndexRouteImport.update({
   id: '/(auth)/auth/login/',
   path: '/auth/login/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const appSchoolRecruitingIndexRoute =
+  appSchoolRecruitingIndexRouteImport.update({
+    id: '/recruiting/',
+    path: '/recruiting/',
+    getParentRoute: () => appSchoolRouteRoute,
+  } as any)
+const appSchoolEvaluationIndexRoute =
+  appSchoolEvaluationIndexRouteImport.update({
+    id: '/evaluation/',
+    path: '/evaluation/',
+    getParentRoute: () => appSchoolRouteRoute,
+  } as any)
+const appSchoolDashboardIndexRoute = appSchoolDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => appSchoolRouteRoute,
 } as any)
 const appManagementSchoolIndexRoute =
   appManagementSchoolIndexRouteImport.update({
@@ -120,6 +146,7 @@ const appApplyResumeIdIndexRoute = appApplyResumeIdIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/management': typeof appManagementRouteRouteWithChildren
+  '/school': typeof appSchoolRouteRouteWithChildren
   '/auth': typeof authAuthLayoutRoute
   '/apply': typeof appApplyIndexRoute
   '/dashboard': typeof appDashboardIndexRoute
@@ -132,12 +159,16 @@ export interface FileRoutesByFullPath {
   '/management/notice': typeof appManagementNoticeIndexRoute
   '/management/policy': typeof appManagementPolicyIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
+  '/school/dashboard': typeof appSchoolDashboardIndexRoute
+  '/school/evaluation': typeof appSchoolEvaluationIndexRoute
+  '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/management': typeof appManagementRouteRouteWithChildren
+  '/school': typeof appSchoolRouteRouteWithChildren
   '/auth': typeof authAuthLayoutRoute
   '/apply': typeof appApplyIndexRoute
   '/dashboard': typeof appDashboardIndexRoute
@@ -150,6 +181,9 @@ export interface FileRoutesByTo {
   '/management/notice': typeof appManagementNoticeIndexRoute
   '/management/policy': typeof appManagementPolicyIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
+  '/school/dashboard': typeof appSchoolDashboardIndexRoute
+  '/school/evaluation': typeof appSchoolEvaluationIndexRoute
+  '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
 }
@@ -158,6 +192,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(app)': typeof appRouteRouteWithChildren
   '/(app)/management': typeof appManagementRouteRouteWithChildren
+  '/(app)/school': typeof appSchoolRouteRouteWithChildren
   '/(auth)/auth/_layout': typeof authAuthLayoutRoute
   '/(app)/apply/': typeof appApplyIndexRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
@@ -170,6 +205,9 @@ export interface FileRoutesById {
   '/(app)/management/notice/': typeof appManagementNoticeIndexRoute
   '/(app)/management/policy/': typeof appManagementPolicyIndexRoute
   '/(app)/management/school/': typeof appManagementSchoolIndexRoute
+  '/(app)/school/dashboard/': typeof appSchoolDashboardIndexRoute
+  '/(app)/school/evaluation/': typeof appSchoolEvaluationIndexRoute
+  '/(app)/school/recruiting/': typeof appSchoolRecruitingIndexRoute
   '/(auth)/auth/login/': typeof authAuthLoginIndexRoute
   '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
 }
@@ -178,6 +216,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/management'
+    | '/school'
     | '/auth'
     | '/apply'
     | '/dashboard'
@@ -190,12 +229,16 @@ export interface FileRouteTypes {
     | '/management/notice'
     | '/management/policy'
     | '/management/school'
+    | '/school/dashboard'
+    | '/school/evaluation'
+    | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/management'
+    | '/school'
     | '/auth'
     | '/apply'
     | '/dashboard'
@@ -208,6 +251,9 @@ export interface FileRouteTypes {
     | '/management/notice'
     | '/management/policy'
     | '/management/school'
+    | '/school/dashboard'
+    | '/school/evaluation'
+    | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
   id:
@@ -215,6 +261,7 @@ export interface FileRouteTypes {
     | '/'
     | '/(app)'
     | '/(app)/management'
+    | '/(app)/school'
     | '/(auth)/auth/_layout'
     | '/(app)/apply/'
     | '/(app)/dashboard/'
@@ -227,6 +274,9 @@ export interface FileRouteTypes {
     | '/(app)/management/notice/'
     | '/(app)/management/policy/'
     | '/(app)/management/school/'
+    | '/(app)/school/dashboard/'
+    | '/(app)/school/evaluation/'
+    | '/(app)/school/recruiting/'
     | '/(auth)/auth/login/'
     | '/(auth)/auth/register/'
   fileRoutesById: FileRoutesById
@@ -254,6 +304,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/school': {
+      id: '/(app)/school'
+      path: '/school'
+      fullPath: '/school'
+      preLoaderRoute: typeof appSchoolRouteRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/management': {
       id: '/(app)/management'
@@ -303,6 +360,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/login'
       preLoaderRoute: typeof authAuthLoginIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/school/recruiting/': {
+      id: '/(app)/school/recruiting/'
+      path: '/recruiting'
+      fullPath: '/school/recruiting'
+      preLoaderRoute: typeof appSchoolRecruitingIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
+    '/(app)/school/evaluation/': {
+      id: '/(app)/school/evaluation/'
+      path: '/evaluation'
+      fullPath: '/school/evaluation'
+      preLoaderRoute: typeof appSchoolEvaluationIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
+    '/(app)/school/dashboard/': {
+      id: '/(app)/school/dashboard/'
+      path: '/dashboard'
+      fullPath: '/school/dashboard'
+      preLoaderRoute: typeof appSchoolDashboardIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
     }
     '/(app)/management/school/': {
       id: '/(app)/management/school/'
@@ -382,8 +460,25 @@ const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
 const appManagementRouteRouteWithChildren =
   appManagementRouteRoute._addFileChildren(appManagementRouteRouteChildren)
 
+interface appSchoolRouteRouteChildren {
+  appSchoolDashboardIndexRoute: typeof appSchoolDashboardIndexRoute
+  appSchoolEvaluationIndexRoute: typeof appSchoolEvaluationIndexRoute
+  appSchoolRecruitingIndexRoute: typeof appSchoolRecruitingIndexRoute
+}
+
+const appSchoolRouteRouteChildren: appSchoolRouteRouteChildren = {
+  appSchoolDashboardIndexRoute: appSchoolDashboardIndexRoute,
+  appSchoolEvaluationIndexRoute: appSchoolEvaluationIndexRoute,
+  appSchoolRecruitingIndexRoute: appSchoolRecruitingIndexRoute,
+}
+
+const appSchoolRouteRouteWithChildren = appSchoolRouteRoute._addFileChildren(
+  appSchoolRouteRouteChildren,
+)
+
 interface appRouteRouteChildren {
   appManagementRouteRoute: typeof appManagementRouteRouteWithChildren
+  appSchoolRouteRoute: typeof appSchoolRouteRouteWithChildren
   appApplyIndexRoute: typeof appApplyIndexRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
   appRecruitingIndexRoute: typeof appRecruitingIndexRoute
@@ -394,6 +489,7 @@ interface appRouteRouteChildren {
 
 const appRouteRouteChildren: appRouteRouteChildren = {
   appManagementRouteRoute: appManagementRouteRouteWithChildren,
+  appSchoolRouteRoute: appSchoolRouteRouteWithChildren,
   appApplyIndexRoute: appApplyIndexRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
   appRecruitingIndexRoute: appRecruitingIndexRoute,

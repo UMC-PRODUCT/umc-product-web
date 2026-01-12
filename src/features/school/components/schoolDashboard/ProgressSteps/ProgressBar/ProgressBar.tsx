@@ -8,14 +8,15 @@ interface StepperProps {
   steps: Array<Step>
   currentStepIndex: number
 }
-
 const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
-  const progressWidth = steps.length > 1 ? (currentStepIndex / (steps.length - 1)) * 100 : 0
+  const progressWidth = (currentStepIndex / (steps.length - 1)) * 100
+
   return (
     <S.StepperWrapper>
       <S.ProgressLineContainer>
         <S.ActiveLine $progressWidth={progressWidth} />
       </S.ProgressLineContainer>
+
       {steps.map((step, index) => {
         const isActive = index <= currentStepIndex
         return (
@@ -28,5 +29,4 @@ const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
     </S.StepperWrapper>
   )
 }
-
 export default ProgressBar

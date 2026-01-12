@@ -5,6 +5,7 @@ import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import { mappingRecruitingColor } from '@/shared/utils/mappingColor'
 
 import { spanStyle } from './ApplyStatement.style'
 
@@ -15,23 +16,6 @@ interface ApplyStatementProps {
 }
 
 const ApplyStatement = ({ parts, document, final }: ApplyStatementProps) => {
-  const documentColor =
-    document === '미정'
-      ? 'gray'
-      : document === '평가 중'
-        ? 'white'
-        : document === '서류 합격'
-          ? 'lime'
-          : 'necessary'
-
-  const finalColor =
-    final === '미정' || final === '예정'
-      ? 'gray'
-      : final === '평가 중'
-        ? 'white'
-        : final === '최종 합격'
-          ? 'lime'
-          : 'necessary'
   return (
     <Section
       variant="solid"
@@ -66,13 +50,13 @@ const ApplyStatement = ({ parts, document, final }: ApplyStatementProps) => {
       <Flex flexDirection="row" gap={26}>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
           <span css={spanStyle}>서류 평가</span>
-          <Badge tone={documentColor} variant="outline" typo="B5.Md">
+          <Badge tone={mappingRecruitingColor(document)} variant="outline" typo="B5.Md">
             {document}
           </Badge>
         </Flex>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
           <span css={spanStyle}>최종 평가</span>
-          <Badge tone={finalColor} variant="outline" typo="B5.Md">
+          <Badge tone={mappingRecruitingColor(final)} variant="outline" typo="B5.Md">
             {final}
           </Badge>
         </Flex>
