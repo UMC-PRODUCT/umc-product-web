@@ -18,12 +18,20 @@ interface NavigationBlockerResult {
  */
 export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): NavigationBlockerResult {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const shouldIgnoreNextNavigationRef = useRef(false)
+  const allowNextNavigationCountRef = useRef(0)
 
   const blocker = useBlocker({
     withResolver: true,
-    shouldBlockFn: () => {
-      if (shouldIgnoreNextNavigationRef.current) {
+    shouldBlockFn: ({ current, next }) => {
+      if (allowNextNavigationCountRef.current > 0) {
+        allowNextNavigationCountRef.current -= 1
+        return false
+      }
+      const isSameRoute =
+        current.routeId === next.routeId &&
+        current.pathname === next.pathname &&
+        JSON.stringify(current.params) === JSON.stringify(next.params)
+      if (isSameRoute) {
         return false
       }
       return shouldBlockNavigation
@@ -38,10 +46,7 @@ export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): Naviga
 
   return useMemo((): NavigationBlockerResult => {
     const allowNextNavigationOnce = () => {
-      shouldIgnoreNextNavigationRef.current = true
-      queueMicrotask(() => {
-        shouldIgnoreNextNavigationRef.current = false
-      })
+      allowNextNavigationCountRef.current += 1
     }
 
     const stay = () => {

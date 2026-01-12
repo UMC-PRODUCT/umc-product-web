@@ -1,23 +1,47 @@
-import type { QuestionList } from '@/features/apply/types/question'
+import type { QuestionList, QuestionUnion } from '@/features/apply/types/question'
 import { PART } from '@/shared/constants/umc'
+import type { PartType } from '@/shared/types/umc'
 
-export const MOCKFORMSDATA: QuestionList = {
+type StaticPage = {
+  page: number
+  type: 'static'
+  questions: Array<QuestionUnion>
+}
+
+type SlotPage = {
+  page: number
+  type: 'slot'
+  slotId: 'PART_PAGES'
+  necessary: boolean
+  insert: {
+    sourceQuestionId: number // 파트 선택 질문 id(=3)
+    order: Array<1 | 2> // [1,2]면 1지망 먼저, [2,1]도 가능
+    startPage: number // “몇 페이지부터” 끼울지 (빌더가 정한 값)
+  }
+}
+
+type FormDefinition = {
+  id: number
+  title: string
+  description: string
+  pages: Array<StaticPage | SlotPage>
+  partQuestionBank: Record<PartType, Array<{ type: 'static'; questions: Array<QuestionUnion> }>>
+}
+
+export const MOCKFORMSDATA_C_WITH_SLOT: FormDefinition = {
   id: 101,
   title: '2024 신입 부원 모집 설문',
-  description: `동아리에 지원해주셔서 감사합니다.
-지원서 작성 시 아래 안내 사항을 꼭 확인해 주세요.
-  1. 모든 질문에 성실히 답변해 주세요.
-  2. 면접 일정은 추후 개별 연락 드립니다.
-  3. 포트폴리오가 없더라도 지원 가능합니다.`,
+  description: `동아리에 지원해주셔서 감사합니다.`,
   pages: [
     {
       page: 1,
+      type: 'static',
       questions: [
         {
           id: 1,
           questionNumber: 1,
           type: 'text',
-          question: 'UMC에 지원하게 된 동기를 서술해 주세요.',
+          question: '학과명을 입력해 주세요.',
           necessary: true,
           answer: '',
         },
@@ -25,27 +49,44 @@ export const MOCKFORMSDATA: QuestionList = {
           id: 2,
           questionNumber: 2,
           type: 'choice',
-          question: '1순위로 희망하는 파트를 선택해 주세요.',
+          question: '2026년 3월 기준, 본인의 학적 상태를 선택해 주세요.',
           necessary: true,
-          options: PART,
+          options: ['재학', '휴학', '졸업유예'],
           answer: '',
         },
         {
           id: 3,
           questionNumber: 3,
-          type: 'multipleChoice',
-          question: '가능한 언어를 모두 선택해 주세요.',
-          necessary: false,
-          options: ['React', 'TypeScript', 'Node.js', 'Python', 'Figma'],
+          type: 'part',
+          question: '희망하는 파트를 1지망, 2지망 순으로 선택해 주세요.',
+          necessary: true,
+          options: [
+            { id: 1, options: PART },
+            { id: 2, options: PART },
+          ],
           answer: [],
         },
+      ],
+    },
+    {
+      page: 2,
+      type: 'static',
+      questions: [
         {
           id: 4,
           questionNumber: 4,
+          type: 'longText',
+          question: 'UMC에 지원하게 된 동기를 서술해 주세요.',
+          necessary: true,
+          answer: '',
+        },
+        {
+          id: 5,
+          questionNumber: 5,
           type: 'timeTable',
           question: '면접 가능한 시간을 선택해 주세요.',
           necessary: true,
-          timeRange: ['16:30', '22:00'],
+          timeRange: ['16:00', '22:00'],
           dates: ['1/4', '1/5', '1/6', '1/7'],
           disabled: {
             '1/4': ['16:00', '16:30', '17:00'],
@@ -54,58 +95,82 @@ export const MOCKFORMSDATA: QuestionList = {
           answer: {},
         },
         {
-          id: 5,
-          questionNumber: 5,
+          id: 6,
+          questionNumber: 6,
           type: 'fileUpload',
           question: '포트폴리오가 있다면 제출해 주세요.',
           necessary: false,
-          answer: {
-            files: [],
-            links: [],
-          },
+          answer: { files: [], links: [] },
         },
       ],
     },
+
     {
-      page: 2,
-      questions: [
-        {
-          id: 6,
-          questionNumber: 6,
-          type: 'multipleChoice',
-          question: '사용 가능한 기술 스택을 모두 선택해 주세요.',
-          necessary: false,
-          options: ['React', 'TypeScript', 'Node.js', 'Spring', 'Figma', 'Next.js'],
-          answer: [],
-        },
-        {
-          id: 7,
-          questionNumber: 7,
-          type: 'timeTable',
-          question: '면접 가능한 시간을 모두 선택해 주세요.',
-          necessary: true,
-          timeRange: ['10:00', '18:00'],
-          dates: ['1/10', '1/11', '1/12'],
-          disabled: {
-            '1/10': ['10:00', '10:30'],
-          },
-          answer: {},
-        },
-        {
-          id: 8,
-          questionNumber: 8,
-          type: 'fileUpload',
-          question: '추가 포트폴리오(PDF)나 프로젝트 링크를 첨부해 주세요.',
-          necessary: false,
-          answer: {
-            files: [],
-            links: [],
-          },
-        },
-      ],
+      page: 3,
+      type: 'slot',
+      slotId: 'PART_PAGES',
+      necessary: true,
+      insert: {
+        sourceQuestionId: 3,
+        order: [1, 2],
+        startPage: 3,
+      },
     },
   ],
+
+  partQuestionBank: {
+    Web: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 1001,
+            questionNumber: 1,
+            type: 'longText',
+            question: '웹 파트 질문',
+            necessary: true,
+            answer: '',
+          },
+        ],
+      },
+    ],
+    SpringBoot: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 2001,
+            questionNumber: 1,
+            type: 'longText',
+            question: '서버 파트 질문',
+            necessary: true,
+            answer: '',
+          },
+        ],
+      },
+    ],
+    Design: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 3001,
+            questionNumber: 1,
+            type: 'fileUpload',
+            question: '디자인 포폴',
+            necessary: false,
+            answer: { files: [], links: [] },
+          },
+        ],
+      },
+    ],
+    Plan: [],
+    'Node.js': [],
+    iOS: [],
+    Android: [],
+  },
 }
+
 export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
   id: 101,
   title: '2024 신입 부원 모집 설문',
@@ -117,72 +182,137 @@ export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
   pages: [
     {
       page: 1,
+      type: 'static',
       questions: [
         {
           id: 1,
           questionNumber: 1,
           type: 'text',
-          question: 'UMC에 지원하게 된 동기를 서술해 주세요.',
+          question: '학과명을 입력해 주세요.',
           necessary: true,
-          answer:
-            '평소 웹 개발에 관심이 많았고, 협업 프로젝트를 통해 실무 경험을 쌓고 싶어 지원하게 되었습니다.',
+          answer: '',
         },
         {
           id: 2,
           questionNumber: 2,
           type: 'choice',
-          question: '1순위로 희망하는 파트를 선택해 주세요.',
+          question: '2026년 3월 기준, 본인의 학적 상태를 선택해 주세요.',
           necessary: true,
-          options: PART,
-          answer: 'Web',
+          options: ['재학', '휴학', '졸업유예'],
+          answer: '',
         },
         {
           id: 3,
           questionNumber: 3,
-          type: 'multipleChoice',
-          question: '가능한 언어를 모두 선택해 주세요.',
-          necessary: false,
-          options: ['React', 'TypeScript', 'Node.js', 'Python', 'Figma'],
-          answer: ['React', 'TypeScript', 'Figma'],
+          type: 'part',
+          question: '희망하는 파트를 1지망, 2지망 순으로 선택해 주세요.',
+          necessary: true,
+          options: [
+            { id: 1, options: PART },
+            { id: 2, options: PART },
+          ],
+          answer: [],
         },
+      ],
+    },
+    {
+      page: 2,
+      type: 'static',
+      questions: [
         {
           id: 4,
           questionNumber: 4,
+          type: 'longText',
+          question: 'UMC에 지원하게 된 동기를 서술해 주세요.',
+          necessary: true,
+          answer: '',
+        },
+        {
+          id: 5,
+          questionNumber: 5,
           type: 'timeTable',
           question: '면접 가능한 시간을 선택해 주세요.',
           necessary: true,
-          timeRange: ['16:30', '22:00'],
+          timeRange: ['16:00', '22:00'],
           dates: ['1/4', '1/5', '1/6', '1/7'],
           disabled: {
             '1/4': ['16:00', '16:30', '17:00'],
             '1/5': ['18:00', '18:30'],
           },
-          answer: {
-            '1/4': ['17:30', '18:00'],
-            '1/6': ['19:00', '19:30', '20:00'],
-          },
+          answer: {},
         },
         {
-          id: 5,
-          questionNumber: 5,
+          id: 6,
+          questionNumber: 6,
           type: 'fileUpload',
           question: '포트폴리오가 있다면 제출해 주세요.',
           necessary: false,
-          answer: {
-            files: [
-              {
-                id: '1736171400000',
-                name: 'my_portfolio.pdf',
-                size: 5484052,
-                status: 'success',
-                progress: 100,
-                file: new File([], 'my_portfolio.pdf'),
-              },
-            ],
-            links: ['https://github.com/example/my-project'],
-          },
+          answer: { files: [], links: [] },
         },
       ],
     },
+
+    {
+      page: 3,
+      type: 'slot',
+      slotId: 'PART_PAGES',
+      insert: {
+        sourceQuestionId: 3,
+        order: [1, 2],
+        startPage: 3,
+      },
+    },
   ],
+
+  partQuestionBank: {
+    Web: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 1001,
+            questionNumber: 1,
+            type: 'longText',
+            question: '웹 파트 질문',
+            necessary: true,
+            answer: '',
+          },
+        ],
+      },
+    ],
+    SpringBoot: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 2001,
+            questionNumber: 1,
+            type: 'longText',
+            question: '서버 파트 질문',
+            necessary: true,
+            answer: '',
+          },
+        ],
+      },
+    ],
+    Design: [
+      {
+        type: 'static',
+        questions: [
+          {
+            id: 3001,
+            questionNumber: 1,
+            type: 'fileUpload',
+            question: '디자인 포폴',
+            necessary: false,
+            answer: { files: [], links: [] },
+          },
+        ],
+      },
+    ],
+    Plan: [],
+    'Node.js': [],
+    iOS: [],
+    Android: [],
+  },
 }

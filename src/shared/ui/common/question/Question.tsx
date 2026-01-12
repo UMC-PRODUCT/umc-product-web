@@ -1,8 +1,11 @@
 import type { FileUploadAnswer, QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
+import type { PartType } from '@/shared/types/umc'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
+import { LongText } from './longText/LongText'
 import { MultipleChoice } from './multipleChoice/MultipleChoice'
+import PartChoice from './partChoice/PartChoice'
 import { Text } from './text/Text'
 import { TimeTable } from './timeTable/TimeTable'
 import QuestionLayout from './QuestionLayout'
@@ -24,6 +27,10 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
 
   const renderQuestionInput = () => {
     switch (data.type) {
+      case 'longText':
+        return (
+          <LongText value={value as string | undefined} onChange={handleValueChange} mode={mode} />
+        )
       case 'text':
         return <Text value={value as string | undefined} onChange={handleValueChange} mode={mode} />
 
@@ -62,6 +69,16 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
         return (
           <Choice
             value={value as string | undefined}
+            onChange={handleValueChange}
+            options={data.options}
+            mode={mode}
+          />
+        )
+
+      case 'part':
+        return (
+          <PartChoice
+            value={value as Array<{ id: number; answer: PartType }> | undefined}
             onChange={handleValueChange}
             options={data.options}
             mode={mode}

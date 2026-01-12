@@ -3,6 +3,8 @@
  * shared 컴포넌트에서 사용되는 Question 관련 타입들
  */
 
+import type { PartType } from './umc'
+
 export type QuestionType = 'text' | 'multipleChoice' | 'timeTable' | 'fileUpload' | 'choice'
 
 export type FileUploadStatus = 'loading' | 'success' | 'error'
@@ -59,6 +61,16 @@ export interface ChoiceQuestion extends BaseQuestion {
   answer: string
   options: Array<string>
 }
+export interface LongTextQuestion extends BaseQuestion {
+  type: 'longText'
+  answer: string
+}
+
+export interface PartQuestion extends BaseQuestion {
+  type: 'part'
+  answer: Array<{ id: number; answer: PartType }>
+  options: Array<{ id: number; options: Array<PartType> }>
+}
 
 export type QuestionUnion =
   | TextQuestion
@@ -66,6 +78,8 @@ export type QuestionUnion =
   | TimeTableQuestion
   | FileUploadQuestion
   | ChoiceQuestion
+  | LongTextQuestion
+  | PartQuestion
 
 /**
  * 질문 답변 값 타입
@@ -74,13 +88,21 @@ export type QuestionUnion =
 export type QuestionAnswerValue =
   | string
   | Array<string>
+  | Array<{ id: number; answer: PartType }>
   | TimeTableSlots
   | FileUploadAnswer
   | undefined
 
 export interface QuestionPage {
   page: number
-  questions: Array<QuestionUnion>
+  type: 'static' | 'slot'
+  questions?: Array<QuestionUnion>
+  slotId?: 'PART_PAGES' | 'PART_EXPERIENCE'
+  insert?: {
+    sourceQuestionId: number
+    order: Array<1 | 2>
+    startPage: number
+  }
 }
 
 export interface QuestionList {
@@ -88,6 +110,7 @@ export interface QuestionList {
   title: string
   description: string
   pages: Array<QuestionPage>
+  partQuestionBank: Record<PartType, Array<PartQuestionBankPage>>
 }
 
 export interface ResumeData {
@@ -96,4 +119,9 @@ export interface ResumeData {
   description: string
   lastSavedTime: string
   pages: Array<QuestionPage>
+}
+
+export interface PartQuestionBankPage {
+  type: 'static'
+  questions: Array<QuestionUnion>
 }

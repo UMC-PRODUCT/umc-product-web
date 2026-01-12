@@ -54,7 +54,31 @@ const ResumeFormSection = ({
             name={String(question.id)}
             control={control}
             rules={{
-              required: question.necessary ? REQUIRED_FIELD_MESSAGE : false,
+              required:
+                question.type === 'part'
+                  ? false
+                  : question.necessary
+                    ? REQUIRED_FIELD_MESSAGE
+                    : false,
+              ...(question.type === 'part'
+                ? {
+                    validate: (value: unknown) => {
+                      const selections = Array.isArray(value) ? value : []
+                      const first = selections.find((item) => item?.id === 1)?.answer
+                      const second = selections.find((item) => item?.id === 2)?.answer
+
+                      if (question.necessary && (!first || !second)) {
+                        return REQUIRED_FIELD_MESSAGE
+                      }
+
+                      if (first && second && first === second) {
+                        return '같은 파트를 중복 선택할 수 없습니다.'
+                      }
+
+                      return true
+                    },
+                  }
+                : {}),
             }}
             render={({ field }) => (
               <Question

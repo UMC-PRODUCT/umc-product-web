@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FieldErrors } from 'react-hook-form'
 
 import * as S from '@/features/apply/components/ResumePage.style'
@@ -43,28 +43,46 @@ function findFirstErrorPageIndex(
 
   const firstErrorFieldId = errorFieldIds[0]
   return pages.findIndex((page: QuestionPage) =>
-    page.questions.some((question: QuestionUnion) => String(question.id) === firstErrorFieldId),
+    (page.questions ?? []).some(
+      (question: QuestionUnion) => String(question.id) === firstErrorFieldId,
+    ),
   )
 }
 
 function getAllQuestionFieldIds(pages: Array<QuestionPage>): Array<string> {
   return pages.flatMap((page) =>
-    page.questions.map((question: QuestionUnion) => String(question.id)),
+    (page.questions ?? []).map((question: QuestionUnion) => String(question.id)),
   )
+}
+
+function getPageRequiredFieldIds(page: QuestionPage | undefined): Array<string> {
+  if (!page?.questions) return []
+  return page.questions
+    .filter((question: QuestionUnion) => question.necessary)
+    .map((question: QuestionUnion) => String(question.id))
 }
 
 const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
 
-  const totalPages = questionData.pages.length
-  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
-  const currentPageData = questionData.pages[currentPageIndex] ?? questionData.pages[0]
-  const currentQuestions = currentPageData.questions
-
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
 
-  const { control, handleSubmit, trigger, getValues, reset, errors, isDirty, isFormIncomplete } =
-    useResumeForm(questionData)
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    getValues,
+    reset,
+    errors,
+    isDirty,
+    isFormIncomplete,
+    resolvedPages,
+  } = useResumeForm(questionData)
+
+  const totalPages = resolvedPages.length
+  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
+  const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
+  const currentQuestions = useMemo(() => currentPageData.questions ?? [], [currentPageData])
 
   useBeforeUnload(isDirty)
   const navigationBlocker = useUnsavedChangesBlocker(isDirty)
@@ -75,7 +93,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   })
 
   const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
-    const errorPageIndex = findFirstErrorPageIndex(formErrors, questionData.pages)
+    const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
 
     if (errorPageIndex !== -1) {
       onPageChange(errorPageIndex + 1)
@@ -84,7 +102,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   }
 
   const handleFinalSubmit = async () => {
-    const allFieldIds = getAllQuestionFieldIds(questionData.pages)
+    const allFieldIds = getAllQuestionFieldIds(resolvedPages)
     const isValid = await trigger(allFieldIds)
 
     if (isValid) {
@@ -102,7 +120,19 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   const openSubmitModal = () => setIsSubmitModalOpen(true)
   const closeSubmitModal = () => setIsSubmitModalOpen(false)
 
-  const handlePageNavigation = (nextPage: number) => {
+  const handlePageNavigation = async (nextPage: number) => {
+    if (nextPage > currentPage) {
+      const currentPageFieldIds = getPageRequiredFieldIds(currentPageData)
+      const isCurrentPageValid =
+        currentPageFieldIds.length === 0 ||
+        (await trigger(currentPageFieldIds, { shouldFocus: true }))
+
+      if (!isCurrentPageValid) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+    }
+
     navigationBlocker.allowNextNavigationOnce()
     onPageChange(nextPage)
   }
@@ -153,7 +183,11 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
       </S.BorderedSection>
 
       {isSubmitModalOpen && (
-        <SubmitConfirmModal onClose={closeSubmitModal} onSubmit={handleFinalSubmit} />
+        <SubmitConfirmModal
+          onClose={closeSubmitModal}
+          onSubmit={handleFinalSubmit}
+          onAllowNavigate={navigationBlocker.allowNextNavigationOnce}
+        />
       )}
 
       {navigationBlocker.isOpen && (

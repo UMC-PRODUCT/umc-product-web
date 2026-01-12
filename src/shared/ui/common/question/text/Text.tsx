@@ -10,13 +10,13 @@ interface TextQuestionProps {
   mode: QuestionMode
 }
 
-const PLACEHOLDER_TEXT = '자유롭게 작성해주세요.'
+const PLACEHOLDER_TEXT = '내용을 입력해 주세요.'
 
-export const Text = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
+export const Text = forwardRef<HTMLInputElement, TextQuestionProps>(
   ({ value, onChange, mode }, ref) => {
     const isReadOnly = mode === 'view'
 
-    const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       onChange?.(event.target.value)
     }
 
@@ -27,6 +27,7 @@ export const Text = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
         onChange={handleTextChange}
         ref={ref}
         readOnly={isReadOnly}
+        maxLength={50}
       />
     )
   },

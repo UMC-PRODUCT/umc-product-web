@@ -2,11 +2,10 @@ import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
 
-const TextArea = styled.input`
+const TextArea = styled.textarea`
   width: 100%;
-  height: 44px;
   background-color: transparent;
-  border: none;
+  border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;
   padding: 12px 16px;
   color: ${theme.colors.white};
@@ -14,6 +13,7 @@ const TextArea = styled.input`
   font-family: 'Noto Sans KR', sans-serif;
   resize: none;
   background-color: ${theme.colors.black};
+  overflow: hidden;
   &::placeholder {
     color: ${theme.colors.gray[500]};
   }
