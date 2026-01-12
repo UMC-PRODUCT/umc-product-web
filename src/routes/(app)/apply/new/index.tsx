@@ -1,6 +1,7 @@
+import { useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import { MOCKFORMSDATA } from '@/features/apply/mocks/questions'
+import { MOCKFORMSDATA_WITH_NO_ANSWER } from '@/features/apply/mocks/questions'
 import Resume from '@/features/apply/pages/Resume'
 
 type ResumeSearch = {
@@ -11,6 +12,21 @@ const RouteComponent = () => {
   const navigate = useNavigate()
   const { page = 1 } = Route.useSearch()
   const { questionData } = Route.useLoaderData()
+  const hasInitializedRef = useRef(false)
+
+  useEffect(() => {
+    if (!hasInitializedRef.current) {
+      hasInitializedRef.current = true
+      if (page !== 1) {
+        navigate({
+          to: Route.to,
+          search: (prev) => ({ ...prev, page: 1 }),
+          replace: true,
+        })
+      }
+    }
+  }, [page, navigate])
+
   const setPage = (next: number) => {
     navigate({
       to: Route.to,
@@ -27,6 +43,6 @@ export const Route = createFileRoute('/(app)/apply/new/')({
       page: Number(search.page ?? 1),
     }
   },
-  loader: () => ({ questionData: MOCKFORMSDATA }),
+  loader: () => ({ questionData: MOCKFORMSDATA_WITH_NO_ANSWER }),
   component: RouteComponent,
 })

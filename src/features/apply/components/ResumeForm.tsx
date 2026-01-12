@@ -13,7 +13,7 @@ export const ResumeForm = ({
 }) => {
   return (
     <>
-      {data.questions.map((q) => {
+      {(data.questions ?? []).map((q) => {
         return (
           <Question
             mode="edit"

@@ -2,6 +2,7 @@
 import type { ForwardedRef } from 'react'
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
 
+import type { QuestionMode } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 
 import * as S from './TimeTable.style'
@@ -12,7 +13,7 @@ interface ScheduleSelectorProps {
   disabledSlots?: Partial<Record<string, Array<string>>>
   value?: Partial<Record<string, Array<string>>>
   onChange?: (selected: Record<string, Array<string>>) => void
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }
 
 const TimeTableComponent = (

@@ -4,6 +4,8 @@ import Document from '@/shared/assets/icons/document.svg?react'
 import ErrorIcon from '@/shared/assets/icons/notice.svg?react' // 에러 아이콘 가정
 import RetryIcon from '@/shared/assets/icons/retry.svg?react' // 재시도 아이콘 가정
 import { theme } from '@/shared/styles/theme'
+import type { QuestionMode } from '@/shared/types/form'
+import type { FileUploadStatus } from '@/shared/types/question'
 import { Flex } from '@/shared/ui/common/Flex'
 import { ProgressCircle } from '@/shared/ui/common/ProgressCircle'
 
@@ -20,10 +22,10 @@ interface FileItemProps {
   fileName: string
   fileSize: string
   removeFile: () => void
-  status: 'loading' | 'success' | 'error'
+  status: FileUploadStatus
   progress: number
   onRetry: () => void
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }
 
 const FileItem = ({

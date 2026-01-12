@@ -24,8 +24,7 @@ const ResumeNavigation = ({ currentPage, totalPages, onPageChange }: ResumeNavig
   }
 
   const getButtonStyle = (isDisabled: boolean) => ({
-    opacity: isDisabled ? 0.5 : 1,
-    cursor: isDisabled ? 'not-allowed' : 'pointer',
+    opacity: isDisabled ? 0 : 1,
   })
 
   const pageIndicatorText = `${totalPages}페이지 중 ${currentPage}페이지`

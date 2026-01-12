@@ -1,3 +1,4 @@
+import type { QuestionMode } from '@/shared/types/form'
 import type { UploadedFile } from '@/shared/types/question'
 import { formatFileSize } from '@/shared/utils/formatFileSize'
 
@@ -6,7 +7,7 @@ import * as S from './FileList.style'
 
 type FileListProps = {
   files: Array<UploadedFile>
-  mode: 'view' | 'edit'
+  mode: QuestionMode
   onRetry: (file: UploadedFile) => void
   onRemove: (fileId: string) => void
 }

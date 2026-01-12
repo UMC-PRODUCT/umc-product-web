@@ -1,52 +1,29 @@
 import { useEffect, useState } from 'react'
 
-export type FileUploadStatus = 'loading' | 'success' | 'error'
+import type { UseFileUploadOptions, UseFileUploadReturn } from '@/features/apply/types/fileUpload'
 
-export interface UploadedFileInfo {
-  id: string
-  name: string
-  size: number
-  status: FileUploadStatus
-  progress: number
-  fileObject: File
-}
+import type { FileUploadStatus, UploadedFile } from '../types/question'
 
-export interface FileUploadValue {
-  files: Array<UploadedFileInfo>
-  links?: Array<string>
-}
-
-interface UseFileUploadOptions {
-  initialFiles: Array<UploadedFileInfo>
-  value: FileUploadValue | undefined
-  onChange: ((newValue: FileUploadValue) => void) | undefined
-}
-
-interface UseFileUploadReturn {
-  uploadedFiles: Array<UploadedFileInfo>
-  setUploadedFiles: React.Dispatch<React.SetStateAction<Array<UploadedFileInfo>>>
-  processFiles: (fileList: FileList | null) => void
-  simulateUpload: (fileId: string, file: File) => void
-  updateFileStatus: (fileId: string, status: FileUploadStatus, progress: number) => void
-}
-
+// 업로드 진행 시뮬레이션 파라미터.
 const UPLOAD_PROGRESS_INTERVAL_MS = 300
 const UPLOAD_PROGRESS_INCREMENT_MAX = 20
 const UPLOAD_ERROR_PROBABILITY = 0.1
 const MAX_PROGRESS = 100
 
+// 임시 업로드 파일 식별자 생성.
 function generateFileId(): string {
   return `file-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
-function createFileInfo(file: File): UploadedFileInfo {
+// 업로드 파일 초기 상태 생성.
+function createFileInfo(file: File): UploadedFile {
   return {
     id: generateFileId(),
     name: file.name,
     size: file.size,
     status: 'loading',
     progress: 0,
-    fileObject: file,
+    file: file,
   }
 }
 
@@ -59,8 +36,9 @@ export function useFileUpload({
   value,
   onChange,
 }: UseFileUploadOptions): UseFileUploadReturn {
-  const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFileInfo>>(initialFiles)
+  const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFile>>(initialFiles)
 
+  // 내부 상태가 바뀌면 외부 value로 동기화.
   useEffect(() => {
     onChange?.({ ...value, files: uploadedFiles })
   }, [uploadedFiles])
@@ -98,7 +76,7 @@ export function useFileUpload({
     const newFileInfoList = Array.from(fileList).map(createFileInfo)
 
     newFileInfoList.forEach((fileInfo) => {
-      simulateUpload(fileInfo.id, fileInfo.fileObject)
+      simulateUpload(fileInfo.id, fileInfo.file)
     })
 
     setUploadedFiles((previousFiles) => [...previousFiles, ...newFileInfoList])

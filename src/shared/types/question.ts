@@ -3,7 +3,17 @@
  * shared 컴포넌트에서 사용되는 Question 관련 타입들
  */
 
-export type QuestionType = 'text' | 'multipleChoice' | 'timeTable' | 'fileUpload' | 'choice'
+import type { PartType } from './umc'
+
+export type QuestionType =
+  | 'SHORT_TEXT'
+  | 'CHECKBOX'
+  | 'SCHEDULE'
+  | 'PORTFOLIO'
+  | 'RADIO'
+  | 'LONG_TEXT'
+  | 'PART'
+  | 'DROPDOWN'
 
 export type FileUploadStatus = 'loading' | 'success' | 'error'
 
@@ -13,7 +23,7 @@ export interface UploadedFile {
   size: number
   status: FileUploadStatus
   progress: number
-  file?: File
+  file: File
 }
 
 export interface FileUploadAnswer {
@@ -31,18 +41,18 @@ interface BaseQuestion {
 }
 
 export interface TextQuestion extends BaseQuestion {
-  type: 'text'
+  type: 'SHORT_TEXT'
   answer: string
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
-  type: 'multipleChoice'
+  type: 'CHECKBOX'
   answer: Array<string>
   options: Array<string>
 }
 
 export interface TimeTableQuestion extends BaseQuestion {
-  type: 'timeTable'
+  type: 'SCHEDULE'
   dates: Array<string>
   timeRange: [string, string]
   disabled?: TimeTableSlots
@@ -50,14 +60,24 @@ export interface TimeTableQuestion extends BaseQuestion {
 }
 
 export interface FileUploadQuestion extends BaseQuestion {
-  type: 'fileUpload'
+  type: 'PORTFOLIO'
   answer: FileUploadAnswer
 }
 
 export interface ChoiceQuestion extends BaseQuestion {
-  type: 'choice'
+  type: 'RADIO'
   answer: string
   options: Array<string>
+}
+export interface LongTextQuestion extends BaseQuestion {
+  type: 'LONG_TEXT'
+  answer: string
+}
+
+export interface PartQuestion extends BaseQuestion {
+  type: 'PART'
+  answer: Array<{ id: number; answer: PartType }>
+  options: Array<{ id: number; options: Array<PartType> }>
 }
 
 export type QuestionUnion =
@@ -66,28 +86,29 @@ export type QuestionUnion =
   | TimeTableQuestion
   | FileUploadQuestion
   | ChoiceQuestion
+  | LongTextQuestion
+  | PartQuestion
 
-/**
- * 질문 답변 값 타입
- * Question 컴포넌트에서 사용하는 답변 값들의 유니온 타입
- */
 export type QuestionAnswerValue =
   | string
   | Array<string>
+  | Array<{ id: number; answer: PartType }>
   | TimeTableSlots
   | FileUploadAnswer
   | undefined
 
 export interface QuestionPage {
   page: number
-  questions: Array<QuestionUnion>
+  questions?: Array<QuestionUnion>
 }
 
 export interface QuestionList {
   id: number
   title: string
   description: string
+  lastSavedTime: string
   pages: Array<QuestionPage>
+  partQuestionBank: Record<PartType, Array<PartQuestionBankPage>>
 }
 
 export interface ResumeData {
@@ -96,4 +117,8 @@ export interface ResumeData {
   description: string
   lastSavedTime: string
   pages: Array<QuestionPage>
+}
+
+export interface PartQuestionBankPage {
+  questions: Array<QuestionUnion>
 }

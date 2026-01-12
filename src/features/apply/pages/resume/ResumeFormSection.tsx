@@ -1,33 +1,25 @@
-import type { Control, FieldErrors } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
+import type { JSX } from 'react'
+import { useMemo } from 'react'
+import { Controller, useWatch } from 'react-hook-form'
 
-import type { QuestionAnswerValue } from '@/shared/types/question'
+import CautionPartChange from '@/features/apply/components/modals/CautionPartChange'
+import PartDivider from '@/features/apply/components/PartDivider'
+import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
-import type { QuestionUnion } from '../../types/question'
-
-type FormValues = Record<string, unknown>
-
-interface ResumeFormSectionProps {
-  questions: Array<QuestionUnion>
-  control: Control<FormValues>
-  errors: FieldErrors<FormValues>
-  currentPage: number
-  totalPages: number
-  isSubmitDisabled: boolean
-  onOpenSubmitModal: () => void
-  onPageChange: (nextPage: number) => void
-}
-
-const REQUIRED_FIELD_MESSAGE = '응답 필수 항목입니다.'
-const SUBMIT_BUTTON_MARGIN_TOP = '40px'
+import { isAnswerEmpty } from './ResumeFormSection.helpers'
+import { usePartChangeGuard } from './usePartChangeGuard'
 
 const ResumeFormSection = ({
   questions,
+  partQuestions,
   control,
+  setValue,
+  clearErrors,
   errors,
   currentPage,
   totalPages,
@@ -46,30 +38,94 @@ const ResumeFormSection = ({
 
   const submitButtonTone = isSubmitDisabled ? 'gray' : 'lime'
 
-  return (
-    <form onSubmit={handleFormSubmit}>
-      {questions.map((question) => (
+  const partQuestionIds = useMemo(
+    () => partQuestions.map((question) => question.id),
+    [partQuestions],
+  )
+
+  const partQuestionValues = useWatch({
+    control,
+    name: partQuestionIds.map(String),
+  })
+
+  const hasPartAnswers = useMemo(() => {
+    if (partQuestionIds.length === 0) return false
+    return partQuestions.some((question, index) => {
+      const answerValue = partQuestionValues[index]
+      return !isAnswerEmpty(question, answerValue)
+    })
+  }, [partQuestionIds.length, partQuestions, partQuestionValues])
+
+  const {
+    isPartChangeModalOpen,
+    partChangeRanksText,
+    requestPartChange,
+    handleConfirmPartChange,
+    handleCancelPartChange,
+  } = usePartChangeGuard({
+    partQuestions,
+    setValue,
+    clearErrors,
+    hasPartAnswers,
+  })
+
+  const questionsWithLabels = questions as Array<QuestionUnion & { __partLabel?: string }>
+  const renderedQuestions = questionsWithLabels.reduce<{
+    elements: Array<JSX.Element>
+    lastLabel?: string
+  }>(
+    (acc, question) => {
+      const label = question.__partLabel
+      const showLabel = Boolean(label) && label !== acc.lastLabel
+
+      const nextElements = [...acc.elements]
+
+      if (showLabel && label) {
+        nextElements.push(<PartDivider key={`label-${label}`} label={label} />)
+      }
+
+      nextElements.push(
         <Flex key={question.id} flexDirection="column" gap={8} width="100%">
           <Controller
             name={String(question.id)}
             control={control}
-            rules={{
-              required: question.necessary ? REQUIRED_FIELD_MESSAGE : false,
-            }}
             render={({ field }) => (
               <Question
                 mode="edit"
                 data={question}
                 value={field.value as QuestionAnswerValue}
-                onChange={(_, newValue) =>
+                onChange={(_, newValue) => {
+                  if (question.type === 'PART') {
+                    const isBlocked = requestPartChange({
+                      questionId: question.id,
+                      currentValue: field.value as QuestionAnswerValue,
+                      nextValue: newValue,
+                    })
+                    if (isBlocked) {
+                      return
+                    }
+                  }
+
                   field.onChange(newValue, { shouldDirty: true, shouldTouch: true })
-                }
+                }}
                 errorMessage={getFieldErrorMessage(question.id)}
               />
             )}
           />
-        </Flex>
-      ))}
+        </Flex>,
+      )
+
+      return {
+        elements: nextElements,
+        lastLabel: showLabel && label ? label : acc.lastLabel,
+      }
+    },
+    { elements: [] },
+  ).elements
+
+  return (
+    <form onSubmit={handleFormSubmit}>
+      {renderedQuestions}
 
       <ResumeNavigation
         currentPage={currentPage}
@@ -77,7 +133,7 @@ const ResumeFormSection = ({
         onPageChange={onPageChange}
       />
 
-      <Flex justifyContent="center" css={{ marginTop: SUBMIT_BUTTON_MARGIN_TOP }}>
+      <Flex width={360} css={{ marginTop: '40px', alignSelf: 'center' }}>
         <Button
           type="button"
           label="지원하기"
@@ -86,6 +142,14 @@ const ResumeFormSection = ({
           onClick={onOpenSubmitModal}
         />
       </Flex>
+
+      {isPartChangeModalOpen && (
+        <CautionPartChange
+          onClose={handleCancelPartChange}
+          onConfirm={handleConfirmPartChange}
+          ranksText={partChangeRanksText}
+        />
+      )}
     </form>
   )
 }

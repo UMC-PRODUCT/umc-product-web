@@ -1,16 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useBlocker } from '@tanstack/react-router'
 
-interface NavigationBlockerResult {
-  /** 이탈 확인 모달 표시 여부 */
-  isOpen: boolean
-  /** 내부 페이지 전환 시 한 번만 네비게이션 허용 */
-  allowNextNavigationOnce: () => void
-  /** 현재 페이지에 머무르기 */
-  stay: () => void
-  /** 페이지 이탈 진행 */
-  leave: () => void
-}
+import type { NavigationBlockerResult } from '@/features/apply/types/unsavedChangeBlocker'
 
 /**
  * 저장되지 않은 변경사항이 있을 때 라우트 이탈을 차단하는 훅
@@ -18,12 +9,21 @@ interface NavigationBlockerResult {
  */
 export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): NavigationBlockerResult {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const shouldIgnoreNextNavigationRef = useRef(false)
+  const allowNextNavigationCountRef = useRef(0)
 
+  // 라우트 변경 시 차단 여부 결정.
   const blocker = useBlocker({
     withResolver: true,
-    shouldBlockFn: () => {
-      if (shouldIgnoreNextNavigationRef.current) {
+    shouldBlockFn: ({ current, next }) => {
+      if (allowNextNavigationCountRef.current > 0) {
+        allowNextNavigationCountRef.current -= 1
+        return false
+      }
+      const isSameRoute =
+        current.routeId === next.routeId &&
+        current.pathname === next.pathname &&
+        JSON.stringify(current.params) === JSON.stringify(next.params)
+      if (isSameRoute) {
         return false
       }
       return shouldBlockNavigation
@@ -37,11 +37,9 @@ export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): Naviga
   }, [blocker.status])
 
   return useMemo((): NavigationBlockerResult => {
+    // 다음 네비게이션을 1회 허용(내부 이동용).
     const allowNextNavigationOnce = () => {
-      shouldIgnoreNextNavigationRef.current = true
-      queueMicrotask(() => {
-        shouldIgnoreNextNavigationRef.current = false
-      })
+      allowNextNavigationCountRef.current += 1
     }
 
     const stay = () => {

@@ -1,58 +1,20 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import type { QuestionList, QuestionPage, QuestionUnion } from '../../types/question'
-
-type FormValues = Record<string, unknown>
-
-interface UseResumeFormReturn {
-  control: ReturnType<typeof useForm<FormValues>>['control']
-  handleSubmit: ReturnType<typeof useForm<FormValues>>['handleSubmit']
-  trigger: ReturnType<typeof useForm<FormValues>>['trigger']
-  getValues: ReturnType<typeof useForm<FormValues>>['getValues']
-  reset: ReturnType<typeof useForm<FormValues>>['reset']
-  errors: ReturnType<typeof useForm<FormValues>>['formState']['errors']
-  isDirty: boolean
-  isFormIncomplete: boolean
-}
-
-function buildDefaultValuesFromQuestions(questionData: QuestionList): FormValues {
-  const defaultValues: FormValues = {}
-
-  questionData.pages.forEach((page: QuestionPage) => {
-    page.questions.forEach((question: QuestionUnion) => {
-      defaultValues[question.id] = question.answer
-    })
-  })
-
-  return defaultValues
-}
-
-function getAllQuestions(questionData: QuestionList): Array<QuestionUnion> {
-  return questionData.pages.flatMap((page) => page.questions)
-}
-
-function isQuestionAnswerEmpty(question: QuestionUnion, answerValue: unknown): boolean {
-  if (!question.necessary) {
-    return false
-  }
-
-  if (!answerValue) {
-    return true
-  }
-
-  if (Array.isArray(answerValue) && answerValue.length === 0) {
-    return true
-  }
-
-  if (question.type === 'timeTable') {
-    const timeTableValues = Object.values(answerValue as Record<string, Array<unknown>>)
-    const hasNoSelectedSlots = timeTableValues.every((slots) => slots.length === 0)
-    return hasNoSelectedSlots
-  }
-
-  return false
-}
+import { createValidationRules } from '@/features/apply/schemas/applySchemas'
+import type {
+  QuestionList,
+  QuestionPage,
+  QuestionUnion,
+  ResumeFormValues,
+  UseResumeFormReturn,
+} from '@/features/apply/types/question'
+import {
+  buildDefaultValuesFromQuestions,
+  getAllQuestionsFromPages,
+  isQuestionAnswerEmpty,
+  resolvePagesWithSlots,
+} from '@/features/apply/utils'
 
 export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
   const defaultValues = useMemo(() => buildDefaultValuesFromQuestions(questionData), [questionData])
@@ -62,42 +24,65 @@ export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
     handleSubmit,
     trigger,
     getValues,
+    setValue,
+    clearErrors,
     register,
     reset,
     formState: { errors, isDirty },
-  } = useForm<FormValues>({
+  } = useForm<ResumeFormValues>({
     mode: 'onChange',
     defaultValues,
     shouldUnregister: false,
   })
 
-  const watchedFormValues = useWatch({ control })
-
-  const isFormIncomplete = useMemo(() => {
-    const allQuestions = getAllQuestions(questionData)
-
-    return allQuestions.some((question) => {
-      const answerValue = watchedFormValues[question.id]
-      return isQuestionAnswerEmpty(question, answerValue)
-    })
-  }, [watchedFormValues, questionData])
+  const watchedFormValues = useWatch({
+    control,
+    defaultValue: defaultValues as Record<string, {} | undefined>,
+  })
+  const currentFormValues = watchedFormValues as ResumeFormValues
+  const resolvedPages = useMemo(
+    () => resolvePagesWithSlots(questionData, currentFormValues),
+    [questionData, currentFormValues],
+  )
 
   useEffect(() => {
-    questionData.pages.forEach((page: QuestionPage) => {
-      page.questions.forEach((question: QuestionUnion) => {
-        register(String(question.id), { required: question.necessary })
+    reset(defaultValues, {
+      keepDirtyValues: true,
+      keepErrors: true,
+      keepTouched: true,
+    })
+  }, [defaultValues, reset])
+
+  const isFormIncomplete = useMemo(() => {
+    const allQuestions = getAllQuestionsFromPages(resolvedPages)
+
+    return allQuestions.some((question) => {
+      const answerValue = currentFormValues[String(question.id)]
+      return isQuestionAnswerEmpty(question, answerValue)
+    })
+  }, [currentFormValues, resolvedPages])
+
+  useEffect(() => {
+    resolvedPages.forEach((page: QuestionPage) => {
+      ;(page.questions ?? []).forEach((question: QuestionUnion) => {
+        const validationRules = createValidationRules(question)
+
+        register(String(question.id), validationRules)
       })
     })
-  }, [questionData, register])
+  }, [resolvedPages, register])
 
   return {
     control,
     handleSubmit,
     trigger,
     getValues,
+    setValue,
+    clearErrors,
     reset,
     errors,
     isDirty,
     isFormIncomplete,
+    resolvedPages,
   }
 }

@@ -10,7 +10,9 @@ interface StepperProps {
 }
 
 const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
-  const progressWidth = steps.length > 1 ? (currentStepIndex / (steps.length - 1)) * 100 : 0
+  if (steps.length === 0) return null
+  const progressWidth =
+    steps.length > 1 ? (currentStepIndex / (steps.length - 1)) * 100 : steps.length === 1 ? 100 : 0
   return (
     <S.StepperWrapper>
       <S.ProgressLineContainer>

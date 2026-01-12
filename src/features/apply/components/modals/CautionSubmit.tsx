@@ -6,7 +6,15 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
-const CautionSubmit = ({ onClose, onSubmit }: { onClose: () => void; onSubmit: () => void }) => {
+const CautionSubmit = ({
+  onClose,
+  onSubmit,
+  onAllowNavigate,
+}: {
+  onClose: () => void
+  onSubmit: () => void
+  onAllowNavigate?: () => void
+}) => {
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -14,7 +22,7 @@ const CautionSubmit = ({ onClose, onSubmit }: { onClose: () => void; onSubmit: (
       onClose={onClose}
       title="주의"
       content={`지원서 제출 이후에는 지원서 수정이 불가합니다.
-        지원서를 제출하시겠습니까?`}
+지원서를 제출하시겠습니까?`}
       Icon={Caution}
     >
       <Flex
@@ -37,6 +45,7 @@ const CautionSubmit = ({ onClose, onSubmit }: { onClose: () => void; onSubmit: (
           onClick={() => {
             onSubmit()
             onClose()
+            onAllowNavigate?.()
             navigate({
               to: '/apply',
             })

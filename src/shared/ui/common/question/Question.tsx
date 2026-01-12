@@ -1,13 +1,15 @@
+import type { QuestionMode } from '@/shared/types/form'
 import type { FileUploadAnswer, QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
+import type { PartType } from '@/shared/types/umc'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
+import { LongText } from './longText/LongText'
 import { MultipleChoice } from './multipleChoice/MultipleChoice'
+import PartChoice from './partChoice/PartChoice'
 import { Text } from './text/Text'
 import { TimeTable } from './timeTable/TimeTable'
 import QuestionLayout from './QuestionLayout'
-
-type QuestionMode = 'view' | 'edit'
 
 interface QuestionProps {
   data: QuestionUnion
@@ -24,10 +26,14 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
 
   const renderQuestionInput = () => {
     switch (data.type) {
-      case 'text':
+      case 'LONG_TEXT':
+        return (
+          <LongText value={value as string | undefined} onChange={handleValueChange} mode={mode} />
+        )
+      case 'SHORT_TEXT':
         return <Text value={value as string | undefined} onChange={handleValueChange} mode={mode} />
 
-      case 'multipleChoice':
+      case 'CHECKBOX':
         return (
           <MultipleChoice
             options={data.options}
@@ -37,7 +43,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'timeTable':
+      case 'SCHEDULE':
         return (
           <TimeTable
             dates={data.dates}
@@ -49,7 +55,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'fileUpload':
+      case 'PORTFOLIO':
         return (
           <FileUpload
             value={value as FileUploadAnswer | undefined}
@@ -58,10 +64,20 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'choice':
+      case 'RADIO':
         return (
           <Choice
             value={value as string | undefined}
+            onChange={handleValueChange}
+            options={data.options}
+            mode={mode}
+          />
+        )
+
+      case 'PART':
+        return (
+          <PartChoice
+            value={value as Array<{ id: number; answer: PartType }> | undefined}
             onChange={handleValueChange}
             options={data.options}
             mode={mode}

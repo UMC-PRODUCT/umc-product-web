@@ -1,8 +1,7 @@
+import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import { CheckChoice } from './CheckChoice'
-
-type QuestionMode = 'view' | 'edit'
 
 interface MultipleChoiceQuestionProps {
   value?: Array<string>

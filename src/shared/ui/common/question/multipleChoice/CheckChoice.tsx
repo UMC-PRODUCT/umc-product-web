@@ -2,6 +2,7 @@
 import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
+import type { QuestionMode } from '@/shared/types/form'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 
@@ -9,7 +10,7 @@ interface CheckChoiceProps {
   content: string
   isChecked: boolean
   onToggle: () => void
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }
 
 export const CheckChoice = ({ content, isChecked, onToggle, mode }: CheckChoiceProps) => {

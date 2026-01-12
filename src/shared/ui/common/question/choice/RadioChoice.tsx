@@ -1,3 +1,4 @@
+import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import * as S from '../choice/shared'
@@ -11,7 +12,7 @@ const RadioChoice = ({
   content: string
   onClick?: () => void
   value?: string
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }) => {
   const isChecked = value === content // 체크 여부 판단
   const isEditable = mode === 'edit'

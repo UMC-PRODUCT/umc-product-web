@@ -85,13 +85,6 @@ const SlotCell = styled.div<{
     return p.$isDisabled ? 'not-allowed' : 'pointer'
   }};
 
-  ${(p) =>
-    p.$isDisabled &&
-    `
-    background-image: linear-gradient(45deg, #121212 25%, transparent 25%, transparent 50%, #121212 50%, #121212 75%, transparent 75%, transparent);
-    background-size: 4px 4px;
-  `}
-
   &:hover {
     ${(p) => p.$isInteractive && !p.$isDisabled && 'filter: brightness(1.2);'}
   }
