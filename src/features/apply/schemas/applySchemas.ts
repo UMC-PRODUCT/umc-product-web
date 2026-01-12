@@ -3,7 +3,7 @@ import type { QuestionUnion } from '../types/question'
 const REQUIRED_FIELD_MESSAGE = '응답 필수 항목입니다.'
 
 export const createPartValidation = (question: QuestionUnion) => (value: unknown) => {
-  if (question.type !== 'part') return true
+  if (question.type !== 'PART') return true
   const selections = Array.isArray(value) ? value : []
   const first = selections.find((item) => item?.id === 1)?.answer
   const second = selections.find((item) => item?.id === 2)?.answer
@@ -22,12 +22,12 @@ export const createPartValidation = (question: QuestionUnion) => (value: unknown
 }
 
 export const createValidationRules = (question: QuestionUnion) => ({
-  required: question.type === 'part' ? false : question.necessary ? REQUIRED_FIELD_MESSAGE : false,
-  ...(question.type === 'part'
+  required: question.type === 'PART' ? false : question.necessary ? REQUIRED_FIELD_MESSAGE : false,
+  ...(question.type === 'PART'
     ? {
         validate: createPartValidation(question),
       }
-    : question.type === 'timeTable'
+    : question.type === 'SCHEDULE'
       ? {
           validate: (value: unknown) => {
             if (!question.necessary) return true

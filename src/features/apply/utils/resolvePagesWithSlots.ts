@@ -6,7 +6,6 @@ import type {
 } from '@/features/apply/types/question'
 import { PART } from '@/shared/constants/umc'
 import type { PartQuestionBankPage } from '@/shared/types/question'
-import type { PartType } from '@/shared/types/umc'
 
 import { findPartQuestion } from './findPartQuestion'
 import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
