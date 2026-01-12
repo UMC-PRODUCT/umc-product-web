@@ -1,16 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useBlocker } from '@tanstack/react-router'
 
-interface NavigationBlockerResult {
-  /** 이탈 확인 모달 표시 여부 */
-  isOpen: boolean
-  /** 내부 페이지 전환 시 한 번만 네비게이션 허용 */
-  allowNextNavigationOnce: () => void
-  /** 현재 페이지에 머무르기 */
-  stay: () => void
-  /** 페이지 이탈 진행 */
-  leave: () => void
-}
+import type { NavigationBlockerResult } from '@/features/apply/types/unsavedChangeBlocker'
 
 /**
  * 저장되지 않은 변경사항이 있을 때 라우트 이탈을 차단하는 훅

@@ -31,27 +31,29 @@ const PartChoice = ({ value, options, mode, onChange }: PartChoiceProps) => {
         return (
           <Flex key={partQuestion.id} gap={13}>
             <S.StyledSpan key={partQuestion.id}>{partQuestion.id}지망:</S.StyledSpan>
-            <Flex gap={20} height={37}>
-              {partQuestion.options.map((option: PartType) => {
-                return (
-                  <Button
-                    variant="outline"
-                    tone={selectedOption === option ? 'lime' : 'gray'}
-                    key={option}
-                    label={option}
-                    type="button"
-                    onClick={
-                      mode === 'edit'
-                        ? () => handleOptionSelect(partQuestion.id, option)
-                        : undefined
-                    }
-                    css={{
-                      width: 'fit-content',
-                      cursor: mode === 'edit' ? 'pointer' : 'default',
-                    }}
-                  />
-                )
-              })}
+            <Flex height={60} css={{ overflowX: 'auto' }}>
+              <Flex gap={20} height={37} width={'fit-content'}>
+                {partQuestion.options.map((option: PartType) => {
+                  return (
+                    <Button
+                      variant="outline"
+                      tone={selectedOption === option ? 'lime' : 'gray'}
+                      key={option}
+                      label={option}
+                      type="button"
+                      onClick={
+                        mode === 'edit'
+                          ? () => handleOptionSelect(partQuestion.id, option)
+                          : undefined
+                      }
+                      css={{
+                        width: 'fit-content',
+                        cursor: mode === 'edit' ? 'pointer' : 'default',
+                      }}
+                    />
+                  )
+                })}
+              </Flex>
             </Flex>
           </Flex>
         )

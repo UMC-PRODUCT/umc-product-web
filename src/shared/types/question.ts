@@ -5,7 +5,15 @@
 
 import type { PartType } from './umc'
 
-export type QuestionType = 'text' | 'multipleChoice' | 'timeTable' | 'fileUpload' | 'choice'
+export type QuestionType =
+  | 'SHORT_TEXT'
+  | 'CHECKBOX'
+  | 'SCHEDULE'
+  | 'PORTFOLIO'
+  | 'RADIO'
+  | 'LONG_TEXT'
+  | 'PART'
+  | 'DROPDOWN'
 
 export type FileUploadStatus = 'loading' | 'success' | 'error'
 
@@ -15,7 +23,7 @@ export interface UploadedFile {
   size: number
   status: FileUploadStatus
   progress: number
-  file?: File
+  file: File
 }
 
 export interface FileUploadAnswer {
@@ -33,18 +41,18 @@ interface BaseQuestion {
 }
 
 export interface TextQuestion extends BaseQuestion {
-  type: 'text'
+  type: 'SHORT_TEXT'
   answer: string
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
-  type: 'multipleChoice'
+  type: 'CHECKBOX'
   answer: Array<string>
   options: Array<string>
 }
 
 export interface TimeTableQuestion extends BaseQuestion {
-  type: 'timeTable'
+  type: 'SCHEDULE'
   dates: Array<string>
   timeRange: [string, string]
   disabled?: TimeTableSlots
@@ -52,22 +60,22 @@ export interface TimeTableQuestion extends BaseQuestion {
 }
 
 export interface FileUploadQuestion extends BaseQuestion {
-  type: 'fileUpload'
+  type: 'PORTFOLIO'
   answer: FileUploadAnswer
 }
 
 export interface ChoiceQuestion extends BaseQuestion {
-  type: 'choice'
+  type: 'RADIO'
   answer: string
   options: Array<string>
 }
 export interface LongTextQuestion extends BaseQuestion {
-  type: 'longText'
+  type: 'LONG_TEXT'
   answer: string
 }
 
 export interface PartQuestion extends BaseQuestion {
-  type: 'part'
+  type: 'PART'
   answer: Array<{ id: number; answer: PartType }>
   options: Array<{ id: number; options: Array<PartType> }>
 }
@@ -81,10 +89,6 @@ export type QuestionUnion =
   | LongTextQuestion
   | PartQuestion
 
-/**
- * 질문 답변 값 타입
- * Question 컴포넌트에서 사용하는 답변 값들의 유니온 타입
- */
 export type QuestionAnswerValue =
   | string
   | Array<string>
@@ -95,14 +99,7 @@ export type QuestionAnswerValue =
 
 export interface QuestionPage {
   page: number
-  type: 'static' | 'slot'
   questions?: Array<QuestionUnion>
-  slotId?: 'PART_PAGES' | 'PART_EXPERIENCE'
-  insert?: {
-    sourceQuestionId: number
-    order: Array<1 | 2>
-    startPage: number
-  }
 }
 
 export interface QuestionList {
@@ -122,6 +119,5 @@ export interface ResumeData {
 }
 
 export interface PartQuestionBankPage {
-  type: 'static'
   questions: Array<QuestionUnion>
 }

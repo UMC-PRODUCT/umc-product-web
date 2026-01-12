@@ -1,4 +1,6 @@
+import AfterSubmit from '@/features/apply/components/AfterSubmit'
 import * as S from '@/features/apply/components/ApplyPage.style'
+import BeforeSubmit from '@/features/apply/components/BeforeSubmit'
 import {
   formatActivityPeriod,
   formatRecruitmentPeriod,
@@ -7,9 +9,6 @@ import {
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { PartType, RecruitingType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
-
-import AfterSubmit from '../components/AfterSubmit'
-import BeforeSubmit from '../components/BeforeSubmit'
 
 type ApplyPageProps = {
   partInfoList: Array<{

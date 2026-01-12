@@ -20,9 +20,8 @@ export const Section = styled(Flex, {
   }
 
   ${({ $variant }) =>
-    $variant === 'outline' || $variant === 'both'
-      ? `border: 1px solid ${theme.colors.gray[600]};`
-      : ''}
+    $variant === 'outline' ? `border: 1px solid ${theme.colors.gray[600]};` : ''}
+  ${({ $variant }) => ($variant === 'both' ? `border: 1.5px solid ${theme.colors.gray[700]};` : '')}
   ${({ $variant }) =>
     $variant === 'dashed' ? `border: 2px dashed ${theme.colors.gray[600]};` : ''}
   ${({ $variant }) =>

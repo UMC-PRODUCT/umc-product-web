@@ -27,14 +27,14 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
 
   const renderQuestionInput = () => {
     switch (data.type) {
-      case 'longText':
+      case 'LONG_TEXT':
         return (
           <LongText value={value as string | undefined} onChange={handleValueChange} mode={mode} />
         )
-      case 'text':
+      case 'SHORT_TEXT':
         return <Text value={value as string | undefined} onChange={handleValueChange} mode={mode} />
 
-      case 'multipleChoice':
+      case 'CHECKBOX':
         return (
           <MultipleChoice
             options={data.options}
@@ -44,7 +44,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'timeTable':
+      case 'SCHEDULE':
         return (
           <TimeTable
             dates={data.dates}
@@ -56,7 +56,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'fileUpload':
+      case 'PORTFOLIO':
         return (
           <FileUpload
             value={value as FileUploadAnswer | undefined}
@@ -65,7 +65,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'choice':
+      case 'RADIO':
         return (
           <Choice
             value={value as string | undefined}
@@ -75,7 +75,7 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
           />
         )
 
-      case 'part':
+      case 'PART':
         return (
           <PartChoice
             value={value as Array<{ id: number; answer: PartType }> | undefined}

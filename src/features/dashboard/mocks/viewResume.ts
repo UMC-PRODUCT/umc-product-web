@@ -13,7 +13,6 @@ export const MOCK_VIEW_RESUME_DATA: ResumeData = {
   pages: [
     {
       page: 1,
-      type: 'static',
       questions: [
         {
           id: 1,

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import { MOCKFORMSDATA_WITH_ANSWER } from '@/features/apply/mocks/questions'
+import { MOCKFORMSDATA_WITH_NO_ANSWER } from '@/features/apply/mocks/questions'
 import Resume from '@/features/apply/pages/Resume'
 
 type ResumeSearch = {
@@ -43,6 +43,6 @@ export const Route = createFileRoute('/(app)/apply/new/')({
       page: Number(search.page ?? 1),
     }
   },
-  loader: () => ({ questionData: MOCKFORMSDATA_WITH_ANSWER }),
+  loader: () => ({ questionData: MOCKFORMSDATA_WITH_NO_ANSWER }),
   component: RouteComponent,
 })

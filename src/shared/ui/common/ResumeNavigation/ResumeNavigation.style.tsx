@@ -8,6 +8,7 @@ export const NavigationContainer = styled.div`
   gap: 4px;
   align-items: center;
   display: flex;
+  cursor: pointer;
   ${theme.typography.B2.Md}
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.B4.Md}

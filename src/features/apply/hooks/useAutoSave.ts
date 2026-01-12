@@ -1,17 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { UseFormGetValues } from 'react-hook-form'
+
+import type { UseAutoSaveOptions, UseAutoSaveReturn } from '@/features/apply/types/autoSave'
 
 const DEFAULT_AUTO_SAVE_INTERVAL_MS = 60_000
-
-interface UseAutoSaveOptions<TFormValues extends Record<string, unknown>> {
-  getValues: UseFormGetValues<TFormValues>
-  interval?: number
-}
-
-interface UseAutoSaveReturn {
-  lastSavedTime: string
-  handleSave: () => void
-}
 
 function formatDateTimeKorean(date: Date): string {
   const year = date.getFullYear()

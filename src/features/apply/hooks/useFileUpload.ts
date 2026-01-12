@@ -1,34 +1,12 @@
 import { useEffect, useState } from 'react'
 
-export type FileUploadStatus = 'loading' | 'success' | 'error'
+import type {
+  FileUploadStatus,
+  UseFileUploadOptions,
+  UseFileUploadReturn,
+} from '@/features/apply/types/fileUpload'
 
-export interface UploadedFileInfo {
-  id: string
-  name: string
-  size: number
-  status: FileUploadStatus
-  progress: number
-  fileObject: File
-}
-
-export interface FileUploadValue {
-  files: Array<UploadedFileInfo>
-  links?: Array<string>
-}
-
-interface UseFileUploadOptions {
-  initialFiles: Array<UploadedFileInfo>
-  value: FileUploadValue | undefined
-  onChange: ((newValue: FileUploadValue) => void) | undefined
-}
-
-interface UseFileUploadReturn {
-  uploadedFiles: Array<UploadedFileInfo>
-  setUploadedFiles: React.Dispatch<React.SetStateAction<Array<UploadedFileInfo>>>
-  processFiles: (fileList: FileList | null) => void
-  simulateUpload: (fileId: string, file: File) => void
-  updateFileStatus: (fileId: string, status: FileUploadStatus, progress: number) => void
-}
+import type { UploadedFile } from '../types/question'
 
 const UPLOAD_PROGRESS_INTERVAL_MS = 300
 const UPLOAD_PROGRESS_INCREMENT_MAX = 20
@@ -39,14 +17,14 @@ function generateFileId(): string {
   return `file-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
-function createFileInfo(file: File): UploadedFileInfo {
+function createFileInfo(file: File): UploadedFile {
   return {
     id: generateFileId(),
     name: file.name,
     size: file.size,
     status: 'loading',
     progress: 0,
-    fileObject: file,
+    file: file,
   }
 }
 
@@ -59,7 +37,7 @@ export function useFileUpload({
   value,
   onChange,
 }: UseFileUploadOptions): UseFileUploadReturn {
-  const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFileInfo>>(initialFiles)
+  const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFile>>(initialFiles)
 
   useEffect(() => {
     onChange?.({ ...value, files: uploadedFiles })
@@ -98,7 +76,7 @@ export function useFileUpload({
     const newFileInfoList = Array.from(fileList).map(createFileInfo)
 
     newFileInfoList.forEach((fileInfo) => {
-      simulateUpload(fileInfo.id, fileInfo.fileObject)
+      simulateUpload(fileInfo.id, fileInfo.file)
     })
 
     setUploadedFiles((previousFiles) => [...previousFiles, ...newFileInfoList])

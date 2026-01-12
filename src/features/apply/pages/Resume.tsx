@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react'
 import type { FieldErrors } from 'react-hook-form'
 
+import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
+import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
 import * as S from '@/features/apply/components/ResumePage.style'
+import { useAutoSave } from '@/features/apply/hooks/useAutoSave'
+import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
@@ -9,10 +13,6 @@ import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
-import LeaveConfirmModal from '../components/modals/CautionLeave'
-import SubmitConfirmModal from '../components/modals/CautionSubmit'
-import { useAutoSave } from '../hooks/useAutoSave'
-import { useBeforeUnload } from '../hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import type { QuestionList, QuestionPage, QuestionUnion } from '../types/question'
 import ResumeFormSection from './resume/ResumeFormSection'
@@ -72,12 +72,22 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
     handleSubmit,
     trigger,
     getValues,
+    setValue,
+    clearErrors,
     reset,
     errors,
     isDirty,
     isFormIncomplete,
     resolvedPages,
   } = useResumeForm(questionData)
+
+  const partQuestions = useMemo(
+    () =>
+      Object.values(questionData.partQuestionBank).flatMap((partPages) =>
+        partPages.flatMap((partPage) => partPage.questions),
+      ),
+    [questionData.partQuestionBank],
+  )
 
   const totalPages = resolvedPages.length
   const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
@@ -172,7 +182,10 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
       <S.BorderedSection>
         <ResumeFormSection
           questions={currentQuestions}
+          partQuestions={partQuestions}
           control={control}
+          setValue={setValue}
+          clearErrors={clearErrors}
           errors={errors}
           currentPage={currentPage}
           totalPages={totalPages}
