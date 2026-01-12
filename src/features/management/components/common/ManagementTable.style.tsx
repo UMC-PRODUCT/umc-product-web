@@ -41,7 +41,7 @@ const Footer = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 20px;
-  color: #999;
+  color: ${theme.colors.gray[300]};
   width: 100%;
   span {
     position: absolute;

@@ -128,7 +128,7 @@ export const Pagination = styled.div`
     cursor: pointer;
   }
   .active {
-    color: #81c784;
+    color: ${theme.colors.lime};
     font-weight: bold;
   }
 `
