@@ -5,7 +5,7 @@
 
 import type { useForm } from 'react-hook-form'
 
-import type { QuestionPage, QuestionUnion } from './question'
+import type { QuestionPage, QuestionUnion } from '@shared/types/question'
 
 // 공통 질문 타입 re-export
 export type {
