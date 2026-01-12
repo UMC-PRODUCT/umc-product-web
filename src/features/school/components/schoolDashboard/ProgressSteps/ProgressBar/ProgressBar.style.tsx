@@ -58,13 +58,11 @@ const Label = styled.span<{ $isActive: boolean }>`
   font-size: 13px;
   color: ${({ $isActive }) => ($isActive ? `${theme.colors.lime}` : `${theme.colors.gray[400]}`)};
   text-align: center;
-  white-space: nowrap;
   ${theme.typography.C3.Md}
   ${media.down(theme.breakPoints.tablet)} {
     font-size: 11px;
     line-height: 1.3;
     max-width: 56px;
-    white-space: nowrap;
     word-break: keep-all;
   }
   position: absolute;
