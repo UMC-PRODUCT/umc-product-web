@@ -11,6 +11,7 @@ export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): Naviga
   const [isModalOpen, setIsModalOpen] = useState(false)
   const allowNextNavigationCountRef = useRef(0)
 
+  // 라우트 변경 시 차단 여부 결정.
   const blocker = useBlocker({
     withResolver: true,
     shouldBlockFn: ({ current, next }) => {
@@ -36,6 +37,7 @@ export function useUnsavedChangesBlocker(shouldBlockNavigation: boolean): Naviga
   }, [blocker.status])
 
   return useMemo((): NavigationBlockerResult => {
+    // 다음 네비게이션을 1회 허용(내부 이동용).
     const allowNextNavigationOnce = () => {
       allowNextNavigationCountRef.current += 1
     }

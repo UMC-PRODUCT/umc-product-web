@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Controller, useWatch } from 'react-hook-form'
 
 import CautionPartChange from '@/features/apply/components/modals/CautionPartChange'
@@ -11,11 +11,8 @@ import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
-import {
-  getChangedPartRanks,
-  isAnswerEmpty,
-  isPartSelectionEqual,
-} from './ResumeFormSection.helpers'
+import { isAnswerEmpty } from './ResumeFormSection.helpers'
+import { usePartChangeGuard } from './usePartChangeGuard'
 
 const ResumeFormSection = ({
   questions,
@@ -30,11 +27,6 @@ const ResumeFormSection = ({
   onOpenSubmitModal,
   onPageChange,
 }: ResumeFormSectionProps) => {
-  const [isPartChangeModalOpen, setIsPartChangeModalOpen] = useState(false)
-  const [pendingPartSelection, setPendingPartSelection] = useState<QuestionAnswerValue | null>(null)
-  const [pendingCurrentSelection, setPendingCurrentSelection] =
-    useState<QuestionAnswerValue | null>(null)
-  const [pendingPartQuestionId, setPendingPartQuestionId] = useState<number | null>(null)
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault()
   }
@@ -50,6 +42,7 @@ const ResumeFormSection = ({
     () => partQuestions.map((question) => question.id),
     [partQuestions],
   )
+
   const partQuestionValues = useWatch({
     control,
     name: partQuestionIds.map(String),
@@ -63,40 +56,18 @@ const ResumeFormSection = ({
     })
   }, [partQuestionIds.length, partQuestions, partQuestionValues])
 
-  const resetPartQuestionAnswers = () => {
-    partQuestions.forEach((question) => {
-      setValue(String(question.id), question.answer, { shouldDirty: true })
-    })
-    if (partQuestionIds.length > 0) {
-      clearErrors(partQuestionIds.map(String))
-    }
-  }
-
-  const handleConfirmPartChange = () => {
-    if (pendingPartQuestionId === null || pendingPartSelection === null) return
-    setValue(String(pendingPartQuestionId), pendingPartSelection, {
-      shouldDirty: true,
-      shouldTouch: true,
-    })
-    resetPartQuestionAnswers()
-    setPendingPartSelection(null)
-    setPendingCurrentSelection(null)
-    setPendingPartQuestionId(null)
-    setIsPartChangeModalOpen(false)
-  }
-
-  const handleCancelPartChange = () => {
-    setPendingPartSelection(null)
-    setPendingCurrentSelection(null)
-    setPendingPartQuestionId(null)
-    setIsPartChangeModalOpen(false)
-  }
-
-  const partChangeRanksText = useMemo(() => {
-    const changedRanks = getChangedPartRanks(pendingCurrentSelection, pendingPartSelection)
-
-    return changedRanks.length > 0 ? `${changedRanks.join(', ')}지망` : '선택'
-  }, [pendingPartSelection, pendingCurrentSelection])
+  const {
+    isPartChangeModalOpen,
+    partChangeRanksText,
+    requestPartChange,
+    handleConfirmPartChange,
+    handleCancelPartChange,
+  } = usePartChangeGuard({
+    partQuestions,
+    setValue,
+    clearErrors,
+    hasPartAnswers,
+  })
 
   const questionsWithLabels = questions as Array<QuestionUnion & { __partLabel?: string }>
   const renderedQuestions = questionsWithLabels.reduce<{
@@ -125,15 +96,12 @@ const ResumeFormSection = ({
                 value={field.value as QuestionAnswerValue}
                 onChange={(_, newValue) => {
                   if (question.type === 'PART') {
-                    const isSameSelection = isPartSelectionEqual(
-                      field.value as QuestionAnswerValue,
-                      newValue,
-                    )
-                    if (hasPartAnswers && !isSameSelection) {
-                      setPendingPartSelection(newValue)
-                      setPendingCurrentSelection((field.value as QuestionAnswerValue) ?? null)
-                      setPendingPartQuestionId(question.id)
-                      setIsPartChangeModalOpen(true)
+                    const isBlocked = requestPartChange({
+                      questionId: question.id,
+                      currentValue: field.value as QuestionAnswerValue,
+                      nextValue: newValue,
+                    })
+                    if (isBlocked) {
                       return
                     }
                   }

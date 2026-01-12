@@ -4,15 +4,18 @@ import type { UseFileUploadOptions, UseFileUploadReturn } from '@/features/apply
 
 import type { FileUploadStatus, UploadedFile } from '../types/question'
 
+// 업로드 진행 시뮬레이션 파라미터.
 const UPLOAD_PROGRESS_INTERVAL_MS = 300
 const UPLOAD_PROGRESS_INCREMENT_MAX = 20
 const UPLOAD_ERROR_PROBABILITY = 0.1
 const MAX_PROGRESS = 100
 
+// 임시 업로드 파일 식별자 생성.
 function generateFileId(): string {
   return `file-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
+// 업로드 파일 초기 상태 생성.
 function createFileInfo(file: File): UploadedFile {
   return {
     id: generateFileId(),
@@ -35,6 +38,7 @@ export function useFileUpload({
 }: UseFileUploadOptions): UseFileUploadReturn {
   const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFile>>(initialFiles)
 
+  // 내부 상태가 바뀌면 외부 value로 동기화.
   useEffect(() => {
     onChange?.({ ...value, files: uploadedFiles })
   }, [uploadedFiles])

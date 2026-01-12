@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 
 import type { UseAutoSaveOptions, UseAutoSaveReturn } from '@/features/apply/types/autoSave'
 
+// 기본 자동 저장 주기(1분).
 const DEFAULT_AUTO_SAVE_INTERVAL_MS = 60_000
 
+// 저장 시간을 표시용 문자열로 변환.
 function formatDateTimeKorean(date: Date): string {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -20,6 +22,7 @@ export function useAutoSave<TFormValues extends Record<string, unknown>>({
 }: UseAutoSaveOptions<TFormValues>): UseAutoSaveReturn {
   const [lastSavedTime, setLastSavedTime] = useState<string>('')
 
+  // 현재 폼 값을 저장(실제 저장 로직은 추후 교체).
   const handleSave = useCallback(() => {
     const formValues = getValues()
     console.log('[AutoSave] 저장 데이터:', formValues)
