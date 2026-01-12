@@ -1,4 +1,5 @@
 import CardTitle from '@/features/school/common/CardTitle'
+import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/umc'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -19,6 +20,12 @@ const ApplyStatusCard = ({
       alignItems="flex-start"
       padding={'18px 20px'}
       width={'100%'}
+      css={{
+        '&:hover': {
+          borderColor: theme.colors.lime,
+          boxShadow: `0 0 0 2px ${theme.colors.lime}`,
+        },
+      }}
     >
       <CardTitle title={part} />
       <S.ApplyNum color={isPart ? 'lime' : 'white'}>

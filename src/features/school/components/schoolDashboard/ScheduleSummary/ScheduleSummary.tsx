@@ -53,12 +53,12 @@ const ScheduleSummary = () => {
           <Section variant="solid" alignItems="flex-start" gap={18} css={{ position: 'relative' }}>
             <S.InterviewTitle>오늘 면접 예정자</S.InterviewTitle>
             <S.Grid
-              notProgress={INTERVIEW_MOCKS.length < 0}
+              notProgress={INTERVIEW_MOCKS.length === 0}
               ref={setGridRef}
               onScroll={handleScroll}
             >
-              {showBlur && INTERVIEW_MOCKS.length > 0 ? <S.Blur /> : null}
-              {INTERVIEW_MOCKS.length > 0 ? (
+              {showBlur && INTERVIEW_MOCKS.length !== 0 ? <S.Blur /> : null}
+              {INTERVIEW_MOCKS.length !== 0 ? (
                 INTERVIEW_MOCKS.map((interview, index) => (
                   <InterviewInfo
                     key={index}

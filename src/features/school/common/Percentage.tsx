@@ -22,13 +22,13 @@ const ProgressLine = styled.div`
 `
 
 const Percentage = ({ total, complete }: { total: number; complete: number }) => {
-  const percentage = (complete / total) * 100
+  const percentage = total > 0 ? (complete / total) * 100 : 0
   const formattedPercentage = Number.isInteger(percentage)
     ? String(percentage)
     : percentage.toFixed(2)
   return (
     <Flex flexDirection="column" gap={14}>
-      <ProgressLine width={(complete / total) * 100}></ProgressLine>
+      <ProgressLine width={percentage} />
       <Flex>
         <span css={{ color: theme.colors.white, ...theme.typography.H3.Sb }}>
           {formattedPercentage}%
