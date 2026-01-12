@@ -24,7 +24,7 @@ const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) 
   const totalPages = resumeData.pages.length
   const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
   const currentPageData = resumeData.pages[currentPageIndex] ?? resumeData.pages[0]
-  const currentQuestions = currentPageData.questions
+  const currentQuestions = currentPageData.questions ?? []
 
   const pageTitle = `UMC ${schoolName} ${generation} 지원서`
   const submittedTimeText = resumeData.lastSavedTime
