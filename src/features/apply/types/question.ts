@@ -5,8 +5,6 @@
 
 import type { useForm } from 'react-hook-form'
 
-import type { PartType } from '@/shared/types/umc'
-
 import type { QuestionPage, QuestionUnion } from './question'
 
 // 공통 질문 타입 re-export
@@ -49,12 +47,4 @@ export type ResumeFormValues = Record<string, unknown>
 export type PageType = {
   page: number
   questions: Array<QuestionUnion>
-}
-
-export type FormDefinition = {
-  id: number
-  title: string
-  description: string
-  pages: Array<PageType>
-  partQuestionBank: Record<PartType, Array<{ questions: Array<QuestionUnion> }>>
 }

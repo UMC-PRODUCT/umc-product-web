@@ -106,6 +106,7 @@ export interface QuestionList {
   id: number
   title: string
   description: string
+  lastSavedTime: string
   pages: Array<QuestionPage>
   partQuestionBank: Record<PartType, Array<PartQuestionBankPage>>
 }

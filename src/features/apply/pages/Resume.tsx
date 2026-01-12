@@ -23,7 +23,7 @@ const AUTO_SAVE_INTERVAL_MS = 60_000
 type FormValues = Record<string, unknown>
 
 interface ResumeProps {
-  questionData: QuestionList
+  questionData: QuestionList & { lastSavedTime?: string }
   currentPage: number
   onPageChange: (nextPage: number) => void
 }
@@ -101,6 +101,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
     getValues,
     interval: AUTO_SAVE_INTERVAL_MS,
   })
+  const displayLastSavedTime = lastSavedTime || questionData.lastSavedTime
 
   const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
     const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
@@ -158,8 +159,8 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
       <S.BorderedSection>
         <Flex justifyContent="flex-end">
           <Flex justifyContent="flex-end" alignItems="center" gap="18px">
-            {lastSavedTime && (
-              <S.LastSavedTime>{lastSavedTime}에 마지막으로 저장됨.</S.LastSavedTime>
+            {displayLastSavedTime && (
+              <S.LastSavedTime>{displayLastSavedTime}에 마지막으로 저장됨.</S.LastSavedTime>
             )}
             <Badge
               typo="B3.Md"

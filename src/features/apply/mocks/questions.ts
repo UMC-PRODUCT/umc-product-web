@@ -1,10 +1,11 @@
-import type { FormDefinition, QuestionList } from '@/features/apply/types/question'
+import type { QuestionList } from '@/features/apply/types/question'
 import { PART } from '@/shared/constants/umc'
 
-export const MOCKFORMSDATA_WITH_ANSWER: FormDefinition = {
+export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
   id: 101,
   title: '2024 신입 부원 모집 설문',
   description: `동아리에 지원해주셔서 감사합니다.`,
+  lastSavedTime: '2024년 6월 1일 14:30',
   pages: [
     {
       page: 1,
@@ -318,6 +319,7 @@ export const MOCKFORMSDATA_WITH_NO_ANSWER: QuestionList = {
   1. 모든 질문에 성실히 답변해 주세요.
   2. 면접 일정은 추후 개별 연락 드립니다.
   3. 포트폴리오가 없더라도 지원 가능합니다.`,
+  lastSavedTime: '2024년 6월 1일 14:30',
   pages: [
     {
       page: 1,
