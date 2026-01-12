@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import type {
-  FileUploadStatus,
-  UseFileUploadOptions,
-  UseFileUploadReturn,
-} from '@/features/apply/types/fileUpload'
+import type { UseFileUploadOptions, UseFileUploadReturn } from '@/features/apply/types/fileUpload'
 
-import type { UploadedFile } from '../types/question'
+import type { FileUploadStatus, UploadedFile } from '../types/question'
 
 const UPLOAD_PROGRESS_INTERVAL_MS = 300
 const UPLOAD_PROGRESS_INCREMENT_MAX = 20
