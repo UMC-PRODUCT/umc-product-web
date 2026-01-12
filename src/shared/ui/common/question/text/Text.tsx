@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 
-import * as S from './Text.style'
+import type { QuestionMode } from '@/shared/types/form'
 
-type QuestionMode = 'view' | 'edit'
+import * as S from './Text.style'
 
 interface TextQuestionProps {
   value?: string

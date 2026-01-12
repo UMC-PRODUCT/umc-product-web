@@ -1,8 +1,8 @@
 import { forwardRef, useLayoutEffect, useRef } from 'react'
 
-import * as S from './LongText.style'
+import type { QuestionMode } from '@/shared/types/form'
 
-type QuestionMode = 'view' | 'edit'
+import * as S from './LongText.style'
 
 interface TextQuestionProps {
   value?: string

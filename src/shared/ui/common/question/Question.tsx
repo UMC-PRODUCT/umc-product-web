@@ -1,3 +1,4 @@
+import type { QuestionMode } from '@/shared/types/form'
 import type { FileUploadAnswer, QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 import type { PartType } from '@/shared/types/umc'
 
@@ -9,8 +10,6 @@ import PartChoice from './partChoice/PartChoice'
 import { Text } from './text/Text'
 import { TimeTable } from './timeTable/TimeTable'
 import QuestionLayout from './QuestionLayout'
-
-type QuestionMode = 'view' | 'edit'
 
 interface QuestionProps {
   data: QuestionUnion

@@ -1,6 +1,4 @@
-import type { UploadedFile } from './question'
-
-export type FileUploadStatus = 'loading' | 'success' | 'error'
+import type { FileUploadStatus, UploadedFile } from './question'
 
 export interface FileUploadValue {
   files: Array<UploadedFile>

@@ -1,3 +1,4 @@
+import type { QuestionMode } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
 
 import { Button } from '../../Button'
@@ -7,7 +8,7 @@ import * as S from './PartChoice.style'
 type PartChoiceProps = {
   value: Array<{ id: number; answer: PartType }> | undefined
   onChange?: (selectedOptions: Array<{ id: number; answer: PartType }>) => void
-  mode: 'view' | 'edit'
+  mode: QuestionMode
   options: Array<{ id: number; options: Array<PartType> }>
 }
 const PartChoice = ({ value, options, mode, onChange }: PartChoiceProps) => {

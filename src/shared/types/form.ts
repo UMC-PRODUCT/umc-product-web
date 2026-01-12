@@ -18,3 +18,5 @@ export interface ResumeFormSectionProps {
   onOpenSubmitModal: () => void
   onPageChange: (nextPage: number) => void
 }
+
+export type QuestionMode = 'view' | 'edit'

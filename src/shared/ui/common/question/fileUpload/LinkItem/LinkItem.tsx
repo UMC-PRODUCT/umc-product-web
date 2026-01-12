@@ -1,4 +1,5 @@
 import Delete from '@/shared/assets/icons/delete.svg?react'
+import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import * as S from './LinkItem.style'
@@ -11,7 +12,7 @@ const LinkItem = ({
 }: {
   value: string
   onRemove: () => void
-  mode: 'view' | 'edit'
+  mode: QuestionMode
 }) => {
   const isEditable = mode === 'edit'
   return (

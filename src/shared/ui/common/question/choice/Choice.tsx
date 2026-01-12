@@ -1,8 +1,7 @@
+import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import RadioChoice from './RadioChoice'
-
-type QuestionMode = 'view' | 'edit'
 
 interface SingleChoiceQuestionProps {
   value?: string

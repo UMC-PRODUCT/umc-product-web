@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import ErrorIcon from '@/shared/assets/icons/notice.svg?react'
 import { theme } from '@/shared/styles/theme'
+import type { QuestionMode } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -11,7 +12,7 @@ import * as S from './LinkSection.style'
 
 type LinkSectionProps = {
   links: Array<string>
-  mode: 'view' | 'edit'
+  mode: QuestionMode
   onLinksChange: (nextLinks: Array<string>) => void
 }
 

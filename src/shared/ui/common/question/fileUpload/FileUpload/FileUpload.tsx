@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import Upload from '@/shared/assets/icons/upload.svg?react'
+import type { QuestionMode } from '@/shared/types/form'
 import type { FileUploadAnswer, FileUploadStatus, UploadedFile } from '@/shared/types/question'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -8,8 +9,6 @@ import Section from '@/shared/ui/common/Section/Section'
 import FileList from '../FileList/FileList'
 import LinkSection from '../LinkSection/LinkSection'
 import * as S from './FileUpload.style'
-
-type QuestionMode = 'view' | 'edit'
 
 interface FileUploadProps {
   value?: FileUploadAnswer
@@ -93,7 +92,6 @@ export const FileUpload = ({
     const newFileInfoList = Array.from(fileList).map(createFileInfo)
 
     newFileInfoList.forEach((fileInfo) => {
-      if (!fileInfo.file) return
       simulateUpload(fileInfo.id, fileInfo.file)
     })
 
