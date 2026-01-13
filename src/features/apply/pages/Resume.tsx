@@ -7,6 +7,7 @@ import * as S from '@/features/apply/components/ResumePage.style'
 import { useAutoSave } from '@/features/apply/hooks/useAutoSave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -188,7 +189,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   }
 
   return (
-    <S.PageLayout>
+    <PageLayout>
       <Flex maxWidth="956px">
         <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
       </Flex>
@@ -246,7 +247,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
       )}
-    </S.PageLayout>
+    </PageLayout>
   )
 }
 

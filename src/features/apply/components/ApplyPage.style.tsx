@@ -4,15 +4,6 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
-export const PageLayout = styled(Flex)`
-  flex-direction: column;
-  gap: 28px;
-  padding: 52px 20px;
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 20px 20px;
-  }
-`
-
 export const Info = styled.span`
   color: ${theme.colors.gray[300]};
   ${theme.typography.B4.Md}

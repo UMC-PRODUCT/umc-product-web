@@ -20,12 +20,13 @@ export const Section = styled(Flex, {
   }
 
   ${({ $variant }) =>
-    $variant === 'outline' ? `border: 1px solid ${theme.colors.gray[600]};` : ''}
-  ${({ $variant }) => ($variant === 'both' ? `border: 1.5px solid ${theme.colors.gray[700]};` : '')}
+    $variant === 'outline' || $variant === 'solid'
+      ? `border: 1px solid ${theme.colors.gray[700]};`
+      : ''}
+
   ${({ $variant }) =>
-    $variant === 'dashed' ? `border: 2px dashed ${theme.colors.gray[600]};` : ''}
+    $variant === 'dashed' ? `border: 2px dashed ${theme.colors.gray[700]};` : ''}
+  
   ${({ $variant }) =>
-    $variant === 'solid' || $variant === 'both'
-      ? `background-color: ${theme.colors.gray[800]};`
-      : 'inherit'}
+    $variant === 'solid' ? `background-color: ${theme.colors.gray[800]};` : 'inherit'}
 `

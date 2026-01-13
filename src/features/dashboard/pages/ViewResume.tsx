@@ -1,5 +1,6 @@
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { ResumeData } from '@/shared/types/question'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -32,7 +33,7 @@ const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) 
     : null
 
   return (
-    <S.PageLayout>
+    <PageLayout>
       <Flex maxWidth="956px">
         <PageTitle title={pageTitle} />
       </Flex>
@@ -60,7 +61,7 @@ const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) 
           onPageChange={onPageChange}
         />
       </S.BorderSection>
-    </S.PageLayout>
+    </PageLayout>
   )
 }
 

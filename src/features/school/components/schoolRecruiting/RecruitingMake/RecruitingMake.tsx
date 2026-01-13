@@ -1,0 +1,46 @@
+import Create from '@/shared/assets/icons/create.svg?react'
+import Load from '@/shared/assets/icons/load.svg?react'
+import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { Flex } from '@/shared/ui/common/Flex'
+import Section from '@/shared/ui/common/Section/Section'
+
+import * as S from './RecruitingMake.style'
+
+const RecruitingMake = () => {
+  return (
+    <Flex gap={20} flexDirection="column">
+      <PageTitle title="모집 작성" />
+      <Section variant="outline" padding={16}>
+        <S.Grid>
+          <S.Card
+            variant="solid"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            gap={14}
+          >
+            <Create />
+            <Flex alignItems="flex-start" flexDirection="column" width={'fit-content'}>
+              <span className="title">새로운 모집 생성하기</span>
+              <span className="description">처음부터 새로 작성</span>
+            </Flex>
+          </S.Card>
+          <Section
+            variant="solid"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            gap={14}
+          >
+            <Load />
+            <Flex alignItems="flex-start" flexDirection="column" width={'fit-content'}>
+              <span className="title">임시저장 모집 불러오기</span>
+              <span className="description">작성 중인 모집 이어서 작성</span>
+            </Flex>
+          </Section>
+        </S.Grid>
+      </Section>
+    </Flex>
+  )
+}
+export default RecruitingMake

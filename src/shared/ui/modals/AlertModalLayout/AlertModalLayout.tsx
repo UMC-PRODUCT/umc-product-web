@@ -10,7 +10,7 @@ type AlertModalLayoutProps = {
   content: string
   Icon: React.FC<React.SVGProps<SVGSVGElement>>
   children: React.ReactNode
-  mode: 'success' | 'error' | 'warning'
+  mode: 'success' | 'error' | 'warning' | 'disabled'
 }
 
 const AlertModalLayout = ({
