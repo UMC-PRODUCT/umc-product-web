@@ -37,10 +37,8 @@ const CautionConfirm = ({
           onClick={() => {
             createNewResume()
             onClose()
-            const resumeId = 1 // TODO: 새로 생성된 지원서 ID로 변경
             navigate({
-              to: `/apply/$resumeId`,
-              params: { resumeId: String(resumeId) },
+              to: `/apply/new`,
               search: { page: 1 },
             })
           }}
