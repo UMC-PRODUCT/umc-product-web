@@ -1,5 +1,5 @@
-import CardTitle from '@/features/school/common/CardTitle'
-import Percentage from '@/features/school/common/Percentage'
+import CardTitle from '@/features/school/components/common/CardTitle'
+import Percentage from '@/features/school/components/common/Percentage'
 import Section from '@/shared/ui/common/Section/Section'
 
 const PaperEvaluation = () => {

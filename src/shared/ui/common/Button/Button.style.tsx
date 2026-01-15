@@ -10,7 +10,7 @@ export const getTone = (theme: Theme) =>
         border: 'none',
       },
       outline: {
-        background: theme.colors.gray[700],
+        background: 'transparent',
         color: theme.colors.gray[400],
         border: `1px solid ${theme.colors.gray[600]}`,
       },

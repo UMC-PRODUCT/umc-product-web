@@ -117,10 +117,27 @@ export const buildTimeLabels = ({
   return labels
 }
 
-export const getDayLabel = (dateStr: string) => {
-  const [m, d] = dateStr.split('/').map(Number)
+const parseDateParts = (dateStr: string) => {
+  const parts = dateStr.split('/').map(Number)
+  if (parts.length === 3) {
+    const [y, m, d] = parts
+    return { year: y, month: m, day: d }
+  }
+  const [m, d] = parts
   const currentYear = new Date().getFullYear()
-  const date = new Date(currentYear, m - 1, d)
+  return { year: currentYear, month: m, day: d }
+}
+
+export const formatDateLabel = (dateStr: string) => {
+  const { month, day } = parseDateParts(dateStr)
+  const mm = String(month).padStart(2, '0')
+  const dd = String(day).padStart(2, '0')
+  return `${mm}/${dd}`
+}
+
+export const getDayLabel = (dateStr: string) => {
+  const { year, month, day } = parseDateParts(dateStr)
+  const date = new Date(year, month - 1, day)
   const dayName = new Intl.DateTimeFormat('ko-KR', { weekday: 'short' }).format(date)
   return `(${dayName})`
 }

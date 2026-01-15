@@ -1,3 +1,5 @@
+import { useNavigate } from '@tanstack/react-router'
+
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -7,6 +9,22 @@ import Section from '@/shared/ui/common/Section/Section'
 import * as S from './RecruitingMake.style'
 
 const RecruitingMake = () => {
+  const navigate = useNavigate()
+  const handleCreateRecruiting = () => {
+    const recruitingId = 1
+    navigate({
+      to: '/school/recruiting/$recruitingId',
+      params: { recruitingId: String(recruitingId) },
+    })
+  }
+
+  const handleLoadRecruiting = () => {
+    const recruitingId = 1
+    navigate({
+      to: '/school/recruiting/$recruitingId',
+      params: { recruitingId: String(recruitingId) },
+    })
+  }
   return (
     <Flex gap={20} flexDirection="column">
       <PageTitle title="모집 작성" />
@@ -18,6 +36,7 @@ const RecruitingMake = () => {
             alignItems="center"
             justifyContent="flex-start"
             gap={14}
+            onClick={handleCreateRecruiting}
           >
             <Create />
             <Flex alignItems="flex-start" flexDirection="column" width={'fit-content'}>
@@ -25,19 +44,20 @@ const RecruitingMake = () => {
               <span className="description">처음부터 새로 작성</span>
             </Flex>
           </S.Card>
-          <Section
+          <S.Card
             variant="solid"
             flexDirection="row"
             alignItems="center"
             justifyContent="flex-start"
             gap={14}
+            onClick={handleLoadRecruiting}
           >
             <Load />
             <Flex alignItems="flex-start" flexDirection="column" width={'fit-content'}>
               <span className="title">임시저장 모집 불러오기</span>
               <span className="description">작성 중인 모집 이어서 작성</span>
             </Flex>
-          </Section>
+          </S.Card>
         </S.Grid>
       </Section>
     </Flex>

@@ -5,7 +5,12 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import type { QuestionMode } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 
-import { buildDisabledIndexMap, buildTimeLabels, getDayLabel } from './TimeTable.helpers'
+import {
+  buildDisabledIndexMap,
+  buildTimeLabels,
+  formatDateLabel,
+  getDayLabel,
+} from './TimeTable.helpers'
 import * as S from './TimeTable.style'
 import { useTimeTableSelection } from './useTimeTableSelection'
 
@@ -34,6 +39,9 @@ const TimeTableComponent = (
     () => buildDisabledIndexMap({ dates, disabledSlots, timeRange }),
     [dates, disabledSlots, timeRange],
   )
+  const dateCount = dates.length
+  const timeRangeStart = timeRange[0]
+  const timeRangeEnd = timeRange[1]
 
   // 시간 라벨: 무조건 1시간 단위로만 생성
   const timeLabels = useMemo(
@@ -69,7 +77,7 @@ const TimeTableComponent = (
       el.removeEventListener('scroll', updateShadow)
       window.removeEventListener('resize', updateShadow)
     }
-  }, [dates.length, totalSlots, timeRange[0], timeRange[1]])
+  }, [dateCount, totalSlots, timeRangeStart, timeRangeEnd])
 
   return (
     <S.Container
@@ -88,47 +96,47 @@ const TimeTableComponent = (
         <S.MainAreaWrapper>
           <S.MainArea ref={mainAreaRef}>
             <S.HeaderRow $cols={dates.length}>
-              {dates.map((d) => (
-                <S.HeaderCell
-                  key={d}
-                  onClick={isEditable ? () => handleHeaderClick(d) : undefined}
-                  $isAllSelected={
-                    selectedIndices[d].size > 0 &&
-                    selectedIndices[d].size === totalSlots - disabledIdxMap[d].size
-                  }
-                  $isInteractive={isEditable}
-                >
-                  <Badge
-                    typo="C5.Md"
-                    tone={
-                      selectedIndices[d].size === totalSlots - disabledIdxMap[d].size
-                        ? 'white'
-                        : 'gray'
+              {dates.map((d) => {
+                const selectedForDate = selectedIndices[d] ?? new Set<number>()
+                const disabledForDate = disabledIdxMap[d] ?? new Set<number>()
+                const availableCount = totalSlots - disabledForDate.size
+                return (
+                  <S.HeaderCell
+                    key={d}
+                    onClick={isEditable ? () => handleHeaderClick(d) : undefined}
+                    $isAllSelected={
+                      selectedForDate.size > 0 && selectedForDate.size === availableCount
                     }
-                    variant={
-                      selectedIndices[d].size === totalSlots - disabledIdxMap[d].size
-                        ? 'solid'
-                        : 'outline'
-                    }
+                    $isInteractive={isEditable}
                   >
-                    {`${d} ${getDayLabel(d)}`}
-                  </Badge>
-                </S.HeaderCell>
-              ))}
+                    <Badge
+                      typo="C5.Md"
+                      tone={selectedForDate.size === availableCount ? 'white' : 'gray'}
+                      variant={selectedForDate.size === availableCount ? 'solid' : 'outline'}
+                    >
+                      {`${formatDateLabel(d)} ${getDayLabel(d)}`}
+                    </Badge>
+                  </S.HeaderCell>
+                )
+              })}
             </S.HeaderRow>
             <S.GridBody $cols={dates.length}>
               {Array.from({ length: totalSlots }).map((_, idx) =>
-                dates.map((date) => (
-                  <S.SlotCell
-                    key={`${date}-${idx}`}
-                    $isSelected={selectedIndices[date].has(idx)}
-                    $isDisabled={disabledIdxMap[date].has(idx)}
-                    $isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
-                    $isInteractive={isEditable}
-                    onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
-                    onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
-                  />
-                )),
+                dates.map((date) => {
+                  const selectedForDate = selectedIndices[date] ?? new Set<number>()
+                  const disabledForDate = disabledIdxMap[date] ?? new Set<number>()
+                  return (
+                    <S.SlotCell
+                      key={`${date}-${idx}`}
+                      $isSelected={selectedForDate.has(idx)}
+                      $isDisabled={disabledForDate.has(idx)}
+                      $isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
+                      $isInteractive={isEditable}
+                      onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
+                      onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
+                    />
+                  )
+                }),
               )}
             </S.GridBody>
           </S.MainArea>

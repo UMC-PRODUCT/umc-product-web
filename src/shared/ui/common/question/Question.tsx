@@ -28,7 +28,12 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
     switch (data.type) {
       case 'LONG_TEXT':
         return (
-          <LongText value={value as string | undefined} onChange={handleValueChange} mode={mode} />
+          <LongText
+            placeholder="자유롭게 작성해주세요."
+            value={value as string | undefined}
+            onChange={handleValueChange}
+            mode={mode}
+          />
         )
       case 'SHORT_TEXT':
         return <Text value={value as string | undefined} onChange={handleValueChange} mode={mode} />

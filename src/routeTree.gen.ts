@@ -30,6 +30,7 @@ import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/ma
 import { Route as appDashboardResumeIdIndexRouteImport } from './routes/(app)/dashboard/$resumeId/index'
 import { Route as appApplyNewIndexRouteImport } from './routes/(app)/apply/new/index'
 import { Route as appApplyResumeIdIndexRouteImport } from './routes/(app)/apply/$resumeId/index'
+import { Route as appSchoolRecruitingRecruitingIdIndexRouteImport } from './routes/(app)/school/recruiting/$recruitingId/index'
 
 const appRouteRoute = appRouteRouteImport.update({
   id: '/(app)',
@@ -142,6 +143,12 @@ const appApplyResumeIdIndexRoute = appApplyResumeIdIndexRouteImport.update({
   path: '/apply/$resumeId/',
   getParentRoute: () => appRouteRoute,
 } as any)
+const appSchoolRecruitingRecruitingIdIndexRoute =
+  appSchoolRecruitingRecruitingIdIndexRouteImport.update({
+    id: '/recruiting/$recruitingId/',
+    path: '/recruiting/$recruitingId/',
+    getParentRoute: () => appSchoolRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
+  '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -186,6 +194,7 @@ export interface FileRoutesByTo {
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
+  '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -210,6 +219,7 @@ export interface FileRoutesById {
   '/(app)/school/recruiting/': typeof appSchoolRecruitingIndexRoute
   '/(auth)/auth/login/': typeof authAuthLoginIndexRoute
   '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
+  '/(app)/school/recruiting/$recruitingId/': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
+    | '/school/recruiting/$recruitingId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
+    | '/school/recruiting/$recruitingId'
   id:
     | '__root__'
     | '/'
@@ -279,6 +291,7 @@ export interface FileRouteTypes {
     | '/(app)/school/recruiting/'
     | '/(auth)/auth/login/'
     | '/(auth)/auth/register/'
+    | '/(app)/school/recruiting/$recruitingId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -438,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appApplyResumeIdIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/school/recruiting/$recruitingId/': {
+      id: '/(app)/school/recruiting/$recruitingId/'
+      path: '/recruiting/$recruitingId'
+      fullPath: '/school/recruiting/$recruitingId'
+      preLoaderRoute: typeof appSchoolRecruitingRecruitingIdIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
   }
 }
 
@@ -464,12 +484,15 @@ interface appSchoolRouteRouteChildren {
   appSchoolDashboardIndexRoute: typeof appSchoolDashboardIndexRoute
   appSchoolEvaluationIndexRoute: typeof appSchoolEvaluationIndexRoute
   appSchoolRecruitingIndexRoute: typeof appSchoolRecruitingIndexRoute
+  appSchoolRecruitingRecruitingIdIndexRoute: typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 
 const appSchoolRouteRouteChildren: appSchoolRouteRouteChildren = {
   appSchoolDashboardIndexRoute: appSchoolDashboardIndexRoute,
   appSchoolEvaluationIndexRoute: appSchoolEvaluationIndexRoute,
   appSchoolRecruitingIndexRoute: appSchoolRecruitingIndexRoute,
+  appSchoolRecruitingRecruitingIdIndexRoute:
+    appSchoolRecruitingRecruitingIdIndexRoute,
 }
 
 const appSchoolRouteRouteWithChildren = appSchoolRouteRoute._addFileChildren(

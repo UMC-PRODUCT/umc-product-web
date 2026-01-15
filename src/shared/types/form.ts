@@ -1,6 +1,7 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionUnion } from './question'
+import type { QuestionUnion, TimeTableSlots } from './question'
+import type { PartType } from './umc'
 
 export type Option<T> = { label: T; id: string | number }
 
@@ -17,6 +18,19 @@ export interface ResumeFormSectionProps {
   isSubmitDisabled: boolean
   onOpenSubmitModal: () => void
   onPageChange: (nextPage: number) => void
+}
+export interface RecruitingForms {
+  recruitingName: string
+  recruitingPart: Array<PartType>
+  documentStartDate: Date | null
+  documentEndDate: Date | null
+  documentResultDate: Date | null
+  interviewStartDate: Date | null
+  interviewEndDate: Date | null
+  finalResultDate: Date | null
+  interviewTimeSlots: TimeTableSlots
+  noticeTitle: string
+  noticeContent: string
 }
 
 export type QuestionMode = 'view' | 'edit'
