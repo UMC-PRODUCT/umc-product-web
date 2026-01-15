@@ -10,14 +10,17 @@ import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import type { QuestionList } from '../domain/model'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
-import type { QuestionList, QuestionPage, QuestionUnion } from '../types/question'
-import { findPartQuestion } from '../utils/findPartQuestion'
-import { getSelectedPartsFromAnswer } from '../utils/getSelectedPartsFromAnswer'
+import {
+  findFirstErrorPageIndex,
+  getAllQuestionFieldIds,
+  getPageRequiredFieldIds,
+  getSubmissionValues,
+} from '../utils'
 import ResumeFormSection from './resume/ResumeFormSection'
 import { useResumeForm } from './resume/useResumeForm'
 
@@ -29,75 +32,6 @@ interface ResumeProps {
   questionData: QuestionList & { lastSavedTime?: string }
   currentPage: number
   onPageChange: (nextPage: number) => void
-}
-
-function calculateCurrentPageIndex(pageNumber: number, totalPages: number): number {
-  const validatedPageNumber = Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1
-  const maxPageIndex = Math.max(totalPages - 1, 0)
-  return Math.min(Math.max(validatedPageNumber - 1, 0), maxPageIndex)
-}
-
-function findFirstErrorPageIndex(
-  formErrors: FieldErrors<FormValues>,
-  pages: Array<QuestionPage>,
-): number {
-  const errorFieldIds = Object.keys(formErrors)
-  if (errorFieldIds.length === 0) return -1
-
-  const firstErrorFieldId = errorFieldIds[0]
-  return pages.findIndex((page: QuestionPage) =>
-    (page.questions ?? []).some(
-      (question: QuestionUnion) => String(question.id) === firstErrorFieldId,
-    ),
-  )
-}
-
-function getAllQuestionFieldIds(pages: Array<QuestionPage>): Array<string> {
-  return pages.flatMap((page) =>
-    (page.questions ?? []).map((question: QuestionUnion) => String(question.id)),
-  )
-}
-
-function getPageRequiredFieldIds(page: QuestionPage | undefined): Array<string> {
-  if (!page?.questions) return []
-  return page.questions
-    .filter((question: QuestionUnion) => question.necessary)
-    .map((question: QuestionUnion) => String(question.id))
-}
-
-function getSelectedPartsForSubmission(
-  questionData: QuestionList,
-  formValues: FormValues,
-): Array<PartType> {
-  const partQuestionId = 3
-  const partQuestion = findPartQuestion(questionData, partQuestionId)
-  if (!partQuestion) return []
-
-  const order: Array<1 | 2> = [1, 2]
-  const requiredCount = Math.max(partQuestion.options.length, 1)
-  const effectiveOrder = order.slice(0, requiredCount)
-  const answerValue = formValues[String(partQuestionId)]
-  return getSelectedPartsFromAnswer(answerValue, effectiveOrder)
-}
-
-function getSubmissionValues(questionData: QuestionList, formValues: FormValues): FormValues {
-  const baseQuestionIds = questionData.pages.flatMap((page) =>
-    (page.questions ?? []).map((question) => String(question.id)),
-  )
-  const selectedParts = getSelectedPartsForSubmission(questionData, formValues)
-  const partQuestionIds = selectedParts.flatMap((part) =>
-    questionData.partQuestionBank[part].flatMap((partPage) =>
-      partPage.questions.map((question) => String(question.id)),
-    ),
-  )
-
-  const allowedIds = new Set([...baseQuestionIds, ...partQuestionIds])
-  return Object.keys(formValues).reduce<FormValues>((acc, key) => {
-    if (allowedIds.has(key)) {
-      acc[key] = formValues[key]
-    }
-    return acc
-  }, {})
 }
 
 const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
@@ -128,7 +62,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   )
 
   const totalPages = resolvedPages.length
-  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
+  const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
   const currentQuestions = useMemo(() => currentPageData.questions ?? [], [currentPageData])
 

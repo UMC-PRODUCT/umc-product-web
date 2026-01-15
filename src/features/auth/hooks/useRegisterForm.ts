@@ -1,39 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useMemo } from 'react'
 
-import type { RegisterForm } from '@features/auth/schemas/register'
-import { registerSchema } from '@features/auth/schemas/register'
+import type { RegisterForm } from '../schemas/register'
+import {
+  useEmailVerification,
+  useEmailVerificationSync,
+  useRegisterFormSetup,
+  useSchoolSelection,
+  useTermsAgreement,
+} from './register'
 
-export type TermsAgreementKey = 'service' | 'privacy' | 'marketing'
-
-interface SchoolOption {
-  id: string | number
-  label: string
-}
-
-type TermsAgreementState = Record<TermsAgreementKey, boolean>
-
-const INITIAL_TERMS_STATE: TermsAgreementState = {
-  service: false,
-  privacy: false,
-  marketing: false,
-}
-
-const EMPTY_SCHOOL: SchoolOption = { id: '', label: '' }
-
-const TERM_TO_FORM_FIELD_MAP: Record<TermsAgreementKey, keyof RegisterForm> = {
-  service: 'serviceTerm',
-  privacy: 'privacyTerm',
-  marketing: 'marketingTerm',
-}
-
-const ALL_TERM_KEYS: Array<TermsAgreementKey> = ['service', 'privacy', 'marketing']
-
-interface EmailVerificationState {
-  isVerified: boolean
-  toggleVerification: () => void
-}
+// 타입 재export
+export type { TermsAgreementKey } from './register'
 
 interface FormFieldValues {
   name: string
@@ -41,92 +18,58 @@ interface FormFieldValues {
   email: string
 }
 
+/**
+ * 회원가입 폼 관리 훅 (Composed)
+ *
+ * 분해된 훅들을 조합하여 사용:
+ * - useRegisterFormSetup: 폼 기본 설정
+ * - useEmailVerification: 이메일 인증 상태
+ * - useEmailVerificationSync: 이메일 변경 감시
+ * - useSchoolSelection: 학교 선택 상태
+ * - useTermsAgreement: 약관 동의 상태
+ */
 export function useRegisterForm() {
-  const [isEmailVerified, setIsEmailVerified] = useState(false)
-  const [selectedSchool, setSelectedSchool] = useState<SchoolOption>(EMPTY_SCHOOL)
-  const [termsAgreement, setTermsAgreement] = useState<TermsAgreementState>(INITIAL_TERMS_STATE)
-
+  // 1. 폼 기본 설정
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { isValid: isFormValid, errors: formErrors },
-  } = useForm<RegisterForm>({
-    mode: 'onChange',
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      school: '',
-      name: '',
-      nickname: '',
-      email: '',
-      serviceTerm: false,
-      privacyTerm: false,
-      marketingTerm: false,
-    },
-  })
+  } = useRegisterFormSetup()
 
-  useEffect(() => {
-    register('school')
-    register('serviceTerm')
-    register('privacyTerm')
-    register('marketingTerm')
-  }, [register])
+  // 2. 이메일 인증 상태
+  const {
+    isVerified: isEmailVerified,
+    toggleVerification,
+    resetVerification,
+  } = useEmailVerification()
 
+  // 3. 폼 값 감시
+  const [watchedName, watchedNickname, watchedEmail] = watch(['name', 'nickname', 'email'])
+
+  // 4. 이메일 변경 시 인증 초기화
+  useEmailVerificationSync(watchedEmail, resetVerification)
+
+  // 5. 학교 선택 상태
+  const { selectedSchool, handleSchoolSelect } = useSchoolSelection(setValue)
+
+  // 6. 약관 동의 상태
+  const { termsAgreement, toggleTermAgreement, toggleAllTermsAgreement } =
+    useTermsAgreement(setValue)
+
+  // 제출 핸들러
   const handleFormSubmit = (formData: RegisterForm) => {
     console.log('회원가입 제출 데이터:', formData)
   }
 
-  const [watchedName, watchedNickname, watchedEmail] = watch(['name', 'nickname', 'email'])
-
-  // 이메일이 변경되면 인증 상태 초기화
-  useEffect(() => {
-    setIsEmailVerified(false)
-  }, [watchedEmail])
-
-  const handleSchoolSelect = ({ id, label }: SchoolOption) => {
-    setSelectedSchool({ id, label })
-    setValue('school', label, {
-      shouldValidate: true,
-      shouldDirty: true,
-    })
-  }
-
-  const updateTermAgreement = (termKey: TermsAgreementKey, isAgreed: boolean) => {
-    setTermsAgreement((previousState) => ({
-      ...previousState,
-      [termKey]: isAgreed,
-    }))
-
-    const formFieldName = TERM_TO_FORM_FIELD_MAP[termKey]
-    setValue(formFieldName, isAgreed, {
-      shouldValidate: true,
-      shouldDirty: true,
-    })
-  }
-
-  const toggleTermAgreement = (termKey: TermsAgreementKey) => {
-    const currentValue = termsAgreement[termKey]
-    updateTermAgreement(termKey, !currentValue)
-  }
-
-  const toggleAllTermsAgreement = () => {
-    const areAllTermsAgreed =
-      termsAgreement.service && termsAgreement.privacy && termsAgreement.marketing
-
-    const nextAgreementValue = !areAllTermsAgreed
-
-    ALL_TERM_KEYS.forEach((termKey) => {
-      updateTermAgreement(termKey, nextAgreementValue)
-    })
-  }
-
-  const emailVerification: EmailVerificationState = useMemo(
+  // 이메일 인증 상태 객체
+  const emailVerification = useMemo(
     () => ({
       isVerified: isEmailVerified,
-      toggleVerification: () => setIsEmailVerified((previous) => !previous),
+      toggleVerification,
     }),
-    [isEmailVerified],
+    [isEmailVerified, toggleVerification],
   )
 
   const isRegistrationValid = isFormValid && isEmailVerified

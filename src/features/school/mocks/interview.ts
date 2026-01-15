@@ -1,4 +1,6 @@
-export const INTERVIEW_MOCKS = [
+import type { InterviewCandidate, RecruitingProgressStep } from '@features/school/domain'
+
+export const INTERVIEW_MOCKS: Array<InterviewCandidate> = [
   { time: '09:00', name: '홍길동', nickname: '길동이' },
   { time: '09:30', name: '김철수', nickname: '철수' },
   { time: '10:00', name: '이영희', nickname: '영희' },
@@ -11,7 +13,7 @@ export const INTERVIEW_MOCKS = [
   { time: '14:30', name: '강다현', nickname: '다현' },
 ]
 
-export const RECRUITING_PROGRESS_MOCKS = [
+export const RECRUITING_PROGRESS_MOCKS: Array<RecruitingProgressStep> = [
   { label: '10기 모집' },
   { label: '서류 평가' },
   { label: '서류 결과 발표' },

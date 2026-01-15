@@ -1,5 +1,6 @@
-import type { QuestionList } from '@/features/apply/types/question'
 import { PART } from '@/shared/constants/umc'
+
+import type { QuestionList } from '../domain/model'
 
 export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
   id: 101,

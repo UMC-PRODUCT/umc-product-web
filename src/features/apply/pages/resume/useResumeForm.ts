@@ -1,24 +1,39 @@
-import { useEffect, useMemo } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import type { useForm } from 'react-hook-form'
 
-import { createValidationRules } from '@/features/apply/schemas/applySchemas'
-import type {
-  QuestionList,
-  QuestionPage,
-  QuestionUnion,
-  ResumeFormValues,
-  UseResumeFormReturn,
-} from '@/features/apply/types/question'
+import type { QuestionList, QuestionPage } from '../../domain/model'
+import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
 import {
-  buildDefaultValuesFromQuestions,
-  getAllQuestionsFromPages,
-  isQuestionAnswerEmpty,
-  resolvePagesWithSlots,
-} from '@/features/apply/utils'
+  useFormCompleteness,
+  useFormSetup,
+  useFormValidationRegistration,
+  useFormValuesWatch,
+} from './hooks'
 
+export interface UseResumeFormReturn {
+  control: ReturnType<typeof useForm<ResumeFormValues>>['control']
+  handleSubmit: ReturnType<typeof useForm<ResumeFormValues>>['handleSubmit']
+  trigger: ReturnType<typeof useForm<ResumeFormValues>>['trigger']
+  getValues: ReturnType<typeof useForm<ResumeFormValues>>['getValues']
+  setValue: ReturnType<typeof useForm<ResumeFormValues>>['setValue']
+  clearErrors: ReturnType<typeof useForm<ResumeFormValues>>['clearErrors']
+  reset: ReturnType<typeof useForm<ResumeFormValues>>['reset']
+  errors: ReturnType<typeof useForm<ResumeFormValues>>['formState']['errors']
+  isDirty: boolean
+  isFormIncomplete: boolean
+  resolvedPages: Array<QuestionPage>
+}
+
+/**
+ * 지원서 폼 관리 훅 (Composed)
+ *
+ * 분해된 훅들을 조합하여 사용:
+ * - useFormSetup: 폼 초기 설정
+ * - useFormValuesWatch: 폼 값 감시 및 동적 페이지 해석
+ * - useFormCompleteness: 폼 완성도 검증
+ * - useFormValidationRegistration: 동적 검증 규칙 등록
+ */
 export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
-  const defaultValues = useMemo(() => buildDefaultValuesFromQuestions(questionData), [questionData])
-
+  // 1. 폼 초기 설정
   const {
     control,
     handleSubmit,
@@ -28,49 +43,22 @@ export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
     clearErrors,
     register,
     reset,
-    formState: { errors, isDirty },
-  } = useForm<ResumeFormValues>({
-    mode: 'onChange',
     defaultValues,
-    shouldUnregister: false,
-  })
+    formState: { errors, isDirty },
+  } = useFormSetup(questionData)
 
-  const watchedFormValues = useWatch({
+  // 2. 폼 값 감시 및 동적 페이지 해석
+  const { currentFormValues, resolvedPages } = useFormValuesWatch(
     control,
-    defaultValue: defaultValues as Record<string, {} | undefined>,
-  })
-  const currentFormValues = watchedFormValues as ResumeFormValues
-  const resolvedPages = useMemo(
-    () => resolvePagesWithSlots(questionData, currentFormValues),
-    [questionData, currentFormValues],
+    questionData,
+    defaultValues,
   )
 
-  useEffect(() => {
-    reset(defaultValues, {
-      keepDirtyValues: true,
-      keepErrors: true,
-      keepTouched: true,
-    })
-  }, [defaultValues, reset])
+  // 3. 폼 완성도 검증
+  const { isFormIncomplete } = useFormCompleteness(currentFormValues, resolvedPages)
 
-  const isFormIncomplete = useMemo(() => {
-    const allQuestions = getAllQuestionsFromPages(resolvedPages)
-
-    return allQuestions.some((question) => {
-      const answerValue = currentFormValues[String(question.id)]
-      return isQuestionAnswerEmpty(question, answerValue)
-    })
-  }, [currentFormValues, resolvedPages])
-
-  useEffect(() => {
-    resolvedPages.forEach((page: QuestionPage) => {
-      ;(page.questions ?? []).forEach((question: QuestionUnion) => {
-        const validationRules = createValidationRules(question)
-
-        register(String(question.id), validationRules)
-      })
-    })
-  }, [resolvedPages, register])
+  // 4. 동적 검증 규칙 등록
+  useFormValidationRegistration(resolvedPages, register)
 
   return {
     control,

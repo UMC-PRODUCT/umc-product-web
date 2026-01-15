@@ -1,7 +1,8 @@
+import type { ResumeData } from '@features/apply/domain/model'
+
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { ResumeData } from '@/shared/types/question'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
@@ -12,17 +13,11 @@ interface ViewResumeProps {
   onPageChange: (nextPage: number) => void
 }
 
-function calculateCurrentPageIndex(pageNumber: number, totalPages: number): number {
-  const validatedPageNumber = Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1
-  const maxPageIndex = Math.max(totalPages - 1, 0)
-  return Math.min(Math.max(validatedPageNumber - 1, 0), maxPageIndex)
-}
-
 const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
 
   const totalPages = resumeData.pages.length
-  const currentPageIndex = calculateCurrentPageIndex(currentPage, totalPages)
+  const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resumeData.pages[currentPageIndex] ?? resumeData.pages[0]
   const currentQuestions = currentPageData.questions ?? []
 

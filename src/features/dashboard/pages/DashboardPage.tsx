@@ -1,8 +1,5 @@
-import type {
-  ApplySummary,
-  DashboardProgress,
-  DashboardUser,
-} from '@/features/dashboard/types/dashboard'
+import type { ApplySummary, DashboardProgress, DashboardUser } from '@features/dashboard/domain'
+
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'

@@ -1,6 +1,6 @@
 import { Question } from '@/shared/ui/common/question/Question'
 
-import type { QuestionPage } from '../types/question'
+import type { QuestionPage } from '../domain/model'
 
 export const ResumeForm = ({
   data,

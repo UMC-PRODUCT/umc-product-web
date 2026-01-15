@@ -1,4 +1,4 @@
-import type { DashboardProgress, DashboardUser } from '@/features/dashboard/types/dashboard'
+import type { DashboardProgress, DashboardUser } from '@features/dashboard/domain'
 
 export const DASHBOARD_USER_MOCK: DashboardUser = {
   nickname: '코튼',

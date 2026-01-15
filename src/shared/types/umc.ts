@@ -1,25 +1,26 @@
-export type PartType = 'Plan' | 'Design' | 'Web' | 'iOS' | 'Android' | 'SpringBoot' | 'Node.js'
-export type AccountLevelType = 'ADMIN' | 'MANAGER' | 'USER' | 'CHALLENGER'
+/**
+ * UMC 공통 타입 (하위 호환성 유지)
+ * 실제 타입은 각 feature의 domain에서 관리됨
+ *
+ * @deprecated 새 코드에서는 각 feature의 domain을 직접 import하세요
+ * - Account 관련: @features/auth/domain
+ * - Question 관련: @features/apply/domain
+ * - Management 관련: @features/management/domain
+ */
 
-export type DocumentStatusType = '미정' | '평가 중' | '서류 합격' | '불합격'
-export type FinalStatusType = '미정' | '예정' | '평가 중' | '최종 합격' | '불합격'
+// Auth 도메인에서 re-export
+export type { AccountLevelType, AccountStateType, PartType } from '@features/auth/domain'
 
-export type SchoolStateType = 'ACTIVE' | 'INACTIVE'
+// Apply 도메인에서 re-export
+export type { DocumentStatusType, FinalStatusType } from '@features/apply/domain'
 
-export type AccountStateType = 'ACTIVE' | 'INACTIVE' | 'PENDING'
+// Management 도메인에서 re-export
+export type {
+  EvaluationDocumentType,
+  EvaluationFinalType,
+  RecruitingType,
+  SchoolStateType,
+} from '@features/management/domain'
 
-export type ResumeType = 'PREVIOUS' | 'NOW'
-
-export type RecruitingType = 'OPEN' | 'CLOSED'
-
-export type EvaluationDocumentType =
-  | '서류 평가 전'
-  | '서류 평가 중'
-  | '서류 평가 완료'
-  | '서류 평가 예정'
-
-export type EvaluationFinalType =
-  | '면접 평가 예정'
-  | '면접 평가 중'
-  | '면접 평가 완료'
-  | '면접 평가 전'
+// Dashboard 도메인에서 re-export
+export type { ResumeType } from '@features/dashboard/domain'

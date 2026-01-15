@@ -2,20 +2,20 @@ import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import type { AccountRegisterForm } from '@features/management/schemas/management'
-import { accountRegisterSchema } from '@features/management/schemas/management'
+import { UNI_LIST_MOCK } from '@features/auth/mocks/universities'
 
 import { Button } from '@shared/ui/common/Button/Button'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
-import AccountInviteConfirm from '@/features/management/components/modals/AccountInviteConfirm/AccountInviteConfirm'
-import AccountRegisterConfirm from '@/features/management/components/modals/AccountRegisterConfirm/AccountRegisterConfirm'
 import useAccountLevelOptions from '@/shared/hooks/useAccountLevelOptions'
 import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
+import type { AccountRegisterForm } from '../../../schemas/management'
+import { accountRegisterSchema } from '../../../schemas/management'
+import AccountInviteConfirm from '../../modals/AccountInviteConfirm/AccountInviteConfirm'
+import AccountRegisterConfirm from '../../modals/AccountRegisterConfirm/AccountRegisterConfirm'
 import * as Shared from '../shared'
 import * as S from './AddAccountTab.style'
 

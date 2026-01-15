@@ -1,11 +1,9 @@
 import { forwardRef } from 'react'
-import { useTheme } from '@emotion/react'
 
 import type { BadgeTone, BadgeVariant } from '@shared/types/component'
 import type { TypoToken } from '@shared/types/typo'
-import { resolveTypo } from '@shared/utils/resolveTypo'
 
-import { getTone } from './Badge.style'
+import { StyledBadge } from './Badge.style'
 
 type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
   tone: BadgeTone
@@ -14,32 +12,23 @@ type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
   children: React.ReactNode
 }
 
+/**
+ * 공용 뱃지 컴포넌트
+ * Styled Components + Transient props 패턴 사용
+ */
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   ({ tone, variant, typo, children, className, ...props }, ref) => {
-    const theme = useTheme()
-    const toneMap = getTone(theme)
-    const t = toneMap[tone][variant]
-    const textStyle = resolveTypo(theme, typo)
     return (
-      <span
+      <StyledBadge
         ref={ref}
         className={className}
-        css={{
-          borderRadius: 20,
-          padding: '3px 10px',
-          textAlign: 'center',
-          width: 'fit-content',
-          height: 'fit-content',
-          background: t.background,
-          color: t.color,
-          border: t.border,
-          whiteSpace: 'nowrap',
-          ...textStyle,
-        }}
+        $tone={tone}
+        $variant={variant}
+        $typo={typo}
         {...props}
       >
         {children}
-      </span>
+      </StyledBadge>
     )
   },
 )

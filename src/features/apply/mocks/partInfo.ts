@@ -1,5 +1,7 @@
+import type { PartType } from '@features/auth/domain'
+import type { RecruitingType } from '@features/management/domain'
+
 import { PART_ABILITY } from '@/shared/constants/umc'
-import type { PartType, RecruitingType } from '@/shared/types/umc'
 
 type PartInfo = {
   part: PartType

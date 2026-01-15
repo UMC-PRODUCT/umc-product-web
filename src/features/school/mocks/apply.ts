@@ -1,6 +1,6 @@
-import type { EvaluationDocumentType, EvaluationFinalType, PartType } from '@/shared/types/umc'
+import type { PartApplyStatus, PartEvaluationStatus } from '@features/school/domain'
 
-export const APPLY_PART_STATUS_MOCKS: Array<{ part: PartType | '총 지원자'; applyNum: number }> = [
+export const APPLY_PART_STATUS_MOCKS: Array<PartApplyStatus> = [
   {
     part: 'Plan',
     applyNum: 42,
@@ -35,11 +35,7 @@ export const APPLY_PART_STATUS_MOCKS: Array<{ part: PartType | '총 지원자'; 
   },
 ]
 
-export const EVALUATION_PART_STATUS_MOCKS: Array<{
-  part: PartType
-  document: EvaluationDocumentType
-  interview: EvaluationFinalType
-}> = [
+export const EVALUATION_PART_STATUS_MOCKS: Array<PartEvaluationStatus> = [
   {
     part: 'Plan',
     document: '서류 평가 예정',
