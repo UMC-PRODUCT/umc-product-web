@@ -2,6 +2,18 @@ import type { Theme } from '@emotion/react'
 
 export const getTone = (theme: Theme) =>
   ({
+    darkGray: {
+      solid: {
+        background: theme.colors.gray[700],
+        color: theme.colors.gray[300],
+        border: 'none',
+      },
+      outline: {
+        background: theme.colors.gray[700],
+        color: theme.colors.gray[300],
+        border: `1px solid ${theme.colors.gray[600]}`,
+      },
+    },
     gray: {
       solid: {
         background: theme.colors.gray[300],

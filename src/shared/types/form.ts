@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionUnion, TimeTableSlots } from './question'
+import type { QuestionType, QuestionUnion, TimeTableSlots } from './question'
 import type { PartType } from './umc'
 
 export type Option<T> = { label: T; id: string | number }
@@ -31,6 +31,22 @@ export interface RecruitingForms {
   interviewTimeSlots: TimeTableSlots
   noticeTitle: string
   noticeContent: string
+  questionPages: Array<RecruitingQuestionPage>
 }
 
 export type QuestionMode = 'view' | 'edit'
+
+export interface RecruitingQuestion {
+  questionId: number
+  question: string
+  type: QuestionType
+  necessary: boolean
+  options: Array<string>
+  partSinglePick: boolean
+  isPartQuestion: boolean
+}
+
+export interface RecruitingQuestionPage {
+  page: number
+  questions: Array<RecruitingQuestion>
+}

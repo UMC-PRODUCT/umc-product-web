@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 
 import * as S from '@/features/school/components/common/common'
 import RecruitingStep from '@/features/school/components/Recruiting/RecruitingStepIndicator/RecruitingStep'
+import { PART } from '@/shared/constants/umc'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { RecruitingForms } from '@/shared/types/form'
@@ -21,7 +22,7 @@ import Step4 from '../components/Recruiting/RecruitingStepPage/Step4'
 import { getStepReady, recruitingFormSchema } from './validation'
 
 const Recruiting = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(3)
   const navigate = useNavigate()
   const handlePrevious = () => {
     if (step > 1) {
@@ -57,6 +58,59 @@ const Recruiting = () => {
       interviewTimeSlots: {},
       noticeTitle: '',
       noticeContent: '',
+      questionPages: [
+        {
+          page: 1,
+          questions: [
+            {
+              questionId: 1,
+              question: '',
+              type: 'PART',
+              necessary: true,
+              options: [...PART],
+              partSinglePick: false,
+              isPartQuestion: true,
+            },
+            {
+              questionId: 2,
+              question: '',
+              type: 'LONG_TEXT',
+              necessary: true,
+              options: [],
+              partSinglePick: false,
+              isPartQuestion: false,
+            },
+          ],
+        },
+        {
+          page: 2,
+          questions: [
+            {
+              questionId: 3,
+              question: '',
+              type: 'LONG_TEXT',
+              necessary: true,
+              options: [],
+              partSinglePick: false,
+              isPartQuestion: false,
+            },
+          ],
+        },
+        {
+          page: 3,
+          questions: [
+            {
+              questionId: 4,
+              question: '',
+              type: 'LONG_TEXT',
+              necessary: true,
+              options: [],
+              partSinglePick: false,
+              isPartQuestion: false,
+            },
+          ],
+        },
+      ],
     },
   })
 
@@ -70,6 +124,7 @@ const Recruiting = () => {
     interviewEndDate,
     finalResultDate,
     interviewTimeSlots,
+    questionPages,
     noticeTitle,
     noticeContent,
   ] = useWatch({
@@ -84,6 +139,7 @@ const Recruiting = () => {
       'interviewEndDate',
       'finalResultDate',
       'interviewTimeSlots',
+      'questionPages',
       'noticeTitle',
       'noticeContent',
     ],
@@ -117,6 +173,7 @@ const Recruiting = () => {
           interviewEndDate,
           finalResultDate,
           interviewTimeSlots,
+          questionPages,
           noticeTitle,
           noticeContent,
         },
@@ -133,6 +190,7 @@ const Recruiting = () => {
       interviewEndDate,
       finalResultDate,
       interviewTimeSlots,
+      questionPages,
       noticeTitle,
       noticeContent,
       interviewDates,
@@ -178,6 +236,13 @@ const Recruiting = () => {
         return
       }
     }
+    if (step === 3) {
+      if (!getStepReady(3, { questionPages } as RecruitingForms)) {
+        await trigger(['questionPages'], { shouldFocus: true })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+    }
     if (step === 4) {
       if (!getStepReady(4, { noticeTitle, noticeContent } as RecruitingForms)) {
         await trigger(['noticeTitle', 'noticeContent'], { shouldFocus: true })
@@ -207,7 +272,7 @@ const Recruiting = () => {
               clearErrors={clearErrors}
             />
           )}
-          {step === 3 && <Step3 control={control} />}
+          {step === 3 && <Step3 control={control} trigger={trigger} />}
           {step === 4 && <Step4 control={control} />}
         </form>
       </Section>

@@ -48,7 +48,7 @@ const Navigation = ({
           css={{
             background: 'transparent',
             border: 'none',
-            color: page === currentPage ? theme.colors.lime : 'inherit',
+            color: page === currentPage ? theme.colors.lime : theme.colors.gray[300],
             fontWeight: page === currentPage ? 700 : 400,
             cursor: 'pointer',
           }}
