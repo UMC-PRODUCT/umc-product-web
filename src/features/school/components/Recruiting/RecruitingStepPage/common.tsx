@@ -20,3 +20,27 @@ export const Button = styled.button<{ isActive: boolean }>`
   padding: 16px 28px;
   cursor: pointer;
 `
+
+export const PageTitle = styled.div`
+  ${theme.typography.B4.Sb};
+  display: flex;
+  color: ${theme.colors.lime};
+  gap: 8px;
+  align-items: center;
+  span {
+    ${theme.typography.B5.Md};
+    color: ${theme.colors.white};
+    padding-left: 8px;
+    height: fit-content;
+    border-left: 1.5px solid ${theme.colors.gray[500]};
+  }
+`
+export const PartWarpper = styled.div`
+  display: flex;
+  padding: 3px 10px;
+  border: 1px solid ${theme.colors.gray[600]};
+  border-radius: 4px;
+  background-color: ${theme.colors.gray[700]};
+  color: ${theme.colors.gray[300]};
+  ${theme.typography.B5.Md}
+`

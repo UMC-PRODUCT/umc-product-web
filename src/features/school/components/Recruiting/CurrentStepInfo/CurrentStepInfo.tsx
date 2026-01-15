@@ -13,9 +13,11 @@ const CurrentStepInfo = ({ step }: { step: number }) => {
       justifyContent="space-between"
     >
       <S.Title>현재 단계: {STEP_NAME[step - 1].name}</S.Title>
-      <S.Description>
-        * 필수 입력 필드를 모두 입력해야 다음 단계로 진행할 수 있습니다.
-      </S.Description>
+      {step !== 5 && (
+        <S.Description>
+          * 필수 입력 필드를 모두 입력해야 다음 단계로 진행할 수 있습니다.
+        </S.Description>
+      )}
     </Section>
   )
 }

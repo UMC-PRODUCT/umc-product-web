@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import type { Control } from 'react-hook-form'
+import type { Control, FieldPath } from 'react-hook-form'
 import { useController, useWatch } from 'react-hook-form'
 
 import { theme } from '@/shared/styles/theme'
@@ -9,22 +9,22 @@ import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label'
 
-import QuestionOptionsEditor from './QuestionOptionsEditor'
+import QuestionOptionsEditor from '../QuestionOptionsEditor/QuestionOptionsEditor'
 
 type QuestionTypeConfigProps = {
   control: Control<RecruitingForms>
-  namePrefix: `questionPages.${number}.questions.${number}`
+  namePrefix: string
 }
 
 const QuestionTypeConfig = ({ control, namePrefix }: QuestionTypeConfigProps) => {
   const checkboxId = useId()
   const type = useWatch({
     control,
-    name: `${namePrefix}.type`,
+    name: `${namePrefix}.type` as FieldPath<RecruitingForms>,
   }) as QuestionType | undefined
   const { field: partSinglePickField } = useController({
     control,
-    name: `${namePrefix}.partSinglePick`,
+    name: `${namePrefix}.partSinglePick` as FieldPath<RecruitingForms>,
   })
 
   if (type === 'PART') {

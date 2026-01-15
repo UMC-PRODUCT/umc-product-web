@@ -31,7 +31,8 @@ export interface RecruitingForms {
   interviewTimeSlots: TimeTableSlots
   noticeTitle: string
   noticeContent: string
-  questionPages: Array<RecruitingQuestionPage>
+  pages: Array<RecruitingQuestionPage>
+  partQuestionBank: PartQuestionBank
 }
 
 export type QuestionMode = 'view' | 'edit'
@@ -50,3 +51,6 @@ export interface RecruitingQuestionPage {
   page: number
   questions: Array<RecruitingQuestion>
 }
+
+export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>>
+export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>

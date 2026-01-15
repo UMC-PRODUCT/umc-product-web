@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import dayjs from 'dayjs'
 
 import * as S from '@/features/school/components/common/common'
 import RecruitingStep from '@/features/school/components/Recruiting/RecruitingStepIndicator/RecruitingStep'
-import { PART } from '@/shared/constants/umc'
+import { buildPartQuestionBankPayload } from '@/features/school/utils/partQuestionBank'
+import Check from '@/shared/assets/icons/check.svg?react'
+import Search from '@/shared/assets/icons/search_bold.svg?react'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { RecruitingForms } from '@/shared/types/form'
+import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -19,102 +18,33 @@ import Step1 from '../components/Recruiting/RecruitingStepPage/Step1'
 import Step2 from '../components/Recruiting/RecruitingStepPage/Step2'
 import Step3 from '../components/Recruiting/RecruitingStepPage/Step3'
 import Step4 from '../components/Recruiting/RecruitingStepPage/Step4'
-import { getStepReady, recruitingFormSchema } from './validation'
+import Step5 from '../components/Recruiting/RecruitingStepPage/Step5'
+import { useRecruitingForm } from './hooks/useRecruitingForm'
+import { useRecruitingStepNavigation } from './hooks/useRecruitingStepNavigation'
 
 const Recruiting = () => {
-  const [step, setStep] = useState(3)
   const navigate = useNavigate()
-  const handlePrevious = () => {
-    if (step > 1) {
-      setStep(step - 1)
-    } else {
-      navigate({
-        to: '/school/recruiting',
-        replace: true,
-      })
-    }
-  }
-
-  const stepRef = useRef(step)
-  useEffect(() => {
-    stepRef.current = step
-  }, [step])
-
-  const resolver = useMemo(() => zodResolver(recruitingFormSchema), [])
-
-  const { control, trigger, setValue, setError, clearErrors } = useForm<RecruitingForms>({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    resolver,
-    defaultValues: {
-      recruitingName: '',
-      recruitingPart: [],
-      documentStartDate: null,
-      documentEndDate: null,
-      documentResultDate: null,
-      interviewStartDate: null,
-      interviewEndDate: null,
-      finalResultDate: null,
-      interviewTimeSlots: {},
-      noticeTitle: '',
-      noticeContent: '',
-      questionPages: [
-        {
-          page: 1,
-          questions: [
-            {
-              questionId: 1,
-              question: '',
-              type: 'PART',
-              necessary: true,
-              options: [...PART],
-              partSinglePick: false,
-              isPartQuestion: true,
-            },
-            {
-              questionId: 2,
-              question: '',
-              type: 'LONG_TEXT',
-              necessary: true,
-              options: [],
-              partSinglePick: false,
-              isPartQuestion: false,
-            },
-          ],
-        },
-        {
-          page: 2,
-          questions: [
-            {
-              questionId: 3,
-              question: '',
-              type: 'LONG_TEXT',
-              necessary: true,
-              options: [],
-              partSinglePick: false,
-              isPartQuestion: false,
-            },
-          ],
-        },
-        {
-          page: 3,
-          questions: [
-            {
-              questionId: 4,
-              question: '',
-              type: 'LONG_TEXT',
-              necessary: true,
-              options: [],
-              partSinglePick: false,
-              isPartQuestion: false,
-            },
-          ],
-        },
-      ],
-    },
+  const topRef = useRef<HTMLDivElement | null>(null)
+  const { form, values, interviewDates } = useRecruitingForm()
+  const { control, trigger, setValue, setError, clearErrors } = form
+  const {
+    step,
+    setStep,
+    step3Page,
+    setStep3Page,
+    step3Part,
+    setStep3Part,
+    isStepReady,
+    handlePrevious,
+    handleNext,
+  } = useRecruitingStepNavigation({
+    values,
+    interviewDates,
+    trigger,
+    scrollToTop: () => topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   })
 
-  const [
+  const {
     recruitingName,
     recruitingPart,
     documentStartDate,
@@ -124,137 +54,19 @@ const Recruiting = () => {
     interviewEndDate,
     finalResultDate,
     interviewTimeSlots,
-    questionPages,
+    pages,
+    partQuestionBank,
     noticeTitle,
     noticeContent,
-  ] = useWatch({
-    control,
-    name: [
-      'recruitingName',
-      'recruitingPart',
-      'documentStartDate',
-      'documentEndDate',
-      'documentResultDate',
-      'interviewStartDate',
-      'interviewEndDate',
-      'finalResultDate',
-      'interviewTimeSlots',
-      'questionPages',
-      'noticeTitle',
-      'noticeContent',
-    ],
-  })
-
-  const interviewDates = useMemo(() => {
-    if (!interviewStartDate || !interviewEndDate) return []
-    const start = dayjs(interviewStartDate).startOf('day')
-    const end = dayjs(interviewEndDate).startOf('day')
-    if (end.isBefore(start, 'day')) return []
-    const dates: Array<string> = []
-    let current = start
-    while (!current.isAfter(end, 'day')) {
-      dates.push(current.format('YYYY/MM/DD'))
-      current = current.add(1, 'day')
-    }
-    return dates
-  }, [interviewStartDate, interviewEndDate])
-
-  const isStepReady = useMemo(
-    () =>
-      getStepReady(
-        step,
-        {
-          recruitingName,
-          recruitingPart,
-          documentStartDate,
-          documentEndDate,
-          documentResultDate,
-          interviewStartDate,
-          interviewEndDate,
-          finalResultDate,
-          interviewTimeSlots,
-          questionPages,
-          noticeTitle,
-          noticeContent,
-        },
-        { interviewDates },
-      ),
-    [
-      step,
-      recruitingName,
-      recruitingPart,
-      documentStartDate,
-      documentEndDate,
-      documentResultDate,
-      interviewStartDate,
-      interviewEndDate,
-      finalResultDate,
-      interviewTimeSlots,
-      questionPages,
-      noticeTitle,
-      noticeContent,
-      interviewDates,
-    ],
-  )
-  const handleNext = async () => {
-    if (step === 1) {
-      if (!getStepReady(1, { recruitingName, recruitingPart } as RecruitingForms)) {
-        await trigger(['recruitingName', 'recruitingPart'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
-    }
-    if (step === 2) {
-      if (
-        !getStepReady(
-          2,
-          {
-            documentStartDate,
-            documentEndDate,
-            documentResultDate,
-            interviewStartDate,
-            interviewEndDate,
-            finalResultDate,
-            interviewTimeSlots,
-          } as RecruitingForms,
-          { interviewDates },
-        )
-      ) {
-        await trigger(
-          [
-            'documentStartDate',
-            'documentEndDate',
-            'documentResultDate',
-            'interviewStartDate',
-            'interviewEndDate',
-            'finalResultDate',
-            'interviewTimeSlots',
-          ],
-          { shouldFocus: true },
-        )
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
-    }
-    if (step === 3) {
-      if (!getStepReady(3, { questionPages } as RecruitingForms)) {
-        await trigger(['questionPages'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
-    }
-    if (step === 4) {
-      if (!getStepReady(4, { noticeTitle, noticeContent } as RecruitingForms)) {
-        await trigger(['noticeTitle', 'noticeContent'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
-    }
-    setStep(step + 1)
+  } = values
+  const payload = {
+    ...values,
+    partQuestionBank: buildPartQuestionBankPayload(partQuestionBank, recruitingPart),
   }
 
   return (
     <PageLayout>
+      <div ref={topRef} />
       <S.Header>
         <PageTitle title="새로운 모집 생성" />
         <Button typo="B4.Md" tone="lime" variant="outline" label="← 뒤로가기" />
@@ -272,8 +84,37 @@ const Recruiting = () => {
               clearErrors={clearErrors}
             />
           )}
-          {step === 3 && <Step3 control={control} trigger={trigger} />}
+          {step === 3 && (
+            <Step3
+              control={control}
+              trigger={trigger}
+              page={step3Page}
+              setPage={setStep3Page}
+              part={step3Part}
+              setPart={setStep3Part}
+            />
+          )}
           {step === 4 && <Step4 control={control} />}
+          {step === 5 && (
+            <Step5
+              setStep={setStep}
+              formData={{
+                recruitingName,
+                recruitingPart,
+                documentStartDate,
+                documentEndDate,
+                documentResultDate,
+                interviewStartDate,
+                interviewEndDate,
+                finalResultDate,
+                interviewTimeSlots,
+                pages,
+                partQuestionBank,
+                noticeTitle,
+                noticeContent,
+              }}
+            />
+          )}
         </form>
       </Section>
       <Flex justifyContent="space-between" height={39}>
@@ -285,16 +126,60 @@ const Recruiting = () => {
             css={{ width: step == 1 ? 70 : 120 }}
             onClick={handlePrevious}
           />
-          <Button tone="lime" variant="outline" label="임시 저장" css={{ width: 98 }} />
+          <Button
+            tone="lime"
+            variant="outline"
+            label="임시 저장"
+            css={{ width: 98 }}
+            onClick={() => {
+              console.log('[Recruiting] form data:', payload)
+            }}
+          />
         </Flex>
-        <Button
-          tone={isStepReady ? 'lime' : 'gray'}
-          variant="solid"
-          label="다음 단계 →"
-          css={{ width: 118 }}
-          disabled={!isStepReady}
-          onClick={handleNext}
-        />
+        <Flex width={'fit-content'} height={39}>
+          {step < 5 && (
+            <Flex width={'fit-content'} height={39}>
+              <Button
+                tone={isStepReady ? 'lime' : 'gray'}
+                variant="solid"
+                label="다음 단계 →"
+                css={{ width: 118 }}
+                disabled={!isStepReady}
+                onClick={handleNext}
+              />
+            </Flex>
+          )}
+          {step === 5 && (
+            <Flex width={330} height={39} gap={18}>
+              <Button
+                tone="gray"
+                variant="solid"
+                typo="B3.Sb"
+                label="지원서 미리보기"
+                css={{ width: 163 }}
+                onClick={handlePrevious}
+                iconColor={theme.colors.black}
+                Icon={Search}
+              />
+              <Button
+                tone="lime"
+                variant="solid"
+                label="모집 생성하기"
+                typo="B3.Sb"
+                css={{ width: 149 }}
+                Icon={Check}
+                onClick={() => {
+                  console.log('[Recruiting] form data:', payload)
+                  alert('모집이 생성되었습니다!')
+                  navigate({
+                    to: '/school/recruiting',
+                    replace: true,
+                  })
+                }}
+              />
+            </Flex>
+          )}
+        </Flex>
       </Flex>
     </PageLayout>
   )

@@ -1,5 +1,6 @@
 import { z } from 'zod/v3'
 
+import { getPartKey, getPartQuestionBankKeys } from '@/features/school/utils/partQuestionBank'
 import { PART } from '@/shared/constants/umc'
 import type { RecruitingForms } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
@@ -17,7 +18,8 @@ type StepValues = Pick<
   | 'interviewTimeSlots'
   | 'noticeTitle'
   | 'noticeContent'
-  | 'questionPages'
+  | 'pages'
+  | 'partQuestionBank'
 >
 
 const interviewSlotsSchema = z.record(z.array(z.string())).superRefine((value, ctx) => {
@@ -44,6 +46,7 @@ const interviewSlotsSchema = z.record(z.array(z.string())).superRefine((value, c
 })
 
 const partEnum = z.enum([...PART] as [PartType, ...Array<PartType>])
+const partKeyEnum = z.enum(getPartQuestionBankKeys() as [string, ...Array<string>])
 const questionTypeEnum = z.enum([
   'SHORT_TEXT',
   'CHECKBOX',
@@ -199,35 +202,56 @@ export const getStepReady = (
   return true
 }
 
+export const getStep3PageReady = (pages: RecruitingForms['pages'], pageIndex: number) => {
+  if (pageIndex < 0 || pageIndex >= pages.length) return false
+  const page = pages[pageIndex]
+  return step3Schema.safeParse({
+    pages: [page],
+    partQuestionBank: {},
+    recruitingPart: [],
+  }).success
+}
+
 export const step4Schema = z.object({
   noticeTitle: z.string().trim().min(1, '공지 제목을 입력해 주세요.'),
   noticeContent: z.string().trim().min(1, '공지 내용을 입력해 주세요.'),
 })
 
-const questionPagesSchema = z
-  .array(
-    z.object({
-      page: z.number(),
-      questions: z.array(
-        z.object({
-          questionId: z.number(),
-          question: z.string(),
-          type: questionTypeEnum,
-          necessary: z.boolean(),
-          options: z.array(z.string()),
-          partSinglePick: z.boolean(),
-          isPartQuestion: z.boolean(),
-        }),
-      ),
-    }),
-  )
-  .superRefine((pages, ctx) => {
-    pages.forEach((page, pageIndex) => {
-      page.questions.forEach((question, questionIndex) => {
+const questionSchema = z.object({
+  questionId: z.number(),
+  question: z.string(),
+  type: questionTypeEnum,
+  necessary: z.boolean(),
+  options: z.array(z.string()),
+  partSinglePick: z.boolean(),
+  isPartQuestion: z.boolean(),
+})
+
+const pagesSchema = z.array(
+  z.object({
+    page: z.number(),
+    questions: z.array(questionSchema),
+  }),
+)
+
+const partQuestionBankSchema = z.record(partKeyEnum, z.array(questionSchema))
+
+export const step3Schema = z
+  .object({
+    pages: pagesSchema,
+    partQuestionBank: partQuestionBankSchema.optional(),
+    recruitingPart: step1Schema.shape.recruitingPart,
+  })
+  .superRefine((data, ctx) => {
+    const validateQuestions = (
+      questions: Array<z.infer<typeof questionSchema>>,
+      basePath: Array<string | number>,
+    ) => {
+      questions.forEach((question, questionIndex) => {
         if (question.question.trim().length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: [pageIndex, 'questions', questionIndex, 'question'],
+            path: [...basePath, questionIndex, 'question'],
             message: '질문 내용을 입력해 주세요.',
           })
         }
@@ -236,7 +260,7 @@ const questionPagesSchema = z
         if (isPart && question.options.length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: [pageIndex, 'questions', questionIndex, 'options'],
+            path: [...basePath, questionIndex, 'options'],
             message: '모집할 파트를 선택해 주세요.',
           })
         }
@@ -245,7 +269,7 @@ const questionPagesSchema = z
           if (question.options.length === 0) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              path: [pageIndex, 'questions', questionIndex, 'options'],
+              path: [...basePath, questionIndex, 'options'],
               message: '선택지를 입력해 주세요.',
             })
             return
@@ -254,19 +278,33 @@ const questionPagesSchema = z
             if (option.trim().length === 0) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                path: [pageIndex, 'questions', questionIndex, 'options', optionIndex],
+                path: [...basePath, questionIndex, 'options', optionIndex],
                 message: '선택지를 입력해 주세요.',
               })
             }
           })
         }
       })
+    }
+
+    data.pages.forEach((page, pageIndex) => {
+      validateQuestions(page.questions, ['pages', pageIndex, 'questions'])
+    })
+
+    data.recruitingPart.forEach((part) => {
+      const partKey = getPartKey(part)
+      const questions = data.partQuestionBank?.[partKey] ?? []
+      if (questions.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['partQuestionBank', partKey],
+          message: '파트별 문항을 입력해 주세요.',
+        })
+        return
+      }
+      validateQuestions(questions, ['partQuestionBank', partKey])
     })
   })
-
-export const step3Schema = z.object({
-  questionPages: questionPagesSchema,
-})
 
 export const recruitingFormSchema = withDateOrderRules(
   z.object({
@@ -281,6 +319,7 @@ export const recruitingFormSchema = withDateOrderRules(
     interviewTimeSlots: baseStep2Schema.shape.interviewTimeSlots,
     noticeTitle: step4Schema.shape.noticeTitle,
     noticeContent: step4Schema.shape.noticeContent,
-    questionPages: questionPagesSchema,
+    pages: pagesSchema,
+    partQuestionBank: partQuestionBankSchema.optional(),
   }),
 )

@@ -24,7 +24,7 @@ export const OptionLabel = styled.span`
 
 export const OptionInput = styled.input`
   ${theme.typography.B4.Md}
-  color: ${theme.colors.black};
+  color: ${theme.colors.white};
   background: transparent;
   border: none;
   border-bottom: 1px solid ${theme.colors.gray[600]};

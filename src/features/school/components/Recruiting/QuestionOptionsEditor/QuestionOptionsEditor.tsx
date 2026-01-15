@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { Control } from 'react-hook-form'
+import type { Control, FieldErrors, FieldPath } from 'react-hook-form'
 import { useController, useFormState } from 'react-hook-form'
 
 import CloseIcon from '@/shared/assets/icons/close.svg?react'
@@ -13,24 +13,25 @@ import * as S from './QuestionOptionsEditor.style'
 
 type QuestionOptionsEditorProps = {
   control: Control<RecruitingForms>
-  name: `questionPages.${number}.questions.${number}.options`
+  name: string
   variant: 'RADIO' | 'CHECKBOX'
+}
+
+const getErrorByPath = (errors: FieldErrors<RecruitingForms>, path: string) => {
+  return path.split('.').reduce<unknown>((current, key) => {
+    if (!current || typeof current !== 'object') return undefined
+    return (current as Record<string, unknown>)[key]
+  }, errors)
 }
 
 const QuestionOptionsEditor = ({ control, name, variant }: QuestionOptionsEditorProps) => {
   const { field } = useController({
     control,
-    name,
+    name: name as FieldPath<RecruitingForms>,
   })
   const { errors } = useFormState({ control })
   const options = Array.isArray(field.value) ? field.value : []
-  const nameMatch = name.match(/questionPages\.(\d+)\.questions\.(\d+)\.options/)
-  const pageIndex = nameMatch ? Number(nameMatch[1]) : -1
-  const questionIndex = nameMatch ? Number(nameMatch[2]) : -1
-  const optionErrors =
-    pageIndex >= 0 && questionIndex >= 0
-      ? errors.questionPages?.[pageIndex]?.questions?.[questionIndex]?.options
-      : undefined
+  const optionErrors = getErrorByPath(errors, name)
   const optionErrorMessage =
     typeof optionErrors?.message === 'string'
       ? optionErrors.message

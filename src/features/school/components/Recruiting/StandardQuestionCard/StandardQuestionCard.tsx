@@ -1,5 +1,5 @@
 import type { ComponentProps, HTMLAttributes } from 'react'
-import type { Control } from 'react-hook-form'
+import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
 import { QUESTION_INFO, RESPONSE_INFO } from '@/features/school/constants/QuestionInfo'
@@ -11,13 +11,13 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from './MakeQuestion.style'
-import QuestionTypeConfig from './QuestionTypeConfig'
+import * as S from '../MakeQuestion/MakeQuestion.style'
+import QuestionTypeConfig from '../QuestionTypeConfig/QuestionTypeConfig'
 
 type StandardQuestionCardProps = {
   index: number
   control: Control<RecruitingForms>
-  namePrefix: `questionPages.${number}.questions.${number}`
+  namePrefix: string
   onDelete?: () => void
   canDelete?: boolean
   containerProps?: ComponentProps<typeof Section>
@@ -35,15 +35,15 @@ const StandardQuestionCard = ({
 }: StandardQuestionCardProps) => {
   const { field: questionField, fieldState: questionFieldState } = useController({
     control,
-    name: `${namePrefix}.question`,
+    name: `${namePrefix}.question` as FieldPath<RecruitingForms>,
   })
   const { field: questionTypeField } = useController({
     control,
-    name: `${namePrefix}.type`,
+    name: `${namePrefix}.type` as FieldPath<RecruitingForms>,
   })
   const { field: necessaryField } = useController({
     control,
-    name: `${namePrefix}.necessary`,
+    name: `${namePrefix}.necessary` as FieldPath<RecruitingForms>,
   })
 
   return (

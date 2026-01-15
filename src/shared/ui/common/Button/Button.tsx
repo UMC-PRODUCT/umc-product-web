@@ -18,6 +18,7 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
   rounded?: number
   typo?: TypoToken
   Icon?: SvgIconComponent
+  iconColor?: string
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -33,6 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       typo = DEFAULT_TYPOGRAPHY,
       Icon,
       className,
+      iconColor,
       ...restProps
     },
     ref,
@@ -69,7 +71,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         css={buttonStyles}
         {...restProps}
       >
-        {Icon && <Icon width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
+        {Icon && <Icon color={iconColor} width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
         {label}
       </button>
     )
