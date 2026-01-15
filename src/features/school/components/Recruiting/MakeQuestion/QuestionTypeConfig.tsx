@@ -16,9 +16,6 @@ type QuestionTypeConfigProps = {
   namePrefix: `questionPages.${number}.questions.${number}`
 }
 
-type QuestionTypeFieldName = `${QuestionTypeConfigProps['namePrefix']}.type`
-type PartSinglePickFieldName = `${QuestionTypeConfigProps['namePrefix']}.partSinglePick`
-
 const QuestionTypeConfig = ({ control, namePrefix }: QuestionTypeConfigProps) => {
   const checkboxId = useId()
   const type = useWatch({

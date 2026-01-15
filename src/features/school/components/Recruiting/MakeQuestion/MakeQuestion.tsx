@@ -19,9 +19,6 @@ type MakeQuestionProps = {
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
 
-type QuestionTypeFieldName = `${MakeQuestionProps['namePrefix']}.type`
-type IsPartFieldName = `${MakeQuestionProps['namePrefix']}.isPartQuestion`
-
 const MakeQuestion = (props: MakeQuestionProps) => {
   const type = useWatch({
     control: props.control,

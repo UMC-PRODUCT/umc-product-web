@@ -13,6 +13,7 @@ export const QuestionInfo = styled.div`
   justify-content: center;
   align-items: center;
   cursor: grab;
+  -webkit-user-drag: element;
 `
 export const Header = styled.div`
   display: flex;
@@ -27,8 +28,7 @@ export const Body = styled.div`
 
 export const DragPlaceholder = styled.div<{ $height: number }>`
   height: ${(props) => props.$height}px;
-  border: 2px dashed ${theme.colors.gray[300]};
+  border: 2px dashed ${theme.colors.lime};
   border-radius: 8px;
-  background: ${theme.colors.gray[50]};
   width: 100%;
 `

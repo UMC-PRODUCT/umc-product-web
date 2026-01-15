@@ -25,13 +25,6 @@ type PartQuestionCardProps = {
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
 
-type QuestionFieldName = `${PartQuestionCardProps['namePrefix']}.question`
-type QuestionTypeFieldName = `${PartQuestionCardProps['namePrefix']}.type`
-type NecessaryFieldName = `${PartQuestionCardProps['namePrefix']}.necessary`
-type IsPartFieldName = `${PartQuestionCardProps['namePrefix']}.isPartQuestion`
-type PartSinglePickFieldName = `${PartQuestionCardProps['namePrefix']}.partSinglePick`
-type PartOptionsFieldName = `${PartQuestionCardProps['namePrefix']}.options`
-
 const PartQuestionCard = ({
   index,
   control,

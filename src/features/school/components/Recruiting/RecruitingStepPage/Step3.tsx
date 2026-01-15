@@ -30,6 +30,8 @@ const QuestionList = ({ control, pageIndex, getNextQuestionId, trigger }: Questi
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
   const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
+  const draggingIndexRef = useRef<number | null>(null)
+  const placeholderHeightRef = useRef<number>(0)
   const isFirstRender = useRef(true)
   const fieldArrayName = `questionPages.${pageIndex}.questions` as const
   const { fields, append, remove, move } = useFieldArray({
@@ -41,14 +43,21 @@ const QuestionList = ({ control, pageIndex, getNextQuestionId, trigger }: Questi
     control,
     name: fieldArrayName,
   })
+  const hasTouchedPageQuestions = Boolean(
+    (
+      touchedFields as unknown as {
+        questionPages?: Array<{ questions?: unknown }>
+      }
+    ).questionPages?.[pageIndex]?.questions,
+  )
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
       return
     }
-    if (!touchedFields.questionPages?.[pageIndex]?.questions) return
+    if (!hasTouchedPageQuestions) return
     void trigger(fieldArrayName)
-  }, [fieldArrayName, pageIndex, trigger, touchedFields.questionPages, watchedQuestions])
+  }, [fieldArrayName, hasTouchedPageQuestions, trigger, watchedQuestions])
 
   const handleAddQuestion = () => {
     append({
@@ -68,26 +77,35 @@ const QuestionList = ({ control, pageIndex, getNextQuestionId, trigger }: Questi
 
   const handleDragStart = (index: number) => (event: DragEvent<HTMLDivElement>) => {
     draggingId.current = index
-    setDraggingIndex(index)
-    setPlaceholderIndex(index)
+    draggingIndexRef.current = index
     event.dataTransfer.effectAllowed = 'move'
     event.dataTransfer.setData('text/plain', String(index))
     const cardNode = cardRefs.current[index]
     if (cardNode) {
-      setPlaceholderHeight(cardNode.getBoundingClientRect().height)
+      placeholderHeightRef.current = cardNode.getBoundingClientRect().height
       event.dataTransfer.setDragImage(cardNode, 0, 0)
     }
   }
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (event: DragEvent<HTMLDivElement>) => {
     draggingId.current = null
+    draggingIndexRef.current = null
+    placeholderHeightRef.current = 0
     setDraggingIndex(null)
     setPlaceholderIndex(null)
+    setPlaceholderHeight(0)
   }
 
   const handleDragOver = (index: number) => (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault()
-    if (draggingIndex === null || index === draggingIndex) return
+    event.dataTransfer.dropEffect = 'move'
+    if (draggingIndex === null && draggingIndexRef.current !== null) {
+      setDraggingIndex(draggingIndexRef.current)
+    }
+    if (placeholderHeight === 0 && placeholderHeightRef.current > 0) {
+      setPlaceholderHeight(placeholderHeightRef.current)
+    }
+    if (draggingIndexRef.current === null || index === draggingIndexRef.current) return
     setPlaceholderIndex(index)
   }
 
@@ -103,7 +121,12 @@ const QuestionList = ({ control, pageIndex, getNextQuestionId, trigger }: Questi
   return (
     <Flex flexDirection="column" gap={18}>
       {fields.map((question, index) => (
-        <div key={question.id} css={{ width: '100%' }}>
+        <div
+          key={question.id}
+          onDragOver={handleDragOver(index)}
+          onDrop={handleDrop(index)}
+          css={{ width: '100%' }}
+        >
           {placeholderIndex === index && draggingIndex !== null ? (
             <Q.DragPlaceholder $height={placeholderHeight} />
           ) : null}
@@ -111,8 +134,6 @@ const QuestionList = ({ control, pageIndex, getNextQuestionId, trigger }: Questi
             ref={(node) => {
               cardRefs.current[index] = node
             }}
-            onDragOver={handleDragOver(index)}
-            onDrop={handleDrop(index)}
             css={{
               width: '100%',
               transition: 'transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease',

@@ -5,7 +5,6 @@ import { useController } from 'react-hook-form'
 import { QUESTION_INFO, RESPONSE_INFO } from '@/features/school/constants/QuestionInfo'
 import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
-import type { QuestionType } from '@/shared/types/question'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -24,10 +23,6 @@ type StandardQuestionCardProps = {
   containerProps?: ComponentProps<typeof Section>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
-
-type QuestionFieldName = `${StandardQuestionCardProps['namePrefix']}.question`
-type QuestionTypeFieldName = `${StandardQuestionCardProps['namePrefix']}.type`
-type NecessaryFieldName = `${StandardQuestionCardProps['namePrefix']}.necessary`
 
 const StandardQuestionCard = ({
   index,

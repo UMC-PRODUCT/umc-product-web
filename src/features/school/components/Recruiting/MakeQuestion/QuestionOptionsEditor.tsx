@@ -108,7 +108,7 @@ const QuestionOptionsEditor = ({ control, name, variant }: QuestionOptionsEditor
           css={{ width: 'fit-content' }}
           onClick={handleAppend}
         >
-          &apos;기타&apos; 추가
+          기타 추가
         </Badge>
       </Flex>
       {optionErrorMessage ? (
