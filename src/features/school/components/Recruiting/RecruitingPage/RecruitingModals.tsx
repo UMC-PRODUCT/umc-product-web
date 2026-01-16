@@ -1,4 +1,4 @@
-import type { QuestionList } from '@/shared/types/question'
+import type { QuestionList } from '@features/apply/domain'
 
 import CreateRecruitingConfirm from '../modals/CreateRecruitingConferm'
 import RecruitingPreview from '../modals/RecruitingPreview'

@@ -10,6 +10,18 @@ import type { TypoToken } from '@shared/types/typo'
  * outline: 테두리만 표시
  */
 const toneStyles = {
+  darkGray: {
+    solid: {
+      background: theme.colors.gray[700],
+      color: theme.colors.gray[300],
+      border: 'none',
+    },
+    outline: {
+      background: theme.colors.gray[700],
+      color: theme.colors.gray[300],
+      border: `1px solid ${theme.colors.gray[600]}`,
+    },
+  },
   gray: {
     solid: {
       background: theme.colors.gray[300],

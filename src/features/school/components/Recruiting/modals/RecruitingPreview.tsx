@@ -5,7 +5,7 @@ import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { QuestionList } from '@/shared/types/question'
+import type { PartQuestionBankPage, QuestionList } from '@features/apply/domain'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
@@ -27,8 +27,8 @@ const RecruitingPreview = ({
   )
   const partQuestions = useMemo(
     () =>
-      Object.values(questionData.partQuestionBank).flatMap((partPages) =>
-        partPages.flatMap((partPage) => partPage.questions),
+      (Object.values(questionData.partQuestionBank) as Array<Array<PartQuestionBankPage>>).flatMap(
+        (partPages) => partPages.flatMap((partPage) => partPage.questions),
       ),
     [questionData.partQuestionBank],
   )

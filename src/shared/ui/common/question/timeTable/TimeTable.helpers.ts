@@ -1,4 +1,4 @@
-import type { TimeTableSlots } from '@/shared/types/question'
+import type { TimeTableSlots } from '@features/apply/domain'
 
 export const timeToMinutes = (time: string) => {
   const [h, m] = time.split(':').map(Number)
@@ -72,8 +72,8 @@ export const buildDerivedSelected = ({
     const times = value[date] ?? []
     nextState[date] = new Set(
       times
-        .map((time) => timeToIndex(time, visualStartMin))
-        .filter((idx) => idx >= 0 && idx < totalSlots),
+        .map((time: string) => timeToIndex(time, visualStartMin))
+        .filter((idx: number) => idx >= 0 && idx < totalSlots),
     )
   })
   return nextState

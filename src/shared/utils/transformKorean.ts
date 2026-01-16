@@ -1,4 +1,4 @@
-import type { QuestionType } from '../types/question'
+import type { QuestionType } from '@features/apply/domain'
 
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {

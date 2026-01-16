@@ -18,7 +18,7 @@ import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms } from '@/shared/types/form'
-import type { QuestionList } from '@/shared/types/question'
+import type { QuestionList } from '@features/apply/domain'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
