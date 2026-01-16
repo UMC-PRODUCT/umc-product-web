@@ -13,7 +13,7 @@ import Label from '@/shared/ui/common/Label'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from '../MakeQuestion/MakeQuestion.style'
+import * as S from './PartQuestionCard.style'
 
 type PartQuestionCardProps = {
   index: number
@@ -21,6 +21,7 @@ type PartQuestionCardProps = {
   namePrefix: string
   containerProps?: HTMLAttributes<HTMLDivElement>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
+  isLocked?: boolean
 }
 
 const PartQuestionCard = ({
@@ -29,6 +30,7 @@ const PartQuestionCard = ({
   namePrefix,
   containerProps,
   dragHandleProps,
+  isLocked = false,
 }: PartQuestionCardProps) => {
   const { field: questionField, fieldState: questionFieldState } = useController({
     control,
@@ -52,6 +54,10 @@ const PartQuestionCard = ({
   })
 
   const checkboxId = useId()
+  const questionValue =
+    typeof questionField.value === 'string' || typeof questionField.value === 'number'
+      ? questionField.value
+      : ''
 
   useEffect(() => {
     if (questionTypeField.value !== 'PART') {
@@ -77,12 +83,13 @@ const PartQuestionCard = ({
         type="text"
         label="질문 내용"
         autoComplete="none"
-        necessary={false}
+        necessary={true}
         placeholder="예: 희망 파트를 선택해 주세요."
         name={questionField.name}
-        value={questionField.value}
+        value={questionValue}
         onChange={questionField.onChange}
         onBlur={questionField.onBlur}
+        disabled={isLocked}
         error={{
           error: !!questionFieldState.error,
           errorMessage: questionFieldState.error?.message || '',
@@ -101,6 +108,7 @@ const PartQuestionCard = ({
             id={checkboxId}
             checked={Boolean(partSinglePickField.value)}
             onCheckedChange={(checked) => partSinglePickField.onChange(checked === true)}
+            disabled={isLocked}
           />
           <Label
             label="1지망만 입력받기"

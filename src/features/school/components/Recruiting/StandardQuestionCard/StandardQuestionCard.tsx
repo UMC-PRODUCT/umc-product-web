@@ -11,8 +11,8 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from '../MakeQuestion/MakeQuestion.style'
 import QuestionTypeConfig from '../QuestionTypeConfig/QuestionTypeConfig'
+import * as S from './StandardQuestionCard.style'
 
 type StandardQuestionCardProps = {
   index: number
@@ -20,6 +20,7 @@ type StandardQuestionCardProps = {
   namePrefix: string
   onDelete?: () => void
   canDelete?: boolean
+  isLocked?: boolean
   containerProps?: ComponentProps<typeof Section>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
@@ -30,6 +31,7 @@ const StandardQuestionCard = ({
   namePrefix,
   onDelete,
   canDelete = true,
+  isLocked = false,
   containerProps,
   dragHandleProps,
 }: StandardQuestionCardProps) => {
@@ -45,6 +47,10 @@ const StandardQuestionCard = ({
     control,
     name: `${namePrefix}.necessary` as FieldPath<RecruitingForms>,
   })
+  const questionValue =
+    typeof questionField.value === 'string' || typeof questionField.value === 'number'
+      ? questionField.value
+      : ''
 
   return (
     <Section variant="solid" gap={22} {...containerProps}>
@@ -60,6 +66,7 @@ const StandardQuestionCard = ({
             label="삭제"
             css={{ width: 'fit-content', height: '28px', padding: '4px 10px' }}
             onClick={onDelete}
+            disabled={isLocked}
           />
         ) : null}
       </S.Header>
@@ -67,12 +74,13 @@ const StandardQuestionCard = ({
         type="text"
         label="질문 내용"
         autoComplete="none"
-        necessary={false}
+        necessary={true}
         placeholder="예: 지원 동기를 작성해 주세요."
         name={questionField.name}
-        value={questionField.value}
+        value={questionValue}
         onChange={questionField.onChange}
         onBlur={questionField.onBlur}
+        disabled={isLocked}
         error={{
           error: !!questionFieldState.error,
           errorMessage: questionFieldState.error?.message || '',
@@ -87,7 +95,8 @@ const StandardQuestionCard = ({
               key={info.label}
               tone={info.id === questionTypeField.value ? 'lime' : 'gray'}
               variant="outline"
-              onClick={() => questionTypeField.onChange(info.id)}
+              onClick={isLocked ? undefined : () => questionTypeField.onChange(info.id)}
+              css={{ cursor: isLocked ? 'not-allowed' : 'pointer' }}
             >
               {info.label}
             </Badge>
@@ -103,14 +112,15 @@ const StandardQuestionCard = ({
               key={info.label}
               tone={info.value === Boolean(necessaryField.value) ? 'lime' : 'gray'}
               variant="outline"
-              onClick={() => necessaryField.onChange(info.value)}
+              onClick={isLocked ? undefined : () => necessaryField.onChange(info.value)}
+              css={{ cursor: isLocked ? 'not-allowed' : 'pointer' }}
             >
               {info.label}
             </Badge>
           ))}
         </Flex>
       </Flex>
-      <QuestionTypeConfig control={control} namePrefix={namePrefix} />
+      <QuestionTypeConfig control={control} namePrefix={namePrefix} isLocked={isLocked} />
     </Section>
   )
 }

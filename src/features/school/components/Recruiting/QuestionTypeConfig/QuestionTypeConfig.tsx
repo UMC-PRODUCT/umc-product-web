@@ -14,9 +14,10 @@ import QuestionOptionsEditor from '../QuestionOptionsEditor/QuestionOptionsEdito
 type QuestionTypeConfigProps = {
   control: Control<RecruitingForms>
   namePrefix: string
+  isLocked?: boolean
 }
 
-const QuestionTypeConfig = ({ control, namePrefix }: QuestionTypeConfigProps) => {
+const QuestionTypeConfig = ({ control, namePrefix, isLocked = false }: QuestionTypeConfigProps) => {
   const checkboxId = useId()
   const type = useWatch({
     control,
@@ -34,6 +35,7 @@ const QuestionTypeConfig = ({ control, namePrefix }: QuestionTypeConfigProps) =>
           id={checkboxId}
           checked={Boolean(partSinglePickField.value)}
           onCheckedChange={(checked) => partSinglePickField.onChange(checked === true)}
+          disabled={isLocked}
         />
         <Label
           label="1지망만 입력받기"
@@ -51,6 +53,7 @@ const QuestionTypeConfig = ({ control, namePrefix }: QuestionTypeConfigProps) =>
         control={control}
         name={`${namePrefix}.options`}
         variant={type === 'RADIO' ? 'RADIO' : 'CHECKBOX'}
+        isLocked={isLocked}
       />
     )
   }

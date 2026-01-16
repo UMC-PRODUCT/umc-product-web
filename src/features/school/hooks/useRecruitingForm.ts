@@ -7,7 +7,7 @@ import { getAllQuestionIdsFromPartBank, getPartKey } from '@/features/school/uti
 import { PART } from '@/shared/constants/umc'
 import type { PartQuestionBank, RecruitingForms } from '@/shared/types/form'
 
-import { recruitingFormSchema } from '../validation'
+import { recruitingFormSchema } from '../schemas/validation'
 
 const defaultValues: RecruitingForms = {
   recruitingName: '',
@@ -33,15 +33,6 @@ const defaultValues: RecruitingForms = {
           options: [...PART],
           partSinglePick: false,
           isPartQuestion: true,
-        },
-        {
-          questionId: 2,
-          question: '',
-          type: 'LONG_TEXT',
-          necessary: true,
-          options: [],
-          partSinglePick: false,
-          isPartQuestion: false,
         },
       ],
     },

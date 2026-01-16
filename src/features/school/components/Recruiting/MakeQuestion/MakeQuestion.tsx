@@ -15,6 +15,7 @@ type MakeQuestionProps = {
   namePrefix: string
   onDelete?: () => void
   canDelete?: boolean
+  isLocked?: boolean
   containerProps?: ComponentProps<typeof Section>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }

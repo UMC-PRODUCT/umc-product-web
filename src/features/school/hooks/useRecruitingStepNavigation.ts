@@ -5,13 +5,14 @@ import { useNavigate } from '@tanstack/react-router'
 import { getPartFromKey } from '@/features/school/utils/partQuestionBank'
 import type { RecruitingForms } from '@/shared/types/form'
 
-import { getStepReady, step3Schema } from '../validation'
+import { getStepReady, step3Schema } from '../schemas/validation'
 
 type UseRecruitingStepNavigationParams = {
   values: RecruitingForms
   interviewDates: Array<string>
   trigger: UseFormTrigger<RecruitingForms>
   scrollToTop?: () => void
+  partCompletion?: Partial<Record<RecruitingForms['recruitingPart'][number], boolean>>
 }
 
 export const useRecruitingStepNavigation = ({
@@ -19,16 +20,24 @@ export const useRecruitingStepNavigation = ({
   interviewDates,
   trigger,
   scrollToTop,
+  partCompletion,
 }: UseRecruitingStepNavigationParams) => {
   const [step, setStep] = useState(1)
   const [step3Page, setStep3Page] = useState(1)
   const [step3Part, setStep3Part] = useState<RecruitingForms['recruitingPart'][number] | null>(null)
   const navigate = useNavigate()
 
-  const isStepReady = useMemo(
-    () => getStepReady(step, values, { interviewDates }),
-    [step, values, interviewDates],
+  const areAllPartsCompleted = useMemo(
+    () => values.recruitingPart.every((part) => partCompletion?.[part]),
+    [values.recruitingPart, partCompletion],
   )
+  const isStepReady = useMemo(() => {
+    const baseReady = getStepReady(step, values, { interviewDates })
+    if (step === 3) {
+      return baseReady && areAllPartsCompleted
+    }
+    return baseReady
+  }, [step, values, interviewDates, areAllPartsCompleted])
 
   const handlePrevious = () => {
     if (step > 1) {
@@ -72,6 +81,15 @@ export const useRecruitingStepNavigation = ({
       }
     }
     if (step === 3) {
+      if (!areAllPartsCompleted) {
+        const firstIncompletePart = values.recruitingPart.find((part) => !partCompletion?.[part])
+        setStep3Page(3)
+        if (firstIncompletePart) {
+          setStep3Part(firstIncompletePart)
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
       const validation = step3Schema.safeParse({
         pages: values.pages,
         partQuestionBank: values.partQuestionBank,

@@ -119,7 +119,11 @@ const Step5 = ({
       </PreviewSection>
       <PreviewSection title="공지 작성" step={4} setStep={setStep}>
         <QuestionPreview questionLabel={formData.noticeTitle} questionTitle="공지 제목" />
-        <QuestionPreview questionLabel={formData.noticeContent} questionTitle="공지 내용" />
+        <QuestionPreview
+          isNotice={true}
+          questionLabel={formData.noticeContent}
+          questionTitle="공지 내용"
+        />
       </PreviewSection>
     </Section>
   )

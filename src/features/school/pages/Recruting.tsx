@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import * as S from '@/features/school/components/common/common'
@@ -9,6 +9,7 @@ import Search from '@/shared/assets/icons/search_bold.svg?react'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
+import type { RecruitingForms } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -19,14 +20,24 @@ import Step2 from '../components/Recruiting/RecruitingStepPage/Step2'
 import Step3 from '../components/Recruiting/RecruitingStepPage/Step3'
 import Step4 from '../components/Recruiting/RecruitingStepPage/Step4'
 import Step5 from '../components/Recruiting/RecruitingStepPage/Step5'
-import { useRecruitingForm } from './hooks/useRecruitingForm'
-import { useRecruitingStepNavigation } from './hooks/useRecruitingStepNavigation'
+import { useRecruitingForm } from '../hooks/useRecruitingForm'
+import { useRecruitingStepNavigation } from '../hooks/useRecruitingStepNavigation'
 
 const Recruiting = () => {
   const navigate = useNavigate()
   const topRef = useRef<HTMLDivElement | null>(null)
   const { form, values, interviewDates } = useRecruitingForm()
   const { control, trigger, setValue, setError, clearErrors } = form
+  const [partCompletion, setPartCompletion] = useState<
+    Partial<Record<RecruitingForms['recruitingPart'][number], boolean>>
+  >({})
+  const normalizedPartCompletion = useMemo(() => {
+    const next: Partial<Record<RecruitingForms['recruitingPart'][number], boolean>> = {}
+    values.recruitingPart.forEach((part) => {
+      next[part] = partCompletion[part] ?? false
+    })
+    return next
+  }, [values.recruitingPart, partCompletion])
   const {
     step,
     setStep,
@@ -41,6 +52,7 @@ const Recruiting = () => {
     values,
     interviewDates,
     trigger,
+    partCompletion: normalizedPartCompletion,
     scrollToTop: () => topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   })
 
@@ -92,6 +104,8 @@ const Recruiting = () => {
               setPage={setStep3Page}
               part={step3Part}
               setPart={setStep3Part}
+              partCompletion={normalizedPartCompletion}
+              setPartCompletion={setPartCompletion}
             />
           )}
           {step === 4 && <Step4 control={control} />}

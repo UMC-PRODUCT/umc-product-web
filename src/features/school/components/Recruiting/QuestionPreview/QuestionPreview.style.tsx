@@ -9,12 +9,25 @@ export const Title = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `
-export const QuestionLabel = styled.div`
+export const QuestionLabel = styled.div<{ isNotice?: boolean }>`
   ${theme.typography.B4.Md}
   color: ${theme.colors.white};
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal;
+  width: 100%;
+  margin-top: 8px;
+  ${(props) =>
+    props.isNotice
+      ? `
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      `
+      : `
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      `}
 `

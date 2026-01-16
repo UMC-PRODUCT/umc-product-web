@@ -1,196 +1,33 @@
-import type { DragEvent } from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { Control, UseFormTrigger } from 'react-hook-form'
-import { useFieldArray, useFormState, useWatch } from 'react-hook-form'
+import { useFormState, useWatch } from 'react-hook-form'
 
 import { getPartKey } from '@/features/school/utils/partQuestionBank'
-import Plus from '@/shared/assets/icons/plus.svg?react'
+import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { Option, RecruitingForms } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
+import { Badge } from '@/shared/ui/common/Badge'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Navigation from '@/shared/ui/common/Navigation/Navigation'
 import Section from '@/shared/ui/common/Section/Section'
-import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
-import MakeQuestion from '../MakeQuestion/MakeQuestion'
-import * as Q from '../MakeQuestion/MakeQuestion.style'
+import QuestionList from '../QuestionList/QuestionList'
 import RecuritingPageNavigator from '../RecruitingPageNavigator/RecruitingPageNavigator'
 import * as S from './common'
 
 const PAGE_LIST = [1, 2, 3]
-type QuestionItem = RecruitingForms['pages'][number]['questions'][number]
-type QuestionListValue = Array<QuestionItem | undefined>
 
-type QuestionListProps = {
+interface Step3Props {
   control: Control<RecruitingForms>
-  fieldArrayName: string
-  namePrefixBase: string
-  getNextQuestionId: () => number
   trigger: UseFormTrigger<RecruitingForms>
-  hasTouched: boolean
-}
-
-const QuestionList = ({
-  control,
-  fieldArrayName,
-  namePrefixBase,
-  getNextQuestionId,
-  trigger,
-  hasTouched,
-}: QuestionListProps) => {
-  const draggingId = useRef<number | null>(null)
-  const cardRefs = useRef<Array<HTMLDivElement | null>>([])
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
-  const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
-  const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
-  const draggingIndexRef = useRef<number | null>(null)
-  const placeholderHeightRef = useRef<number>(0)
-  const isFirstRender = useRef(true)
-  const prevQuestionsSignatureRef = useRef<string>('')
-  const { fields, append, remove, move } = useFieldArray({
-    control,
-    name: fieldArrayName as never,
-  })
-  const watchedQuestions = useWatch({
-    control,
-    name: fieldArrayName as never,
-  }) as QuestionListValue | undefined
-  const normalizedQuestions = useMemo<QuestionListValue>(
-    () => (Array.isArray(watchedQuestions) ? watchedQuestions : []),
-    [watchedQuestions],
-  )
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      prevQuestionsSignatureRef.current = JSON.stringify(normalizedQuestions)
-      return
-    }
-    if (!hasTouched) return
-    const signature = JSON.stringify(normalizedQuestions)
-    if (signature === prevQuestionsSignatureRef.current) return
-    prevQuestionsSignatureRef.current = signature
-    void trigger(fieldArrayName as never)
-  }, [fieldArrayName, hasTouched, trigger, normalizedQuestions])
-
-  const handleAddQuestion = () => {
-    append({
-      questionId: getNextQuestionId(),
-      question: '',
-      type: 'LONG_TEXT',
-      necessary: true,
-      options: [],
-      partSinglePick: false,
-      isPartQuestion: false,
-    })
-  }
-
-  const handleDeleteQuestion = (index: number) => {
-    remove(index)
-  }
-
-  const handleDragStart = (index: number) => (event: DragEvent<HTMLDivElement>) => {
-    draggingId.current = index
-    draggingIndexRef.current = index
-    event.dataTransfer.effectAllowed = 'move'
-    event.dataTransfer.setData('text/plain', String(index))
-    const cardNode = cardRefs.current[index]
-    if (cardNode) {
-      placeholderHeightRef.current = cardNode.getBoundingClientRect().height
-      event.dataTransfer.setDragImage(cardNode, 0, 0)
-    }
-  }
-
-  const handleDragEnd = () => {
-    draggingId.current = null
-    draggingIndexRef.current = null
-    placeholderHeightRef.current = 0
-    setDraggingIndex(null)
-    setPlaceholderIndex(null)
-    setPlaceholderHeight(0)
-  }
-
-  const handleDragOver = (index: number) => (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
-    if (draggingIndex === null && draggingIndexRef.current !== null) {
-      setDraggingIndex(draggingIndexRef.current)
-    }
-    if (placeholderHeight === 0 && placeholderHeightRef.current > 0) {
-      setPlaceholderHeight(placeholderHeightRef.current)
-    }
-    if (draggingIndexRef.current === null || index === draggingIndexRef.current) return
-    setPlaceholderIndex(index)
-  }
-
-  const handleDrop = (targetIndex: number) => (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    const sourceIndex = draggingId.current
-    draggingId.current = null
-    if (sourceIndex === null || sourceIndex === targetIndex) return
-    move(sourceIndex, targetIndex)
-    setPlaceholderIndex(null)
-  }
-
-  return (
-    <Flex flexDirection="column" gap={18}>
-      {fields.map((question, index) => {
-        const currentQuestion = normalizedQuestions[index]
-        const isPartQuestion = currentQuestion ? currentQuestion.isPartQuestion : false
-        return (
-          <div
-            key={question.id}
-            onDragOver={handleDragOver(index)}
-            onDrop={handleDrop(index)}
-            css={{ width: '100%' }}
-          >
-            {placeholderIndex === index && draggingIndex !== null ? (
-              <Q.DragPlaceholder $height={placeholderHeight} />
-            ) : null}
-            <div
-              ref={(node) => {
-                cardRefs.current[index] = node
-              }}
-              css={{
-                width: '100%',
-                transition: 'transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease',
-                transform: draggingIndex === index ? 'scale(0.98)' : 'translateZ(0)',
-                opacity: draggingIndex === index ? 0.7 : 1,
-                boxShadow: draggingIndex === index ? '0 8px 20px rgba(0, 0, 0, 0.12)' : 'none',
-              }}
-            >
-              <MakeQuestion
-                index={index}
-                control={control}
-                namePrefix={`${namePrefixBase}.${index}`}
-                onDelete={() => handleDeleteQuestion(index)}
-                canDelete={!isPartQuestion}
-                dragHandleProps={{
-                  draggable: true,
-                  onDragStart: handleDragStart(index),
-                  onDragEnd: handleDragEnd,
-                }}
-              />
-            </div>
-          </div>
-        )
-      })}
-      <Section
-        variant="dashed"
-        flexDirection="row"
-        gap={6}
-        justifyContent="center"
-        css={{
-          color: theme.colors.gray[500],
-          cursor: 'pointer',
-        }}
-        onClick={handleAddQuestion}
-      >
-        <Plus />
-        문항 추가하기
-      </Section>
-    </Flex>
-  )
+  page: number
+  setPage: (nextPage: number) => void
+  part: PartType | null
+  setPart: (nextPart: PartType | null) => void
+  partCompletion: Partial<Record<PartType, boolean>>
+  setPartCompletion: (next: Partial<Record<PartType, boolean>>) => void
 }
 
 const Step3 = ({
@@ -200,14 +37,9 @@ const Step3 = ({
   setPage,
   part,
   setPart,
-}: {
-  control: Control<RecruitingForms>
-  trigger: UseFormTrigger<RecruitingForms>
-  page: number
-  setPage: (nextPage: number) => void
-  part: PartType | null
-  setPart: (nextPart: PartType | null) => void
-}) => {
+  partCompletion,
+  setPartCompletion,
+}: Step3Props) => {
   const nextIdRef = useRef(1)
   const recruitingPart = useWatch({
     control,
@@ -242,6 +74,7 @@ const Step3 = ({
     }
     return -1
   }, [page, pages])
+  const isSelectedPartComplete = selectedPart ? Boolean(partCompletion[selectedPart]) : false
 
   useEffect(() => {
     if (page !== 3) return
@@ -296,6 +129,14 @@ const Step3 = ({
   const hasTouchedPartQuestions =
     selectedPart && Boolean(touchedPartBank && touchedPartBank[getPartKey(selectedPart)])
 
+  const handlePartStatusChange = (isComplete: boolean) => {
+    if (!selectedPart) return
+    setPartCompletion({
+      ...partCompletion,
+      [selectedPart]: isComplete,
+    })
+  }
+
   return (
     <Flex flexDirection="column" gap={18}>
       <Section gap={27} variant="solid" flexDirection="column" alignItems="flex-start">
@@ -315,20 +156,67 @@ const Step3 = ({
         </Flex>
       </Section>
       {page === 3 && (
-        <LabelDropdown
-          label="파트 선택"
-          placeholder="파트를 선택해 주세요."
-          options={partOptions}
-          value={
-            selectedPart
-              ? {
-                  label: selectedPart,
-                  id: selectedPart,
-                }
-              : undefined
-          }
-          onChange={(option) => setPart(option.label)}
-        />
+        <Section
+          variant="solid"
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          padding={'12px 26px'}
+        >
+          <Dropdown
+            options={partOptions}
+            placeholder="파트를 선택해 주세요."
+            value={
+              selectedPart
+                ? {
+                    label: selectedPart,
+                    id: selectedPart,
+                  }
+                : undefined
+            }
+            onChange={(option) => setPart(option.label)}
+            css={{ width: 300 }}
+            optionSuffix={(option) =>
+              partCompletion[option.label] ? (
+                <span
+                  css={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 16,
+                    height: 16,
+                    borderRadius: '50%',
+                    background: theme.colors.lime,
+                    flexShrink: 0,
+                  }}
+                >
+                  <CheckIcon width={10} height={10} color={theme.colors.black} />
+                </span>
+              ) : null
+            }
+          />
+
+          <Flex gap={14} width={'fit-content'} alignItems="center">
+            <Badge
+              typo="B4.Sb"
+              tone={'gray'}
+              variant={isSelectedPartComplete ? 'outline' : 'solid'}
+              css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
+              onClick={() => handlePartStatusChange(false)}
+            >
+              작성 중
+            </Badge>
+            <Badge
+              typo="B4.Sb"
+              tone={'gray'}
+              variant={isSelectedPartComplete ? 'solid' : 'outline'}
+              css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
+              onClick={() => handlePartStatusChange(true)}
+            >
+              작성 완료
+            </Badge>
+          </Flex>
+        </Section>
       )}
       {currentFormPageIndex >= 0 ? (
         <QuestionList
@@ -349,9 +237,10 @@ const Step3 = ({
           getNextQuestionId={getNextQuestionId}
           trigger={trigger}
           hasTouched={Boolean(hasTouchedPartQuestions)}
+          isLocked={isSelectedPartComplete}
         />
       ) : (
-        <Flex flexDirection="column" alignItems="flex-start">
+        <Flex flexDirection="column" alignItems="center" padding={'30px'}>
           <S.SubTitle>모집할 파트를 먼저 선택해 주세요.</S.SubTitle>
         </Flex>
       )}

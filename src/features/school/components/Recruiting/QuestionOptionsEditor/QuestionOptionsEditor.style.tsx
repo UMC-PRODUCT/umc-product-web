@@ -33,6 +33,6 @@ export const OptionInput = styled.input`
 
   &:focus {
     outline: none;
-    border-bottom-color: ${theme.colors.black};
+    border-bottom-color: ${theme.colors.lime};
   }
 `
