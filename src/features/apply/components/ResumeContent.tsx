@@ -3,6 +3,10 @@ import type { QuestionList } from '@features/apply/domain'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { ResumeFormSectionProps } from '@/shared/types/form'
+<<<<<<< HEAD
+=======
+import type { QuestionList } from '@/shared/types/question'
+>>>>>>> 24aa07b (fix: 타입 수정 및 빌드 에러 해결)
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
