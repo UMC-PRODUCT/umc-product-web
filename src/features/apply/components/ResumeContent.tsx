@@ -1,5 +1,7 @@
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { QuestionList } from '@/shared/types/question'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -7,20 +9,20 @@ import ResumeFormSection from '../pages/resume/ResumeFormSection'
 import * as S from './ResumeContent.style'
 
 interface ResumeContentProps {
-  questionData: { description: string }
+  questionData: Pick<QuestionList, 'description'>
   displayLastSavedTime: string | null
   handleSave: () => void
-  currentQuestions: Array<any>
-  partQuestions: Array<any>
-  control: any
-  setValue: any
-  clearErrors: any
-  errors: any
+  currentQuestions: ResumeFormSectionProps['questions']
+  partQuestions: ResumeFormSectionProps['partQuestions']
+  control: ResumeFormSectionProps['control']
+  setValue: ResumeFormSectionProps['setValue']
+  clearErrors: ResumeFormSectionProps['clearErrors']
+  errors: ResumeFormSectionProps['errors']
   currentPage: number
   totalPages: number
   isFormIncomplete: boolean
   openSubmitModal: () => void
-  handlePageNavigation: (nextPage: number) => void
+  handlePageNavigation: ResumeFormSectionProps['onPageChange']
   isEdit?: boolean
 }
 

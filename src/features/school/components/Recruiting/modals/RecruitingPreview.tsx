@@ -34,8 +34,11 @@ const RecruitingPreview = ({
   )
   const totalPages = resolvedPages.length
   const currentPageIndex = Math.max(Math.min(currentPage - 1, totalPages - 1), 0)
-  const currentPageData = resolvedPages[currentPageIndex]
-  const currentQuestions = currentPageData.questions
+  const currentPageData = resolvedPages[currentPageIndex] ?? {
+    page: currentPageIndex + 1,
+    questions: [],
+  }
+  const currentQuestions = currentPageData.questions ?? []
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)

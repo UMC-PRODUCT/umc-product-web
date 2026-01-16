@@ -6,12 +6,7 @@ import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type {
-  Option,
-  RecruitingForms,
-  RecruitingItem,
-  RecruitingPartApi,
-} from '@/shared/types/form'
+import type { Option, RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
