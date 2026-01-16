@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 export const Number = styled.div<{ isActive: boolean; isConfirmed: boolean }>`
@@ -22,6 +23,10 @@ export const Number = styled.div<{ isActive: boolean; isConfirmed: boolean }>`
 `
 export const StepName = styled.div<{ isActive: boolean; isConfirmed: boolean }>`
   ${theme.typography.B5.Md}
+  white-space: nowrap;
   color: ${(props) =>
     props.isActive || props.isConfirmed ? theme.colors.lime : theme.colors.gray[400]};
+  ${media.down(theme.breakPoints.mobile)} {
+    ${theme.typography.C5.Md}
+  }
 `

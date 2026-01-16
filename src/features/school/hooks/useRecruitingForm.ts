@@ -3,55 +3,37 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 
-import { getAllQuestionIdsFromPartBank, getPartKey } from '@/features/school/utils/partQuestionBank'
-import { PART } from '@/shared/constants/umc'
-import type { PartQuestionBank, RecruitingForms } from '@/shared/types/form'
+import type { RecruitingForms } from '@/shared/types/form'
 
 import { recruitingFormSchema } from '../schemas/validation'
+import {
+  buildDefaultPage2Item,
+  buildPreferredPartItem,
+  buildScheduleItem,
+  ensureRequiredItems,
+} from '../utils/recruiting/requiredItems'
 
 const defaultValues: RecruitingForms = {
-  recruitingName: '',
-  recruitingPart: [],
-  documentStartDate: null,
-  documentEndDate: null,
-  documentResultDate: null,
-  interviewStartDate: null,
-  interviewEndDate: null,
-  finalResultDate: null,
-  interviewTimeSlots: {},
-  noticeTitle: '',
+  title: '',
+  recruitmentParts: [],
+  maxPreferredPartCount: 2,
+  schedule: {
+    applyStartAt: null,
+    applyEndAt: null,
+    docResultAt: null,
+    interviewStartAt: null,
+    interviewEndAt: null,
+    finalResultAt: null,
+    interviewTimeTable: {
+      dateRange: { start: '', end: '' },
+      timeRange: { start: '09:00', end: '23:00' },
+      slotMinutes: 30,
+      enabled: [],
+    },
+  },
   noticeContent: '',
-  pages: [
-    {
-      page: 1,
-      questions: [
-        {
-          questionId: 1,
-          question: '',
-          type: 'PART',
-          necessary: true,
-          options: [...PART],
-          partSinglePick: false,
-          isPartQuestion: true,
-        },
-      ],
-    },
-    {
-      page: 2,
-      questions: [
-        {
-          questionId: 3,
-          question: '',
-          type: 'LONG_TEXT',
-          necessary: true,
-          options: [],
-          partSinglePick: false,
-          isPartQuestion: false,
-        },
-      ],
-    },
-  ],
-  partQuestionBank: {},
+  status: 'DRAFT',
+  items: [buildPreferredPartItem(), buildScheduleItem(), buildDefaultPage2Item()],
 }
 
 export const useRecruitingForm = () => {
@@ -63,122 +45,53 @@ export const useRecruitingForm = () => {
     defaultValues,
   })
 
-  const [
-    recruitingName,
-    recruitingPart,
-    documentStartDate,
-    documentEndDate,
-    documentResultDate,
-    interviewStartDate,
-    interviewEndDate,
-    finalResultDate,
-    interviewTimeSlots,
-    pages,
-    partQuestionBank,
-    noticeTitle,
-    noticeContent,
-  ] = useWatch({
-    control: form.control,
-    name: [
-      'recruitingName',
-      'recruitingPart',
-      'documentStartDate',
-      'documentEndDate',
-      'documentResultDate',
-      'interviewStartDate',
-      'interviewEndDate',
-      'finalResultDate',
-      'interviewTimeSlots',
-      'pages',
-      'partQuestionBank',
-      'noticeTitle',
-      'noticeContent',
-    ],
-  })
-
-  useEffect(() => {
-    const currentPages = form.getValues('pages')
-    const currentBank = form.getValues('partQuestionBank')
-    const allQuestionIds = [
-      ...currentPages.flatMap((page) => page.questions.map((question) => question.questionId)),
-      ...getAllQuestionIdsFromPartBank(currentBank),
-    ]
-    let nextQuestionId = allQuestionIds.length > 0 ? Math.max(...allQuestionIds) + 1 : 1
-    const nextBank: PartQuestionBank = {}
-
-    recruitingPart.forEach((part) => {
-      const partKey = getPartKey(part)
-      const existingQuestions = currentBank[partKey]
-      if (existingQuestions && existingQuestions.length > 0) {
-        nextBank[partKey] = existingQuestions
-        return
-      }
-      nextBank[partKey] = [
-        {
-          questionId: nextQuestionId,
-          question: '',
-          type: 'LONG_TEXT',
-          necessary: true,
-          options: [],
-          partSinglePick: false,
-          isPartQuestion: false,
-        },
-      ]
-      nextQuestionId += 1
+  const [title, recruitmentParts, maxPreferredPartCount, schedule, noticeContent, status, items] =
+    useWatch({
+      control: form.control,
+      name: [
+        'title',
+        'recruitmentParts',
+        'maxPreferredPartCount',
+        'schedule',
+        'noticeContent',
+        'status',
+        'items',
+      ],
     })
-
-    if (JSON.stringify(currentBank) === JSON.stringify(nextBank)) {
-      return
-    }
-    form.setValue('partQuestionBank', nextBank, { shouldDirty: true })
-  }, [form, recruitingPart])
 
   const values = useMemo(
     () => ({
-      recruitingName,
-      recruitingPart,
-      documentStartDate,
-      documentEndDate,
-      documentResultDate,
-      interviewStartDate,
-      interviewEndDate,
-      finalResultDate,
-      interviewTimeSlots,
-      pages,
-      partQuestionBank,
-      noticeTitle,
+      title,
+      recruitmentParts,
+      maxPreferredPartCount,
+      schedule,
       noticeContent,
+      status,
+      items,
     }),
-    [
-      recruitingName,
-      recruitingPart,
-      documentStartDate,
-      documentEndDate,
-      documentResultDate,
-      interviewStartDate,
-      interviewEndDate,
-      finalResultDate,
-      interviewTimeSlots,
-      pages,
-      partQuestionBank,
-      noticeTitle,
-      noticeContent,
-    ],
+    [title, recruitmentParts, maxPreferredPartCount, schedule, noticeContent, status, items],
   )
 
+  useEffect(() => {
+    const currentItems = Array.isArray(items) ? items : []
+    const nextItems = ensureRequiredItems(currentItems, recruitmentParts)
+    if (JSON.stringify(currentItems) === JSON.stringify(nextItems)) return
+    form.setValue('items', nextItems, { shouldDirty: true })
+  }, [form, items, recruitmentParts])
+
   const interviewDates = useMemo(() => {
-    if (!interviewStartDate || !interviewEndDate) return []
-    const start = dayjs(interviewStartDate).startOf('day')
-    const end = dayjs(interviewEndDate).startOf('day')
+    if (!schedule.interviewStartAt || !schedule.interviewEndAt) return []
+    const start = dayjs(schedule.interviewStartAt).startOf('day')
+    const end = dayjs(schedule.interviewEndAt).startOf('day')
     if (end.isBefore(start, 'day')) return []
     const dates: Array<string> = []
     let current = start
     while (!current.isAfter(end, 'day')) {
-      dates.push(current.format('YYYY/MM/DD'))
+      dates.push(current.format('YYYY-MM-DD'))
       current = current.add(1, 'day')
     }
     return dates
-  }, [interviewStartDate, interviewEndDate])
+  }, [schedule.interviewStartAt, schedule.interviewEndAt])
 
   return { form, values, interviewDates }
 }

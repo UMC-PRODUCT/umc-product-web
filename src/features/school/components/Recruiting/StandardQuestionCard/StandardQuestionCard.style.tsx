@@ -24,4 +24,5 @@ export const Header = styled.div`
 export const Body = styled.div`
   ${theme.typography.B4.Md}
   color: ${theme.colors.gray[400]};
+  white-space: nowrap;
 `

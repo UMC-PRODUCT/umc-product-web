@@ -1,6 +1,7 @@
 import type { Control } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
+import { mapPartToApi } from '@/features/school/utils/recruiting/items'
 import { PART } from '@/shared/constants/umc'
 import type { RecruitingForms } from '@/shared/types/form'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
@@ -19,7 +20,7 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
           <S.SubTitle>모집 이름을 입력하세요.</S.SubTitle>
         </Flex>
         <Controller
-          name="recruitingName"
+          name="title"
           control={control}
           render={({ field, fieldState }) => (
             <LabelTextField
@@ -45,7 +46,7 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
           <S.SubTitle>모집할 파트를 1개 이상 선택하세요.</S.SubTitle>
         </Flex>
         <Controller
-          name="recruitingPart"
+          name="recruitmentParts"
           control={control}
           render={({ field, fieldState }) => (
             <Flex gap={6} flexDirection="column" alignItems="flex-start">
@@ -59,7 +60,8 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
               <Flex gap={20} css={{ overflowX: 'auto' }}>
                 {PART.map((part) => {
                   const selected = Array.isArray(field.value) ? field.value : []
-                  const isActive = selected.includes(part)
+                  const partId = mapPartToApi(part)
+                  const isActive = selected.includes(partId)
                   return (
                     <S.Button
                       key={part}
@@ -67,8 +69,8 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
                       type="button"
                       onClick={() => {
                         const next = isActive
-                          ? selected.filter((item: string) => item !== part)
-                          : [...selected, part]
+                          ? selected.filter((item: string) => item !== partId)
+                          : [...selected, partId]
                         field.onChange(next)
                       }}
                     >

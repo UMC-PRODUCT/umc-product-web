@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 
+import { requestTempDraftLoad } from '@/features/school/utils/recruiting/tempDraft'
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -19,6 +20,7 @@ const RecruitingMake = () => {
   }
 
   const handleLoadRecruiting = () => {
+    requestTempDraftLoad()
     const recruitingId = 1
     navigate({
       to: '/school/recruiting/$recruitingId',

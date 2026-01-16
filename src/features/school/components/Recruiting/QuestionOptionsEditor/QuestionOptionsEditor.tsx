@@ -4,7 +4,7 @@ import { useController, useFormState } from 'react-hook-form'
 
 import CloseIcon from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
-import type { RecruitingForms } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingItemOption } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -44,6 +44,33 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined
 }
 
+const getDuplicateOptionMessage = (options: Array<RecruitingItemOption>) => {
+  const counts = new Map<string, number>()
+  options.forEach((option) => {
+    const normalized = typeof option.content === 'string' ? option.content.trim() : ''
+    if (!normalized) return
+    counts.set(normalized, (counts.get(normalized) ?? 0) + 1)
+  })
+  const hasDuplicate = Array.from(counts.values()).some((count) => count > 1)
+  return hasDuplicate ? '동일한 선택지는 입력할 수 없습니다.' : undefined
+}
+
+const OTHER_OPTION_LABEL = '기타 (사용자 입력)'
+
+const normalizeOptions = (rawOptions: Array<RecruitingItemOption>) => {
+  const normalized = rawOptions.map((option, index) => ({
+    ...option,
+    orderNo: index + 1,
+  }))
+  const otherOptions = normalized.filter((option) => option.content === OTHER_OPTION_LABEL)
+  const regularOptions = normalized.filter((option) => option.content !== OTHER_OPTION_LABEL)
+  const next = [...regularOptions, ...otherOptions].map((option, index) => ({
+    ...option,
+    orderNo: index + 1,
+  }))
+  return next
+}
+
 const QuestionOptionsEditor = ({
   control,
   name,
@@ -55,39 +82,75 @@ const QuestionOptionsEditor = ({
     name: name as FieldPath<RecruitingForms>,
   })
   const { errors } = useFormState({ control })
-  const options = Array.isArray(field.value) ? field.value : []
+  const rawOptions = Array.isArray(field.value) ? field.value : []
+  const options = rawOptions.map((option, index) => {
+    if (typeof option === 'string') {
+      return { content: option, orderNo: index + 1 }
+    }
+    return option as RecruitingItemOption
+  })
+  const normalizedOptions = normalizeOptions(options)
   const optionErrors = getErrorByPath(errors, name)
   const optionErrorMessage = getErrorMessage(optionErrors)
+  const duplicateOptionMessage = getDuplicateOptionMessage(normalizedOptions)
+  const inlineErrorMessage = duplicateOptionMessage ?? optionErrorMessage
 
   useEffect(() => {
     if (isLocked) return
-    if (options.length === 0) {
-      field.onChange([''])
+    if (normalizedOptions.length === 0) {
+      field.onChange([{ content: '', orderNo: 1 }])
+      return
     }
-  }, [field, isLocked, options.length])
+    if (JSON.stringify(normalizedOptions) !== JSON.stringify(options)) {
+      field.onChange(normalizedOptions)
+    }
+  }, [field, isLocked, normalizedOptions, options])
 
   const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isLocked) return
-    const next = [...options]
-    next[index] = event.target.value
-    field.onChange(next)
+    const next = normalizedOptions.map((option, optionIndex) =>
+      optionIndex === index
+        ? { ...option, content: event.target.value, orderNo: optionIndex + 1 }
+        : { ...option, orderNo: optionIndex + 1 },
+    )
+    field.onChange(normalizeOptions(next))
   }
 
   const handleRemove = (index: number) => {
     if (isLocked) return
-    const next = options.filter((_, i) => i !== index)
-    field.onChange(next)
+    const next = normalizedOptions
+      .filter((_, i) => i !== index)
+      .map((option, optionIndex) => ({ ...option, orderNo: optionIndex + 1 }))
+    field.onChange(normalizeOptions(next))
   }
 
   const handleAppend = () => {
     if (isLocked) return
-    field.onChange([...options, ''])
+    field.onChange(
+      normalizeOptions([
+        ...normalizedOptions,
+        { content: '', orderNo: normalizedOptions.length + 1 },
+      ]),
+    )
+  }
+
+  const handleAppendOther = () => {
+    if (isLocked) return
+    const hasOther = normalizedOptions.some((option) => option.content === OTHER_OPTION_LABEL)
+    if (hasOther) return
+    field.onChange(
+      normalizeOptions([
+        ...normalizedOptions,
+        { content: OTHER_OPTION_LABEL, orderNo: normalizedOptions.length + 1 },
+      ]),
+    )
   }
 
   return (
     <Flex flexDirection="column" gap={12} alignItems="flex-start">
-      {options.map((value, index) => {
-        const optionValue = typeof value === 'string' || typeof value === 'number' ? value : ''
+      {normalizedOptions.map((option, index) => {
+        const optionValue = typeof option.content === 'string' ? option.content : ''
+        const isOtherOption = optionValue === OTHER_OPTION_LABEL
         return (
           <Flex key={`${name}-${index}`} gap={10} maxWidth={550} alignItems="center">
             <S.OptionMarker $variant={variant} />
@@ -98,7 +161,8 @@ const QuestionOptionsEditor = ({
                 placeholder={`Option ${index + 1}`}
                 value={optionValue}
                 onChange={handleChange(index)}
-                disabled={isLocked}
+                $isOther={isOtherOption}
+                disabled={isLocked || isOtherOption}
               />
             </S.OptionField>
             <button
@@ -137,16 +201,16 @@ const QuestionOptionsEditor = ({
           tone="darkGray"
           variant="outline"
           css={{ width: 'fit-content', cursor: isLocked ? 'not-allowed' : 'pointer' }}
-          onClick={isLocked ? undefined : handleAppend}
+          onClick={isLocked ? undefined : handleAppendOther}
         >
           기타 추가
         </Badge>
       </Flex>
-      {optionErrorMessage ? (
+      {inlineErrorMessage ? (
         <ErrorMessage
           typo="B4.Md"
           responsiveTypo={{ tablet: 'B4.Md' }}
-          errorMessage={optionErrorMessage}
+          errorMessage={inlineErrorMessage}
         />
       ) : null}
     </Flex>

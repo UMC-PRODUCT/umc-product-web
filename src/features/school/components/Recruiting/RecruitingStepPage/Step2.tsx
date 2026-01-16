@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import type { Control, UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react-hook-form'
+import type {
+  Control,
+  FieldPath,
+  UseFormClearErrors,
+  UseFormSetError,
+  UseFormSetValue,
+} from 'react-hook-form'
 import { Controller, useWatch } from 'react-hook-form'
 import dayjs from 'dayjs'
 
@@ -24,41 +30,65 @@ const Step2 = ({
   setError: UseFormSetError<RecruitingForms>
   clearErrors: UseFormClearErrors<RecruitingForms>
 }) => {
-  const documentStartDate = useWatch({ control, name: 'documentStartDate' })
-  const documentEndDate = useWatch({ control, name: 'documentEndDate' })
-  const documentResultDate = useWatch({ control, name: 'documentResultDate' })
-  const interviewStartDate = useWatch({ control, name: 'interviewStartDate' })
-  const interviewEndDate = useWatch({ control, name: 'interviewEndDate' })
-  const finalResultDate = useWatch({ control, name: 'finalResultDate' })
-  const interviewTimeSlots = useWatch({ control, name: 'interviewTimeSlots' })
+  const applyStartAt = useWatch({ control, name: 'schedule.applyStartAt' })
+  const applyEndAt = useWatch({ control, name: 'schedule.applyEndAt' })
+  const docResultAt = useWatch({ control, name: 'schedule.docResultAt' })
+  const interviewStartAt = useWatch({ control, name: 'schedule.interviewStartAt' })
+  const interviewEndAt = useWatch({ control, name: 'schedule.interviewEndAt' })
+  const finalResultAt = useWatch({ control, name: 'schedule.finalResultAt' })
+  const interviewTimeTable = useWatch({ control, name: 'schedule.interviewTimeTable' })
   const lastErrorStateRef = useRef<Record<string, boolean>>({})
 
   const interviewDates = useMemo(() => {
-    if (!interviewStartDate || !interviewEndDate) return []
-    const start = dayjs(interviewStartDate).startOf('day')
-    const end = dayjs(interviewEndDate).startOf('day')
+    if (!interviewStartAt || !interviewEndAt) return []
+    const start = dayjs(interviewStartAt).startOf('day')
+    const end = dayjs(interviewEndAt).startOf('day')
     if (end.isBefore(start, 'day')) return []
     const dates: Array<string> = []
     let current = start
     while (!current.isAfter(end, 'day')) {
-      dates.push(current.format('YYYY/MM/DD'))
+      dates.push(current.format('YYYY-MM-DD'))
       current = current.add(1, 'day')
     }
     return dates
-  }, [interviewStartDate, interviewEndDate])
+  }, [interviewStartAt, interviewEndAt])
+
+  const enabledSlots = useMemo(() => interviewTimeTable.enabled, [interviewTimeTable])
+
+  const timeRange = useMemo(() => interviewTimeTable.timeRange, [interviewTimeTable])
 
   const lastInterviewRangeKey = useRef<string>('')
   useEffect(() => {
-    const startKey = interviewStartDate ? interviewStartDate.getTime() : 'null'
-    const endKey = interviewEndDate ? interviewEndDate.getTime() : 'null'
+    const startKey = interviewStartAt ? interviewStartAt.getTime() : 'null'
+    const endKey = interviewEndAt ? interviewEndAt.getTime() : 'null'
     const nextKey = `${startKey}-${endKey}`
     if (lastInterviewRangeKey.current === nextKey) return
     lastInterviewRangeKey.current = nextKey
-    setValue('interviewTimeSlots', {})
-  }, [interviewStartDate, interviewEndDate, setValue])
+    if (enabledSlots.length === 0) return
+    const slotKeys = enabledSlots.map((slot) => slot.date)
+    if (
+      slotKeys.length > 0 &&
+      interviewDates.length > 0 &&
+      slotKeys.every((date) => interviewDates.includes(date))
+    ) {
+      return
+    }
+    setValue('schedule.interviewTimeTable.enabled', [])
+  }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue])
+
+  useEffect(() => {
+    if (!interviewStartAt || !interviewEndAt) {
+      setValue('schedule.interviewTimeTable.dateRange', { start: '', end: '' })
+      return
+    }
+    setValue('schedule.interviewTimeTable.dateRange', {
+      start: dayjs(interviewStartAt).format('YYYY-MM-DD'),
+      end: dayjs(interviewEndAt).format('YYYY-MM-DD'),
+    })
+  }, [interviewEndAt, interviewStartAt, setValue])
 
   const updateErrorState = useCallback(
-    (field: keyof RecruitingForms, hasError: boolean, message: string) => {
+    (field: FieldPath<RecruitingForms>, hasError: boolean, message: string) => {
       const prev = lastErrorStateRef.current[field]
       if (prev === hasError) return
       lastErrorStateRef.current[field] = hasError
@@ -74,60 +104,60 @@ const Step2 = ({
   useEffect(() => {
     if (interviewDates.length === 0) return
     const hasEmptyDate = interviewDates.some((date) => {
-      const slots = interviewTimeSlots[date] ?? []
-      return !Array.isArray(slots) || slots.length === 0
+      const slotsForDate = enabledSlots.find((slot) => slot.date === date)?.time ?? []
+      return slotsForDate.length === 0
     })
     updateErrorState(
-      'interviewTimeSlots',
+      'schedule.interviewTimeTable.enabled',
       hasEmptyDate,
       '모든 면접 날짜에 최소 1개의 시간을 선택해 주세요.',
     )
-  }, [interviewDates, interviewTimeSlots, updateErrorState])
+  }, [enabledSlots, interviewDates, updateErrorState])
 
   useEffect(() => {
-    if (!documentStartDate || !documentEndDate) return
+    if (!applyStartAt || !applyEndAt) return
     updateErrorState(
-      'documentEndDate',
-      documentEndDate < documentStartDate,
+      'schedule.applyEndAt',
+      applyEndAt < applyStartAt,
       '서류 모집 시작 이후로 선택해 주세요.',
     )
-  }, [documentStartDate, documentEndDate, updateErrorState])
+  }, [applyStartAt, applyEndAt, updateErrorState])
 
   useEffect(() => {
-    if (!documentEndDate || !documentResultDate) return
+    if (!applyEndAt || !docResultAt) return
     updateErrorState(
-      'documentResultDate',
-      documentResultDate < documentEndDate,
+      'schedule.docResultAt',
+      docResultAt < applyEndAt,
       '서류 모집 종료 이후로 선택해 주세요.',
     )
-  }, [documentEndDate, documentResultDate, updateErrorState])
+  }, [applyEndAt, docResultAt, updateErrorState])
 
   useEffect(() => {
-    if (!documentResultDate || !interviewStartDate) return
+    if (!docResultAt || !interviewStartAt) return
     updateErrorState(
-      'interviewStartDate',
-      interviewStartDate < documentResultDate,
+      'schedule.interviewStartAt',
+      interviewStartAt < docResultAt,
       '서류 결과 발표 이후로 선택해 주세요.',
     )
-  }, [documentResultDate, interviewStartDate, updateErrorState])
+  }, [docResultAt, interviewStartAt, updateErrorState])
 
   useEffect(() => {
-    if (!interviewStartDate || !interviewEndDate) return
+    if (!interviewStartAt || !interviewEndAt) return
     updateErrorState(
-      'interviewEndDate',
-      interviewEndDate < interviewStartDate,
+      'schedule.interviewEndAt',
+      interviewEndAt < interviewStartAt,
       '면접 평가 시작 이후로 선택해 주세요.',
     )
-  }, [interviewStartDate, interviewEndDate, updateErrorState])
+  }, [interviewStartAt, interviewEndAt, updateErrorState])
 
   useEffect(() => {
-    if (!interviewEndDate || !finalResultDate) return
+    if (!interviewEndAt || !finalResultAt) return
     updateErrorState(
-      'finalResultDate',
-      finalResultDate < interviewEndDate,
+      'schedule.finalResultAt',
+      finalResultAt < interviewEndAt,
       '면접 평가 종료 이후로 선택해 주세요.',
     )
-  }, [interviewEndDate, finalResultDate, updateErrorState])
+  }, [interviewEndAt, finalResultAt, updateErrorState])
 
   return (
     <Flex flexDirection="column" gap={18}>
@@ -139,7 +169,7 @@ const Step2 = ({
         <Flex gap={26} flexDirection="column" alignItems="flex-start">
           <Flex flexWrap="wrap" css={{ rowGap: 26, columnGap: 50 }}>
             <Controller
-              name="documentStartDate"
+              name="schedule.applyStartAt"
               control={control}
               render={({ field, fieldState }) => (
                 <LabelCalendar
@@ -156,7 +186,7 @@ const Step2 = ({
               )}
             />
             <Controller
-              name="documentEndDate"
+              name="schedule.applyEndAt"
               control={control}
               render={({ field, fieldState }) => (
                 <LabelCalendar
@@ -174,7 +204,7 @@ const Step2 = ({
             />
           </Flex>
           <Controller
-            name="documentResultDate"
+            name="schedule.docResultAt"
             control={control}
             render={({ field, fieldState }) => (
               <LabelCalendar
@@ -192,7 +222,7 @@ const Step2 = ({
           />
           <Flex flexWrap="wrap" css={{ rowGap: 26, columnGap: 50 }}>
             <Controller
-              name="interviewStartDate"
+              name="schedule.interviewStartAt"
               control={control}
               render={({ field, fieldState }) => (
                 <LabelCalendar
@@ -209,7 +239,7 @@ const Step2 = ({
               )}
             />
             <Controller
-              name="interviewEndDate"
+              name="schedule.interviewEndAt"
               control={control}
               render={({ field, fieldState }) => (
                 <LabelCalendar
@@ -230,15 +260,24 @@ const Step2 = ({
             <Flex flexDirection="column" alignItems="flex-start">
               <Label label="면접 시간대 설정" necessary={true} />
               <Controller
-                name="interviewTimeSlots"
+                name="schedule.interviewTimeTable.enabled"
                 control={control}
                 render={({ field, fieldState }) => (
                   <Flex flexDirection="column" alignItems="flex-start" gap={30}>
                     <TimeTable
                       dates={interviewDates}
-                      timeRange={['09:00', '23:00']}
-                      value={field.value}
-                      onChange={field.onChange}
+                      timeRange={[timeRange.start, timeRange.end]}
+                      value={enabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
+                        acc[slot.date] = slot.time
+                        return acc
+                      }, {})}
+                      onChange={(nextValue) => {
+                        const nextEnabled = Object.entries(nextValue).map(([date, time]) => ({
+                          date,
+                          time,
+                        }))
+                        field.onChange(nextEnabled)
+                      }}
                       mode="edit"
                     />
                     {fieldState.error && (
@@ -254,7 +293,7 @@ const Step2 = ({
             </Flex>
           )}
           <Controller
-            name="finalResultDate"
+            name="schedule.finalResultAt"
             control={control}
             render={({ field, fieldState }) => (
               <LabelCalendar

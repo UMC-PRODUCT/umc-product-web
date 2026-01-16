@@ -1,186 +1,163 @@
 import { z } from 'zod/v3'
 
-import { getPartKey, getPartQuestionBankKeys } from '@/features/school/utils/partQuestionBank'
-import { PART } from '@/shared/constants/umc'
-import type { RecruitingForms } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
+import type { RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
 
 type StepValues = Pick<
   RecruitingForms,
-  | 'recruitingName'
-  | 'recruitingPart'
-  | 'documentStartDate'
-  | 'documentEndDate'
-  | 'documentResultDate'
-  | 'interviewStartDate'
-  | 'interviewEndDate'
-  | 'finalResultDate'
-  | 'interviewTimeSlots'
-  | 'noticeTitle'
-  | 'noticeContent'
-  | 'pages'
-  | 'partQuestionBank'
+  'title' | 'recruitmentParts' | 'maxPreferredPartCount' | 'schedule' | 'noticeContent' | 'items'
 >
 
-const interviewSlotsSchema = z.record(z.array(z.string())).superRefine((value, ctx) => {
-  const dateKeys = Object.keys(value)
-  if (dateKeys.length === 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: '면접 가능 시간을 선택해 주세요.',
-    })
-    return
-  }
-
-  const hasEmptyDate = dateKeys.some((key) => {
-    const slots = value[key] ?? []
-    return !Array.isArray(slots) || slots.length === 0
-  })
-
-  if (hasEmptyDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: '모든 면접 날짜에 최소 1개의 시간을 선택해 주세요.',
-    })
-  }
-})
-
-const partEnum = z.enum([...PART] as [PartType, ...Array<PartType>])
-const partKeyEnum = z.enum(getPartQuestionBankKeys() as [string, ...Array<string>])
-const questionTypeEnum = z.enum([
-  'SHORT_TEXT',
-  'CHECKBOX',
-  'SCHEDULE',
-  'PORTFOLIO',
-  'RADIO',
-  'LONG_TEXT',
-  'PART',
-  'DROPDOWN',
-])
+const recruitmentPartEnum = z.enum([
+  'PLAN',
+  'DESIGN',
+  'WEB',
+  'IOS',
+  'ANDROID',
+  'SPRINGBOOT',
+  'NODEJS',
+] as [RecruitingPartApi, ...Array<RecruitingPartApi>])
 
 export const step1Schema = z.object({
-  recruitingName: z.string().trim().min(1, '모집 이름을 입력해 주세요.'),
-  recruitingPart: z.array(partEnum).min(1, '모집 파트를 선택해 주세요.'),
+  title: z.string().trim().min(1, '모집 이름을 입력해 주세요.'),
+  recruitmentParts: z.array(recruitmentPartEnum).min(1, '모집 파트를 선택해 주세요.'),
 })
 
-const baseStep2Schema = z.object({
-  documentStartDate: z.date({
+const interviewTimeTableSchema = z.object({
+  dateRange: z.object({
+    start: z.string(),
+    end: z.string(),
+  }),
+  timeRange: z.object({
+    start: z.string(),
+    end: z.string(),
+  }),
+  slotMinutes: z.number().min(1),
+  enabled: z.array(
+    z.object({
+      date: z.string(),
+      time: z.array(z.string()),
+    }),
+  ),
+})
+
+const baseScheduleSchema = z.object({
+  applyStartAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  documentEndDate: z.date({
+  applyEndAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  documentResultDate: z.date({
+  docResultAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  interviewStartDate: z.date({
+  interviewStartAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  interviewEndDate: z.date({
+  interviewEndAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  finalResultDate: z.date({
+  finalResultAt: z.date({
     required_error: '날짜를 선택해 주세요.',
     invalid_type_error: '날짜를 선택해 주세요.',
   }),
-  interviewTimeSlots: interviewSlotsSchema,
+  interviewTimeTable: interviewTimeTableSchema,
 })
 
 type DateOrderValues = {
-  documentStartDate?: Date | null
-  documentEndDate?: Date | null
-  documentResultDate?: Date | null
-  interviewStartDate?: Date | null
-  interviewEndDate?: Date | null
-  finalResultDate?: Date | null
+  schedule?: {
+    applyStartAt?: Date | null
+    applyEndAt?: Date | null
+    docResultAt?: Date | null
+    interviewStartAt?: Date | null
+    interviewEndAt?: Date | null
+    finalResultAt?: Date | null
+  }
 }
 
 const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
   schema.superRefine((data, ctx) => {
-    const values = data as DateOrderValues
+    const values = (data as DateOrderValues).schedule
+    if (!values) return
 
-    if (
-      values.documentStartDate &&
-      values.documentEndDate &&
-      values.documentEndDate < values.documentStartDate
-    ) {
+    if (values.applyStartAt && values.applyEndAt && values.applyEndAt < values.applyStartAt) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['documentEndDate'],
+        path: ['schedule', 'applyEndAt'],
         message: '서류 모집 시작 이후로 선택해 주세요.',
       })
     }
 
-    if (
-      values.documentEndDate &&
-      values.documentResultDate &&
-      values.documentResultDate < values.documentEndDate
-    ) {
+    if (values.applyEndAt && values.docResultAt && values.docResultAt < values.applyEndAt) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['documentResultDate'],
+        path: ['schedule', 'docResultAt'],
         message: '서류 모집 종료 이후로 선택해 주세요.',
       })
     }
 
     if (
-      values.documentResultDate &&
-      values.interviewStartDate &&
-      values.interviewStartDate < values.documentResultDate
+      values.docResultAt &&
+      values.interviewStartAt &&
+      values.interviewStartAt < values.docResultAt
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['interviewStartDate'],
+        path: ['schedule', 'interviewStartAt'],
         message: '서류 결과 발표 이후로 선택해 주세요.',
       })
     }
 
     if (
-      values.interviewStartDate &&
-      values.interviewEndDate &&
-      values.interviewEndDate < values.interviewStartDate
+      values.interviewStartAt &&
+      values.interviewEndAt &&
+      values.interviewEndAt < values.interviewStartAt
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['interviewEndDate'],
+        path: ['schedule', 'interviewEndAt'],
         message: '면접 평가 시작 이후로 선택해 주세요.',
       })
     }
 
     if (
-      values.interviewEndDate &&
-      values.finalResultDate &&
-      values.finalResultDate < values.interviewEndDate
+      values.interviewEndAt &&
+      values.finalResultAt &&
+      values.finalResultAt < values.interviewEndAt
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['finalResultDate'],
+        path: ['schedule', 'finalResultAt'],
         message: '면접 평가 종료 이후로 선택해 주세요.',
       })
     }
   })
 
 export const step2Schema = withDateOrderRules(
-  baseStep2Schema.partial({
-    documentStartDate: true,
-    documentEndDate: true,
-    documentResultDate: true,
-    interviewStartDate: true,
-    interviewEndDate: true,
-    finalResultDate: true,
+  z.object({
+    schedule: baseScheduleSchema.partial({
+      applyStartAt: true,
+      applyEndAt: true,
+      docResultAt: true,
+      interviewStartAt: true,
+      interviewEndAt: true,
+      finalResultAt: true,
+    }),
   }),
 )
 
-const hasSlotsForAllDates = (dates: Array<string>, slots: RecruitingForms['interviewTimeSlots']) =>
+const hasSlotsForAllDates = (
+  dates: Array<string>,
+  enabled: RecruitingForms['schedule']['interviewTimeTable']['enabled'],
+) =>
   dates.length > 0 &&
   dates.every((date) => {
-    const slotsForDate = slots[date] ?? []
-    return Array.isArray(slotsForDate) && slotsForDate.length > 0
+    const slotsForDate = enabled.find((slot) => slot.date === date)?.time ?? []
+    return slotsForDate.length > 0
   })
 
 export const getStepReady = (
@@ -193,133 +170,130 @@ export const getStepReady = (
     const isValid = step2Schema.safeParse(values).success
     if (!isValid) return false
     if (options?.interviewDates) {
-      return hasSlotsForAllDates(options.interviewDates, values.interviewTimeSlots)
+      return hasSlotsForAllDates(options.interviewDates, values.schedule.interviewTimeTable.enabled)
     }
     return true
   }
-  if (step === 3) return step3Schema.safeParse(values).success
+  if (step === 3)
+    return step3ItemsSchema.safeParse({
+      items: values.items,
+      recruitmentParts: values.recruitmentParts,
+    }).success
   if (step === 4) return step4Schema.safeParse(values).success
   return true
 }
 
-export const getStep3PageReady = (pages: RecruitingForms['pages'], pageIndex: number) => {
-  if (pageIndex < 0 || pageIndex >= pages.length) return false
-  const page = pages[pageIndex]
-  return step3Schema.safeParse({
-    pages: [page],
-    partQuestionBank: {},
-    recruitingPart: [],
-  }).success
-}
-
 export const step4Schema = z.object({
-  noticeTitle: z.string().trim().min(1, '공지 제목을 입력해 주세요.'),
   noticeContent: z.string().trim().min(1, '공지 내용을 입력해 주세요.'),
 })
 
-const questionSchema = z.object({
-  questionId: z.number(),
-  question: z.string(),
-  type: questionTypeEnum,
-  necessary: z.boolean(),
-  options: z.array(z.string()),
-  partSinglePick: z.boolean(),
-  isPartQuestion: z.boolean(),
+const itemTargetSchema = z.union([
+  z.object({ kind: z.literal('COMMON_PAGE'), pageNo: z.number() }),
+  z.object({ kind: z.literal('PART'), part: z.string() }),
+])
+
+const itemQuestionSchema = z.object({
+  type: z.string(),
+  questionText: z.string(),
+  required: z.boolean(),
+  orderNo: z.number(),
+  options: z
+    .array(
+      z.object({
+        content: z.string(),
+        orderNo: z.number(),
+      }),
+    )
+    .optional(),
 })
 
-const pagesSchema = z.array(
+const itemsSchema = z.array(
   z.object({
-    page: z.number(),
-    questions: z.array(questionSchema),
+    target: itemTargetSchema,
+    question: itemQuestionSchema,
   }),
 )
 
-const partQuestionBankSchema = z.record(partKeyEnum, z.array(questionSchema))
+const itemsSchemaWithValidation = itemsSchema.superRefine((items, ctx) => {
+  items.forEach((item, itemIndex) => {
+    if (item.question.questionText.trim().length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['items', itemIndex, 'question', 'questionText'],
+        message: '질문 내용을 입력해 주세요.',
+      })
+    }
 
-export const step3Schema = z
-  .object({
-    pages: pagesSchema,
-    partQuestionBank: partQuestionBankSchema.optional(),
-    recruitingPart: step1Schema.shape.recruitingPart,
-  })
-  .superRefine((data, ctx) => {
-    const validateQuestions = (
-      questions: Array<z.infer<typeof questionSchema>>,
-      basePath: Array<string | number>,
-    ) => {
-      questions.forEach((question, questionIndex) => {
-        if (question.question.trim().length === 0) {
+    const type = item.question.type
+    const options = item.question.options ?? []
+    if (type === 'CHECKBOX' || type === 'RADIO') {
+      if (options.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['items', itemIndex, 'question', 'options'],
+          message: '선택지를 입력해 주세요.',
+        })
+        return
+      }
+      options.forEach((option, optionIndex) => {
+        if (option.content.trim().length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: [...basePath, questionIndex, 'question'],
-            message: '질문 내용을 입력해 주세요.',
-          })
-        }
-
-        const isPart = question.type === 'PART' || question.isPartQuestion
-        if (isPart && question.options.length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [...basePath, questionIndex, 'options'],
-            message: '모집할 파트를 선택해 주세요.',
-          })
-        }
-
-        if (question.type === 'RADIO' || question.type === 'CHECKBOX') {
-          if (question.options.length === 0) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: [...basePath, questionIndex, 'options'],
-              message: '선택지를 입력해 주세요.',
-            })
-            return
-          }
-          question.options.forEach((option, optionIndex) => {
-            if (option.trim().length === 0) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: [...basePath, questionIndex, 'options', optionIndex],
-                message: '선택지를 입력해 주세요.',
-              })
-            }
+            path: ['items', itemIndex, 'question', 'options', optionIndex, 'content'],
+            message: '선택지를 입력해 주세요.',
           })
         }
       })
     }
+  })
+})
 
-    data.pages.forEach((page, pageIndex) => {
-      validateQuestions(page.questions, ['pages', pageIndex, 'questions'])
-    })
+export const step3ItemsSchema = z
+  .object({
+    items: itemsSchemaWithValidation,
+    recruitmentParts: z.array(recruitmentPartEnum),
+  })
+  .superRefine((data, ctx) => {
+    const page2HasQuestions = data.items.some(
+      (item) => item.target.kind === 'COMMON_PAGE' && item.target.pageNo === 2,
+    )
+    if (!page2HasQuestions) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['items'],
+        message: '2페이지에 최소 1개의 문항을 입력해 주세요.',
+      })
+    }
 
-    data.recruitingPart.forEach((part) => {
-      const partKey = getPartKey(part)
-      const questions = data.partQuestionBank?.[partKey] ?? []
-      if (questions.length === 0) {
+    data.recruitmentParts.forEach((part) => {
+      const hasPartQuestions = data.items.some(
+        (item) => item.target.kind === 'PART' && item.target.part === part,
+      )
+      if (!hasPartQuestions) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          path: ['partQuestionBank', partKey],
+          path: ['recruitmentParts', part],
           message: '파트별 문항을 입력해 주세요.',
         })
-        return
       }
-      validateQuestions(questions, ['partQuestionBank', partKey])
     })
   })
-
 export const recruitingFormSchema = withDateOrderRules(
   z.object({
-    recruitingName: step1Schema.shape.recruitingName,
-    recruitingPart: step1Schema.shape.recruitingPart,
-    documentStartDate: baseStep2Schema.shape.documentStartDate.nullable(),
-    documentEndDate: baseStep2Schema.shape.documentEndDate.nullable(),
-    documentResultDate: baseStep2Schema.shape.documentResultDate.nullable(),
-    interviewStartDate: baseStep2Schema.shape.interviewStartDate.nullable(),
-    interviewEndDate: baseStep2Schema.shape.interviewEndDate.nullable(),
-    finalResultDate: baseStep2Schema.shape.finalResultDate.nullable(),
-    interviewTimeSlots: baseStep2Schema.shape.interviewTimeSlots,
-    noticeTitle: step4Schema.shape.noticeTitle,
+    title: step1Schema.shape.title,
+    recruitmentParts: step1Schema.shape.recruitmentParts,
+    maxPreferredPartCount: z.number().min(1),
+    schedule: z.object({
+      applyStartAt: baseScheduleSchema.shape.applyStartAt.nullable(),
+      applyEndAt: baseScheduleSchema.shape.applyEndAt.nullable(),
+      docResultAt: baseScheduleSchema.shape.docResultAt.nullable(),
+      interviewStartAt: baseScheduleSchema.shape.interviewStartAt.nullable(),
+      interviewEndAt: baseScheduleSchema.shape.interviewEndAt.nullable(),
+      finalResultAt: baseScheduleSchema.shape.finalResultAt.nullable(),
+      interviewTimeTable: interviewTimeTableSchema,
+    }),
     noticeContent: step4Schema.shape.noticeContent,
-    pages: pagesSchema,
-    partQuestionBank: partQuestionBankSchema.optional(),
+    status: z.enum(['DRAFT', 'OPEN', 'CLOSED']),
+    items: itemsSchemaWithValidation,
   }),
 )

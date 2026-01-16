@@ -44,3 +44,7 @@ export const PartWarpper = styled.div`
   color: ${theme.colors.gray[300]};
   ${theme.typography.B5.Md}
 `
+export const NoticeInfo = styled.div`
+  ${theme.typography.C4.Rg}
+  color: ${theme.colors.gray[400]};
+`

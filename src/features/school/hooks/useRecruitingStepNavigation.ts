@@ -1,18 +1,17 @@
 import { useMemo, useState } from 'react'
-import type { UseFormTrigger } from 'react-hook-form'
+import type { FieldPath, UseFormTrigger } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getPartFromKey } from '@/features/school/utils/partQuestionBank'
 import type { RecruitingForms } from '@/shared/types/form'
 
-import { getStepReady, step3Schema } from '../schemas/validation'
+import { getStepReady, step3ItemsSchema } from '../schemas/validation'
 
 type UseRecruitingStepNavigationParams = {
   values: RecruitingForms
   interviewDates: Array<string>
   trigger: UseFormTrigger<RecruitingForms>
   scrollToTop?: () => void
-  partCompletion?: Partial<Record<RecruitingForms['recruitingPart'][number], boolean>>
+  partCompletion?: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>
 }
 
 export const useRecruitingStepNavigation = ({
@@ -24,22 +23,45 @@ export const useRecruitingStepNavigation = ({
 }: UseRecruitingStepNavigationParams) => {
   const [step, setStep] = useState(1)
   const [step3Page, setStep3Page] = useState(1)
-  const [step3Part, setStep3Part] = useState<RecruitingForms['recruitingPart'][number] | null>(null)
+  const [step3Part, setStep3Part] = useState<RecruitingForms['recruitmentParts'][number] | null>(
+    null,
+  )
   const navigate = useNavigate()
 
-  const areAllPartsCompleted = useMemo(
-    () => values.recruitingPart.every((part) => partCompletion?.[part]),
-    [values.recruitingPart, partCompletion],
-  )
-  const isStepReady = useMemo(() => {
-    const baseReady = getStepReady(step, values, { interviewDates })
-    if (step === 3) {
-      return baseReady && areAllPartsCompleted
+  // 상단으로 스크롤: 외부 콜백이 있으면 우선 사용
+  const scrollToTopInternal = () => {
+    if (scrollToTop) {
+      scrollToTop()
+      return
     }
-    return baseReady
-  }, [step, values, interviewDates, areAllPartsCompleted])
+    const scroller = document.scrollingElement
+    if (scroller) {
+      scroller.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
 
-  const handlePrevious = () => {
+  // 검증 실패 시 해당 필드로 포커스 이동 후 스크롤
+  const triggerAndScrollToTop = async (fields: Array<FieldPath<RecruitingForms>>) => {
+    await trigger(fields, { shouldFocus: true })
+    scrollToTopInternal()
+  }
+
+  // 파트별 문항 완료 여부 집계
+  const allPartsCompleted = useMemo(
+    () => values.recruitmentParts.every((part) => partCompletion?.[part]),
+    [values.recruitmentParts, partCompletion],
+  )
+  // 현재 단계의 진행 가능 여부 계산
+  const canProceedStep = useMemo(() => {
+    if (step === 3) {
+      return getStepReady(3, values, { interviewDates }) && allPartsCompleted
+    }
+    return getStepReady(step, values, { interviewDates })
+  }, [step, values, interviewDates, allPartsCompleted])
+
+  const goToPreviousStep = () => {
     if (step > 1) {
       setStep(step - 1)
       return
@@ -50,11 +72,47 @@ export const useRecruitingStepNavigation = ({
     })
   }
 
-  const handleNext = async () => {
+  // 3단계(문항 작성) 전용 검증 및 포커스 이동
+  const validateStep3 = async () => {
+    if (!allPartsCompleted) {
+      const firstIncompletePart = values.recruitmentParts.find((part) => !partCompletion?.[part])
+      setStep3Page(3)
+      setStep3Part(firstIncompletePart ?? null)
+      scrollToTopInternal()
+      return false
+    }
+    const validation = step3ItemsSchema.safeParse({
+      items: values.items,
+      recruitmentParts: values.recruitmentParts,
+    })
+    if (!validation.success) {
+      const firstIssue = validation.error.issues[0]
+      if (firstIssue.path[0] === 'recruitmentParts' && typeof firstIssue.path[1] === 'string') {
+        setStep3Page(3)
+        setStep3Part(firstIssue.path[1] as RecruitingForms['recruitmentParts'][number])
+      } else {
+        const issueIndex = typeof firstIssue.path[1] === 'number' ? firstIssue.path[1] : null
+        const issueItem = issueIndex !== null ? values.items[issueIndex] : null
+        if (issueItem?.target.kind === 'COMMON_PAGE') {
+          setStep3Page(issueItem.target.pageNo)
+        } else if (issueItem?.target.kind === 'PART') {
+          setStep3Page(3)
+          setStep3Part(issueItem.target.part)
+        } else {
+          setStep3Page(3)
+        }
+      }
+      await triggerAndScrollToTop(['items'])
+      return false
+    }
+    return true
+  }
+
+  // 단계 이동 + 각 단계별 검증 처리
+  const goToNextStep = async () => {
     if (step === 1) {
       if (!getStepReady(1, values)) {
-        await trigger(['recruitingName', 'recruitingPart'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        await triggerAndScrollToTop(['title', 'recruitmentParts'])
         return
       }
     }
@@ -64,89 +122,43 @@ export const useRecruitingStepNavigation = ({
           interviewDates,
         })
       ) {
-        await trigger(
-          [
-            'documentStartDate',
-            'documentEndDate',
-            'documentResultDate',
-            'interviewStartDate',
-            'interviewEndDate',
-            'finalResultDate',
-            'interviewTimeSlots',
-          ],
-          { shouldFocus: true },
-        )
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        await triggerAndScrollToTop([
+          'schedule.applyStartAt',
+          'schedule.applyEndAt',
+          'schedule.docResultAt',
+          'schedule.interviewStartAt',
+          'schedule.interviewEndAt',
+          'schedule.finalResultAt',
+          'schedule.interviewTimeTable.enabled',
+        ])
         return
       }
     }
     if (step === 3) {
-      if (!areAllPartsCompleted) {
-        const firstIncompletePart = values.recruitingPart.find((part) => !partCompletion?.[part])
-        setStep3Page(3)
-        if (firstIncompletePart) {
-          setStep3Part(firstIncompletePart)
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
-      const validation = step3Schema.safeParse({
-        pages: values.pages,
-        partQuestionBank: values.partQuestionBank,
-        recruitingPart: values.recruitingPart,
-      })
-      if (!validation.success) {
-        const firstIssue = validation.error.issues[0]
-        const rootPath = firstIssue.path[0]
-        if (rootPath === 'pages') {
-          const issuePageIndex = typeof firstIssue.path[1] === 'number' ? firstIssue.path[1] : 0
-          setStep3Page(values.pages[issuePageIndex].page)
-        } else if (rootPath === 'partQuestionBank') {
-          const issuePart =
-            typeof firstIssue.path[1] === 'string' ? getPartFromKey(firstIssue.path[1]) : null
-          setStep3Page(3)
-          if (issuePart) {
-            setStep3Part(issuePart)
-          }
-        } else {
-          setStep3Page(3)
-        }
-        await trigger(['pages', 'partQuestionBank'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+      const isStep3Valid = await validateStep3()
+      if (!isStep3Valid) {
         return
       }
     }
     if (step === 4) {
       if (!getStepReady(4, values)) {
-        await trigger(['noticeTitle', 'noticeContent'], { shouldFocus: true })
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        await triggerAndScrollToTop(['noticeContent'])
         return
       }
     }
     setStep(step + 1)
-    requestAnimationFrame(() => {
-      if (scrollToTop) {
-        scrollToTop()
-        return
-      }
-      const scroller = document.scrollingElement
-      if (scroller) {
-        scroller.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-    })
+    requestAnimationFrame(scrollToTopInternal)
   }
 
   return {
     step,
     setStep,
-    step3Page,
-    setStep3Page,
-    step3Part,
-    setStep3Part,
-    isStepReady,
-    handlePrevious,
-    handleNext,
+    step3PageNumber: step3Page,
+    setStep3PageNumber: setStep3Page,
+    step3SelectedPart: step3Part,
+    setStep3SelectedPart: setStep3Part,
+    canProceedStep,
+    goToPreviousStep,
+    goToNextStep,
   }
 }

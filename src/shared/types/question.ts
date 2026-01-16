@@ -113,7 +113,6 @@ export interface QuestionList {
 
 export interface ResumeData {
   id: number
-  title: string
   description: string
   lastSavedTime: string
   pages: Array<QuestionPage>

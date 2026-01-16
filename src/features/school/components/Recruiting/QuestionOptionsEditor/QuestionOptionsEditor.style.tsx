@@ -22,9 +22,9 @@ export const OptionLabel = styled.span`
   color: ${theme.colors.gray[500]};
 `
 
-export const OptionInput = styled.input`
+export const OptionInput = styled.input<{ $isOther?: boolean }>`
   ${theme.typography.B4.Md}
-  color: ${theme.colors.white};
+  color: ${(props) => (props.$isOther ? theme.colors.gray[400] : theme.colors.white)};
   background: transparent;
   border: none;
   border-bottom: 1px solid ${theme.colors.gray[600]};

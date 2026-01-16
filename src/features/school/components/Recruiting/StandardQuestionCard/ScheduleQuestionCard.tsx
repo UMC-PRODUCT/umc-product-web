@@ -1,8 +1,8 @@
 import type { ComponentProps, HTMLAttributes } from 'react'
+import { useEffect } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
-import { QUESTION_INFO, RESPONSE_INFO } from '@/features/school/constants/QuestionInfo'
 import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
@@ -11,36 +11,29 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import QuestionTypeConfig from '../QuestionTypeConfig/QuestionTypeConfig'
 import * as S from './StandardQuestionCard.style'
 
-type StandardQuestionCardProps = {
+type ScheduleQuestionCardProps = {
   index: number
   control: Control<RecruitingForms>
   namePrefix: string
   onDelete?: () => void
   canDelete?: boolean
   isLocked?: boolean
-  isTypeLocked?: boolean
   containerProps?: ComponentProps<typeof Section>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
 
-const StandardQuestionCard = ({
+const ScheduleQuestionCard = ({
   index,
   control,
   namePrefix,
   onDelete,
   canDelete = true,
   isLocked = false,
-  isTypeLocked = false,
   containerProps,
   dragHandleProps,
-}: StandardQuestionCardProps) => {
-  const { field: questionTypeField } = useController({
-    control,
-    name: `${namePrefix}.question.type` as FieldPath<RecruitingForms>,
-  })
+}: ScheduleQuestionCardProps) => {
   const { field: necessaryField } = useController({
     control,
     name: `${namePrefix}.question.required` as FieldPath<RecruitingForms>,
@@ -57,6 +50,13 @@ const StandardQuestionCard = ({
     typeof questionTextValue === 'string' && questionTextValue.trim().length === 0
       ? '질문 내용을 입력해 주세요.'
       : ''
+
+  useEffect(() => {
+    if (necessaryField.value !== true) {
+      necessaryField.onChange(true)
+    }
+  }, [necessaryField])
+
   return (
     <Section variant="solid" gap={22} {...containerProps}>
       <S.Header>
@@ -80,7 +80,7 @@ const StandardQuestionCard = ({
         label="질문 내용"
         autoComplete="none"
         necessary={true}
-        placeholder="예: 지원 동기를 작성해 주세요."
+        placeholder="예: 면접 가능한 시간을 선택해 주세요."
         name={questionTextField.name}
         value={questionTextValue}
         onChange={questionTextField.onChange}
@@ -93,43 +93,22 @@ const StandardQuestionCard = ({
       />
       <Flex gap={13}>
         <S.Body>답변 유형 : </S.Body>
-        <Flex width={'fit-content'} gap={12} css={{ overflowX: 'auto' }}>
-          {QUESTION_INFO.map((info) => (
-            <Badge
-              typo="B4.Md"
-              key={info.label}
-              tone={info.id === questionTypeField.value ? 'lime' : 'gray'}
-              variant="outline"
-              onClick={
-                isLocked || isTypeLocked ? undefined : () => questionTypeField.onChange(info.id)
-              }
-              css={{ cursor: isLocked || isTypeLocked ? 'not-allowed' : 'pointer' }}
-            >
-              {info.label}
-            </Badge>
-          ))}
+        <Flex width={'fit-content'} gap={12}>
+          <Badge typo="B4.Md" tone="lime" variant="outline">
+            면접 시간
+          </Badge>
         </Flex>
       </Flex>
       <Flex gap={13}>
         <S.Body>응답 설정 : </S.Body>
         <Flex width={'fit-content'} gap={12}>
-          {RESPONSE_INFO.map((info) => (
-            <Badge
-              typo="B4.Md"
-              key={info.label}
-              tone={info.value === Boolean(necessaryField.value) ? 'lime' : 'gray'}
-              variant="outline"
-              onClick={isLocked ? undefined : () => necessaryField.onChange(info.value)}
-              css={{ cursor: isLocked ? 'not-allowed' : 'pointer' }}
-            >
-              {info.label}
-            </Badge>
-          ))}
+          <Badge typo="B4.Md" tone="lime" variant="outline">
+            필수 문항
+          </Badge>
         </Flex>
       </Flex>
-      <QuestionTypeConfig control={control} namePrefix={namePrefix} isLocked={isLocked} />
     </Section>
   )
 }
 
-export default StandardQuestionCard
+export default ScheduleQuestionCard

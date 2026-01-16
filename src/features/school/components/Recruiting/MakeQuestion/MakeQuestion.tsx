@@ -3,10 +3,10 @@ import type { Control, FieldPath } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
 import type { RecruitingForms } from '@/shared/types/form'
-import type { QuestionType } from '@/shared/types/question'
 import type Section from '@/shared/ui/common/Section/Section'
 
-import PartQuestionCard from '../PartQuestionCard/PartQuestionCard'
+import PreferredPartQuestionCard from '../StandardQuestionCard/PreferredPartQuestionCard'
+import ScheduleQuestionCard from '../StandardQuestionCard/ScheduleQuestionCard'
 import StandardQuestionCard from '../StandardQuestionCard/StandardQuestionCard'
 
 type MakeQuestionProps = {
@@ -16,6 +16,7 @@ type MakeQuestionProps = {
   onDelete?: () => void
   canDelete?: boolean
   isLocked?: boolean
+  isTypeLocked?: boolean
   containerProps?: ComponentProps<typeof Section>
   dragHandleProps?: HTMLAttributes<HTMLDivElement>
 }
@@ -23,17 +24,15 @@ type MakeQuestionProps = {
 const MakeQuestion = (props: MakeQuestionProps) => {
   const type = useWatch({
     control: props.control,
-    name: `${props.namePrefix}.type` as FieldPath<RecruitingForms>,
-  }) as QuestionType | undefined
-  const isPartQuestion = useWatch({
-    control: props.control,
-    name: `${props.namePrefix}.isPartQuestion` as FieldPath<RecruitingForms>,
-  }) as boolean | undefined
+    name: `${props.namePrefix}.question.type` as FieldPath<RecruitingForms>,
+  }) as RecruitingForms['items'][number]['question']['type'] | undefined
 
-  if (isPartQuestion || type === 'PART') {
-    return <PartQuestionCard {...props} />
+  if (type === 'PREFERRED_PART') {
+    return <PreferredPartQuestionCard {...props} />
   }
-
+  if (type === 'SCHEDULE') {
+    return <ScheduleQuestionCard {...props} />
+  }
   return <StandardQuestionCard {...props} />
 }
 

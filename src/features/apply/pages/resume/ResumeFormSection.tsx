@@ -4,6 +4,8 @@ import { Controller, useWatch } from 'react-hook-form'
 
 import CautionPartChange from '@/features/apply/components/modals/CautionPartChange'
 import PartDivider from '@/features/apply/components/PartDivider'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { ResumeFormSectionProps } from '@/shared/types/form'
 import type { QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 import { Button } from '@/shared/ui/common/Button'
@@ -26,6 +28,7 @@ const ResumeFormSection = ({
   isSubmitDisabled,
   onOpenSubmitModal,
   onPageChange,
+  isEdit,
 }: ResumeFormSectionProps) => {
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -91,7 +94,7 @@ const ResumeFormSection = ({
             control={control}
             render={({ field }) => (
               <Question
-                mode="edit"
+                mode={isEdit ? 'edit' : 'view'}
                 data={question}
                 value={field.value as QuestionAnswerValue}
                 onChange={(_, newValue) => {
@@ -133,7 +136,14 @@ const ResumeFormSection = ({
         onPageChange={onPageChange}
       />
 
-      <Flex width={360} css={{ marginTop: '40px', alignSelf: 'center' }}>
+      <Flex
+        width={360}
+        css={{
+          marginTop: '40px',
+          alignSelf: 'center',
+          [media.down(theme.breakPoints.mobile)]: { maxWidth: '70vw' },
+        }}
+      >
         <Button
           type="button"
           label="지원하기"

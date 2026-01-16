@@ -3,23 +3,19 @@ import type { FieldErrors } from 'react-hook-form'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
-import * as S from '@/features/apply/components/ResumePage.style'
 import { useAutoSave } from '@/features/apply/hooks/useAutoSave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import { media } from '@/shared/styles/media'
-import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/umc'
-import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import ResumeContent from '../components/ResumeContent'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import type { QuestionList, QuestionPage, QuestionUnion } from '../types/question'
 import { findPartQuestion } from '../utils/findPartQuestion'
 import { getSelectedPartsFromAnswer } from '../utils/getSelectedPartsFromAnswer'
-import ResumeFormSection from './resume/ResumeFormSection'
 import { useResumeForm } from './resume/useResumeForm'
 
 const AUTO_SAVE_INTERVAL_MS = 60_000
@@ -194,48 +190,22 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
         <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
       </Flex>
 
-      <S.BorderedSection alignItems="flex-start">{questionData.description}</S.BorderedSection>
-
-      <S.BorderedSection>
-        <Flex justifyContent="flex-end">
-          <Flex justifyContent="flex-end" alignItems="center" gap="18px">
-            {displayLastSavedTime && (
-              <S.LastSavedTime>{displayLastSavedTime}에 마지막으로 저장됨.</S.LastSavedTime>
-            )}
-            <Badge
-              typo="B3.Md"
-              tone="lime"
-              variant="outline"
-              onClick={handleSave}
-              css={{
-                cursor: 'pointer',
-                [media.down(theme.breakPoints.tablet)]: {
-                  ...theme.typography.B4.Md,
-                },
-              }}
-            >
-              저장하기
-            </Badge>
-          </Flex>
-        </Flex>
-      </S.BorderedSection>
-
-      <S.BorderedSection>
-        <ResumeFormSection
-          questions={currentQuestions}
-          partQuestions={partQuestions}
-          control={control}
-          setValue={setValue}
-          clearErrors={clearErrors}
-          errors={errors}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          isSubmitDisabled={isFormIncomplete}
-          onOpenSubmitModal={openSubmitModal}
-          onPageChange={handlePageNavigation}
-        />
-      </S.BorderedSection>
-
+      <ResumeContent
+        questionData={questionData}
+        displayLastSavedTime={displayLastSavedTime}
+        handleSave={handleSave}
+        currentQuestions={currentQuestions}
+        partQuestions={partQuestions}
+        control={control}
+        setValue={setValue}
+        clearErrors={clearErrors}
+        errors={errors}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isFormIncomplete={isFormIncomplete}
+        openSubmitModal={openSubmitModal}
+        handlePageNavigation={handlePageNavigation}
+      />
       {isSubmitModalOpen && (
         <SubmitConfirmModal
           onClose={closeSubmitModal}

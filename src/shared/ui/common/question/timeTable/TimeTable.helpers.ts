@@ -118,7 +118,8 @@ export const buildTimeLabels = ({
 }
 
 const parseDateParts = (dateStr: string) => {
-  const parts = dateStr.split('/').map(Number)
+  const delimiter = dateStr.includes('-') ? '-' : '/'
+  const parts = dateStr.split(delimiter).map(Number)
   if (parts.length === 3) {
     const [y, m, d] = parts
     return { year: y, month: m, day: d }

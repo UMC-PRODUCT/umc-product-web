@@ -1,4 +1,5 @@
 import { PAGE_INFO } from '@/features/school/constants/PageInfo'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -18,17 +19,20 @@ const RecuritingPageNavigator = ({
       variant="both"
       onClick={() => setPage(page)}
       width={192}
-      height={'fit-content'}
       padding={'15px 18px'}
       gap={6}
       alignItems="flex-start"
       css={{
         cursor: 'pointer',
         backgroundColor: theme.colors.gray[700],
+        height: 'fit-content',
         border:
           currentPage === page
             ? `2px solid ${theme.colors.lime}`
             : `1px solid ${theme.colors.gray[600]}`,
+        [media.down(theme.breakPoints.tablet)]: {
+          height: '115px',
+        },
       }}
     >
       <S.Page>Page {page}</S.Page>

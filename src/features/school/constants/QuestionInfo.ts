@@ -1,6 +1,6 @@
-import type { QuestionType } from '@/shared/types/question'
+import type { RecruitingItemQuestionType } from '@/shared/types/form'
 
-export const QUESTION_INFO: Array<{ label: string; id: QuestionType }> = [
+export const QUESTION_INFO: Array<{ label: string; id: RecruitingItemQuestionType }> = [
   {
     label: '장문형',
     id: 'LONG_TEXT',
@@ -16,10 +16,6 @@ export const QUESTION_INFO: Array<{ label: string; id: QuestionType }> = [
   {
     label: '복수 선택',
     id: 'CHECKBOX',
-  },
-  {
-    label: '면접 시간',
-    id: 'SCHEDULE',
   },
   {
     label: '파일 첨부',

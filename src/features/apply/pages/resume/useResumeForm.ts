@@ -16,7 +16,10 @@ import {
   resolvePagesWithSlots,
 } from '@/features/apply/utils'
 
-export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
+export function useResumeForm(
+  questionData: QuestionList,
+  options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
+): UseResumeFormReturn {
   const defaultValues = useMemo(() => buildDefaultValuesFromQuestions(questionData), [questionData])
 
   const {
@@ -41,8 +44,8 @@ export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
   })
   const currentFormValues = watchedFormValues as ResumeFormValues
   const resolvedPages = useMemo(
-    () => resolvePagesWithSlots(questionData, currentFormValues),
-    [questionData, currentFormValues],
+    () => resolvePagesWithSlots(questionData, currentFormValues, options),
+    [questionData, currentFormValues, options],
   )
 
   useEffect(() => {

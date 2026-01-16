@@ -39,7 +39,7 @@ export const transformResumeStatusKorean = (input: string): string => {
   return mapping[input] || input
 }
 
-export const transformQuestionTypeKorean = (input: QuestionType): string => {
+export const transformQuestionTypeKorean = (input: QuestionType | 'PREFERRED_PART'): string => {
   const mapping: { [key: string]: string } = {
     SHORT_TEXT: '단답형',
     LONG_TEXT: '장문형',
@@ -48,6 +48,7 @@ export const transformQuestionTypeKorean = (input: QuestionType): string => {
     PORTFOLIO: '파일 업로드',
     SCHEDULE: '면접 시간',
     PART: '희망 파트',
+    PREFERRED_PART: '희망 파트',
     DROPDOWN: '드롭다운',
   }
 
