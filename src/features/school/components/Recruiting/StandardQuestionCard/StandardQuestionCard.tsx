@@ -2,7 +2,8 @@ import type { ComponentProps, HTMLAttributes } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
-import { QUESTION_INFO, RESPONSE_INFO } from '@/features/school/constants/QuestionInfo'
+import { QUESTION_INFO, RESPONSE_INFO } from '@features/school/domain'
+
 import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'

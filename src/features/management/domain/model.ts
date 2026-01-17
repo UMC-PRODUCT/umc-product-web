@@ -6,6 +6,8 @@
 import type {
   EVALUATION_DOCUMENT_CONFIG,
   EVALUATION_FINAL_CONFIG,
+  MANAGE_ACCOUNT_TABS,
+  MANAGE_SCHOOL_TABS,
   RECRUITING_STATE_CONFIG,
   SCHOOL_STATE_CONFIG,
 } from './constants'
@@ -62,3 +64,9 @@ export interface Notice {
   updatedAt: string
   authorId: number
 }
+
+export type ManageAccountTab = (typeof MANAGE_ACCOUNT_TABS)[number]
+export type ManageAccountTabName = ManageAccountTab['value']
+
+export type ManageSchoolTab = (typeof MANAGE_SCHOOL_TABS)[number]
+export type ManageSchoolTabName = ManageSchoolTab['value']

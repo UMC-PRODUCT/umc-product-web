@@ -1,8 +1,9 @@
 import dayjs from 'dayjs'
 
+import { PAGE_INFO } from '@features/school/domain'
+
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
-import { PAGE_INFO } from '@/features/school/constants/PageInfo'
 import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'

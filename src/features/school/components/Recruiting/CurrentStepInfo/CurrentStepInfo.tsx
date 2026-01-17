@@ -1,6 +1,7 @@
+import { STEP_NAME } from '@features/school/domain'
+
 import Section from '@/shared/ui/common/Section/Section'
 
-import { STEP_NAME } from '../../../constants/StepName'
 import * as S from './CurrentStepInfo.style'
 
 const CurrentStepInfo = ({ step }: { step: number }) => {

@@ -1,4 +1,5 @@
-import { STEP_NAME } from '@/features/school/constants/StepName'
+import { STEP_NAME } from '@features/school/domain'
+
 import Check from '@/shared/assets/icons/check.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'

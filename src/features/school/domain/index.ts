@@ -8,7 +8,5 @@
  * import type { PartApplyStatus, PartEvaluationStatus } from '@features/school/domain'
  */
 
+export * from './constants'
 export * from './model'
-
-// constants.ts는 현재 상수가 없으므로 export하지 않음
-// 추후 상수가 추가되면 export * from './constants' 추가

@@ -1,4 +1,5 @@
-import { PAGE_INFO } from '@/features/school/constants/PageInfo'
+import { PAGE_INFO } from '@features/school/domain'
+
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
