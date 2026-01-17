@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import CardTitle from '@/features/school/common/CardTitle'
+import CardTitle from '@/features/school/components/common/CardTitle'
 import { EVALUATION_PART_STATUS_MOCKS } from '@/features/school/mocks/apply'
 import Section from '@/shared/ui/common/Section/Section'
 import { mappingEvaluationColor } from '@/shared/utils/mappingColor'

@@ -20,7 +20,7 @@ export type SocialLink = NavItem & {
 }
 
 // Badge 타입
-export type BadgeTone = 'lime' | 'gray' | 'white' | 'necessary'
+export type BadgeTone = 'lime' | 'gray' | 'white' | 'necessary' | 'darkGray'
 export type BadgeVariant = 'solid' | 'outline'
 
 // Button 타입

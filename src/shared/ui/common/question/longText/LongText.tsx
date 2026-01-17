@@ -8,12 +8,12 @@ interface TextQuestionProps {
   value?: string
   onChange?: (newValue: string) => void
   mode: QuestionMode
+  placeholder: string
+  minHeight?: number
 }
 
-const PLACEHOLDER_TEXT = '자유롭게 작성해주세요.'
-
 export const LongText = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
-  ({ value, onChange, mode }, ref) => {
+  ({ value, onChange, mode, placeholder, minHeight }, ref) => {
     const isReadOnly = mode === 'view'
     const innerRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -30,7 +30,7 @@ export const LongText = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
 
     return (
       <S.TextArea
-        placeholder={PLACEHOLDER_TEXT}
+        placeholder={placeholder}
         value={value}
         onChange={handleTextChange}
         ref={(node) => {
@@ -42,6 +42,7 @@ export const LongText = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
           }
         }}
         readOnly={isReadOnly}
+        css={{ minHeight: minHeight ?? 'fit-content' }}
       />
     )
   },

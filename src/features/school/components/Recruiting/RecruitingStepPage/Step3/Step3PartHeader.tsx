@@ -1,0 +1,98 @@
+import CheckIcon from '@/shared/assets/icons/check.svg?react'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import type { Option, RecruitingPartApi } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/umc'
+import { Badge } from '@/shared/ui/common/Badge'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
+import { Flex } from '@/shared/ui/common/Flex'
+import Section from '@/shared/ui/common/Section/Section'
+
+type Step3PartHeaderProps = {
+  partOptions: Array<Option<PartType>>
+  selectedPart: RecruitingPartApi | null
+  isSelectedPartComplete: boolean
+  partCompletion: Partial<Record<RecruitingPartApi, boolean>>
+  onChangePart: (part: RecruitingPartApi) => void
+  onChangeStatus: (isComplete: boolean) => void
+  labelResolver: (part: RecruitingPartApi) => string
+}
+
+const Step3PartHeader = ({
+  partOptions,
+  selectedPart,
+  isSelectedPartComplete,
+  partCompletion,
+  onChangePart,
+  onChangeStatus,
+  labelResolver,
+}: Step3PartHeaderProps) => {
+  return (
+    <Section
+      variant="solid"
+      justifyContent="space-between"
+      alignItems="center"
+      padding={'12px 26px'}
+      css={{
+        flexDirection: 'row',
+        [media.down(theme.breakPoints.mobile)]: { flexDirection: 'column', gap: '12px' },
+      }}
+    >
+      <Dropdown
+        options={partOptions}
+        placeholder="파트를 선택해 주세요."
+        value={
+          selectedPart
+            ? {
+                label: labelResolver(selectedPart),
+                id: selectedPart,
+              }
+            : undefined
+        }
+        onChange={(option) => onChangePart(option.id as RecruitingPartApi)}
+        css={{ width: 300, maxWidth: '100%' }}
+        optionSuffix={(option) =>
+          partCompletion[option.id as RecruitingPartApi] ? (
+            <span
+              css={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 16,
+                height: 16,
+                borderRadius: '50%',
+                background: theme.colors.lime,
+                flexShrink: 0,
+              }}
+            >
+              <CheckIcon width={10} height={10} color={theme.colors.black} />
+            </span>
+          ) : null
+        }
+      />
+
+      <Flex gap={14} width={'fit-content'} alignItems="center">
+        <Badge
+          typo="B4.Sb"
+          tone={'gray'}
+          variant={isSelectedPartComplete ? 'outline' : 'solid'}
+          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
+          onClick={() => onChangeStatus(false)}
+        >
+          작성 중
+        </Badge>
+        <Badge
+          typo="B4.Sb"
+          tone={'gray'}
+          variant={isSelectedPartComplete ? 'solid' : 'outline'}
+          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
+          onClick={() => onChangeStatus(true)}
+        >
+          작성 완료
+        </Badge>
+      </Flex>
+    </Section>
+  )
+}
+
+export default Step3PartHeader

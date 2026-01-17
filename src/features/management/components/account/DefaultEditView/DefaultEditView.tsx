@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import * as S from '@/features/management/components/account/shared'
 import ManagementTable from '@/features/management/components/common/ManagementTable'
 import DeleteConfirm from '@/features/management/components/modals/DeleteConfirm/DeleteConfirm'
-import { DeleteAccountTableHeaderLabel } from '@/features/management/constants/tableHeaders'
+import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
   ACCOUNT_DELETE_MOCK,
   AFFILIATED_MOCK,
@@ -180,7 +180,7 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
         isAllChecked={selectedIds.size === 6}
         onToggleAll={toggleAll}
         totalAmounts={totalAmounts}
-        headerLabels={DeleteAccountTableHeaderLabel}
+        headerLabels={DELETE_ACCOUNT_TABLE_HEADER_LABEL}
         currentPage={page}
         totalPages={totalPages}
         onChangePage={handlePageChange}

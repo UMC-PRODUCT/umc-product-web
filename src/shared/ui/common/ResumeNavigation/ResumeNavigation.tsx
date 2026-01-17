@@ -1,5 +1,6 @@
 import ArrowDefaultIcon from '@/shared/assets/icons/arrow_default.svg?react'
 import { Flex } from '@/shared/ui/common/Flex'
+import { scrollToTop } from '@/shared/utils/scrollToTop'
 
 import * as S from './ResumeNavigation.style'
 
@@ -34,7 +35,10 @@ const ResumeNavigation = ({ currentPage, totalPages, onPageChange }: ResumeNavig
       <S.NavigationContainer
         aria-disabled={isPreviousButtonDisabled}
         css={getButtonStyle(isPreviousButtonDisabled)}
-        onClick={handlePreviousClick}
+        onClick={(event) => {
+          handlePreviousClick()
+          scrollToTop(event.currentTarget)
+        }}
       >
         <ArrowDefaultIcon css={{ transform: 'rotate(180deg)' }} />
         이전
@@ -45,7 +49,10 @@ const ResumeNavigation = ({ currentPage, totalPages, onPageChange }: ResumeNavig
       <S.NavigationContainer
         aria-disabled={isNextButtonDisabled}
         css={getButtonStyle(isNextButtonDisabled)}
-        onClick={handleNextClick}
+        onClick={(event) => {
+          handleNextClick()
+          scrollToTop(event.currentTarget)
+        }}
       >
         다음
         <ArrowDefaultIcon />

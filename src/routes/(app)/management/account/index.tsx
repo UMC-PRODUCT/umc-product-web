@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod/v3'
 
-import type { ManageAccountTabName } from '@features/management/constants/tabNames'
 import { AccountPage } from '@features/management/pages/AccountPage'
+
+import type { ManageAccountTabName } from '@/features/management/domain/model'
 
 const tabSchema = z.object({
   tab: z.enum(['add', 'edit', 'level'] as const).optional(),

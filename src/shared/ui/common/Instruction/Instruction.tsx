@@ -9,7 +9,7 @@ type InstructionProps = {
   typography: TypoToken
   Icon: React.FC<React.SVGProps<SVGSVGElement>>
   iconSize?: number
-  mode: 'success' | 'error' | 'warning'
+  mode: 'success' | 'error' | 'warning' | 'disabled'
 }
 
 const Instruction = ({ content, typography, Icon, iconSize = 18, mode }: InstructionProps) => {

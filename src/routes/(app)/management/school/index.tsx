@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod/v3'
 
-import type { ManageSchoolTabName } from '@features/management/constants/tabNames'
 import { SchoolPage } from '@features/management/pages/SchoolPage'
+
+import type { ManageSchoolTabName } from '@/features/management/domain/model'
 
 const tabSchema = z.object({
   tab: z.enum(['add', 'delete', 'edit'] as const).optional(),

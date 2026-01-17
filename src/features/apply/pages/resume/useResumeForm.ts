@@ -32,7 +32,10 @@ export interface UseResumeFormReturn {
  * - useFormCompleteness: 폼 완성도 검증
  * - useFormValidationRegistration: 동적 검증 규칙 등록
  */
-export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
+export function useResumeForm(
+  questionData: QuestionList,
+  options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
+): UseResumeFormReturn {
   // 1. 폼 초기 설정
   const {
     control,
@@ -52,6 +55,7 @@ export function useResumeForm(questionData: QuestionList): UseResumeFormReturn {
     control,
     questionData,
     defaultValues,
+    options,
   )
 
   // 3. 폼 완성도 검증

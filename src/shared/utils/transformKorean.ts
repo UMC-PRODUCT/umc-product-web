@@ -1,3 +1,5 @@
+import type { QuestionType } from '@features/apply/domain'
+
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     ACTIVE: '활성',
@@ -32,6 +34,22 @@ export const transformResumeStatusKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     OPEN: '모집 중',
     CLOSED: '모집 마감',
+  }
+
+  return mapping[input] || input
+}
+
+export const transformQuestionTypeKorean = (input: QuestionType | 'PREFERRED_PART'): string => {
+  const mapping: { [key: string]: string } = {
+    SHORT_TEXT: '단답형',
+    LONG_TEXT: '장문형',
+    RADIO: '단일 선택',
+    CHECKBOX: '복수 선택',
+    PORTFOLIO: '파일 업로드',
+    SCHEDULE: '면접 시간',
+    PART: '희망 파트',
+    PREFERRED_PART: '희망 파트',
+    DROPDOWN: '드롭다운',
   }
 
   return mapping[input] || input

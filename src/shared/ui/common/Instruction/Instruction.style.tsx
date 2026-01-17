@@ -14,7 +14,7 @@ export const Text = styled.span<{ $color: string }>`
   color: ${({ $color }) => $color};
 `
 
-export const getColor = (mode: 'success' | 'error' | 'warning') => {
+export const getColor = (mode: 'success' | 'error' | 'warning' | 'disabled') => {
   switch (mode) {
     case 'success':
       return theme.colors.lime
@@ -22,5 +22,7 @@ export const getColor = (mode: 'success' | 'error' | 'warning') => {
       return theme.colors.necessary
     case 'warning':
       return theme.colors.caution
+    case 'disabled':
+      return theme.colors.gray[300]
   }
 }

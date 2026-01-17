@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import type { UploadedFile } from '../../domain/model'
-import type { UseFileUploadOptions } from '../../types/fileUpload'
+import type { UploadedFile, UseFileUploadOptions } from '../../domain/model'
 
 /**
  * 업로드된 파일 상태를 관리하는 훅

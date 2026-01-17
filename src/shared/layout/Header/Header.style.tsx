@@ -12,7 +12,7 @@ export const Nav = styled.nav({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '14px 28px 14px 36px',
-  overflowX: 'hidden',
+  overflow: 'hidden',
   borderBottom: `1.5px solid ${theme.colors.gray[700]}`,
   [media.down(theme.breakPoints.desktop)]: {
     padding: '14px  26px 14px 26px',

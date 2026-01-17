@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useBlocker } from '@tanstack/react-router'
 
-import type { NavigationBlockerResult } from '@/features/apply/types/unsavedChangeBlocker'
+import type { NavigationBlockerResult } from '../domain/model'
 
 /**
  * 저장되지 않은 변경사항이 있을 때 라우트 이탈을 차단하는 훅

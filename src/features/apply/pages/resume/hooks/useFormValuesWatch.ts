@@ -15,6 +15,7 @@ export function useFormValuesWatch(
   control: Control<ResumeFormValues>,
   questionData: QuestionList,
   defaultValues: ResumeFormValues,
+  options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ) {
   const watchedFormValues = useWatch({
     control,
@@ -24,8 +25,8 @@ export function useFormValuesWatch(
   const currentFormValues = watchedFormValues as ResumeFormValues
 
   const resolvedPages = useMemo<Array<QuestionPage>>(
-    () => resolvePagesWithSlots(questionData, currentFormValues),
-    [questionData, currentFormValues],
+    () => resolvePagesWithSlots(questionData, currentFormValues, options),
+    [questionData, currentFormValues, options],
   )
 
   return {

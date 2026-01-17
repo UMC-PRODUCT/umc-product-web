@@ -11,7 +11,7 @@ import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 
-import { DeleteSchoolTableHeaderLabel } from '../../constants/tableHeaders'
+import { DELETE_SCHOOL_TABLE_HEADER_LABEL } from '../../domain/constants'
 import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '../../mocks/managementMocks'
 import ManagementTable from '../common/ManagementTable'
 import DeleteConfirmModal from '../modals/DeleteConfirm/DeleteConfirm'
@@ -185,7 +185,7 @@ const DeleteSchool = () => {
           isAllChecked={isAllSchoolsSelected}
           onToggleAll={toggleSelectAll}
           totalAmounts={totalSchoolCount}
-          headerLabels={DeleteSchoolTableHeaderLabel}
+          headerLabels={DELETE_SCHOOL_TABLE_HEADER_LABEL}
           type="school"
           currentPage={currentPage}
           totalPages={TOTAL_PAGES}

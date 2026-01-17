@@ -4,15 +4,6 @@ import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-export const PageLayout = styled(Flex)`
-  flex-direction: column;
-  gap: 28px;
-  padding: 52px 135px;
-  ${media.down(theme.breakPoints.desktop)} {
-    padding: 20px 20px;
-  }
-`
-
 export const TabHeader = styled(Flex)`
   flex-direction: column;
   gap: 3px;

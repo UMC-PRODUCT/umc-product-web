@@ -147,7 +147,7 @@ export const FileUpload = ({
 
   return (
     <Flex gap={12} width="100%">
-      <Section variant="both" css={S.sectionStyle} gap={12}>
+      <Section variant="solid" css={S.sectionStyle} gap={12}>
         <FileList
           files={files}
           mode={mode}

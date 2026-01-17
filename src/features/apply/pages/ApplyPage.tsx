@@ -9,6 +9,7 @@ import {
   formatRecruitmentPeriod,
   RECRUITMENT_INFO,
 } from '@/shared/constants/recruitment'
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -36,7 +37,7 @@ export const ApplyPage = ({ partInfoList, isAlreadySubmitted }: ApplyPageProps) 
   )
 
   return (
-    <S.PageLayout>
+    <PageLayout>
       <Flex flexDirection="column" gap="35px" maxWidth="868px">
         <Flex flexDirection="column" gap="22px">
           <PageTitle title={`UMC ${schoolName} ${generation} 추가모집`} />
@@ -47,6 +48,6 @@ export const ApplyPage = ({ partInfoList, isAlreadySubmitted }: ApplyPageProps) 
         </Flex>
         {isAlreadySubmitted ? <AfterSubmit /> : <BeforeSubmit partInfoList={partInfoList} />}
       </Flex>
-    </S.PageLayout>
+    </PageLayout>
   )
 }

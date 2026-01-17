@@ -3,16 +3,15 @@ import type { FieldErrors } from 'react-hook-form'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
-import * as S from '@/features/apply/components/ResumePage.style'
-import { useAutoSave } from '@/features/apply/hooks/useAutoSave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import { useAutoSave } from '@/shared/hooks/useAutoSave'
+import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import { media } from '@/shared/styles/media'
-import { theme } from '@/shared/styles/theme'
-import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
+import { scrollToTop } from '@/shared/utils/scrollToTop'
 
+import ResumeContent from '../components/ResumeContent'
 import type { QuestionList } from '../domain/model'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import {
@@ -21,7 +20,6 @@ import {
   getPageRequiredFieldIds,
   getSubmissionValues,
 } from '../utils'
-import ResumeFormSection from './resume/ResumeFormSection'
 import { useResumeForm } from './resume/useResumeForm'
 
 const AUTO_SAVE_INTERVAL_MS = 60_000
@@ -80,7 +78,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
 
     if (errorPageIndex !== -1) {
       onPageChange(errorPageIndex + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
   }
 
@@ -112,7 +110,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
         (await trigger(currentPageFieldIds, { shouldFocus: true }))
 
       if (!isCurrentPageValid) {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        scrollToTop()
         return
       }
     }
@@ -122,53 +120,27 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
   }
 
   return (
-    <S.PageLayout>
+    <PageLayout>
       <Flex maxWidth="956px">
         <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
       </Flex>
 
-      <S.BorderedSection alignItems="flex-start">{questionData.description}</S.BorderedSection>
-
-      <S.BorderedSection>
-        <Flex justifyContent="flex-end">
-          <Flex justifyContent="flex-end" alignItems="center" gap="18px">
-            {displayLastSavedTime && (
-              <S.LastSavedTime>{displayLastSavedTime}에 마지막으로 저장됨.</S.LastSavedTime>
-            )}
-            <Badge
-              typo="B3.Md"
-              tone="lime"
-              variant="outline"
-              onClick={handleSave}
-              css={{
-                cursor: 'pointer',
-                [media.down(theme.breakPoints.tablet)]: {
-                  ...theme.typography.B4.Md,
-                },
-              }}
-            >
-              저장하기
-            </Badge>
-          </Flex>
-        </Flex>
-      </S.BorderedSection>
-
-      <S.BorderedSection>
-        <ResumeFormSection
-          questions={currentQuestions}
-          partQuestions={partQuestions}
-          control={control}
-          setValue={setValue}
-          clearErrors={clearErrors}
-          errors={errors}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          isSubmitDisabled={isFormIncomplete}
-          onOpenSubmitModal={openSubmitModal}
-          onPageChange={handlePageNavigation}
-        />
-      </S.BorderedSection>
-
+      <ResumeContent
+        questionData={questionData}
+        displayLastSavedTime={displayLastSavedTime}
+        handleSave={handleSave}
+        currentQuestions={currentQuestions}
+        partQuestions={partQuestions}
+        control={control}
+        setValue={setValue}
+        clearErrors={clearErrors}
+        errors={errors}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isFormIncomplete={isFormIncomplete}
+        openSubmitModal={openSubmitModal}
+        handlePageNavigation={handlePageNavigation}
+      />
       {isSubmitModalOpen && (
         <SubmitConfirmModal
           onClose={closeSubmitModal}
@@ -180,7 +152,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
       )}
-    </S.PageLayout>
+    </PageLayout>
   )
 }
 

@@ -1,4 +1,4 @@
-import CardTitle from '@/features/school/common/CardTitle'
+import CardTitle from '@/features/school/components/common/CardTitle'
 import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/umc'
 import Section from '@/shared/ui/common/Section/Section'

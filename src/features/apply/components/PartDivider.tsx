@@ -5,7 +5,7 @@ const PartDivider = ({ label }: { label: string }) => {
   return (
     <Section
       key={`label-${label}`}
-      variant="both"
+      variant="solid"
       alignItems="flex-start"
       padding={'15px 20px'}
       css={{

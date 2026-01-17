@@ -1,5 +1,4 @@
-import type { UseFileUploadOptions, UseFileUploadReturn } from '@/features/apply/types/fileUpload'
-
+import type { UseFileUploadOptions, UseFileUploadReturn } from '../domain/model'
 import { useFileProcessing, useFileUploadSimulation, useUploadedFileState } from './fileUpload'
 
 /**

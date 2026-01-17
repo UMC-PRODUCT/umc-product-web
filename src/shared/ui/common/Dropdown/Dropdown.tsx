@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { forwardRef } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as SelectPrimitive from '@radix-ui/react-select'
@@ -18,6 +19,7 @@ type DropdownProps<T> = {
   ariaLabelledby?: string
   css?: Interpolation<Theme>
   className?: string
+  optionSuffix?: (option: Option<T>) => ReactNode
 }
 
 const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((props, ref) => {
@@ -31,6 +33,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     ariaLabelledby,
     className,
     css,
+    optionSuffix,
   } = props
   const isValuePropProvided = Object.prototype.hasOwnProperty.call(props, 'value')
   const controlledValue = value ? String(value.id) : ''
@@ -65,7 +68,12 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
           <S.StyledViewport>
             {options.map((option) => (
               <S.StyledItem key={option.id} value={String(option.id)}>
-                <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                <SelectPrimitive.ItemText asChild>
+                  <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    {option.label}
+                    {optionSuffix ? optionSuffix(option) : null}
+                  </span>
+                </SelectPrimitive.ItemText>
               </S.StyledItem>
             ))}
           </S.StyledViewport>

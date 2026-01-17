@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
-// --- Styled Components ---
+
 const Container = styled.div`
   width: 100%;
   user-select: none;
@@ -11,6 +11,14 @@ const TableWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 12px;
+  position: relative;
+`
+
+const MainAreaWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  overflow-x: hidden;
 `
 
 const MainArea = styled.div`
@@ -18,6 +26,22 @@ const MainArea = styled.div`
   flex-direction: column;
   overflow-x: auto;
   width: 100%;
+`
+
+const ScrollShadow = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(32, 32, 32, 0) 0.31%,
+    rgba(32, 32, 32, 0.4) 20.38%,
+    rgba(32, 32, 32, 0.9) 50%,
+    #202020 60.03%
+  );
 `
 
 const HeaderRow = styled.div<{ $cols: number }>`
@@ -36,6 +60,7 @@ const HeaderCell = styled.div<{ $isAllSelected: boolean; $isInteractive?: boolea
 `
 
 const TimeLabelsColumn = styled.div`
+  min-width: 50px;
   width: 50px;
   position: relative;
   padding-top: 68px;
@@ -84,6 +109,9 @@ const SlotCell = styled.div<{
     if (!p.$isInteractive) return 'default'
     return p.$isDisabled ? 'not-allowed' : 'pointer'
   }};
+  transition:
+    background-color 120ms ease,
+    filter 120ms ease;
 
   &:hover {
     ${(p) => p.$isInteractive && !p.$isDisabled && 'filter: brightness(1.2);'}
@@ -95,6 +123,8 @@ export {
   HeaderCell,
   HeaderRow,
   MainArea,
+  MainAreaWrapper,
+  ScrollShadow,
   SlotCell,
   TableWrapper,
   TimeLabel,
