@@ -3,9 +3,30 @@ node_modules
 dist
 dist-ssr
 *.local
-count.txt
-.env
+*.log
+*.tsbuildinfo
+.env*
+
+# Frameworks
 .nitro
 .tanstack
+.cta.json
 .wrangler
-.env
+.next
+.nuxt
+.output
+.vercel
+.turbo
+
+# Testing
+coverage
+
+# Cache
+.eslintcache
+
+# AI
+.claude
+.cursor
+.copilot
+.codeium
+.serena

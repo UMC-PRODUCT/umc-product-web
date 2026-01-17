@@ -1,0 +1,18 @@
+export type TypoGroup =
+  | 'H1'
+  | 'H2'
+  | 'H3'
+  | 'H4'
+  | 'H5'
+  | 'B1'
+  | 'B2'
+  | 'B3'
+  | 'B4'
+  | 'B5'
+  | 'C1'
+  | 'C2'
+  | 'C3'
+  | 'C4'
+  | 'C5'
+  | 'Slogan'
+export type TypoToken = `${TypoGroup}.${'Sb' | 'Md' | 'Rg'}`

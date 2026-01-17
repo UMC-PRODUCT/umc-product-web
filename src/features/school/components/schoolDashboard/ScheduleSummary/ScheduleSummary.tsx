@@ -1,0 +1,80 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { INTERVIEW_MOCKS } from '@/features/school/mocks/interview'
+import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { Flex } from '@/shared/ui/common/Flex'
+import Section from '@/shared/ui/common/Section/Section'
+
+import InterviewInfo from './InterviewInfo/InterviewInfo'
+import * as S from './ScheduleSummary.style'
+
+const ScheduleSummary = () => {
+  const gridRef = useRef<HTMLDivElement | null>(null)
+  const [showBlur, setShowBlur] = useState(true)
+
+  const updateBlur = useCallback((element?: HTMLDivElement | null) => {
+    const el = element ?? gridRef.current
+    if (!el) return
+    const hasOverflow = el.scrollHeight > el.clientHeight + 1
+    const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 1
+    setShowBlur(hasOverflow && !atEnd)
+  }, [])
+
+  const setGridRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      gridRef.current = node
+      if (node) {
+        updateBlur(node)
+      }
+    },
+    [updateBlur],
+  )
+
+  const handleScroll = useCallback(() => updateBlur(), [updateBlur])
+
+  useEffect(() => {
+    const handleResize = () => updateBlur()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [updateBlur])
+
+  return (
+    <Flex flexDirection="column" gap={20}>
+      <PageTitle title="일정 요약" />
+      <Section variant="outline" padding={16}>
+        <S.GridSection>
+          <Section variant="solid" alignItems="flex-start" gap={20}>
+            <S.ScheduleTitle>10기 모집</S.ScheduleTitle>
+            <Flex gap={9} flexDirection="column" alignItems="flex-start">
+              <S.ScheduleCount>D-7</S.ScheduleCount>
+              <S.ScheduleInfo>2025.12.02 ~ 2025.12.06</S.ScheduleInfo>
+            </Flex>
+          </Section>
+          <Section variant="solid" alignItems="flex-start" gap={18} css={{ position: 'relative' }}>
+            <S.InterviewTitle>오늘 면접 예정자</S.InterviewTitle>
+            <S.Grid
+              notProgress={INTERVIEW_MOCKS.length === 0}
+              ref={setGridRef}
+              onScroll={handleScroll}
+            >
+              {showBlur && INTERVIEW_MOCKS.length !== 0 ? <S.Blur /> : null}
+              {INTERVIEW_MOCKS.length !== 0 ? (
+                INTERVIEW_MOCKS.map((interview, index) => (
+                  <InterviewInfo
+                    key={index}
+                    time={interview.time}
+                    name={interview.name}
+                    nickname={interview.nickname}
+                  />
+                ))
+              ) : (
+                <div className="not-progress">면접 진행 기간이 아닙니다.</div>
+              )}
+            </S.Grid>
+          </Section>
+        </S.GridSection>
+      </Section>
+    </Flex>
+  )
+}
+export default ScheduleSummary
