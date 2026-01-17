@@ -140,6 +140,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
         isFormIncomplete={isFormIncomplete}
         openSubmitModal={openSubmitModal}
         handlePageNavigation={handlePageNavigation}
+        isEdit={true}
       />
       {isSubmitModalOpen && (
         <SubmitConfirmModal

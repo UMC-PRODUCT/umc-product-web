@@ -3,6 +3,8 @@ import { Controller } from 'react-hook-form'
 
 import { mapPartToApi } from '@/features/school/utils/recruiting/items'
 import { PART } from '@/shared/constants/umc'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms } from '@/shared/types/form'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -57,7 +59,13 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
                   errorMessage={fieldState.error.message || ''}
                 />
               )}
-              <Flex gap={20} css={{ overflowX: 'auto' }}>
+              <Flex
+                gap={20}
+                css={{
+                  flexWrap: 'wrap',
+                  [media.down(theme.breakPoints.tablet)]: { justifyContent: 'center' },
+                }}
+              >
                 {PART.map((part) => {
                   const selected = Array.isArray(field.value) ? field.value : []
                   const partId = mapPartToApi(part)

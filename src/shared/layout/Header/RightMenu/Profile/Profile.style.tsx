@@ -29,6 +29,7 @@ export const Modal = styled.div({
   width: 232,
   padding: 16,
   gap: 20,
+  zIndex: 100,
   display: 'flex',
   flexDirection: 'column',
   [media.down(theme.breakPoints.tablet)]: {
@@ -45,6 +46,7 @@ export const CloseButton = styled(Close)({
   width: 22,
   height: 22,
   cursor: 'pointer',
+  color: theme.colors.gray[400],
 })
 
 export const Avatar = styled(Icon)({

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -10,12 +11,23 @@ const Header = styled(Flex)`
     flex-wrap: nowrap;
     width: fit-content;
   }
+
+  ${media.down(theme.breakPoints.mobile)} {
+    div {
+      gap: 8px;
+    }
+  }
 `
 const DateNavigator = styled(Flex)`
   ${theme.typography.B3.Sb}
   width: fit-content;
   color: ${theme.colors.white};
   gap: 16px;
+
+  ${media.down(theme.breakPoints.mobile)} {
+    ${theme.typography.B4.Sb}
+    gap: 10px;
+  }
 `
 const StyledCalendarWrapper = styled.div`
   width: 100%;
@@ -24,6 +36,7 @@ const StyledCalendarWrapper = styled.div`
     background: transparent;
     border: none;
     width: 100%;
+    max-width: 100%;
     overflow: visible;
   }
 
@@ -87,6 +100,14 @@ const StyledCalendarWrapper = styled.div`
     align-items: center;
   }
 
+  ${media.down(theme.breakPoints.mobile)} {
+    .react-calendar__tile {
+      height: 38px;
+      padding: 6px;
+      ${theme.typography.B3.Md}
+    }
+  }
+
   .react-calendar__tile:has(.event-bar-container) {
     z-index: 100 !important;
   }
@@ -106,6 +127,10 @@ const StyledCalendarWrapper = styled.div`
       font-weight: bold;
       width: 26px;
       height: 26px;
+      ${media.down(theme.breakPoints.mobile)} {
+        width: 20px;
+        height: 20px;
+      }
     }
   }
 
@@ -119,6 +144,10 @@ const StyledCalendarWrapper = styled.div`
       border-radius: 50%;
       width: 26px;
       height: 26px;
+      ${media.down(theme.breakPoints.mobile)} {
+        width: 20px;
+        height: 20px;
+      }
     }
   }
 

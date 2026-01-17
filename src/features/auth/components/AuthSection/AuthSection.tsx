@@ -9,18 +9,18 @@ const Section = styled.section<{ $size: 'md' | 'lg' }>`
   justify-self: center;
   flex-direction: column;
   align-items: center;
+  align-self: center;
   padding: 24px;
   gap: ${({ $size }) => ($size === 'md' ? '48px' : '24px')};
   width: ${({ $size }) => ($size === 'md' ? '420px' : '452px')};
   max-width: 90vw;
   min-height: 100vh;
   flex: 1;
-  overflow-x: hidden;
+  overflow: visible;
   ${media.down(theme.breakPoints.tablet)} {
     padding: 50px 0 50px 0;
     gap: 34px;
   }
-  overflow-y: auto;
 `
 
 const AuthSection = ({ children, size }: { children: React.ReactNode; size: 'md' | 'lg' }) => {

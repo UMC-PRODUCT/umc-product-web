@@ -7,6 +7,9 @@ import { Flex } from '@/shared/ui/common/Flex'
 export const Title = styled.div`
   ${theme.typography.H1.Sb}
   color: ${theme.colors.white};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.H3.Sb}
+  }
 `
 export const ModalButton = styled.button`
   display: inline-flex;

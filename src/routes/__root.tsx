@@ -1,10 +1,17 @@
+import { useEffect, useLayoutEffect } from 'react'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet, useRouter } from '@tanstack/react-router'
+import {
+  createRootRouteWithContext,
+  Outlet,
+  useRouter,
+  useRouterState,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '@app/devtools/tanstack-query'
 
+import { Flex } from '@/shared/ui/common/Flex'
 import { ErrorFallback, NotFoundPage } from '@/shared/ui/feedback'
 
 interface MyRouterContext {
@@ -27,9 +34,22 @@ const RootNotFoundComponent = () => {
 
 const RootComponent = () => {
   const shouldShowDevtools = import.meta.env.DEV
+  const location = useRouterState({ select: (state) => state.location })
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0 })
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [location.key])
 
   return (
-    <>
+    <Flex flexDirection="column" minHeight="100vh">
       <Outlet />
       {shouldShowDevtools ? (
         <TanStackDevtools
@@ -45,7 +65,7 @@ const RootComponent = () => {
           ]}
         />
       ) : null}
-    </>
+    </Flex>
   )
 }
 

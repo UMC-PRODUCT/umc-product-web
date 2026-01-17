@@ -12,6 +12,7 @@ export const TabHeader = styled(Flex)`
 
 export const TabTitle = styled.div`
   color: ${theme.colors.white};
+
   ${theme.typography.H3.Sb};
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.H4.Sb};

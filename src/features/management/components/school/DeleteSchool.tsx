@@ -155,10 +155,13 @@ const DeleteSchool = () => {
 
         <Section
           variant="solid"
-          flexDirection="row"
           padding="12px 14px"
           margin="30px 0 16px 0"
           gap="12px"
+          css={{
+            flexDirection: 'row',
+            [media.down(theme.breakPoints.tablet)]: { flexDirection: 'column' },
+          }}
         >
           <Flex css={filterContainerStyle}>
             <TextField

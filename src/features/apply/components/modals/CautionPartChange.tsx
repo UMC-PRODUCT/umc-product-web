@@ -13,7 +13,7 @@ const CautionPartChange = ({
   onConfirm: () => void
   ranksText: string
 }) => {
-  const content = `${ranksText} 파트 변경 시 작성한 파트별 문항 답변이 초기화됩니다.\n${ranksText} 파트를 변경할 경우, 해당 작성 내역이 초기화됩니다.`
+  const content = `${ranksText} 파트별 문항에 답변을 작성한 기록이 존재합니다.\n${ranksText} 파트를 변경할 경우, 해당 작성 내역이 초기화됩니다.`
   return (
     <AlertModalLayout
       mode="warning"

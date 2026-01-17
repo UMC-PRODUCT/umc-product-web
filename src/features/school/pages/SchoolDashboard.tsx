@@ -1,4 +1,6 @@
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import ApplyStatus from '../components/SchoolDashboard/ApplyStatus/ApplyStatus'
@@ -9,7 +11,15 @@ import ScheduleSummary from '../components/SchoolDashboard/ScheduleSummary/Sched
 const SchoolDashboard = () => {
   return (
     <PageLayout>
-      <Flex flexDirection="column" gap={100}>
+      <Flex
+        flexDirection="column"
+        css={{
+          gap: '100px',
+          [media.down(theme.breakPoints.tablet)]: {
+            gap: '30px',
+          },
+        }}
+      >
         <ScheduleSummary />
         <ProgressSteps />
         <ApplyStatus />
