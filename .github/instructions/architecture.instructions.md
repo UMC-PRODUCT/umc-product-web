@@ -1,3 +1,7 @@
+---
+applyTo: "**"
+---
+
 # Copilot Instructions (Architecture & Structure Reviewer)
 
 ## 언어
