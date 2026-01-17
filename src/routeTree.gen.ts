@@ -22,10 +22,9 @@ import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/log
 import { Route as appSchoolRecruitingIndexRouteImport } from './routes/(app)/school/recruiting/index'
 import { Route as appSchoolEvaluationIndexRouteImport } from './routes/(app)/school/evaluation/index'
 import { Route as appSchoolDashboardIndexRouteImport } from './routes/(app)/school/dashboard/index'
+import { Route as appManagementSystemIndexRouteImport } from './routes/(app)/management/system/index'
 import { Route as appManagementSchoolIndexRouteImport } from './routes/(app)/management/school/index'
-import { Route as appManagementPolicyIndexRouteImport } from './routes/(app)/management/policy/index'
-import { Route as appManagementNoticeIndexRouteImport } from './routes/(app)/management/notice/index'
-import { Route as appManagementDataIndexRouteImport } from './routes/(app)/management/data/index'
+import { Route as appManagementCandidateIndexRouteImport } from './routes/(app)/management/candidate/index'
 import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
 import { Route as appDashboardResumeIdIndexRouteImport } from './routes/(app)/dashboard/$resumeId/index'
 import { Route as appApplyNewIndexRouteImport } from './routes/(app)/apply/new/index'
@@ -97,29 +96,24 @@ const appSchoolDashboardIndexRoute = appSchoolDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => appSchoolRouteRoute,
 } as any)
+const appManagementSystemIndexRoute =
+  appManagementSystemIndexRouteImport.update({
+    id: '/system/',
+    path: '/system/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 const appManagementSchoolIndexRoute =
   appManagementSchoolIndexRouteImport.update({
     id: '/school/',
     path: '/school/',
     getParentRoute: () => appManagementRouteRoute,
   } as any)
-const appManagementPolicyIndexRoute =
-  appManagementPolicyIndexRouteImport.update({
-    id: '/policy/',
-    path: '/policy/',
+const appManagementCandidateIndexRoute =
+  appManagementCandidateIndexRouteImport.update({
+    id: '/candidate/',
+    path: '/candidate/',
     getParentRoute: () => appManagementRouteRoute,
   } as any)
-const appManagementNoticeIndexRoute =
-  appManagementNoticeIndexRouteImport.update({
-    id: '/notice/',
-    path: '/notice/',
-    getParentRoute: () => appManagementRouteRoute,
-  } as any)
-const appManagementDataIndexRoute = appManagementDataIndexRouteImport.update({
-  id: '/data/',
-  path: '/data/',
-  getParentRoute: () => appManagementRouteRoute,
-} as any)
 const appManagementAccountIndexRoute =
   appManagementAccountIndexRouteImport.update({
     id: '/account/',
@@ -155,10 +149,9 @@ export interface FileRoutesByFullPath {
   '/apply/new': typeof appApplyNewIndexRoute
   '/dashboard/$resumeId': typeof appDashboardResumeIdIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
-  '/management/data': typeof appManagementDataIndexRoute
-  '/management/notice': typeof appManagementNoticeIndexRoute
-  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/candidate': typeof appManagementCandidateIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
+  '/management/system': typeof appManagementSystemIndexRoute
   '/school/dashboard': typeof appSchoolDashboardIndexRoute
   '/school/evaluation': typeof appSchoolEvaluationIndexRoute
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
@@ -177,10 +170,9 @@ export interface FileRoutesByTo {
   '/apply/new': typeof appApplyNewIndexRoute
   '/dashboard/$resumeId': typeof appDashboardResumeIdIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
-  '/management/data': typeof appManagementDataIndexRoute
-  '/management/notice': typeof appManagementNoticeIndexRoute
-  '/management/policy': typeof appManagementPolicyIndexRoute
+  '/management/candidate': typeof appManagementCandidateIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
+  '/management/system': typeof appManagementSystemIndexRoute
   '/school/dashboard': typeof appSchoolDashboardIndexRoute
   '/school/evaluation': typeof appSchoolEvaluationIndexRoute
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
@@ -201,10 +193,9 @@ export interface FileRoutesById {
   '/(app)/apply/new/': typeof appApplyNewIndexRoute
   '/(app)/dashboard/$resumeId/': typeof appDashboardResumeIdIndexRoute
   '/(app)/management/account/': typeof appManagementAccountIndexRoute
-  '/(app)/management/data/': typeof appManagementDataIndexRoute
-  '/(app)/management/notice/': typeof appManagementNoticeIndexRoute
-  '/(app)/management/policy/': typeof appManagementPolicyIndexRoute
+  '/(app)/management/candidate/': typeof appManagementCandidateIndexRoute
   '/(app)/management/school/': typeof appManagementSchoolIndexRoute
+  '/(app)/management/system/': typeof appManagementSystemIndexRoute
   '/(app)/school/dashboard/': typeof appSchoolDashboardIndexRoute
   '/(app)/school/evaluation/': typeof appSchoolEvaluationIndexRoute
   '/(app)/school/recruiting/': typeof appSchoolRecruitingIndexRoute
@@ -225,10 +216,9 @@ export interface FileRouteTypes {
     | '/apply/new'
     | '/dashboard/$resumeId'
     | '/management/account'
-    | '/management/data'
-    | '/management/notice'
-    | '/management/policy'
+    | '/management/candidate'
     | '/management/school'
+    | '/management/system'
     | '/school/dashboard'
     | '/school/evaluation'
     | '/school/recruiting'
@@ -247,10 +237,9 @@ export interface FileRouteTypes {
     | '/apply/new'
     | '/dashboard/$resumeId'
     | '/management/account'
-    | '/management/data'
-    | '/management/notice'
-    | '/management/policy'
+    | '/management/candidate'
     | '/management/school'
+    | '/management/system'
     | '/school/dashboard'
     | '/school/evaluation'
     | '/school/recruiting'
@@ -270,10 +259,9 @@ export interface FileRouteTypes {
     | '/(app)/apply/new/'
     | '/(app)/dashboard/$resumeId/'
     | '/(app)/management/account/'
-    | '/(app)/management/data/'
-    | '/(app)/management/notice/'
-    | '/(app)/management/policy/'
+    | '/(app)/management/candidate/'
     | '/(app)/management/school/'
+    | '/(app)/management/system/'
     | '/(app)/school/dashboard/'
     | '/(app)/school/evaluation/'
     | '/(app)/school/recruiting/'
@@ -382,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSchoolDashboardIndexRouteImport
       parentRoute: typeof appSchoolRouteRoute
     }
+    '/(app)/management/system/': {
+      id: '/(app)/management/system/'
+      path: '/system'
+      fullPath: '/management/system'
+      preLoaderRoute: typeof appManagementSystemIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
     '/(app)/management/school/': {
       id: '/(app)/management/school/'
       path: '/school'
@@ -389,25 +384,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appManagementSchoolIndexRouteImport
       parentRoute: typeof appManagementRouteRoute
     }
-    '/(app)/management/policy/': {
-      id: '/(app)/management/policy/'
-      path: '/policy'
-      fullPath: '/management/policy'
-      preLoaderRoute: typeof appManagementPolicyIndexRouteImport
-      parentRoute: typeof appManagementRouteRoute
-    }
-    '/(app)/management/notice/': {
-      id: '/(app)/management/notice/'
-      path: '/notice'
-      fullPath: '/management/notice'
-      preLoaderRoute: typeof appManagementNoticeIndexRouteImport
-      parentRoute: typeof appManagementRouteRoute
-    }
-    '/(app)/management/data/': {
-      id: '/(app)/management/data/'
-      path: '/data'
-      fullPath: '/management/data'
-      preLoaderRoute: typeof appManagementDataIndexRouteImport
+    '/(app)/management/candidate/': {
+      id: '/(app)/management/candidate/'
+      path: '/candidate'
+      fullPath: '/management/candidate'
+      preLoaderRoute: typeof appManagementCandidateIndexRouteImport
       parentRoute: typeof appManagementRouteRoute
     }
     '/(app)/management/account/': {
@@ -443,18 +424,16 @@ declare module '@tanstack/react-router' {
 
 interface appManagementRouteRouteChildren {
   appManagementAccountIndexRoute: typeof appManagementAccountIndexRoute
-  appManagementDataIndexRoute: typeof appManagementDataIndexRoute
-  appManagementNoticeIndexRoute: typeof appManagementNoticeIndexRoute
-  appManagementPolicyIndexRoute: typeof appManagementPolicyIndexRoute
+  appManagementCandidateIndexRoute: typeof appManagementCandidateIndexRoute
   appManagementSchoolIndexRoute: typeof appManagementSchoolIndexRoute
+  appManagementSystemIndexRoute: typeof appManagementSystemIndexRoute
 }
 
 const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
   appManagementAccountIndexRoute: appManagementAccountIndexRoute,
-  appManagementDataIndexRoute: appManagementDataIndexRoute,
-  appManagementNoticeIndexRoute: appManagementNoticeIndexRoute,
-  appManagementPolicyIndexRoute: appManagementPolicyIndexRoute,
+  appManagementCandidateIndexRoute: appManagementCandidateIndexRoute,
   appManagementSchoolIndexRoute: appManagementSchoolIndexRoute,
+  appManagementSystemIndexRoute: appManagementSystemIndexRoute,
 }
 
 const appManagementRouteRouteWithChildren =

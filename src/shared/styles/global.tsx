@@ -18,6 +18,20 @@ export const GlobalStyle = () => (
           outline: none;
         }
       }
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      textarea:-webkit-autofill,
+      textarea:-webkit-autofill:hover,
+      textarea:-webkit-autofill:focus,
+      select:-webkit-autofill,
+      select:-webkit-autofill:hover,
+      select:-webkit-autofill:focus {
+        -webkit-text-fill-color: ${theme.colors.white} !important;
+        caret-color: ${theme.colors.white};
+        box-shadow: 0 0 0px 1000px ${theme.colors.black} inset;
+        transition: background-color 9999s ease-out 0s;
+      }
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;

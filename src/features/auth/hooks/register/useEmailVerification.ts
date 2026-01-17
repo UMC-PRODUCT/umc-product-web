@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export interface EmailVerificationState {
   isVerified: boolean
@@ -12,8 +12,8 @@ export interface EmailVerificationState {
 export function useEmailVerification(): EmailVerificationState {
   const [isVerified, setIsVerified] = useState(false)
 
-  const toggleVerification = () => setIsVerified((prev) => !prev)
-  const resetVerification = () => setIsVerified(false)
+  const toggleVerification = useCallback(() => setIsVerified((prev) => !prev), [])
+  const resetVerification = useCallback(() => setIsVerified(false), [])
 
   return {
     isVerified,

@@ -10,7 +10,7 @@ const EmailSendModal = ({ onClose }: { onClose: () => void }) => {
       onClose={onClose}
       title="이메일 전송"
       content={`입력된 이메일 주소로 메일을 전송했습니다.
-        메일함을 확인하여 회원가입을 완료해주세요.`}
+메일함을 확인하여 회원가입을 완료해주세요.`}
       Icon={Notice}
     >
       <Flex gap="8px" justifyContent="flex-end" alignItems="center" css={{ marginTop: '50px' }}>
