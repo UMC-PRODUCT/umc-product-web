@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import DeleteConfirm from '@/features/school/modals/DeleteConfirm'
 import DeleteFail from '@/features/school/modals/DeleteFail'
+import type { PartCompletion } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -14,7 +15,7 @@ interface RecruitingCardProps {
   startDate: string
   endDate: string
   applicants: number
-  state: '진행 중' | '모집 종료' | '모집 예정'
+  state: PartCompletion
 }
 const RecruitingCard = ({ title, startDate, endDate, applicants, state }: RecruitingCardProps) => {
   const badgeTone = state === '진행 중' ? 'lime' : state === '모집 종료' ? 'gray' : 'white'

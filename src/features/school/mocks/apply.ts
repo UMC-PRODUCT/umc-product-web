@@ -1,3 +1,4 @@
+import type { PartCompletion } from '@/shared/types/form'
 import type { EvaluationDocumentType, EvaluationFinalType, PartType } from '@/shared/types/umc'
 
 export const APPLY_PART_STATUS_MOCKS: Array<{ part: PartType | '총 지원자'; applyNum: number }> = [
@@ -83,7 +84,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
   startDate: string
   endDate: string
   applicants: number
-  state: '진행 중' | '모집 종료' | '모집 예정'
+  state: PartCompletion
 }> = [
   {
     id: 1,

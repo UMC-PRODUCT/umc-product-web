@@ -2,20 +2,6 @@ import dayjs from 'dayjs'
 
 import type { RecruitingForms } from '@/shared/types/form'
 
-export const RECRUITING_TEMP_DRAFT_KEY = 'recruitingTempDraftLoad'
-
-export const requestTempDraftLoad = () => {
-  sessionStorage.setItem(RECRUITING_TEMP_DRAFT_KEY, '1')
-}
-
-export const consumeTempDraftLoad = () => {
-  const shouldLoad = sessionStorage.getItem(RECRUITING_TEMP_DRAFT_KEY) === '1'
-  if (shouldLoad) {
-    sessionStorage.removeItem(RECRUITING_TEMP_DRAFT_KEY)
-  }
-  return shouldLoad
-}
-
 const formatDateString = (value: string | Date | null | undefined) => {
   if (!value) return null
   return dayjs(value).format('YYYY-MM-DDTHH:mm:ssZ')

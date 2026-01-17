@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
 
-import { requestTempDraftLoad } from '@/features/school/utils/recruiting/tempDraft'
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -12,7 +11,7 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const navigate = useNavigate()
   const handleCreateRecruiting = () => {
-    const recruitingId = 1
+    const recruitingId = 1 // TODO: 새로 생성된 모집 ID 추후 API 연동 필요
     navigate({
       to: '/school/recruiting/$recruitingId',
       params: { recruitingId: String(recruitingId) },
@@ -20,8 +19,7 @@ const RecruitingMake = () => {
   }
 
   const handleLoadRecruiting = () => {
-    requestTempDraftLoad()
-    const recruitingId = 1
+    const recruitingId = 1 // TODO: 임시저장된 모집 ID 추후 API 연동 필요
     navigate({
       to: '/school/recruiting/$recruitingId',
       params: { recruitingId: String(recruitingId) },

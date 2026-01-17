@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
+import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
+import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
+import { useUnsavedChangesBlocker } from '@/features/apply/hooks/useUnsavedChangeBlocker'
 import { MOCKFORMSDATA_WITH_NO_ANSWER } from '@/features/apply/mocks/questions'
 import * as S from '@/features/school/components/common/common'
 import { RecruitingProvider } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
@@ -9,11 +12,6 @@ import RecruitingStepActions from '@/features/school/components/Recruiting/Recru
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
-import { TEMP_CREATE_FORM_DATA } from '@/features/school/mocks/tempCreateFormData'
-import {
-  consumeTempDraftLoad,
-  normalizeTempRecruitingForm,
-} from '@/features/school/utils/recruiting/tempDraft'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -30,13 +28,19 @@ type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 const Recruiting = () => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
+  const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
   const [modal, setModal] = useState({
     modalName: '',
     isOpen: false,
   })
+
   const { form, values, interviewDates } = useRecruitingForm()
-  const { trigger } = form
-  const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
+  const {
+    trigger,
+    formState: { isDirty },
+  } = form
+
+  // 모집 파트별 완료 상태 관리
   const partCompletionMap = useMemo(() => {
     const next: PartCompletionMap = {}
     values.recruitmentParts.forEach((part) => {
@@ -44,6 +48,11 @@ const Recruiting = () => {
     })
     return next
   }, [values.recruitmentParts, partCompletionByPart])
+
+  // 화면 이탈 방지
+  useBeforeUnload(isDirty)
+  const navigationBlocker = useUnsavedChangesBlocker(isDirty)
+
   const {
     step,
     setStep,
@@ -62,23 +71,20 @@ const Recruiting = () => {
     scrollToTop: () => scrollTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   })
 
-  const { title } = values
+  // 임시저장 자동화
   const { handleSave: handleAutoSave } = useAutoSave({
     getValues: form.getValues,
     onSave: () => {
       console.log('[Recruiting] submit form payload:', submitFormPayload)
       console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
+      form.reset(form.getValues(), { keepErrors: true, keepTouched: true })
     },
   })
 
-  useEffect(() => {
-    if (!consumeTempDraftLoad()) return
-    const normalized = normalizeTempRecruitingForm(TEMP_CREATE_FORM_DATA)
-    form.reset(normalized, { keepDefaultValues: false })
-  }, [form])
-
+  // TODO: 질문 데이터 - 실제 API 연동 필요
   const questionData: QuestionList = MOCKFORMSDATA_WITH_NO_ANSWER
 
+  // 폼 제작과 폼 질문을 다른 API로 보내야하여 분리함.
   const submitFormPayload = {
     title: values.title,
     recruitmentParts: values.recruitmentParts,
@@ -100,20 +106,24 @@ const Recruiting = () => {
     items: values.items,
   }
 
+  // 모달 관련 함수
   const openPreview = () => setModal({ isOpen: true, modalName: 'recruitingPreview' })
   const closePreview = () => setModal({ isOpen: false, modalName: '' })
   const openConfirmModal = () => setModal({ isOpen: true, modalName: 'createRecruitingConfirm' })
   const closeConfirmModal = () => setModal({ isOpen: false, modalName: '' })
 
+  // 폼 제출 함수
   const onConfirmSubmit = () => {
     console.log('[Recruiting] submit form payload:', submitFormPayload)
     console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
 
+    navigationBlocker.allowNextNavigationOnce()
     navigate({
       to: '/school/recruiting',
       replace: true,
     })
   }
+
   return (
     <PageLayout>
       <div ref={scrollTopRef} />
@@ -168,12 +178,15 @@ const Recruiting = () => {
       <RecruitingModals
         isOpen={modal.isOpen}
         modalName={modal.modalName}
-        title={title}
+        title={values.title}
         questionData={questionData}
         onClosePreview={closePreview}
         onCloseConfirm={closeConfirmModal}
         onConfirmSubmit={onConfirmSubmit}
       />
+      {navigationBlocker.isOpen && (
+        <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
+      )}
     </PageLayout>
   )
 }

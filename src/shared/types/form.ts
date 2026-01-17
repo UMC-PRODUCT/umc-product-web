@@ -101,3 +101,5 @@ export type RecruitingItem = {
 
 export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>>
 export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>
+
+export type PartCompletion = '진행 중' | '모집 종료' | '모집 예정'
