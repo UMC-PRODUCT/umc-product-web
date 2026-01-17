@@ -34,7 +34,7 @@ const RootNotFoundComponent = () => {
 
 const RootComponent = () => {
   const shouldShowDevtools = import.meta.env.DEV
-  const location = useRouterState({ select: (state) => state.location })
+  const locationKey = useRouterState({ select: (state) => state.location.href })
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -46,7 +46,7 @@ const RootComponent = () => {
     window.scrollTo({ top: 0, left: 0 })
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
-  }, [location.key])
+  }, [locationKey])
 
   return (
     <Flex flexDirection="column" minHeight="100vh">
