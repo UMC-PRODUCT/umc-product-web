@@ -1,4 +1,5 @@
 import Delete from '@/shared/assets/icons/delete.svg?react'
+import { theme } from '@/shared/styles/theme'
 import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -26,7 +27,7 @@ const LinkItem = ({
         disabled={!isEditable}
         css={{ cursor: isEditable ? 'pointer' : 'default' }}
       >
-        <Delete width={18} height={18} />
+        <Delete width={18} height={18} color={theme.colors.gray[500]} />
       </CancelIcon>
     </Flex>
   )

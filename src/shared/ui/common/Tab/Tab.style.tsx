@@ -27,7 +27,7 @@ export const StyledTrigger = styled(TabsPrimitive.Trigger)`
   border-bottom: 0;
   text-align: center;
   ${theme.typography.H4.Sb};
-
+  word-break: keep-all;
   &[data-state='active'] {
     background-color: ${theme.colors.lime};
     color: ${theme.colors.black};

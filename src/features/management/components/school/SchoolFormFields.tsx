@@ -5,6 +5,8 @@ import Flex from '@shared/ui/common/Flex/Flex'
 import Label from '@shared/ui/common/Label/Label'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
+import { media } from '@/shared/styles/media'
+
 import type { SchoolRegisterForm } from '../../schemas/management'
 import * as S from './shared'
 
@@ -52,7 +54,14 @@ export const SchoolFormFields = ({
         <Label label="비고" necessary={false}></Label>
         <S.TextArea placeholder="추가 정보를 입력하세요." {...register('note')} />
       </S.TextAreaWrapper>
-      <Flex gap="42px" maxWidth="602px" css={{ alignSelf: 'flex-start' }}>
+      <Flex
+        gap="42px"
+        maxWidth="602px"
+        css={{
+          alignSelf: 'flex-start',
+          [media.down(theme.breakPoints.tablet)]: { flexDirection: 'column' },
+        }}
+      >
         <LabelTextField
           autoComplete="off"
           type="text"

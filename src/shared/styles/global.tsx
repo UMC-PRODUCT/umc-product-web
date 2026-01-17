@@ -15,6 +15,7 @@ export const GlobalStyle = () => (
         overflow-y: scroll;
         scrollbar-gutter: stable both-edges;
         scrollbar-color: transparent transparent;
+        max-width: 100vw;
         input:focus {
           outline: none;
         }
