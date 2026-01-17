@@ -196,7 +196,7 @@ const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
           variant="outline"
           css={{
             padding: '30px 18px 18px 18px',
-            [media.down(theme.breakPoints.tablet)]: { padding: '0px' },
+            [media.down(theme.breakPoints.tablet)]: { padding: '20px 10px' },
           }}
         >
           <RecruitingStepForm />

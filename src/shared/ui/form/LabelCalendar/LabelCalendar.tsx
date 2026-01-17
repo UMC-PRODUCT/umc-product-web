@@ -7,6 +7,7 @@ import { Field } from '@shared/styles/formStyles'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Label from '@shared/ui/common/Label/Label'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 import Section from '../../common/Section/Section'
@@ -91,7 +92,12 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
     const displayValue = selectedValue ? formatDate(selectedValue) : placeholder
 
     return (
-      <Field css={{ width: '320px' }}>
+      <Field
+        css={{
+          width: '320px',
+          [media.down(theme.breakPoints.tablet)]: { width: '100%' },
+        }}
+      >
         <S.SelectHeader>
           <Label id={labelId} htmlFor={triggerId} label={label} necessary={necessary} />
           {error?.error && (
@@ -124,10 +130,13 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             <S.CalendarPopover $open={isOpen} role="dialog" aria-labelledby={labelId}>
               <Section
                 variant="both"
-                width={400}
-                height={350}
                 padding={'18px 20px'}
-                css={{ backgroundColor: theme.colors.black }}
+                css={{
+                  width: '400px',
+                  height: '350px',
+                  backgroundColor: theme.colors.black,
+                  [media.down(theme.breakPoints.tablet)]: { width: '100%', height: 'auto' },
+                }}
               >
                 <RecruitingFormCalendar
                   key={triggerId}

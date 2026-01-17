@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import ErrorIcon from '@/shared/assets/icons/notice.svg?react'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { QuestionMode } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
@@ -58,36 +59,59 @@ const LinkSection = ({ links, mode, onLinksChange }: LinkSectionProps) => {
       {links.map((link, i) => (
         <LinkItem key={i} value={link} mode={mode} onRemove={() => handleRemoveLink(i)} />
       ))}
-      <S.LinkItemWrapper flexDirection="row" width="100%" gap={21} alignItems="center">
-        <input
-          placeholder="링크 붙여 넣기"
-          value={linkInput}
-          readOnly={!isEditable}
-          onChange={isEditable ? (e) => handleLinkInputChange(e.target.value) : undefined}
-          onKeyDown={isEditable ? handleLinkKeyDown : undefined}
-          css={S.linkInputStyle(isEditable)}
-        />
-        <Button
-          type="button"
-          className="add-button"
-          typo="B4.Md"
-          tone="gray"
-          label="항목 추가"
-          disabled={!isEditable}
-          onClick={isEditable ? handleAddLink : undefined}
-          css={{ borderRadius: '20px' }}
-        />
-      </S.LinkItemWrapper>
-      {errorMessage && (
-        <Flex
-          gap={2}
+      <Flex
+        flexDirection="column"
+        gap={6}
+        width="100%"
+        css={{
+          position: 'relative',
+          [media.down(theme.breakPoints.mobile)]: { paddingBottom: errorMessage ? '20px' : '0' },
+        }}
+      >
+        <S.LinkItemWrapper
+          width="100%"
           alignItems="center"
-          css={{ position: 'absolute', bottom: '6px', left: '12px' }}
+          css={{
+            flexDirection: 'row',
+            gap: '20px',
+            [media.down(theme.breakPoints.mobile)]: {
+              flexDirection: 'column',
+              gap: '30px',
+            },
+          }}
         >
-          <ErrorIcon width={14} color={theme.colors.necessary} />
-          <ErrorMessage typo="C5.Md" errorMessage={errorMessage} />
-        </Flex>
-      )}
+          <input
+            placeholder="링크 붙여 넣기"
+            value={linkInput}
+            readOnly={!isEditable}
+            onChange={isEditable ? (e) => handleLinkInputChange(e.target.value) : undefined}
+            onKeyDown={isEditable ? handleLinkKeyDown : undefined}
+            css={[S.linkInputStyle(isEditable), { width: '100%', minHeight: '37px' }]}
+          />
+          <Button
+            type="button"
+            className="add-button"
+            typo="B4.Md"
+            tone="gray"
+            label="항목 추가"
+            disabled={!isEditable}
+            onClick={isEditable ? handleAddLink : undefined}
+            css={{ borderRadius: '20px' }}
+          />
+        </S.LinkItemWrapper>
+        {errorMessage && (
+          <Flex
+            gap={2}
+            alignItems="center"
+            css={{
+              [media.down(theme.breakPoints.mobile)]: { position: 'absolute', bottom: '54px' },
+            }}
+          >
+            <ErrorIcon width={14} color={theme.colors.necessary} />
+            <ErrorMessage typo="C5.Md" errorMessage={errorMessage} />
+          </Flex>
+        )}
+      </Flex>
     </S.InputWrapper>
   )
 }

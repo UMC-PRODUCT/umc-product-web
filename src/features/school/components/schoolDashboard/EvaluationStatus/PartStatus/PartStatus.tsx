@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import CardTitle from '@/features/school/components/common/CardTitle'
 import { EVALUATION_PART_STATUS_MOCKS } from '@/features/school/mocks/apply'
+import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { mappingEvaluationColor } from '@/shared/utils/mappingColor'
 
@@ -49,15 +50,17 @@ const PartStatus = () => {
       <S.Container onScroll={handleScroll} ref={setContainerRef}>
         {showBlur ? <S.Blur /> : null}
         {EVALUATION_PART_STATUS_MOCKS.map(({ part, document, interview }) => (
-          <S.PartGrid
+          <S.PartFlex
             key={part}
             document={mappingEvaluationColor(document)}
             interview={mappingEvaluationColor(interview)}
           >
             <span className="part">{part}</span>
-            <span className="document">{document}</span>
-            <span className="interview">{interview}</span>
-          </S.PartGrid>
+            <Flex width={'fit-content'} gap={20}>
+              <span className="document">{document}</span>
+              <span className="interview">{interview}</span>
+            </Flex>
+          </S.PartFlex>
         ))}
       </S.Container>
     </Section>

@@ -12,11 +12,10 @@ const getColorValue = (colorKey: ColorValue): string => {
   return theme.colors[colorKey]
 }
 
-export const PartGrid = styled.div<{ document: ColorValue; interview: ColorValue }>`
-  display: grid;
+export const PartFlex = styled.div<{ document: ColorValue; interview: ColorValue }>`
+  display: flex;
   width: 100%;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  grid-row-gap: 10px;
+  justify-content: space-between;
   ${theme.typography.B4.Md};
   white-space: nowrap;
   .part {

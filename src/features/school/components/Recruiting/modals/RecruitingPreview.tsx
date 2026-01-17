@@ -74,7 +74,7 @@ const RecruitingPreview = ({
                 </Modal.Title>
                 <Modal.Close asChild>
                   <S.ModalButton type="button" aria-label="모달 닫기">
-                    <Close color={theme.colors.gray[300]} />
+                    <Close color={theme.colors.gray[300]} width={30} />
                   </S.ModalButton>
                 </Modal.Close>
               </Flex>

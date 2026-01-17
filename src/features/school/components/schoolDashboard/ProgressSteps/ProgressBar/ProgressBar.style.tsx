@@ -64,6 +64,7 @@ const Label = styled.span<{ $isActive: boolean }>`
     line-height: 1.3;
     max-width: 56px;
     word-break: keep-all;
+    white-space: normal;
   }
   position: absolute;
   top: 32px;

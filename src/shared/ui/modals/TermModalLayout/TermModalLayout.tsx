@@ -6,6 +6,7 @@ import Close from '@shared/assets/icons/close.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
 import { Modal } from '@shared/ui/common/Modal'
 
+import { theme } from '@/shared/styles/theme'
 import * as S from '@/shared/ui/modals/TermModalLayout/TermModalLayout.style'
 
 type TermModalLayoutProps = {
@@ -61,7 +62,10 @@ const TermModalLayout = ({ title = '약관', content, children, onClose }: TermM
                     <S.Title>{title}</S.Title>
                   </Modal.Title>
                   <Modal.Close asChild>
-                    <Close css={{ cursor: 'pointer', width: '21px', height: '21px' }} />
+                    <Close
+                      color={theme.colors.gray[400]}
+                      css={{ cursor: 'pointer', width: '21px', height: '21px' }}
+                    />
                   </Modal.Close>
                 </Flex>
               </S.Header>

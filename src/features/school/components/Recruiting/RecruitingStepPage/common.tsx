@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 export const Title = styled.div`
@@ -19,6 +20,9 @@ export const Button = styled.button<{ isActive: boolean }>`
   border-radius: 6px;
   padding: 16px 28px;
   cursor: pointer;
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 12px 20px;
+  }
 `
 
 export const PageTitle = styled.div`
