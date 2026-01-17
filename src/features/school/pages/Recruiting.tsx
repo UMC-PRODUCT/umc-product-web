@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import type { QuestionList } from '@features/apply/domain'
@@ -14,6 +14,9 @@ import RecruitingStepActions from '@/features/school/components/Recruiting/Recru
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
+import { TEMP_CREATE_FORM_DATA } from '@/features/school/mocks/tempCreateFormData'
+import { ensureRequiredItems } from '@/features/school/utils/recruiting/requiredItems'
+import { normalizeTempRecruitingForm } from '@/features/school/utils/recruiting/tempDraft'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -26,7 +29,11 @@ import Section from '@/shared/ui/common/Section/Section'
 type RecruitmentPart = RecruitingForms['recruitmentParts'][number]
 type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 
-const Recruiting = () => {
+type RecruitingProps = {
+  shouldLoadTempDraft?: boolean
+}
+
+const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
@@ -34,6 +41,7 @@ const Recruiting = () => {
     modalName: '',
     isOpen: false,
   })
+  const [isBackConfirmOpen, setIsBackConfirmOpen] = useState(false)
 
   const { form, values, interviewDates } = useRecruitingForm()
   const {
@@ -53,6 +61,16 @@ const Recruiting = () => {
   // 화면 이탈 방지
   useBeforeUnload(isDirty)
   const navigationBlocker = useUnsavedChangesBlocker(isDirty)
+
+  useEffect(() => {
+    if (!shouldLoadTempDraft) return
+    const normalizedDraft = normalizeTempRecruitingForm(TEMP_CREATE_FORM_DATA)
+    const normalizedItems = ensureRequiredItems(
+      normalizedDraft.items,
+      normalizedDraft.recruitmentParts,
+    )
+    form.reset({ ...normalizedDraft, items: normalizedItems })
+  }, [form, shouldLoadTempDraft])
 
   const {
     step,
@@ -125,6 +143,28 @@ const Recruiting = () => {
     })
   }
 
+  const handleBackClick = () => {
+    if (!isDirty) {
+      navigate({
+        to: '/school/recruiting',
+        replace: true,
+      })
+      return
+    }
+    setIsBackConfirmOpen(true)
+  }
+
+  const handleBackStay = () => setIsBackConfirmOpen(false)
+
+  const handleBackLeave = () => {
+    setIsBackConfirmOpen(false)
+    navigationBlocker.allowNextNavigationOnce()
+    navigate({
+      to: '/school/recruiting',
+      replace: true,
+    })
+  }
+
   return (
     <PageLayout>
       <div ref={scrollTopRef} />
@@ -135,12 +175,7 @@ const Recruiting = () => {
           tone="lime"
           variant="outline"
           label="← 뒤로가기"
-          onClick={() =>
-            navigate({
-              to: '/school/recruiting',
-              replace: true,
-            })
-          }
+          onClick={handleBackClick}
         />
       </S.Header>
       <RecruitingProvider
@@ -188,6 +223,7 @@ const Recruiting = () => {
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
       )}
+      {isBackConfirmOpen && <LeaveConfirmModal onClose={handleBackStay} onMove={handleBackLeave} />}
     </PageLayout>
   )
 }
