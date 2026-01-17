@@ -18,5 +18,6 @@ export const PageInfo = styled.div`
   ${media.down(theme.breakPoints.tablet)} {
     text-align: center;
     width: 100%;
+    word-break: keep-all;
   }
 `

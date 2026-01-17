@@ -21,17 +21,19 @@ const RecuritingPageNavigator = ({
       width={192}
       padding={'15px 18px'}
       gap={6}
-      alignItems="flex-start"
       css={{
         cursor: 'pointer',
         backgroundColor: theme.colors.gray[700],
         height: 'fit-content',
+        alignItems: 'flex-start',
         border:
           currentPage === page
             ? `2px solid ${theme.colors.lime}`
             : `1px solid ${theme.colors.gray[600]}`,
         [media.down(theme.breakPoints.tablet)]: {
           height: '115px',
+          alignItems: 'center',
+          justifyContent: 'center',
         },
       }}
     >

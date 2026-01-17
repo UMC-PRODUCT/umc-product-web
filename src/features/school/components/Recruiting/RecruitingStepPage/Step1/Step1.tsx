@@ -9,7 +9,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import * as S from './common'
+import * as S from '../common'
 
 const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
   return (

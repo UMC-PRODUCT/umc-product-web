@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
 
+import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
+import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
+import { PAGE_INFO } from '@/features/school/constants/PageInfo'
 import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { transformQuestionTypeKorean } from '@/shared/utils/transformKorean'
 
-import { PAGE_INFO } from '../../../constants/PageInfo'
-import PreviewSection from '../PreviewSection/PreviewSection'
-import QuestionPreview from '../QuestionPreview/QuestionPreview'
-import * as S from './common'
+import * as S from '../common'
 
 const Step5 = ({
   setStep,

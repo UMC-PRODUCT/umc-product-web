@@ -8,7 +8,7 @@ import Label from '@/shared/ui/common/Label'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelLongTextField from '@/shared/ui/form/LabelLongTextField/LabelLongTextField'
 
-import * as S from './common'
+import * as S from '../common'
 
 const Step4 = ({ control }: { control: Control<RecruitingForms> }) => {
   const title = useWatch({

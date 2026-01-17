@@ -17,7 +17,7 @@ import { TimeTable } from '@/shared/ui/common/question/timeTable/TimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelCalendar from '@/shared/ui/form/LabelCalendar/LabelCalendar'
 
-import * as S from './common'
+import * as S from '../common'
 
 const Step2 = ({
   control,

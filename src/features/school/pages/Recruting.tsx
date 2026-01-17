@@ -26,11 +26,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
 import CurrentStepInfo from '../components/Recruiting/CurrentStepInfo/CurrentStepInfo'
-import Step1 from '../components/Recruiting/RecruitingStepPage/Step1'
-import Step2 from '../components/Recruiting/RecruitingStepPage/Step2'
-import Step3 from '../components/Recruiting/RecruitingStepPage/Step3'
-import Step4 from '../components/Recruiting/RecruitingStepPage/Step4'
-import Step5 from '../components/Recruiting/RecruitingStepPage/Step5'
+import { Step1, Step2, Step3, Step4, Step5 } from '../components/Recruiting/RecruitingStepPage'
 
 const Recruiting = () => {
   const navigate = useNavigate()
@@ -122,8 +118,10 @@ const Recruiting = () => {
       </S.Header>
       <Section
         variant="outline"
-        padding={'30px 18px 18px 18px'}
-        css={{ [media.down(theme.breakPoints.mobile)]: { padding: '5px' } }}
+        css={{
+          padding: '30px 18px 18px 18px',
+          [media.down(theme.breakPoints.tablet)]: { padding: '0px' },
+        }}
       >
         <RecruitingStep step={step} />
         <CurrentStepInfo step={step} />
