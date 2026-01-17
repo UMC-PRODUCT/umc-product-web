@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
+import type { QuestionList } from '@features/apply/domain'
+
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '@/features/apply/hooks/useUnsavedChangeBlocker'
@@ -18,7 +20,6 @@ import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms } from '@/shared/types/form'
-import type { QuestionList } from '@features/apply/domain'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
