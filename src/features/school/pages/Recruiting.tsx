@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
@@ -12,6 +12,11 @@ import RecruitingStepActions from '@/features/school/components/Recruiting/Recru
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
+import { TEMP_CREATE_FORM_DATA } from '@/features/school/mocks/tempCreateFormData'
+import {
+  consumeTempDraftLoad,
+  normalizeTempRecruitingForm,
+} from '@/features/school/utils/recruiting/tempDraft'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -80,6 +85,12 @@ const Recruiting = () => {
       form.reset(form.getValues(), { keepErrors: true, keepTouched: true })
     },
   })
+
+  useEffect(() => {
+    if (!consumeTempDraftLoad()) return
+    const normalized = normalizeTempRecruitingForm(TEMP_CREATE_FORM_DATA)
+    form.reset(normalized, { keepDefaultValues: false })
+  }, [form])
 
   // TODO: 질문 데이터 - 실제 API 연동 필요
   const questionData: QuestionList = MOCKFORMSDATA_WITH_NO_ANSWER
