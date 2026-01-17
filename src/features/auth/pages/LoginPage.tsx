@@ -1,8 +1,5 @@
 import styled from '@emotion/styled'
 
-import AuthSection from '@features/auth/components/AuthSection/AuthSection'
-import IntroBanner from '@features/auth/components/IntroBanner/IntroBanner'
-
 import Logo from '@shared/assets/brand_logo.svg?react'
 import Notice from '@shared/assets/icons/notice.svg?react'
 import Apple from '@shared/assets/social/apple.svg?react'
@@ -13,6 +10,9 @@ import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
 import Divider from '@shared/ui/common/Divider/Divider'
 import Instruction from '@shared/ui/common/Instruction/Instruction'
+
+import AuthSection from '../components/AuthSection/AuthSection'
+import IntroBanner from '../components/IntroBanner/IntroBanner'
 
 export const LoginPage = () => {
   return (

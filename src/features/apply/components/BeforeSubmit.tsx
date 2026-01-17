@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
+import type { PartType } from '@features/auth/domain'
+import type { RecruitingType } from '@features/management/domain'
+
 import * as S from '@/features/apply/components/ApplyPage.style'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
-import type { PartType, RecruitingType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
 

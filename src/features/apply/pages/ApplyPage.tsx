@@ -1,3 +1,6 @@
+import type { PartType } from '@features/auth/domain'
+import type { RecruitingType } from '@features/management/domain'
+
 import AfterSubmit from '@/features/apply/components/AfterSubmit'
 import * as S from '@/features/apply/components/ApplyPage.style'
 import BeforeSubmit from '@/features/apply/components/BeforeSubmit'
@@ -7,7 +10,6 @@ import {
   RECRUITMENT_INFO,
 } from '@/shared/constants/recruitment'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { PartType, RecruitingType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 
 type ApplyPageProps = {

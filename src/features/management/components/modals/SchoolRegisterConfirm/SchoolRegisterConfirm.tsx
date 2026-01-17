@@ -21,7 +21,7 @@ const SchoolRegisterConfirm = ({
       onClose={onClose}
       title="등록 완료"
       content={`‘${schoolName}’가 시스템에 정상적으로 등록되었습니다.
-        등록된 학교의 정보는 ‘학교 정보 수정'에서 확인할 수 있습니다.`}
+등록된 학교의 정보는 ‘학교 정보 수정'에서 확인할 수 있습니다.`}
       Icon={Check}
     >
       <Flex

@@ -1,12 +1,12 @@
-import AddSchool from '@features/management/components/school/AddSchool'
-import DeleteSchool from '@features/management/components/school/DeleteSchool'
-import EditSchool from '@features/management/components/school/EditSchool'
-import type { ManageSchoolTabName } from '@features/management/constants/tabNames'
-import { manageSchoolTabs } from '@features/management/constants/tabNames'
-
 import Tab from '@shared/ui/common/Tab/Tab'
 
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+
+import AddSchool from '../components/school/AddSchool'
+import DeleteSchool from '../components/school/DeleteSchool'
+import EditSchool from '../components/school/EditSchool'
+import type { ManageSchoolTabName } from '../constants/tabNames'
+import { manageSchoolTabs } from '../constants/tabNames'
 
 type SchoolPageProps = {
   activeTab: ManageSchoolTabName

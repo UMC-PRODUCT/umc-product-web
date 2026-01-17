@@ -1,4 +1,4 @@
-import type { FileUploadStatus, UploadedFile } from './question'
+import type { FileUploadStatus, UploadedFile } from '../domain/model'
 
 export interface FileUploadValue {
   files: Array<UploadedFile>

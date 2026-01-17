@@ -1,12 +1,12 @@
+import { PART } from '@/shared/constants/umc'
+
 import type {
+  PartQuestionBankPage,
   QuestionList,
   QuestionPage,
   QuestionUnion,
-  ResumeFormValues,
-} from '@/features/apply/types/question'
-import { PART } from '@/shared/constants/umc'
-import type { PartQuestionBankPage } from '@/shared/types/question'
-
+} from '../domain/model'
+import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
 import { findPartQuestion } from './findPartQuestion'
 import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
 

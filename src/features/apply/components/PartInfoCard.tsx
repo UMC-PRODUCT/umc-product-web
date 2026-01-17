@@ -1,5 +1,6 @@
+import type { PartType } from '@features/auth/domain'
+
 import * as S from '@/features/apply/components/ApplyPage.style'
-import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 

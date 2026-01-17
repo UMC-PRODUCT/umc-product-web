@@ -1,86 +1,32 @@
-import { useEffect, useState } from 'react'
-
 import type { UseFileUploadOptions, UseFileUploadReturn } from '@/features/apply/types/fileUpload'
 
-import type { FileUploadStatus, UploadedFile } from '../types/question'
-
-// 업로드 진행 시뮬레이션 파라미터.
-const UPLOAD_PROGRESS_INTERVAL_MS = 300
-const UPLOAD_PROGRESS_INCREMENT_MAX = 20
-const UPLOAD_ERROR_PROBABILITY = 0.1
-const MAX_PROGRESS = 100
-
-// 임시 업로드 파일 식별자 생성.
-function generateFileId(): string {
-  return `file-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-}
-
-// 업로드 파일 초기 상태 생성.
-function createFileInfo(file: File): UploadedFile {
-  return {
-    id: generateFileId(),
-    name: file.name,
-    size: file.size,
-    status: 'loading',
-    progress: 0,
-    file: file,
-  }
-}
+import { useFileProcessing, useFileUploadSimulation, useUploadedFileState } from './fileUpload'
 
 /**
- * 파일 업로드 상태 관리 훅
- * TODO: API 연동 시 simulateUpload를 실제 업로드 로직으로 대체
+ * 파일 업로드 상태 관리 훅 (Composed)
+ *
+ * 분해된 훅들을 조합하여 사용:
+ * - useUploadedFileState: 파일 상태 관리 및 외부 동기화
+ * - useFileUploadSimulation: 업로드 시뮬레이션 (TODO: API 연동)
+ * - useFileProcessing: 파일 처리 및 변환
  */
 export function useFileUpload({
   initialFiles,
   value,
   onChange,
 }: UseFileUploadOptions): UseFileUploadReturn {
-  const [uploadedFiles, setUploadedFiles] = useState<Array<UploadedFile>>(initialFiles)
+  // 1. 파일 상태 관리
+  const { uploadedFiles, setUploadedFiles } = useUploadedFileState({
+    initialFiles,
+    value,
+    onChange,
+  })
 
-  // 내부 상태가 바뀌면 외부 value로 동기화.
-  useEffect(() => {
-    onChange?.({ ...value, files: uploadedFiles })
-  }, [uploadedFiles])
+  // 2. 업로드 시뮬레이션
+  const { simulateUpload, updateFileStatus } = useFileUploadSimulation(setUploadedFiles)
 
-  const updateFileStatus = (fileId: string, status: FileUploadStatus, progress: number): void => {
-    setUploadedFiles((previousFiles) =>
-      previousFiles.map((file) => (file.id === fileId ? { ...file, status, progress } : file)),
-    )
-  }
-
-  /**
-   * 파일 업로드 시뮬레이션
-   * TODO: API 연동 시 실제 업로드 로직으로 대체
-   */
-  const simulateUpload = (fileId: string, _file: File): void => {
-    let currentProgress = 0
-
-    const uploadInterval = setInterval(() => {
-      currentProgress += Math.random() * UPLOAD_PROGRESS_INCREMENT_MAX
-
-      if (currentProgress >= MAX_PROGRESS) {
-        clearInterval(uploadInterval)
-        const isUploadError = Math.random() < UPLOAD_ERROR_PROBABILITY
-        const finalStatus: FileUploadStatus = isUploadError ? 'error' : 'success'
-        updateFileStatus(fileId, finalStatus, MAX_PROGRESS)
-      } else {
-        updateFileStatus(fileId, 'loading', Math.floor(currentProgress))
-      }
-    }, UPLOAD_PROGRESS_INTERVAL_MS)
-  }
-
-  const processFiles = (fileList: FileList | null): void => {
-    if (!fileList) return
-
-    const newFileInfoList = Array.from(fileList).map(createFileInfo)
-
-    newFileInfoList.forEach((fileInfo) => {
-      simulateUpload(fileInfo.id, fileInfo.file)
-    })
-
-    setUploadedFiles((previousFiles) => [...previousFiles, ...newFileInfoList])
-  }
+  // 3. 파일 처리
+  const { processFiles } = useFileProcessing(setUploadedFiles, simulateUpload)
 
   return {
     uploadedFiles,

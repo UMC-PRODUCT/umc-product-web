@@ -1,11 +1,9 @@
 import { forwardRef } from 'react'
-import { useTheme } from '@emotion/react'
 
 import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@shared/types/component'
 import type { TypoToken } from '@shared/types/typo'
-import { resolveTypo } from '@shared/utils/resolveTypo'
 
-import * as S from './Button.style'
+import { StyledButton } from './Button.style'
 
 const DEFAULT_BORDER_RADIUS = 6
 const DEFAULT_TYPOGRAPHY: TypoToken = 'B3.Md'
@@ -20,6 +18,10 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
   Icon?: SvgIconComponent
 }
 
+/**
+ * 공용 버튼 컴포넌트
+ * Styled Components + Transient props 패턴 사용
+ */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -37,41 +39,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const theme = useTheme()
-    const toneStyleMap = S.getTone(theme)
-
-    const borderRadius = rounded
-    const currentToneStyle = toneStyleMap[tone][variant]
-    const typographyStyle = resolveTypo(theme, typo)
-
     const handleClick = disabled ? undefined : onClick
 
-    const buttonStyles = [
-      S.baseButton(disabled),
-      {
-        borderRadius,
-        background: currentToneStyle.background,
-        color: currentToneStyle.color,
-        border: currentToneStyle.border,
-        flexWrap: 'nowrap' as const,
-        whiteSpace: 'nowrap' as const,
-        ...typographyStyle,
-      },
-    ]
-
     return (
-      <button
+      <StyledButton
         ref={ref}
         type={type}
         onClick={handleClick}
         disabled={disabled}
         className={className}
-        css={buttonStyles}
+        $tone={tone}
+        $variant={variant}
+        $disabled={disabled}
+        $rounded={rounded}
+        $typo={typo}
         {...restProps}
       >
         {Icon && <Icon width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
         {label}
-      </button>
+      </StyledButton>
     )
   },
 )

@@ -1,5 +1,3 @@
-import { ACCOUNT_DELETE_MOCK } from '@features/management/mocks/managementMocks'
-
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import { Button } from '@shared/ui/common/Button/Button'
 import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
@@ -7,6 +5,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 
 import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
 
+import { ACCOUNT_DELETE_MOCK } from '../../../mocks/managementMocks'
 import * as S from './AccountTableRows.style'
 
 type AccountTableRowsProps = {
