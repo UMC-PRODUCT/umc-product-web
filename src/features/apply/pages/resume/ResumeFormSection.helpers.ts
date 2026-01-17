@@ -1,5 +1,6 @@
-import type { QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
-import type { PartType } from '@/shared/types/umc'
+import type { PartType } from '@features/auth/domain'
+
+import type { QuestionAnswerValue, QuestionUnion } from '../../domain/model'
 
 type PartSelection = { id: number; answer: PartType }
 

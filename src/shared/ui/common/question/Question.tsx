@@ -1,5 +1,10 @@
+import type {
+  FileUploadAnswer,
+  QuestionAnswerValue,
+  QuestionUnion,
+} from '@features/apply/domain/model'
+
 import type { QuestionMode } from '@/shared/types/form'
-import type { FileUploadAnswer, QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 import type { PartType } from '@/shared/types/umc'
 
 import { Choice } from './choice/Choice'

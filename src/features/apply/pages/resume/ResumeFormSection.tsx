@@ -7,12 +7,12 @@ import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { ResumeFormSectionProps } from '@/shared/types/form'
-import type { QuestionAnswerValue, QuestionUnion } from '@/shared/types/question'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
+import type { QuestionAnswerValue, QuestionUnion } from '../../domain/model'
 import { isAnswerEmpty } from './ResumeFormSection.helpers'
 import { usePartChangeGuard } from './usePartChangeGuard'
 

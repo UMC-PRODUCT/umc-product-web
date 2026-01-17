@@ -1,4 +1,4 @@
-import type { QuestionUnion } from '../types/question'
+import type { QuestionUnion } from '../domain/model'
 
 export function isQuestionAnswerEmpty(question: QuestionUnion, answerValue: unknown): boolean {
   if (!question.necessary) return false

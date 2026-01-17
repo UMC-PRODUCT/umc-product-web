@@ -1,4 +1,4 @@
-import type { QuestionUnion } from '../types/question'
+import type { QuestionUnion } from '../domain/model'
 
 const REQUIRED_FIELD_MESSAGE = '응답 필수 항목입니다.'
 

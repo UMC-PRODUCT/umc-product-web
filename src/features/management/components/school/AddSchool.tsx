@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import type { SchoolRegisterForm } from '@features/management/schemas/management'
-import { schoolRegisterSchema } from '@features/management/schemas/management'
-
 import { Button } from '@shared/ui/common/Button/Button'
 import Label from '@shared/ui/common/Label/Label'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import RegisterConfirm from '@/features/management/components/modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
 import Section from '@/shared/ui/common/Section/Section'
 
+import type { SchoolRegisterForm } from '../../schemas/management'
+import { schoolRegisterSchema } from '../../schemas/management'
+import RegisterConfirm from '../modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
 import * as S from './shared'
 
 type ModalState = {

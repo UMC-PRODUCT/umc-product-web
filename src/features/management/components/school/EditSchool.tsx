@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import type { SchoolRegisterForm } from '@features/management/schemas/management'
-import { schoolRegisterSchema } from '@features/management/schemas/management'
-
 import { Button } from '@shared/ui/common/Button/Button'
 import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
 
-import RegisterConfirm from '@/features/management/components/modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
-import { UNI_LIST_MOCK } from '@/features/management/mocks/universities'
 import type { Option } from '@/shared/types/form'
 
+import { UNI_LIST_MOCK } from '../../mocks/universities'
+import type { SchoolRegisterForm } from '../../schemas/management'
+import { schoolRegisterSchema } from '../../schemas/management'
+import RegisterConfirm from '../modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
 import { EmptySelectionNotice } from './EmptySelectionNotice'
 import { SchoolFormFields } from './SchoolFormFields'
 import * as S from './shared'

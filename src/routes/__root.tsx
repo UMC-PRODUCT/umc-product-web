@@ -1,22 +1,28 @@
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, useRouter } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '@app/devtools/tanstack-query'
+
+import { ErrorFallback, NotFoundPage } from '@/shared/ui/feedback'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
-const RootErrorComponent = () => {
-  // TODO: 추후 작업 필요
-  return <div>TODO: 추후 작업 필요 - error UI</div>
+const RootErrorComponent = ({ error }: { error: Error }) => {
+  const router = useRouter()
+
+  const handleReset = () => {
+    router.invalidate()
+  }
+
+  return <ErrorFallback error={error} resetErrorBoundary={handleReset} />
 }
 
 const RootNotFoundComponent = () => {
-  // TODO: 추후 작업 필요
-  return <div>TODO: 추후 작업 필요 - not found UI</div>
+  return <NotFoundPage />
 }
 
 const RootComponent = () => {

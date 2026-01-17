@@ -1,10 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import ManagementTable from '@features/management/components/common/ManagementTable'
-import DeleteConfirmModal from '@features/management/components/modals/DeleteConfirm/DeleteConfirm'
-import { DeleteSchoolTableHeaderLabel } from '@features/management/constants/tableHeaders'
-import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '@features/management/mocks/managementMocks'
-
 import SearchIcon from '@shared/assets/icons/search.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
@@ -16,6 +11,10 @@ import { TextField } from '@shared/ui/form/LabelTextField/TextField'
 import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 
+import { DeleteSchoolTableHeaderLabel } from '../../constants/tableHeaders'
+import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '../../mocks/managementMocks'
+import ManagementTable from '../common/ManagementTable'
+import DeleteConfirmModal from '../modals/DeleteConfirm/DeleteConfirm'
 import DeleteTableRow from './DeleteTableRow'
 import * as S from './shared'
 

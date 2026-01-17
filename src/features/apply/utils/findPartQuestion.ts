@@ -1,6 +1,4 @@
-import type { PartQuestion } from '@/shared/types/question'
-
-import type { QuestionList } from '../types/question'
+import type { PartQuestion, QuestionList } from '../domain/model'
 
 export function findPartQuestion(
   questionData: QuestionList,

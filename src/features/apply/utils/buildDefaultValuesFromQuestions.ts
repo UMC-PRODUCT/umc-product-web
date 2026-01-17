@@ -1,4 +1,6 @@
-import type { QuestionList, QuestionPage, QuestionUnion, ResumeFormValues } from '../types/question'
+import type { QuestionList, QuestionPage, QuestionUnion } from '../domain/model'
+
+export type ResumeFormValues = Record<string, unknown>
 
 export function buildDefaultValuesFromQuestions(questionData: QuestionList): ResumeFormValues {
   const defaultValues: ResumeFormValues = {}

@@ -1,12 +1,11 @@
-import type { ManageAccountTabName } from '@features/management/constants/tabNames'
-import { manageAccountTabs } from '@features/management/constants/tabNames'
-
 import Tab from '@shared/ui/common/Tab/Tab'
 
-import EditAccount from '@/features/management/components/account/EditAccountTab/EditAccountTab'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 
 import AddAccount from '../components/account/AddAccountTab/AddAccountTab'
+import EditAccount from '../components/account/EditAccountTab/EditAccountTab'
+import type { ManageAccountTabName } from '../constants/tabNames'
+import { manageAccountTabs } from '../constants/tabNames'
 
 type AccountPageProps = {
   activeTab: ManageAccountTabName

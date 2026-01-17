@@ -1,6 +1,6 @@
 import type { CalendarEvents } from '@/shared/types/calendar'
 
-import type { PartData } from '../types/partCurriculum'
+import type { PartData } from '../domain'
 
 export const RAW_EVENTS: CalendarEvents = [
   { id: 1, title: '서류 모집', startDate: '2026-01-02', endDate: '2026-01-06' },

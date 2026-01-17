@@ -1,0 +1,64 @@
+/**
+ * Management 도메인 모델
+ * 학교, 리크루팅 관리 관련 타입
+ */
+
+import type {
+  EVALUATION_DOCUMENT_CONFIG,
+  EVALUATION_FINAL_CONFIG,
+  RECRUITING_STATE_CONFIG,
+  SCHOOL_STATE_CONFIG,
+} from './constants'
+
+/** 학교 상태 타입 */
+export type SchoolStateType = keyof typeof SCHOOL_STATE_CONFIG
+
+/** 리크루팅 상태 타입 */
+export type RecruitingType = keyof typeof RECRUITING_STATE_CONFIG
+
+/** 서류 평가 단계 타입 */
+export type EvaluationDocumentType =
+  (typeof EVALUATION_DOCUMENT_CONFIG)[keyof typeof EVALUATION_DOCUMENT_CONFIG]['label']
+
+/** 면접 평가 단계 타입 */
+export type EvaluationFinalType =
+  (typeof EVALUATION_FINAL_CONFIG)[keyof typeof EVALUATION_FINAL_CONFIG]['label']
+
+/** 대학교 정보 */
+export interface University {
+  id: number
+  name: string
+  state: SchoolStateType
+  createdAt: string
+  updatedAt: string
+}
+
+/** 대학교 지부 정보 */
+export interface UniversityBranch {
+  id: number
+  universityId: number
+  name: string
+  state: SchoolStateType
+}
+
+/** 리크루팅 정보 */
+export interface Recruiting {
+  id: number
+  universityId: number
+  generation: number
+  state: RecruitingType
+  startDate: string
+  endDate: string
+  documentEvaluation: EvaluationDocumentType
+  finalEvaluation: EvaluationFinalType
+}
+
+/** 공지사항 */
+export interface Notice {
+  id: number
+  title: string
+  content: string
+  createdAt: string
+  updatedAt: string
+  authorId: number
+}

@@ -1,7 +1,7 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType, QuestionUnion } from './question'
-import type { PartType } from './umc'
+import type { QuestionType, QuestionUnion } from '@features/apply/domain/model'
+import type { PartType } from '@features/auth/domain'
 
 export type Option<T> = { label: T; id: string | number }
 

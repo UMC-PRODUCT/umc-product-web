@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import type { TermsAgreementKey } from '@features/auth/hooks/useRegisterForm'
-
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Flex from '@shared/ui/common/Flex/Flex'
 
@@ -9,6 +7,7 @@ import MarketingTerm from '@/shared/ui/modals/terms/MarketingTerm'
 import PrivacyTerm from '@/shared/ui/modals/terms/PrivacyTerm'
 import ServiceTerm from '@/shared/ui/modals/terms/ServiceTerm'
 
+import type { TermsAgreementKey } from '../../hooks/useRegisterForm'
 import { Term } from './Term'
 
 type TermsState = Record<TermsAgreementKey, boolean>

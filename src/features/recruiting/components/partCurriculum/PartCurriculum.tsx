@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react'
 
-import { PART_REQUIRED_SKILL } from '@/features/recruiting/constants/partRequiredSkill'
-import type { PartData } from '@/features/recruiting/types/partCurriculum'
+import type { PartData } from '@features/recruiting/domain'
+import { PART_REQUIRED_SKILL } from '@features/recruiting/domain'
+
 import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'

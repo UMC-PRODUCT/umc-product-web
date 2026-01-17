@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
 
-import AuthSection from '@features/auth/components/AuthSection/AuthSection'
-import EmailSendModal from '@features/auth/components/modals/EmailSendModal/EmailSendModal'
-import { TermsSection } from '@features/auth/components/Term/TermsSection'
-import { useRegisterForm } from '@features/auth/hooks/useRegisterForm'
-
 import Logo from '@shared/assets/brand_logo.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
@@ -13,7 +8,11 @@ import { Button } from '@shared/ui/common/Button/Button'
 import LabelDropdown from '@shared/ui/form/LabelDropdown/LabelDropdown'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
+import AuthSection from '../components/AuthSection/AuthSection'
+import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
+import { TermsSection } from '../components/Term/TermsSection'
+import { useRegisterForm } from '../hooks/useRegisterForm'
+import { UNI_LIST_MOCK } from '../mocks/universities'
 
 export const RegisterPage = () => {
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)

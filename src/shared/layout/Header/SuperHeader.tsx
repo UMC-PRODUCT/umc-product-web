@@ -2,10 +2,6 @@ import Header from '@shared/layout/Header/Header'
 
 const left = [
   {
-    label: '데이터 관리',
-    link: '/management/data',
-  },
-  {
     label: '학교 관리',
     link: '/management/school',
   },
@@ -14,12 +10,12 @@ const left = [
     link: '/management/account',
   },
   {
-    label: '공지 관리',
-    link: '/management/notice',
+    label: '지원자 관리',
+    link: '/management/candidate',
   },
   {
-    label: '정책 관리',
-    link: '/management/policy',
+    label: '시스템 관리',
+    link: '/management/system',
   },
 ]
 // TODO: 데이터 수정 필요
@@ -45,13 +41,9 @@ const social = [
     icon: 'youtube' as const,
   },
 ]
-const nav = {
-  label: '시스템 관리',
-  link: '/', // TODO: 링크 수정
-}
 
 const SuperHeader = () => {
-  return <Header leftChildren={left} social={social} nav={nav} />
+  return <Header leftChildren={left} social={social} />
 }
 
 export default SuperHeader

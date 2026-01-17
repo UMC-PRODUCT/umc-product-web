@@ -4,3 +4,10 @@ export { getAllQuestionsFromPages } from '@/features/apply/utils/getAllQuestions
 export { getSelectedPartsFromAnswer } from '@/features/apply/utils/getSelectedPartsFromAnswer'
 export { isQuestionAnswerEmpty } from '@/features/apply/utils/isQuestionAnswerEmpty'
 export { resolvePagesWithSlots } from '@/features/apply/utils/resolvePagesWithSlots'
+export {
+  findFirstErrorPageIndex,
+  getAllQuestionFieldIds,
+  getPageRequiredFieldIds,
+  getSelectedPartsForSubmission,
+  getSubmissionValues,
+} from '@/features/apply/utils/resumeFormHelpers'
