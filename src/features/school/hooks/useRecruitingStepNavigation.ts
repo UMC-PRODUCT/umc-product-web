@@ -3,6 +3,7 @@ import type { FieldPath, UseFormTrigger } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
 
 import type { RecruitingForms } from '@/shared/types/form'
+import { scrollToTop as scrollToTopUtil } from '@/shared/utils/scrollToTop'
 
 import { getStepReady, step3ItemsSchema } from '../schemas/validation'
 
@@ -34,12 +35,7 @@ export const useRecruitingStepNavigation = ({
       scrollToTop()
       return
     }
-    const scroller = document.scrollingElement
-    if (scroller) {
-      scroller.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+    scrollToTopUtil()
   }
 
   // 검증 실패 시 해당 필드로 포커스 이동 후 스크롤

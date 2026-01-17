@@ -59,8 +59,8 @@ const Step2 = ({
 
   const lastInterviewRangeKey = useRef<string>('')
   useEffect(() => {
-    const startKey = interviewStartAt ? interviewStartAt.getTime() : 'null'
-    const endKey = interviewEndAt ? interviewEndAt.getTime() : 'null'
+    const startKey = interviewStartAt ? dayjs(interviewStartAt).valueOf() : 'null'
+    const endKey = interviewEndAt ? dayjs(interviewEndAt).valueOf() : 'null'
     const nextKey = `${startKey}-${endKey}`
     if (lastInterviewRangeKey.current === nextKey) return
     lastInterviewRangeKey.current = nextKey
@@ -118,7 +118,7 @@ const Step2 = ({
     if (!applyStartAt || !applyEndAt) return
     updateErrorState(
       'schedule.applyEndAt',
-      applyEndAt < applyStartAt,
+      dayjs(applyEndAt).isBefore(dayjs(applyStartAt)),
       '서류 모집 시작 이후로 선택해 주세요.',
     )
   }, [applyStartAt, applyEndAt, updateErrorState])
@@ -127,7 +127,7 @@ const Step2 = ({
     if (!applyEndAt || !docResultAt) return
     updateErrorState(
       'schedule.docResultAt',
-      docResultAt < applyEndAt,
+      dayjs(docResultAt).isBefore(dayjs(applyEndAt)),
       '서류 모집 종료 이후로 선택해 주세요.',
     )
   }, [applyEndAt, docResultAt, updateErrorState])
@@ -136,7 +136,7 @@ const Step2 = ({
     if (!docResultAt || !interviewStartAt) return
     updateErrorState(
       'schedule.interviewStartAt',
-      interviewStartAt < docResultAt,
+      dayjs(interviewStartAt).isBefore(dayjs(docResultAt)),
       '서류 결과 발표 이후로 선택해 주세요.',
     )
   }, [docResultAt, interviewStartAt, updateErrorState])
@@ -145,7 +145,7 @@ const Step2 = ({
     if (!interviewStartAt || !interviewEndAt) return
     updateErrorState(
       'schedule.interviewEndAt',
-      interviewEndAt < interviewStartAt,
+      dayjs(interviewEndAt).isBefore(dayjs(interviewStartAt)),
       '면접 평가 시작 이후로 선택해 주세요.',
     )
   }, [interviewStartAt, interviewEndAt, updateErrorState])
@@ -154,7 +154,7 @@ const Step2 = ({
     if (!interviewEndAt || !finalResultAt) return
     updateErrorState(
       'schedule.finalResultAt',
-      finalResultAt < interviewEndAt,
+      dayjs(finalResultAt).isBefore(dayjs(interviewEndAt)),
       '면접 평가 종료 이후로 선택해 주세요.',
     )
   }, [interviewEndAt, finalResultAt, updateErrorState])
@@ -175,8 +175,10 @@ const Step2 = ({
                 <LabelCalendar
                   label="서류 모집 시작일"
                   name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
+                  value={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                  }}
                   onBlur={field.onBlur}
                   error={{
                     error: !!fieldState.error,
@@ -192,8 +194,10 @@ const Step2 = ({
                 <LabelCalendar
                   label="서류 모집 종료일"
                   name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
+                  value={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                  }}
                   onBlur={field.onBlur}
                   error={{
                     error: !!fieldState.error,
@@ -210,8 +214,10 @@ const Step2 = ({
               <LabelCalendar
                 label="서류 결과 발표일"
                 name={field.name}
-                value={field.value}
-                onChange={field.onChange}
+                value={field.value ? new Date(field.value) : null}
+                onChange={(date) => {
+                  field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                }}
                 onBlur={field.onBlur}
                 error={{
                   error: !!fieldState.error,
@@ -228,8 +234,10 @@ const Step2 = ({
                 <LabelCalendar
                   label="면접 평가 시작일"
                   name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
+                  value={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                  }}
                   onBlur={field.onBlur}
                   error={{
                     error: !!fieldState.error,
@@ -245,8 +253,10 @@ const Step2 = ({
                 <LabelCalendar
                   label="면접 평가 종료일"
                   name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
+                  value={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                  }}
                   onBlur={field.onBlur}
                   error={{
                     error: !!fieldState.error,
@@ -299,8 +309,10 @@ const Step2 = ({
               <LabelCalendar
                 label="최종 결과 발표일"
                 name={field.name}
-                value={field.value}
-                onChange={field.onChange}
+                value={field.value ? new Date(field.value) : null}
+                onChange={(date) => {
+                  field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
+                }}
                 onBlur={field.onBlur}
                 error={{
                   error: !!fieldState.error,

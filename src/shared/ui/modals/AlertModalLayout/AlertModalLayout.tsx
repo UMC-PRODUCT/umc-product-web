@@ -4,6 +4,8 @@ import Instruction from '@shared/ui/common/Instruction/Instruction'
 import { Modal } from '@shared/ui/common/Modal'
 import * as S from '@shared/ui/modals/AlertModalLayout/AlertModalLayout.style'
 
+import { theme } from '@/shared/styles/theme'
+
 type AlertModalLayoutProps = {
   onClose: () => void
   title: string
@@ -45,7 +47,7 @@ const AlertModalLayout = ({
                 </Modal.Title>
                 <Modal.Close asChild>
                   <S.ModalButton type="button" aria-label="모달 닫기">
-                    <Close />
+                    <Close color={theme.colors.gray[400]} />
                   </S.ModalButton>
                 </Modal.Close>
               </Flex>

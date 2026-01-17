@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { FieldValues } from 'react-hook-form'
 
-import type { UseAutoSaveOptions, UseAutoSaveReturn } from '@/features/apply/types/autoSave'
+import type { UseAutoSaveOptions, UseAutoSaveReturn } from '@/shared/types/autoSave'
 
 // 기본 자동 저장 주기(1분).
 const DEFAULT_AUTO_SAVE_INTERVAL_MS = 60_000
@@ -16,9 +17,10 @@ function formatDateTimeKorean(date: Date): string {
   return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
 }
 
-export function useAutoSave<TFormValues extends Record<string, unknown>>({
+export function useAutoSave<TFormValues extends FieldValues>({
   getValues,
   interval = DEFAULT_AUTO_SAVE_INTERVAL_MS,
+  onSave,
 }: UseAutoSaveOptions<TFormValues>): UseAutoSaveReturn {
   const [lastSavedTime, setLastSavedTime] = useState<string>('')
 
@@ -26,13 +28,14 @@ export function useAutoSave<TFormValues extends Record<string, unknown>>({
   const handleSave = useCallback(() => {
     const formValues = getValues()
     console.log('[AutoSave] 저장 데이터:', formValues)
+    onSave?.(formValues)
 
     const currentDateTime = new Date()
     const formattedDateTime = formatDateTimeKorean(currentDateTime)
 
     setLastSavedTime(formattedDateTime)
     console.log(`[AutoSave] ${formattedDateTime} 저장 완료`)
-  }, [getValues])
+  }, [getValues, onSave])
 
   useEffect(() => {
     const autoSaveTimer = setInterval(() => {

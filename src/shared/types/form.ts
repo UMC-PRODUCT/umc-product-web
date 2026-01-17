@@ -59,12 +59,12 @@ export type RecruitingPartApi =
 export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED'
 
 export type RecruitingSchedule = {
-  applyStartAt: Date | null
-  applyEndAt: Date | null
-  docResultAt: Date | null
-  interviewStartAt: Date | null
-  interviewEndAt: Date | null
-  finalResultAt: Date | null
+  applyStartAt: string | null
+  applyEndAt: string | null
+  docResultAt: string | null
+  interviewStartAt: string | null
+  interviewEndAt: string | null
+  finalResultAt: string | null
   interviewTimeTable: RecruitingInterviewTimeTable
 }
 

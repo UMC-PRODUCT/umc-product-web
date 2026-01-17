@@ -16,12 +16,12 @@ export const consumeTempDraftLoad = () => {
   return shouldLoad
 }
 
-const parseDate = (value: string | Date | null | undefined) => {
+const formatDateString = (value: string | Date | null | undefined) => {
   if (!value) return null
-  return value instanceof Date ? value : new Date(value)
+  return dayjs(value).format('YYYY-MM-DDTHH:mm:ssZ')
 }
 
-const getInterviewDateKeys = (start: Date | null, end: Date | null) => {
+const getInterviewDateKeys = (start: string | null, end: string | null) => {
   if (!start || !end) return []
   const startDate = dayjs(start).startOf('day')
   const endDate = dayjs(end).startOf('day')
@@ -37,8 +37,8 @@ const getInterviewDateKeys = (start: Date | null, end: Date | null) => {
 
 export const normalizeTempRecruitingForm = (data: RecruitingForms): RecruitingForms => {
   const schedule = data.schedule
-  const interviewStartAt = parseDate(schedule.interviewStartAt)
-  const interviewEndAt = parseDate(schedule.interviewEndAt)
+  const interviewStartAt = formatDateString(schedule.interviewStartAt)
+  const interviewEndAt = formatDateString(schedule.interviewEndAt)
   const allowedInterviewDates = getInterviewDateKeys(interviewStartAt, interviewEndAt)
   const normalizedEnabled = schedule.interviewTimeTable.enabled.filter((slot) =>
     allowedInterviewDates.includes(slot.date),
@@ -55,12 +55,12 @@ export const normalizeTempRecruitingForm = (data: RecruitingForms): RecruitingFo
     ...data,
     schedule: {
       ...schedule,
-      applyStartAt: parseDate(schedule.applyStartAt),
-      applyEndAt: parseDate(schedule.applyEndAt),
-      docResultAt: parseDate(schedule.docResultAt),
+      applyStartAt: formatDateString(schedule.applyStartAt),
+      applyEndAt: formatDateString(schedule.applyEndAt),
+      docResultAt: formatDateString(schedule.docResultAt),
       interviewStartAt,
       interviewEndAt,
-      finalResultAt: parseDate(schedule.finalResultAt),
+      finalResultAt: formatDateString(schedule.finalResultAt),
       interviewTimeTable: {
         ...schedule.interviewTimeTable,
         dateRange,

@@ -5,12 +5,12 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
   recruitmentParts: ['PLAN', 'DESIGN', 'WEB', 'IOS'],
   maxPreferredPartCount: 2,
   schedule: {
-    applyStartAt: new Date('2025-12-31'),
-    applyEndAt: new Date('2026-01-01'),
-    docResultAt: new Date('2026-01-02'),
-    interviewStartAt: new Date('2026-01-05'),
-    interviewEndAt: new Date('2026-01-08'),
-    finalResultAt: new Date('2026-01-18'),
+    applyStartAt: '2025-12-31T00:00:00+09:00',
+    applyEndAt: '2026-01-01T00:00:00+09:00',
+    docResultAt: '2026-01-02T00:00:00+09:00',
+    interviewStartAt: '2026-01-05T00:00:00+09:00',
+    interviewEndAt: '2026-01-08T00:00:00+09:00',
+    finalResultAt: '2026-01-18T00:00:00+09:00',
     interviewTimeTable: {
       dateRange: { start: '2026-01-05', end: '2026-01-08' },
       timeRange: { start: '09:00', end: '23:00' },

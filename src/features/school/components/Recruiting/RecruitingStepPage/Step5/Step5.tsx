@@ -18,7 +18,7 @@ const Step5 = ({
   setStep: (step: number) => void
   formData: RecruitingForms
 }) => {
-  const formatDateLabel = (value: Date | null) => (value ? dayjs(value).format('YYYY.MM.DD') : '')
+  const formatDateLabel = (value: string | null) => (value ? dayjs(value).format('YYYY.MM.DD') : '')
   const recruitingPartLabels = formData.recruitmentParts
     .map((part) => mapApiPartToPartType(part))
     .filter((part): part is NonNullable<typeof part> => Boolean(part))

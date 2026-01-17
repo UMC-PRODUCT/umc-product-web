@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { z } from 'zod/v3'
 
 import type { RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
@@ -40,42 +41,31 @@ const interviewTimeTableSchema = z.object({
   ),
 })
 
+const dateStringSchema = z
+  .string({
+    required_error: '날짜를 선택해 주세요.',
+    invalid_type_error: '날짜를 선택해 주세요.',
+  })
+  .min(1, '날짜를 선택해 주세요.')
+
 const baseScheduleSchema = z.object({
-  applyStartAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
-  applyEndAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
-  docResultAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
-  interviewStartAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
-  interviewEndAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
-  finalResultAt: z.date({
-    required_error: '날짜를 선택해 주세요.',
-    invalid_type_error: '날짜를 선택해 주세요.',
-  }),
+  applyStartAt: dateStringSchema,
+  applyEndAt: dateStringSchema,
+  docResultAt: dateStringSchema,
+  interviewStartAt: dateStringSchema,
+  interviewEndAt: dateStringSchema,
+  finalResultAt: dateStringSchema,
   interviewTimeTable: interviewTimeTableSchema,
 })
 
 type DateOrderValues = {
   schedule?: {
-    applyStartAt?: Date | null
-    applyEndAt?: Date | null
-    docResultAt?: Date | null
-    interviewStartAt?: Date | null
-    interviewEndAt?: Date | null
-    finalResultAt?: Date | null
+    applyStartAt?: string | null
+    applyEndAt?: string | null
+    docResultAt?: string | null
+    interviewStartAt?: string | null
+    interviewEndAt?: string | null
+    finalResultAt?: string | null
   }
 }
 
@@ -84,7 +74,11 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     const values = (data as DateOrderValues).schedule
     if (!values) return
 
-    if (values.applyStartAt && values.applyEndAt && values.applyEndAt < values.applyStartAt) {
+    if (
+      values.applyStartAt &&
+      values.applyEndAt &&
+      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt))
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'applyEndAt'],
@@ -92,7 +86,11 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
       })
     }
 
-    if (values.applyEndAt && values.docResultAt && values.docResultAt < values.applyEndAt) {
+    if (
+      values.applyEndAt &&
+      values.docResultAt &&
+      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt))
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'docResultAt'],
@@ -103,7 +101,7 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.docResultAt &&
       values.interviewStartAt &&
-      values.interviewStartAt < values.docResultAt
+      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -115,7 +113,7 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.interviewStartAt &&
       values.interviewEndAt &&
-      values.interviewEndAt < values.interviewStartAt
+      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -127,7 +125,7 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.interviewEndAt &&
       values.finalResultAt &&
-      values.finalResultAt < values.interviewEndAt
+      dayjs(values.finalResultAt).isBefore(dayjs(values.interviewEndAt))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -216,14 +214,6 @@ const itemsSchema = z.array(
 
 const itemsSchemaWithValidation = itemsSchema.superRefine((items, ctx) => {
   items.forEach((item, itemIndex) => {
-    if (item.question.questionText.trim().length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['items', itemIndex, 'question', 'questionText'],
-        message: '질문 내용을 입력해 주세요.',
-      })
-    }
-
     const type = item.question.type
     const options = item.question.options ?? []
     if (type === 'CHECKBOX' || type === 'RADIO') {

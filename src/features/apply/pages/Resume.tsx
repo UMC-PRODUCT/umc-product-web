@@ -3,13 +3,14 @@ import type { FieldErrors } from 'react-hook-form'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
-import { useAutoSave } from '@/features/apply/hooks/useAutoSave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { PartType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
+import { scrollToTop } from '@/shared/utils/scrollToTop'
 
 import ResumeContent from '../components/ResumeContent'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
@@ -143,7 +144,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
 
     if (errorPageIndex !== -1) {
       onPageChange(errorPageIndex + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
   }
 
@@ -175,7 +176,7 @@ const Resume = ({ questionData, currentPage, onPageChange }: ResumeProps) => {
         (await trigger(currentPageFieldIds, { shouldFocus: true }))
 
       if (!isCurrentPageValid) {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        scrollToTop()
         return
       }
     }
