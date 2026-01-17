@@ -1,5 +1,4 @@
 import type { PartApplyStatus, PartEvaluationStatus } from '@features/school/domain'
-
 import type { PartCompletion } from '@/shared/types/form'
 
 export const APPLY_PART_STATUS_MOCKS: Array<PartApplyStatus> = [
