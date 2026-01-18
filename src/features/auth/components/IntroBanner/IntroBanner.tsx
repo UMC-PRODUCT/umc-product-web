@@ -10,11 +10,15 @@ type Slide = {
 }
 
 const slides: Array<Slide> = [
-  { image: '/images/banner/활동사진1.png' },
-  { image: '/images/banner/활동사진2.png' },
-  { image: '/images/banner/활동사진3.png' },
+  { image: '/images/banner/1.jpeg' },
+  { image: '/images/banner/2.jpeg' },
+  { image: '/images/banner/3.jpeg' },
+  { image: '/images/banner/4.jpeg' },
+  { image: '/images/banner/5.jpeg' },
 ]
 const total = slides.length
+const toWebp = (source: string) => source.replace(/\.jpeg$/i, '.webp')
+const toAvif = (source: string) => source.replace(/\.jpeg$/i, '.avif')
 
 const IntroBanner = () => {
   const [current, setCurrent] = useState(0)
@@ -26,18 +30,19 @@ const IntroBanner = () => {
   })
 
   useEffect(() => {
+    if (isMdDown) return
     const id = setInterval(() => {
       setCurrent((idx) => (idx + 1) % total)
     }, 3400)
     return () => clearInterval(id)
-  }, [])
+  }, [isMdDown])
 
   useEffect(() => {
-    slides.forEach(({ image }) => {
-      const img = new Image()
-      img.src = image
-    })
-  }, [])
+    if (isMdDown) return
+    const nextIndex = (current + 1) % total
+    const img = new Image()
+    img.src = slides[nextIndex].image
+  }, [current, isMdDown])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -52,12 +57,19 @@ const IntroBanner = () => {
   const renderedSlides = useMemo(
     () =>
       slides.map((slide, index) => (
-        <S.SlideLayer
-          key={slide.image}
-          $active={index === current}
-          $image={slide.image}
-          aria-hidden={index === current ? 'false' : 'true'}
-        />
+        <S.SlideLayer key={slide.image} $active={index === current} aria-hidden={index !== current}>
+          <picture>
+            <source type="image/avif" srcSet={toAvif(slide.image)} />
+            <source type="image/webp" srcSet={toWebp(slide.image)} />
+            <img
+              src={slide.image}
+              alt=""
+              loading={index === current ? 'eager' : 'lazy'}
+              decoding="async"
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+            />
+          </picture>
+        </S.SlideLayer>
       )),
     [current],
   )
@@ -83,7 +95,7 @@ const IntroBanner = () => {
               </S.Slogan>
               <S.Slider aria-hidden>
                 {slides.map((_, idx) => (
-                  <S.Bar key={idx} $active={idx === current} />
+                  <S.Bar key={idx} $active={idx === current} onClick={() => setCurrent(idx)} />
                 ))}
               </S.Slider>
             </S.Blur>
