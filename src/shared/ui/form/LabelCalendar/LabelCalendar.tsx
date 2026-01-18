@@ -94,7 +94,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
     return (
       <Field
         css={{
-          width: '320px',
+          width: '400px',
           [media.down(theme.breakPoints.tablet)]: { width: '100%' },
         }}
       >
@@ -133,7 +133,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
                 padding={'18px 20px'}
                 css={{
                   width: '400px',
-                  height: '350px',
+                  height: 'fit-content',
                   backgroundColor: theme.colors.black,
                   [media.down(theme.breakPoints.tablet)]: { width: '100%', height: 'auto' },
                 }}
