@@ -1,19 +1,38 @@
-import { useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 import Logo from '@shared/assets/umc_gray.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
 
 import { FOOTER_INFO } from '@/shared/constants/umc'
-import PrivacyTerm from '@/shared/ui/modals/terms/PrivacyTerm'
-import ServiceTerm from '@/shared/ui/modals/terms/ServiceTerm'
 
 import * as S from './Footer.style'
+
+const PrivacyTerm = lazy(() => import('@/shared/ui/modals/terms/PrivacyTerm'))
+const ServiceTerm = lazy(() => import('@/shared/ui/modals/terms/ServiceTerm'))
 
 type ModalType = 'service' | 'privacy' | null
 
 const Footer = () => {
   const [openModal, setOpenModal] = useState<ModalType>(null)
   const closeModal = () => setOpenModal(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleId = window.requestIdleCallback(() => {
+        void import('@/shared/ui/modals/terms/PrivacyTerm')
+        void import('@/shared/ui/modals/terms/ServiceTerm')
+      })
+      return () => window.cancelIdleCallback(idleId)
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void import('@/shared/ui/modals/terms/PrivacyTerm')
+      void import('@/shared/ui/modals/terms/ServiceTerm')
+    }, 800)
+    return () => window.clearTimeout(timeoutId)
+  }, [])
 
   return (
     <S.FooterContainer>
@@ -45,8 +64,12 @@ const Footer = () => {
         </Flex>
       </Flex>
 
-      {openModal === 'service' && <ServiceTerm onClose={closeModal} />}
-      {openModal === 'privacy' && <PrivacyTerm onClose={closeModal} />}
+      {openModal ? (
+        <Suspense fallback={null}>
+          {openModal === 'service' && <ServiceTerm onClose={closeModal} />}
+          {openModal === 'privacy' && <PrivacyTerm onClose={closeModal} />}
+        </Suspense>
+      ) : null}
     </S.FooterContainer>
   )
 }
