@@ -17,10 +17,10 @@ import IntroBanner from '../components/IntroBanner/IntroBanner'
 export const LoginPage = () => {
   return (
     <Main>
-      <IntroBanner></IntroBanner>
+      <IntroBanner />
       <AuthSection size="md">
-        <Logo></Logo>
-        <Divider label="로그인 또는 회원가입"></Divider>
+        <Logo />
+        <Divider label="로그인 또는 회원가입" />
         <ButtonGroup>
           <Button
             disabled={false}
@@ -29,7 +29,7 @@ export const LoginPage = () => {
             variant="solid"
             tone="kakao"
             onClick={() => {}}
-          ></Button>
+          />
           <Button
             disabled={false}
             label="Google로 계속하기"
@@ -37,7 +37,7 @@ export const LoginPage = () => {
             variant="solid"
             tone="white"
             onClick={() => {}}
-          ></Button>
+          />
           <Button
             disabled={false}
             label="Apple로 계속하기"
@@ -45,13 +45,13 @@ export const LoginPage = () => {
             variant="solid"
             tone="white"
             onClick={() => {}}
-          ></Button>
+          />
           <Instruction
             mode="success"
             Icon={Notice}
             content={'최근 카카오 계정으로 로그인 하였습니다.'}
             typography="C3.Md"
-          ></Instruction>
+          />
         </ButtonGroup>
       </AuthSection>
     </Main>
