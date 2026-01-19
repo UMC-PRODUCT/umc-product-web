@@ -67,6 +67,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "husky": "^9.1.7",
+    "is-wsl": "^3.1.0",
     "jsdom": "^27.0.0",
     "lint-staged": "^16.2.7",
     "openapi-typescript": "^7.10.1",
