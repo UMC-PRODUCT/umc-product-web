@@ -93,5 +93,6 @@ export function useRegisterForm() {
     toggleAllTermsAgreement,
     onSubmit: handleFormSubmit,
     formFieldValues,
+    setValue,
   }
 }

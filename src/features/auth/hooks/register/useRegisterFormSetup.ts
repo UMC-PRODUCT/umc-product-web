@@ -20,6 +20,7 @@ export function useRegisterFormSetup() {
       serviceTerm: false,
       privacyTerm: false,
       marketingTerm: false,
+      oAuthVerificationToken: '',
     },
   })
 

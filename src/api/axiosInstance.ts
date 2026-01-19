@@ -1,5 +1,6 @@
 import type { AxiosError } from 'axios'
 import axios from 'axios'
+
 import { refresh } from '@/features/auth/domain/api'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 
@@ -14,8 +15,8 @@ export const axiosInstance = axios.create({
 
 let isRedirecting = false
 
-const { getItem: getRefreshToken } = useLocalStorage('refreshToken')
-const { getItem: getAccessToken } = useLocalStorage('accessToken')
+const { getItem: getRefreshToken, removeItem: removeRefreshToken } = useLocalStorage('refreshToken')
+const { getItem: getAccessToken, removeItem: removeAccessToken } = useLocalStorage('accessToken')
 
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = getAccessToken()
@@ -57,23 +58,27 @@ axiosInstance.interceptors.response.use(
           if (refreshError.status === 401) {
             console.error('refreshToken이 없습니다. 로그인 페이지로 이동합니다.')
             // void logout()
-            localStorage.clear()
+            removeAccessToken()
+            removeRefreshToken()
             window.location.href = '/auth/login'
           } else if (refreshError.status === 404) {
             console.error('사용자 정보를 찾지 못했습니다. 로그인 페이지로 이동합니다.')
             // void logout()
-            localStorage.clear()
+            removeAccessToken()
+            removeRefreshToken()
             window.location.href = '/auth/login'
           } else {
             console.error('알 수 없는 오류가 발생했습니다', errors)
             // void logout()
-            localStorage.clear()
+            removeAccessToken()
+            removeRefreshToken()
             window.location.href = '/auth/login'
           }
         } else {
           console.error('알 수 없는 오류가 발생했습니다', errors)
           // void logout()
-          localStorage.clear()
+          removeAccessToken()
+          removeRefreshToken()
           window.location.href = '/auth/login'
         }
 

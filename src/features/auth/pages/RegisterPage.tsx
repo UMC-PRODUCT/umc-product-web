@@ -1,25 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 
 import Logo from '@shared/assets/brand_logo.svg?react'
 import { media } from '@shared/styles/media'
 import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
-import LabelDropdown from '@shared/ui/form/LabelDropdown/LabelDropdown'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
+import SchoolSelect from '../components/SchoolSelect/SchoolSelect'
 import { TermsSection } from '../components/Term/TermsSection'
 import { useRegisterForm } from '../hooks/useRegisterForm'
-import { UNI_LIST_MOCK } from '../mocks/universities'
 
-export const RegisterPage = () => {
+type RegisterPageProps = {
+  oAuthVerificationToken?: string
+  email?: string
+}
+
+export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProps) => {
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)
 
   const {
     register,
     handleSubmit,
+    setValue,
     errors,
     isValid,
     emailVerification,
@@ -31,6 +36,18 @@ export const RegisterPage = () => {
     onSubmit,
     formFieldValues,
   } = useRegisterForm()
+
+  useEffect(() => {
+    if (email) {
+      setValue('email', email)
+    }
+  }, [email, setValue])
+
+  useEffect(() => {
+    if (oAuthVerificationToken) {
+      setValue('oAuthVerificationToken', oAuthVerificationToken)
+    }
+  }, [oAuthVerificationToken, setValue])
 
   const handleSendVerificationEmail = () => {
     emailVerification.toggleVerification()
@@ -48,16 +65,13 @@ export const RegisterPage = () => {
       <ResponsiveLogo />
       <form onSubmit={handleSubmit(onSubmit)} css={{ width: '100%' }}>
         <FormFieldsContainer>
-          <LabelDropdown<string>
-            label="학교"
-            placeholder="학교를 선택해 주세요."
-            options={UNI_LIST_MOCK}
+          <SchoolSelect
+            value={selectedSchool}
+            onChange={handleSchoolSelect}
             error={{
               error: !!errors.school,
-              errorMessage: errors.school?.message || '',
+              errorMessage: errors.school?.message,
             }}
-            onChange={handleSchoolSelect}
-            value={selectedSchool}
           />
 
           <LabelTextField
