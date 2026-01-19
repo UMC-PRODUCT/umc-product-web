@@ -1,6 +1,5 @@
 import type { AxiosError } from 'axios'
 import axios from 'axios'
-
 import { refresh } from '@/features/auth/domain/api'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 
