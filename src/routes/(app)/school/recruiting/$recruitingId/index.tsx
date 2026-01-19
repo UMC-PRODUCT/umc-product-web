@@ -1,14 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod/v3'
 
 import Recruiting from '@/features/school/pages/Recruiting'
 
-const searchSchema = z.object({
-  source: z.enum(['temp']).optional(),
-})
+const parseRecruitingSearch = (search: Record<string, unknown>) => {
+  const sourceValue = typeof search.source === 'string' ? search.source : undefined
+  const source = sourceValue === 'temp' ? sourceValue : undefined
+  return { source }
+}
 
 export const Route = createFileRoute('/(app)/school/recruiting/$recruitingId/')({
-  validateSearch: (search) => searchSchema.parse(search),
+  validateSearch: (search) => parseRecruitingSearch(search),
   component: RouteComponent,
 })
 

@@ -1,14 +1,21 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { z } from 'zod/v3'
 
 import { AccountPage } from '@features/management/pages/AccountPage'
 
+import { MANAGE_ACCOUNT_TAB_VALUES } from '@/features/management/domain/constants'
 import type { ManageAccountTabName } from '@/features/management/domain/model'
 
-const tabSchema = z.object({
-  tab: z.enum(['add', 'edit', 'level'] as const).optional(),
-  accountId: z.string().optional(),
-})
+type AccountTab = (typeof MANAGE_ACCOUNT_TAB_VALUES)[number]
+
+const isAccountTab = (value: string): value is AccountTab =>
+  MANAGE_ACCOUNT_TAB_VALUES.includes(value as AccountTab)
+
+const parseAccountSearch = (search: Record<string, unknown>) => {
+  const tabValue = typeof search.tab === 'string' ? search.tab : undefined
+  const tab = tabValue && isAccountTab(tabValue) ? tabValue : undefined
+  const accountId = typeof search.accountId === 'string' ? search.accountId : undefined
+  return { tab, accountId }
+}
 
 const RouteComponent = () => {
   const { tab } = Route.useSearch()
@@ -18,7 +25,10 @@ const RouteComponent = () => {
   const setTab = (next: ManageAccountTabName) => {
     navigate({
       to: Route.to,
-      search: (prev) => ({ ...prev, tab: next }),
+      search: (prev) => ({
+        tab: next,
+        accountId: prev.accountId ?? undefined,
+      }),
       replace: true, // 히스토리 쌓기 싫으면
     })
   }
@@ -27,6 +37,6 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management/account/')({
-  validateSearch: (search) => tabSchema.parse(search),
+  validateSearch: (search) => parseAccountSearch(search),
   component: RouteComponent,
 })

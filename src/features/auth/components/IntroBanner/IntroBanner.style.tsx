@@ -18,13 +18,27 @@ const Container = styled.div`
   border-radius: 12px;
 `
 
-const SlideLayer = styled.div<{ $active: boolean; $image: string }>`
+const SlideLayer = styled.div<{ $active: boolean }>`
   position: absolute;
   inset: 0;
-  background: ${({ $image }) => `url(${$image}) center/cover no-repeat`};
   opacity: ${({ $active }) => ($active ? 1 : 0)};
   transform: translateZ(0);
   backface-visibility: hidden;
+  transition: opacity 400ms ease;
+  will-change: opacity;
+
+  picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 `
 
 const Slogan = styled.span`
@@ -68,7 +82,7 @@ const Blur = styled.div`
   justify-content: flex-end;
   gap: 24px;
   padding-bottom: 48px;
-  pointer-events: none;
+  pointer-events: auto;
   isolation: isolate;
 
   &::before,
@@ -81,6 +95,7 @@ const Blur = styled.div`
     mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
     background: linear-gradient(180deg, rgba(22, 22, 22, 0) 0%, rgba(22, 22, 22, 0.7) 100%);
     z-index: 0;
+    pointer-events: none;
   }
 `
 export { Bar, Blur, Container, SlideLayer, Slider, Slogan }

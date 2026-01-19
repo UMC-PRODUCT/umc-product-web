@@ -15,6 +15,9 @@ const RecruitingMake = () => {
     navigate({
       to: '/school/recruiting/$recruitingId',
       params: { recruitingId: String(recruitingId) },
+      search: {
+        source: undefined,
+      },
     })
   }
 
