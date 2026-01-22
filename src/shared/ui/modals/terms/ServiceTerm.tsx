@@ -1,4 +1,5 @@
 import { keyframes } from '@emotion/react'
+import type { JSX } from '@emotion/react/jsx-runtime'
 import styled from '@emotion/styled'
 
 import type { TermsResponseDTO } from '@/features/auth/domain/api'
@@ -10,39 +11,6 @@ import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
 type TermModalProps = {
   onClose: () => void
 }
-
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`
-
-const Spinner = styled.span`
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(255, 255, 255, 0.25);
-  border-top-color: ${theme.colors.lime};
-  border-radius: 50%;
-  animation: ${spin} 0.8s linear infinite;
-`
-
-const SpinnerWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding-top: 40px;
-`
-
-const ErrorText = styled.p`
-  margin: 0;
-  color: ${theme.colors.red[400]};
-  ${theme.typography.B4.Rg}
-`
 
 const fetchServiceTerm = () => getTermsId({ termsType: 'SERVICE' })
 
@@ -83,3 +51,35 @@ const ServiceTerm = ({ onClose }: TermModalProps) => {
 }
 
 export default ServiceTerm
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`
+
+const Spinner = styled.span`
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: ${theme.colors.lime};
+  border-radius: 50%;
+  animation: ${spin} 0.8s linear infinite;
+`
+
+const SpinnerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 40px;
+`
+
+const ErrorText = styled.p`
+  margin: 0;
+  color: ${theme.colors.necessary};
+  ${theme.typography.B4.Rg}
+`
