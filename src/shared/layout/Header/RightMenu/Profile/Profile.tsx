@@ -4,17 +4,18 @@ import { useNavigate } from '@tanstack/react-router'
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
+import { useUserProfileStore } from '@/features/auth/hooks/register'
+
 import * as S from './Profile.style'
 
 const Profile = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { name, nickname } = useUserProfileStore()
   // 추후 수정 예정
   const school = '중앙대학교'
   const rights = '총괄'
-  const name = '성이름'
-  const nickname = '닉넴'
   const email = 'umc1234'
 
   useEffect(() => {

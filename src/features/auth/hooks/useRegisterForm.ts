@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
+import { useUserProfileStore } from '../../../shared/store/useUserProfileStore'
 import { useRegisterFormSetup } from './register'
 
 export interface RegistrationFieldValues {
@@ -16,6 +17,7 @@ function useRegisterFieldValues(watch: ReturnType<typeof useRegisterFormSetup>['
     'email',
     'emailVerificationCode',
   ])
+  const { setName, setNickname } = useUserProfileStore()
 
   const formFieldValues = useMemo(
     () => ({
@@ -26,6 +28,14 @@ function useRegisterFieldValues(watch: ReturnType<typeof useRegisterFormSetup>['
     }),
     [name, nickname, email, emailVerificationCode],
   )
+
+  useEffect(() => {
+    setName(name)
+  }, [name, setName])
+
+  useEffect(() => {
+    setNickname(nickname)
+  }, [nickname, setNickname])
 
   return {
     formFieldValues,

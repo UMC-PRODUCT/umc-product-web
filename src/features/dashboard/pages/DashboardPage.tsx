@@ -1,5 +1,6 @@
 import type { ApplySummary, DashboardProgress, DashboardUser } from '@features/dashboard/domain'
 
+import { useUserProfileStore } from '@/features/auth/hooks/register'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
@@ -13,13 +14,12 @@ import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
 import ProgressStage from '../components/ProgressStage/ProgressStage'
 
 type DashboardPageProps = {
-  user: DashboardUser
   progress: DashboardProgress
   applyData: Array<ApplySummary>
 }
 
-export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps) => {
-  const { nickname, fullName } = user
+export const DashboardPage = ({ progress, applyData }: DashboardPageProps) => {
+  const { nickname, name } = useUserProfileStore()
   const { parts, document, final } = progress
   const sectionBorder = {
     border: `1px solid ${theme.colors.gray[700]}`,
@@ -32,7 +32,7 @@ export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps)
     <PageLayout>
       <Flex flexDirection="column" gap={96}>
         <Flex gap={22} flexDirection="column">
-          <PageTitle title={`${nickname}/${fullName} 님의 지원 현황`} />
+          <PageTitle title={`${nickname}/${name} 님의 지원 현황`} />
           <Section
             variant="outline"
             padding={16}
@@ -49,7 +49,7 @@ export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps)
           </Section>
         </Flex>
         <Flex flexDirection="column" gap={22}>
-          <PageTitle title={`${nickname}/${fullName} 님의 지원서`} />
+          <PageTitle title={`${nickname}/${name} 님의 지원서`} />
           <Section variant="outline" gap={16} css={sectionBorder}>
             {applyData.map(({ title, resumeId, state }) => (
               <ApplyResumeCard key={resumeId} title={title} resumeId={resumeId} state={state} />

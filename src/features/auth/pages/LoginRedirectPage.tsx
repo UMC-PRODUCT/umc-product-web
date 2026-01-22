@@ -3,6 +3,9 @@ import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
+import { getMyInfo } from '@/features/auth/domain/api'
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -24,7 +27,7 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
 
     const oAuthVerificationToken = params.get('oAuthVerificationToken') ?? undefined
     const accessToken = params.get('accessToken') ?? oAuthVerificationToken ?? undefined
-
+    console.log('accessToken', accessToken)
     return {
       success: success === 'true' ? true : success === 'false' ? false : undefined,
       code: params.get('code') ?? undefined,
@@ -36,9 +39,15 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
 
 const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
-  const { code, oAuthVerificationToken, email } = callbackParams
+  const { code, oAuthVerificationToken, email, accessToken } = callbackParams
   const navigate = useNavigate()
+  const { setName, setNickname, setEmail } = useUserProfileStore()
+  const { setItem: setAccessToken } = useLocalStorage('accessToken')
   useEffect(() => {
+    if (!accessToken) {
+      return
+    }
+
     if (code === 'REGISTER_REQUIRED') {
       const search: Record<string, string> = {}
       if (oAuthVerificationToken) {
@@ -53,7 +62,34 @@ const LoginRedirectPage = () => {
         search: Object.keys(search).length ? search : undefined,
       })
     }
-  }, [code, navigate, oAuthVerificationToken, email])
+  }, [code, navigate, oAuthVerificationToken, email, accessToken])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadProfile = async () => {
+      try {
+        const profile = await getMyInfo()
+        if (cancelled) return
+        setEmail(profile.email ?? '')
+        setName(profile.name ?? '')
+        setNickname(profile.nickname ?? '')
+      } catch (error) {
+        console.error('회원 정보 조회 실패', error)
+      }
+    }
+
+    void loadProfile()
+
+    return () => {
+      cancelled = true
+    }
+  }, [accessToken, setEmail, setName, setNickname])
+
+  useEffect(() => {
+    if (!accessToken) return
+    setAccessToken(accessToken)
+  }, [accessToken, setAccessToken])
 
   return (
     <Flex

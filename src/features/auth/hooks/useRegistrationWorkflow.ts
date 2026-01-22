@@ -161,6 +161,7 @@ export const useRegistrationWorkflow = ({
         {
           onSuccess: () => {
             setRegistrationError(null)
+
             navigate({
               to: '/dashboard',
             })
