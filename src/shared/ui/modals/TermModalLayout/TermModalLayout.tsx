@@ -95,7 +95,7 @@ const TermModalLayout = ({
                     </StatusWrapper>
                   ) : error ? (
                     <StatusWrapper>
-                      <span css={{ color: theme.colors.red[400], ...theme.typography.B4.Rg }}>
+                      <span css={{ color: theme.colors.necessary, ...theme.typography.B4.Rg }}>
                         {errorLabel ?? error}
                       </span>
                     </StatusWrapper>

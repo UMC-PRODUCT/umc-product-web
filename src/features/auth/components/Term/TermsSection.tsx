@@ -31,9 +31,9 @@ type TermsSectionProps = {
 type ModalType = TermsAgreementKey | null
 
 const TERM_DEFINITIONS: Record<TermsAgreementKey, { defaultTitle: string; necessary: boolean }> = {
-  service: { defaultTitle: '서비스이용약관', necessary: true },
-  privacy: { defaultTitle: '개인정보처리방침', necessary: true },
-  marketing: { defaultTitle: '마케팅정보수신', necessary: false },
+  SERVICE: { defaultTitle: '서비스이용약관', necessary: true },
+  PRIVACY: { defaultTitle: '개인정보처리방침', necessary: true },
+  MARKETING: { defaultTitle: '마케팅정보수신', necessary: false },
 }
 
 const MODAL_LOADING_MESSAGE = '약관 내용을 불러오는 중입니다...'
