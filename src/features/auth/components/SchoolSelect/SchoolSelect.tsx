@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import LabelDropdown from '@shared/ui/form/LabelDropdown/LabelDropdown'
 
-import { usePaginatedSchools } from '@/features/auth/hooks/register/usePaginatedSchools'
-import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
+import { useSchoolPaginator } from '@/features/auth/hooks/register/useSchoolPaginator'
+import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelectionState'
 
 import * as S from './SchoolSelect.style'
 
@@ -18,7 +18,7 @@ type SchoolSelectProps = {
 
 const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
   const { options, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    usePaginatedSchools()
+    useSchoolPaginator()
 
   const selectedValue = useMemo(
     () => (value.id ? { id: value.id, label: value.label } : undefined),
@@ -36,7 +36,7 @@ const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
       <LabelDropdown
         label="학교"
         placeholder={isFetching ? '학교를 불러오는 중입니다...' : '학교를 선택해 주세요.'}
-        options={[...options, { id: 'UMC', label: 'UMC' }]} // 임시로 UMC 추가
+        options={[...options]} // 임시로 UMC 추가
         value={selectedValue}
         error={{
           error: error?.error ?? false,

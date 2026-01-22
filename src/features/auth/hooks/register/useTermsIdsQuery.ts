@@ -1,0 +1,48 @@
+// 약관 ID와 내용을 한 번에 가져오는 쿼리 훅
+
+import type { TermsResponseDTO } from '@/features/auth/domain/api'
+import { getTermsId } from '@/features/auth/domain/api'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
+
+import type { TermsAgreementKey } from './index'
+
+const TERMS_API_KEY_MAP: Record<TermsAgreementKey, 'SERVICE' | 'PRIVACY' | 'MARKETING'> = {
+  service: 'SERVICE',
+  privacy: 'PRIVACY',
+  marketing: 'MARKETING',
+}
+
+const TERMS_CACHE_KEY = ['terms-ids'] as const
+
+const fetchTermsIds = async () => {
+  const entries = Object.entries(TERMS_API_KEY_MAP) as Array<
+    [TermsAgreementKey, 'SERVICE' | 'PRIVACY' | 'MARKETING']
+  >
+
+  const responses = await Promise.all(entries.map(([, termsType]) => getTermsId({ termsType })))
+
+  return entries.reduce<Record<TermsAgreementKey, TermsResponseDTO>>(
+    (acc, [termKey], index) => {
+      const response = responses[index]
+      const parsedId = Number(response.id)
+      if (Number.isNaN(parsedId)) {
+        throw new Error(`Terms id for ${termKey} is missing`)
+      }
+
+      acc[termKey] = {
+        ...response,
+        id: parsedId,
+      }
+      return acc
+    },
+    {} as Record<TermsAgreementKey, TermsResponseDTO>,
+  )
+}
+
+export const useTermsIds = () => {
+  return useCustomQuery<Record<TermsAgreementKey, TermsResponseDTO>, Error>(
+    TERMS_CACHE_KEY,
+    fetchTermsIds,
+    { retry: false },
+  )
+}

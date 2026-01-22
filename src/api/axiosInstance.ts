@@ -1,4 +1,4 @@
-import type { AxiosError } from 'axios'
+import type { AxiosError, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 
 import { refresh } from '@/features/auth/domain/api'
@@ -29,9 +29,27 @@ axiosInstance.interceptors.request.use((config) => {
   return config
 })
 
+const shouldSkipAuthRedirect = (config?: AxiosRequestConfig | undefined) => {
+  if (!config) {
+    return false
+  }
+
+  const headers = config.headers
+  const headerValue =
+    typeof headers?.get === 'function'
+      ? headers.get('x-skip-auth-redirect')
+      : headers?.['x-skip-auth-redirect']
+
+  return headerValue === 'true'
+}
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (shouldSkipAuthRedirect(error.config)) {
+      return Promise.reject(error)
+    }
+
     if (error.status === 401) {
       if (isRedirecting) {
         window.location.href = '/auth/login'

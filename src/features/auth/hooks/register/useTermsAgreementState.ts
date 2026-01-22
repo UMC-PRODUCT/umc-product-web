@@ -1,3 +1,4 @@
+// 약관 동의 상태를 관리하는 훅
 import { useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 

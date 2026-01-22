@@ -34,6 +34,9 @@ const ContentSection = styled.section`
   color: ${theme.colors.white};
   padding-right: 12px;
   margin-top: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
 const Heading1 = styled.h1`

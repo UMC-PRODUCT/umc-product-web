@@ -1,3 +1,4 @@
+// react-hook-form으로 회원가입 폼을 셋업하는 훅
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,6 +18,8 @@ export function useRegisterFormSetup() {
       name: '',
       nickname: '',
       email: '',
+      emailVerificationToken: '',
+      emailVerificationCode: '',
       serviceTerm: false,
       privacyTerm: false,
       marketingTerm: false,
@@ -32,6 +35,7 @@ export function useRegisterFormSetup() {
     register('serviceTerm')
     register('privacyTerm')
     register('marketingTerm')
+    register('emailVerificationToken')
   }, [register])
 
   return form

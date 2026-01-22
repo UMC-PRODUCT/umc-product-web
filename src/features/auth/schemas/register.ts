@@ -16,7 +16,9 @@ export const registerSchema = z.object({
     message: '모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다.',
   }),
   marketingTerm: z.boolean(),
+  emailVerificationToken: z.string().optional(),
   oAuthVerificationToken: z.string(),
+  emailVerificationCode: z.string().length(6, '인증번호는 6자리여야 합니다.'),
 })
 
 export type RegisterForm = z.infer<typeof registerSchema>

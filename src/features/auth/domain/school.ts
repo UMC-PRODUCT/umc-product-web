@@ -10,20 +10,29 @@ export interface SchoolSearchParams {
 
 export interface SchoolSearchPage {
   content: Array<{
-    id: number | string
-    name: string
+    schoolId: string
+    schoolName: string
   }>
-  page: number
-  size: number
-  totalPages: number
-  totalElements: number
+  page: string
+  size: string
+  totalPages: string
+  totalElements: string
+  hasNext: boolean
+  hasPrevious: boolean
+}
+
+interface SchoolSearchResponse {
+  success: boolean
+  code: string
+  message: string
+  result: SchoolSearchPage
 }
 
 export const searchSchools = async (
   { keyword, page = 0, size = 20 }: SchoolSearchParams,
   config?: AxiosRequestConfig,
 ) => {
-  const response = await axiosInstance.get<SchoolSearchPage>('/admin/schools', {
+  const response = await axiosInstance.get<SchoolSearchResponse>('/admin/schools', {
     ...config,
     params: {
       page,
@@ -33,5 +42,5 @@ export const searchSchools = async (
     },
   })
 
-  return response.data
+  return response.data.result
 }

@@ -1,14 +1,15 @@
-import { useMemo } from 'react'
+// 학교 검색 결과를 무한 페이징으로 불러오는 훅
+import { useEffect, useMemo } from 'react'
 import type { InfiniteData, QueryFunctionContext } from '@tanstack/react-query'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 import type { SchoolSearchPage } from '@/features/auth/domain/school'
 import { searchSchools } from '@/features/auth/domain/school'
-import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
+import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelectionState'
 
 const DEFAULT_PAGE_SIZE = 20
 
-export const usePaginatedSchools = (keyword?: string) => {
+export const useSchoolPaginator = (keyword?: string) => {
   const queryKey = ['auth-schools', keyword] as const
 
   const query = useInfiniteQuery<
@@ -26,8 +27,9 @@ export const usePaginatedSchools = (keyword?: string) => {
         keyword,
       }),
     getNextPageParam: (lastPage: SchoolSearchPage) => {
-      if (lastPage.page + 1 < lastPage.totalPages) {
-        return lastPage.page + 1
+      if (lastPage.hasNext) {
+        const currentPage = Number(lastPage.page)
+        return Number.isNaN(currentPage) ? undefined : currentPage + 1
       }
       return undefined
     },
@@ -40,13 +42,27 @@ export const usePaginatedSchools = (keyword?: string) => {
     return pages.flatMap((page) => {
       const schools = Array.isArray(page.content) ? page.content : []
       return schools.map<SchoolOption>((school) => ({
-        id: school.id,
-        label: school.name,
+        id: school.schoolId,
+        label: school.schoolName,
       }))
     })
   }, [query.data])
 
-  const totalCount = query.data?.pages[0]?.totalElements ?? 0
+  const totalCount = Number(query.data?.pages[0]?.totalElements ?? 0)
+
+  useEffect(() => {
+    const fetchAllPages = async () => {
+      while (query.hasNextPage) {
+        await query.fetchNextPage()
+      }
+    }
+
+    fetchAllPages()
+
+    return () => {
+      /* no-op */
+    }
+  }, [query.hasNextPage, query.isFetchingNextPage, query.fetchNextPage])
 
   return {
     ...query,

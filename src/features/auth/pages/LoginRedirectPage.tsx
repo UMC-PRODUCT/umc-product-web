@@ -1,4 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import { keyframes } from '@emotion/react'
+import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
 import { theme } from '@/shared/styles/theme'
@@ -11,10 +13,6 @@ type LoginCallbackParams = {
   accessToken?: string
   oAuthVerificationToken?: string
 }
-// success=true&
-// code=REGISTER_REQUIRED&
-// email=kyj030719@kakao.com&
-// oAuthVerificationToken=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJPQVVUSF9WRVJJRklDQVRJT04iLCJlbWFpbCI6Imt5ajAzMDcxOUBrYWthby5jb20iLCJwcm92aWRlciI6IktBS0FPIiwicHJvdmlkZXJJZCI6IjQ3MDQ1ODg5MjYiLCJpYXQiOjE3Njg3OTcyOTQsImV4cCI6MTc2ODc5Nzg5NH0.cGzl3Yx3SKOQcbsxU-r2dYauOACCBUQLHkGM4WG-jLgLQE7Z0h2YBWedKDLEBEIaba7y0scemahuL5beX0gI7Q
 const useLoginCallbackParams = (): LoginCallbackParams =>
   useMemo(() => {
     if (typeof window === 'undefined') {
@@ -37,10 +35,9 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
   }, [])
 
 const LoginRedirectPage = () => {
-  const navigate = useNavigate()
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email } = callbackParams
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (code === 'REGISTER_REQUIRED') {
       const search: Record<string, string> = {}
@@ -64,13 +61,32 @@ const LoginRedirectPage = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
+        flexDirection: 'column',
         color: theme.colors.white,
-        ...theme.typography.H3.Sb,
       }}
     >
-      로그인 중입니다...
+      <LoadingSpinner />
+      <span css={{ marginTop: '12px', ...theme.typography.H4.Sb }}>인증을 확인하고 있습니다.</span>
     </Flex>
   )
 }
 
 export default LoginRedirectPage
+
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`
+
+const LoadingSpinner = styled.div`
+  width: 52px;
+  height: 52px;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  border-top-color: ${theme.colors.white};
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+`

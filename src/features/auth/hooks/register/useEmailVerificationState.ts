@@ -1,9 +1,16 @@
+// 이메일 인증 상태를 관리하는 훅
 import { useCallback, useEffect, useState } from 'react'
 
 export interface EmailVerificationState {
   isVerified: boolean
-  toggleVerification: () => void
+  markVerified: () => void
   resetVerification: () => void
+}
+
+export interface EmailSendState {
+  isSent: boolean
+  sendEmail: () => void
+  resetEmailSend: () => void
 }
 
 /**
@@ -12,13 +19,26 @@ export interface EmailVerificationState {
 export function useEmailVerification(): EmailVerificationState {
   const [isVerified, setIsVerified] = useState(false)
 
-  const toggleVerification = useCallback(() => setIsVerified((prev) => !prev), [])
+  const markVerified = useCallback(() => setIsVerified(true), [])
   const resetVerification = useCallback(() => setIsVerified(false), [])
 
   return {
     isVerified,
-    toggleVerification,
+    markVerified,
     resetVerification,
+  }
+}
+
+export function useEmailSend(): EmailSendState {
+  const [isSent, setIsSent] = useState(false)
+
+  const sendEmail = useCallback(() => setIsSent(true), [])
+  const resetEmailSend = useCallback(() => setIsSent(false), [])
+
+  return {
+    isSent,
+    sendEmail,
+    resetEmailSend,
   }
 }
 

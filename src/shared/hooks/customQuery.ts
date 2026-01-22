@@ -1,11 +1,14 @@
 import type {
   InfiniteData,
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  QueryObserverOptions,
   UseInfiniteQueryOptions,
+  UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 
 type DefaultQueryOptions = {
   staleTime?: number
@@ -14,6 +17,7 @@ type DefaultQueryOptions = {
 
 const STALE_TIME = 1000 * 60 * 3
 const RETRY = 1
+const MUTATION_RETRY = 1
 
 // 기본적인 쿼리 흐름을 정리한 커스텀 훅들:
 // 1) useCustomQuery: 일반 `useQuery` 래퍼로, 스테일 시간·재시도 횟수·포커스 시 리패치 제한을 기본값으로 잡아줍니다.
@@ -28,22 +32,21 @@ export const useCustomQuery = <
 >(
   queryKey: TQueryKey,
   queryFn: QueryFunction<TQueryFnData, TQueryKey>,
-  options?: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey> & DefaultQueryOptions,
+  options?: Omit<
+    QueryObserverOptions<TQueryFnData, TError, TData, TQueryKey>,
+    'queryKey' | 'queryFn'
+  > &
+    DefaultQueryOptions,
 ) => {
   const safeOptions =
-    options ?? ({} as UseQueryOptions<TQueryFnData, TError, TData, TQueryKey> & DefaultQueryOptions)
-  const {
-    staleTime,
-    retry,
-    refetchOnWindowFocus,
-    queryKey: _,
-    queryFn: __,
-    ...restOptions
-  } = safeOptions
+    options ??
+    ({} as Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'queryKey' | 'queryFn'> &
+      DefaultQueryOptions)
+  const { staleTime, retry, refetchOnWindowFocus, ...restOptions } = safeOptions
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
-    queryKey: queryKey,
-    queryFn: queryFn,
+    queryKey,
+    queryFn,
     staleTime: staleTime ?? STALE_TIME,
     retry: retry ?? RETRY,
     refetchOnWindowFocus: false,
@@ -82,6 +85,21 @@ export const useCustomInfiniteQuery = <
     staleTime: staleTime ?? STALE_TIME,
     retry: retry ?? RETRY,
     refetchOnWindowFocus: false,
+    ...restOptions,
+  })
+}
+
+export const useCustomMutation = <TData, TError, TVariables = void, TContext = unknown>(
+  mutationFn: MutationFunction<TData, TVariables>,
+  options?: UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions,
+) => {
+  const safeOptions =
+    options ?? ({} as UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions)
+  const { retry, ...restOptions } = safeOptions
+
+  return useMutation<TData, TError, TVariables, TContext>({
+    mutationFn,
+    retry: retry ?? MUTATION_RETRY,
     ...restOptions,
   })
 }
