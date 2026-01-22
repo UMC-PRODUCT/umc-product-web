@@ -26,8 +26,8 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     const success = params.get('success')
 
     const oAuthVerificationToken = params.get('oAuthVerificationToken') ?? undefined
-    const accessToken = params.get('accessToken') ?? oAuthVerificationToken ?? undefined
-    console.log('accessToken', accessToken)
+    const accessToken = params.get('accessToken') ?? undefined
+
     return {
       success: success === 'true' ? true : success === 'false' ? false : undefined,
       code: params.get('code') ?? undefined,
@@ -44,10 +44,6 @@ const LoginRedirectPage = () => {
   const { setName, setNickname, setEmail } = useUserProfileStore()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
   useEffect(() => {
-    if (!accessToken) {
-      return
-    }
-
     if (code === 'REGISTER_REQUIRED') {
       const search: Record<string, string> = {}
       if (oAuthVerificationToken) {
@@ -66,7 +62,7 @@ const LoginRedirectPage = () => {
 
   useEffect(() => {
     let cancelled = false
-
+    if (!accessToken) return
     const loadProfile = async () => {
       try {
         const profile = await getMyInfo()
@@ -90,7 +86,8 @@ const LoginRedirectPage = () => {
     if (!accessToken) return
     setAccessToken(accessToken)
   }, [accessToken, setAccessToken])
-
+  console.log('accessToken effect', accessToken)
+  console.log('oAuthVerificationToken', oAuthVerificationToken)
   return (
     <Flex
       css={{

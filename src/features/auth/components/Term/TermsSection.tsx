@@ -1,6 +1,4 @@
 import { useMemo, useState } from 'react'
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
 
 import { theme } from '@shared/styles/theme'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
@@ -11,6 +9,7 @@ import type { TermsResponseDTO } from '@/features/auth/domain/api'
 
 import type { TermsAgreementKey } from '../../hooks/register'
 import { Term } from './Term'
+import * as S from './Term.style'
 
 type TermsState = Record<TermsAgreementKey, boolean>
 
@@ -38,36 +37,6 @@ const TERM_DEFINITIONS: Record<TermsAgreementKey, { defaultTitle: string; necess
 
 const MODAL_LOADING_MESSAGE = '약관 내용을 불러오는 중입니다...'
 const MODAL_ERROR_MESSAGE = '약관 내용을 불러오지 못했습니다.'
-
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`
-
-const SpinnerWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  align-self: center;
-  justify-self: center;
-`
-
-const LoadingSpinner = styled.span`
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: ${({ theme: styledTheme }) => styledTheme.colors.lime};
-  border-radius: 50%;
-  animation: ${spin} 0.8s linear infinite;
-  display: inline-flex;
-`
 
 export const TermsSection = ({
   terms,
@@ -103,12 +72,12 @@ export const TermsSection = ({
   const areAllChecked = availableTerms.every(({ key }) => terms[key])
   const isLoadingTermContent = isTermsLoading && !termContent
   const loadingChildren = !isLoadingTermContent ? (
-    <SpinnerWrapper>
-      <LoadingSpinner />
+    <S.SpinnerWrapper>
+      <S.LoadingSpinner />
       <span css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}>
         {MODAL_LOADING_MESSAGE}
       </span>
-    </SpinnerWrapper>
+    </S.SpinnerWrapper>
   ) : undefined
 
   return (
