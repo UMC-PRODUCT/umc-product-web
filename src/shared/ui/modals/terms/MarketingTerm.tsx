@@ -1,4 +1,5 @@
 import { keyframes } from '@emotion/react'
+import type { JSX } from '@emotion/react/jsx-runtime'
 import styled from '@emotion/styled'
 
 import type { TermsResponseDTO } from '@/features/auth/domain/api'
@@ -40,7 +41,7 @@ const SpinnerWrapper = styled.div`
 
 const ErrorText = styled.p`
   margin: 0;
-  color: ${theme.colors.red[400]};
+  color: ${theme.colors.necessary};
   ${theme.typography.B4.Rg}
 `
 
