@@ -24,3 +24,5 @@ export type {
 
 // Dashboard 도메인에서 re-export
 export type { ResumeType } from '@features/dashboard/domain'
+
+export type TermsType = 'SERVICE' | 'PRIVACY' | 'MARKETING'

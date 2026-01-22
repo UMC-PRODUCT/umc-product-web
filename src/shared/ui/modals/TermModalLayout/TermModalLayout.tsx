@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { keyframes } from '@emotion/react'
+import styled from '@emotion/styled'
 import remarkGfm from 'remark-gfm'
 
 import Close from '@shared/assets/icons/close.svg?react'
@@ -14,6 +16,10 @@ type TermModalLayoutProps = {
   content?: string
   children?: ReactNode
   onClose: () => void
+  isLoading?: boolean
+  error?: string
+  loadingLabel?: string
+  errorLabel?: string
 }
 
 const TermMarkdown = ({ content }: { content: string }) => {
@@ -40,7 +46,16 @@ const TermMarkdown = ({ content }: { content: string }) => {
   )
 }
 
-const TermModalLayout = ({ title = '약관', content, children, onClose }: TermModalLayoutProps) => {
+const TermModalLayout = ({
+  title = '약관',
+  content,
+  children,
+  onClose,
+  isLoading,
+  error,
+  loadingLabel = '약관을 불러오는 중입니다...',
+  errorLabel,
+}: TermModalLayoutProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -71,7 +86,24 @@ const TermModalLayout = ({ title = '약관', content, children, onClose }: TermM
               </S.Header>
               <S.ContentWrapper>
                 <S.ContentSection>
-                  {content ? <TermMarkdown content={content} /> : children}
+                  {isLoading ? (
+                    <StatusWrapper>
+                      <Spinner />
+                      <span css={{ color: theme.colors.gray[300], ...theme.typography.B4.Rg }}>
+                        {loadingLabel}
+                      </span>
+                    </StatusWrapper>
+                  ) : error ? (
+                    <StatusWrapper>
+                      <span css={{ color: theme.colors.red[400], ...theme.typography.B4.Rg }}>
+                        {errorLabel ?? error}
+                      </span>
+                    </StatusWrapper>
+                  ) : content ? (
+                    <TermMarkdown content={content} />
+                  ) : (
+                    children
+                  )}
                   <br />
                 </S.ContentSection>
               </S.ContentWrapper>
@@ -83,5 +115,32 @@ const TermModalLayout = ({ title = '약관', content, children, onClose }: TermM
     </Modal.Root>
   )
 }
+
+const spinRotation = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`
+
+const Spinner = styled.span`
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: ${theme.colors.lime};
+  border-radius: 50%;
+  animation: ${spinRotation} 0.8s linear infinite;
+`
+
+const StatusWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 40px;
+`
 
 export default TermModalLayout

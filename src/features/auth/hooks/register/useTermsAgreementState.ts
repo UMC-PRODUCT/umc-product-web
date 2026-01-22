@@ -2,26 +2,27 @@
 import { useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 
+import type { TermsType } from '@/shared/types/umc'
+
 import type { RegisterForm } from '../../schemas/register'
 
-export type TermsAgreementKey = 'service' | 'privacy' | 'marketing'
+export type TermsAgreementKey = TermsType
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
 const INITIAL_TERMS_STATE: TermsAgreementState = {
-  service: false,
-  privacy: false,
-  marketing: false,
+  SERVICE: false,
+  PRIVACY: false,
+  MARKETING: false,
 }
 
 const TERM_TO_FORM_FIELD_MAP: Record<TermsAgreementKey, keyof RegisterForm> = {
-  service: 'serviceTerm',
-  privacy: 'privacyTerm',
-  marketing: 'marketingTerm',
+  SERVICE: 'serviceTerm',
+  PRIVACY: 'privacyTerm',
+  MARKETING: 'marketingTerm',
 }
 
-const ALL_TERM_KEYS: Array<TermsAgreementKey> = ['service', 'privacy', 'marketing']
-
+const ALL_TERM_KEYS: Array<TermsAgreementKey> = ['SERVICE', 'PRIVACY', 'MARKETING']
 /**
  * 약관 동의 상태를 관리하는 훅
  */
@@ -48,7 +49,7 @@ export function useTermsAgreement(setValue: UseFormSetValue<RegisterForm>) {
 
   const toggleAllTermsAgreement = () => {
     const areAllTermsAgreed =
-      termsAgreement.service && termsAgreement.privacy && termsAgreement.marketing
+      termsAgreement.SERVICE && termsAgreement.PRIVACY && termsAgreement.MARKETING
 
     const nextAgreementValue = !areAllTermsAgreed
 

@@ -3,21 +3,20 @@
 import type { TermsResponseDTO } from '@/features/auth/domain/api'
 import { getTermsId } from '@/features/auth/domain/api'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
+import type { TermsType } from '@/shared/types/umc'
 
 import type { TermsAgreementKey } from './index'
 
-const TERMS_API_KEY_MAP: Record<TermsAgreementKey, 'SERVICE' | 'PRIVACY' | 'MARKETING'> = {
-  service: 'SERVICE',
-  privacy: 'PRIVACY',
-  marketing: 'MARKETING',
+const TERMS_API_KEY_MAP: Record<TermsAgreementKey, TermsType> = {
+  SERVICE: 'SERVICE',
+  PRIVACY: 'PRIVACY',
+  MARKETING: 'MARKETING',
 }
 
 const TERMS_CACHE_KEY = ['terms-ids'] as const
 
 const fetchTermsIds = async () => {
-  const entries = Object.entries(TERMS_API_KEY_MAP) as Array<
-    [TermsAgreementKey, 'SERVICE' | 'PRIVACY' | 'MARKETING']
-  >
+  const entries = Object.entries(TERMS_API_KEY_MAP) as Array<[TermsAgreementKey, TermsType]>
 
   const responses = await Promise.all(entries.map(([, termsType]) => getTermsId({ termsType })))
 
