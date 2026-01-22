@@ -1,4 +1,4 @@
-import type { ApplySummary, DashboardProgress, DashboardUser } from '@features/dashboard/domain'
+import type { ApplySummary, DashboardProgress } from '@features/dashboard/domain'
 
 import { useUserProfileStore } from '@/features/auth/hooks/register'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'

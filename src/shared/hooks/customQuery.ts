@@ -3,7 +3,6 @@ import type {
   MutationFunction,
   QueryFunction,
   QueryKey,
-  QueryObserverOptions,
   UseInfiniteQueryOptions,
   UseMutationOptions,
   UseQueryOptions,
@@ -32,10 +31,7 @@ export const useCustomQuery = <
 >(
   queryKey: TQueryKey,
   queryFn: QueryFunction<TQueryFnData, TQueryKey>,
-  options?: Omit<
-    QueryObserverOptions<TQueryFnData, TError, TData, TQueryKey>,
-    'queryKey' | 'queryFn'
-  > &
+  options?: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'queryKey' | 'queryFn'> &
     DefaultQueryOptions,
 ) => {
   const safeOptions =
