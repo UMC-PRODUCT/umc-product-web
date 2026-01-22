@@ -5,6 +5,8 @@ import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
 import { useUserProfileStore } from '@/features/auth/hooks/register'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { memberKeys } from '@/shared/queryKeys/queryKey'
 
 import * as S from './Profile.style'
 
@@ -12,11 +14,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { name, nickname } = useUserProfileStore()
-  // 추후 수정 예정
-  const school = '중앙대학교'
-  const rights = '총괄'
-  const email = 'umc1234'
+  const { setName, setNickname, setEmail } = useUserProfileStore()
+
+  const { data } = useCustomQuery(memberKeys.me().queryKey, memberKeys.me().queryFn)
 
   useEffect(() => {
     if (!open) return
@@ -29,8 +29,17 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
 
+  useEffect(() => {
+    setName(data?.name || '')
+    setNickname(data?.nickname || '')
+    setEmail(data?.email || '')
+  }, [data])
+
   const handleLogout = () => {
-    // 로그아웃 로직 추가 예정
+    setName('')
+    setNickname('')
+    setEmail('')
+    localStorage.removeItem('accessToken')
     navigate({
       to: '/auth/login',
     })
@@ -45,9 +54,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
             <S.Avatar />
             <Flex flexDirection="column" alignItems="flex-start" gap="4px">
               <S.NameText>
-                {nickname}/{name}
+                {data?.nickname}/{data?.name}
               </S.NameText>
-              <S.EmailText>{email}</S.EmailText>
+              <S.EmailText>{data?.email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex flexDirection="column" gap="12px">
@@ -55,13 +64,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 소속
               </Badge>
-              {school}
+              {data?.schoolName}
             </S.InfoRow>
             <S.InfoRow gap="10px">
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 권한
               </Badge>
-              {rights}
+              {data?.status}
             </S.InfoRow>
           </Flex>
           {children && <S.MobileOnly>{children}</S.MobileOnly>}
