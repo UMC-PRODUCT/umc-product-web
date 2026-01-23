@@ -4,9 +4,9 @@ import { useNavigate } from '@tanstack/react-router'
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-import { useUserProfileStore } from '@/features/auth/hooks/register'
+import { memberKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
-import { memberKeys } from '@/shared/queryKeys/queryKey'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 
 import * as S from './Profile.style'
 
@@ -33,7 +33,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     setName(data?.name || '')
     setNickname(data?.nickname || '')
     setEmail(data?.email || '')
-  }, [data])
+  }, [data, setName, setNickname, setEmail])
 
   const handleLogout = () => {
     setName('')

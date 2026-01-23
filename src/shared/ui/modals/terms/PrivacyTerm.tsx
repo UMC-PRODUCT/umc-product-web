@@ -1,7 +1,7 @@
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
-import { getTermsId } from '@/features/auth/domain/api'
+import { termsKeys } from '@/features/auth/domain/queryKeys'
+import type { TermsResponseDTO } from '@/shared/api/terms'
+import { getTermsId } from '@/shared/api/terms'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
-import { termsKeys } from '@/shared/queryKeys/queryKey'
 import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
 
 type TermModalProps = {

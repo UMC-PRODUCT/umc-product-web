@@ -85,9 +85,9 @@ const LoginRedirectPage = () => {
   useEffect(() => {
     if (!accessToken) return
     setAccessToken(accessToken)
+    navigate({ to: '/dashboard' })
   }, [accessToken, setAccessToken])
-  console.log('accessToken effect', accessToken)
-  console.log('oAuthVerificationToken', oAuthVerificationToken)
+
   return (
     <Flex
       css={{

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
-import { useUserProfileStore } from '../../../shared/store/useUserProfileStore'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+
 import { useRegisterFormSetup } from './register'
 
 export interface RegistrationFieldValues {

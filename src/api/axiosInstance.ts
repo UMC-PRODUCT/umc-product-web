@@ -2,7 +2,6 @@ import type { AxiosError, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 
 import { refresh } from '@/features/auth/domain/api'
-import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 
 interface IRefreshResponse {
   isSuccess: boolean
@@ -15,8 +14,37 @@ export const axiosInstance = axios.create({
 
 let isRedirecting = false
 
-const { getItem: getRefreshToken, removeItem: removeRefreshToken } = useLocalStorage('refreshToken')
-const { getItem: getAccessToken, removeItem: removeAccessToken } = useLocalStorage('accessToken')
+const readLocalStorage = <T>(key: string): T | null => {
+  try {
+    const item = window.localStorage.getItem(key)
+    return item ? (JSON.parse(item) as T) : null
+  } catch (error) {
+    console.error('localStorage read failed', error)
+    return null
+  }
+}
+
+const writeLocalStorage = <T>(key: string, value: T) => {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value))
+  } catch (error) {
+    console.error('localStorage write failed', error)
+  }
+}
+
+const removeLocalStorage = (key: string) => {
+  try {
+    window.localStorage.removeItem(key)
+  } catch (error) {
+    console.error('localStorage remove failed', error)
+  }
+}
+
+const getRefreshToken = () => readLocalStorage<string>('refreshToken') ?? undefined
+const removeRefreshToken = () => removeLocalStorage('refreshToken')
+const getAccessToken = () => readLocalStorage<string>('accessToken')
+const removeAccessToken = () => removeLocalStorage('accessToken')
+const setAccessToken = (token: string) => writeLocalStorage('accessToken', token)
 
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = getAccessToken()
@@ -68,6 +96,10 @@ axiosInstance.interceptors.response.use(
 
         if (refreshResponse.code === '200') {
           isRedirecting = false
+          const token = refreshResponse.result.accessToken
+          if (token) {
+            setAccessToken(token)
+          }
           return axiosInstance(error.config)
         }
       } catch (errors) {
@@ -75,26 +107,22 @@ axiosInstance.interceptors.response.use(
           const refreshError = errors as AxiosError<IRefreshResponse>
           if (refreshError.status === 401) {
             console.error('refreshToken이 없습니다. 로그인 페이지로 이동합니다.')
-            // void logout()
             removeAccessToken()
             removeRefreshToken()
             window.location.href = '/auth/login'
           } else if (refreshError.status === 404) {
             console.error('사용자 정보를 찾지 못했습니다. 로그인 페이지로 이동합니다.')
-            // void logout()
             removeAccessToken()
             removeRefreshToken()
             window.location.href = '/auth/login'
           } else {
             console.error('알 수 없는 오류가 발생했습니다', errors)
-            // void logout()
             removeAccessToken()
             removeRefreshToken()
             window.location.href = '/auth/login'
           }
         } else {
           console.error('알 수 없는 오류가 발생했습니다', errors)
-          // void logout()
           removeAccessToken()
           removeRefreshToken()
           window.location.href = '/auth/login'

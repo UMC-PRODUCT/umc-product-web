@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import { SKIP_AUTH_REDIRECT_HEADER } from '@/shared/constants/apiHeaders'
 import type { components } from '@/shared/types/type'
-import type { TermsType } from '@/shared/types/umc'
 
 type CommonResponseDTO<T> = {
   success: boolean
@@ -17,13 +17,7 @@ type EmailVerificationRequestDTO = components['schemas']['SendEmailVerificationR
 type EmailVerificationResponseDTO = components['schemas']['SendEmailVerificationResponse']
 type VerificationCodeRequestDTO = components['schemas']['CompleteEmailVerificationRequest']
 type VerificationCodeResponseDTO = components['schemas']['CompleteEmailVerificationResponse']
-export type TermsRequestDTO = {
-  termsType: TermsType
-}
 type MyInfoResponseDTO = components['schemas']['MemberInfoResponse']
-export type TermsResponseDTO = components['schemas']['TermsResponse']
-
-const SKIP_AUTH_REDIRECT_HEADER = { 'x-skip-auth-redirect': 'true' }
 
 export async function register(requestBody: RegisterRequestDTO): Promise<RegisterResponseDTO> {
   const { data } = await axiosInstance.post('/member/register', requestBody)
@@ -54,16 +48,6 @@ export async function verifyEmailCode(
   const { data } = await axiosInstance.post<CommonResponseDTO<VerificationCodeResponseDTO>>(
     '/auth/email-verification/code',
     requestBody,
-    {
-      headers: SKIP_AUTH_REDIRECT_HEADER,
-    },
-  )
-  return data.result
-}
-
-export async function getTermsId(requestBody: TermsRequestDTO): Promise<TermsResponseDTO> {
-  const { data } = await axiosInstance.get<CommonResponseDTO<TermsResponseDTO>>(
-    `/terms/type/${requestBody.termsType}`,
     {
       headers: SKIP_AUTH_REDIRECT_HEADER,
     },

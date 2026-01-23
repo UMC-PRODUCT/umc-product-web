@@ -1,8 +1,8 @@
 import type { ApplySummary, DashboardProgress } from '@features/dashboard/domain'
 
-import { useUserProfileStore } from '@/features/auth/hooks/register'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'

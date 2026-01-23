@@ -1,4 +1,3 @@
-export { useUserProfileStore } from '../../../../shared/store/useUserProfileStore'
 export {
   type EmailVerificationState,
   useEmailVerification,

@@ -1,7 +1,8 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
-import type { TermsRequestDTO } from '@/features/auth/domain/api'
-import { getMyInfo, getTermsId } from '@/features/auth/domain/api'
+import { getMyInfo } from '@/features/auth/domain/api'
+import type { TermsRequestDTO } from '@/shared/api/terms'
+import { getTermsId } from '@/shared/api/terms'
 
 export const termsKeys = createQueryKeys('terms', {
   detail: (termsType: TermsRequestDTO['termsType']) => ({

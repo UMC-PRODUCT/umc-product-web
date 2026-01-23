@@ -1,7 +1,7 @@
 // 약관 ID와 내용을 한 번에 가져오는 쿼리 훅
 
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
-import { getTermsId } from '@/features/auth/domain/api'
+import type { TermsResponseDTO } from '@/shared/api/terms'
+import { getTermsId } from '@/shared/api/terms'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import type { TermsType } from '@/shared/types/umc'
 

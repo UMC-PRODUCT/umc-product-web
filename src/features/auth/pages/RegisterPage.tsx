@@ -7,7 +7,7 @@ import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
+import type { TermsResponseDTO } from '@/shared/api/terms'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
