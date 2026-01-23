@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
+import { theme } from '@shared/styles/theme'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Flex from '@shared/ui/common/Flex/Flex'
+import TermModalLayout from '@shared/ui/modals/TermModalLayout/TermModalLayout'
 
-import MarketingTerm from '@/shared/ui/modals/terms/MarketingTerm'
-import PrivacyTerm from '@/shared/ui/modals/terms/PrivacyTerm'
-import ServiceTerm from '@/shared/ui/modals/terms/ServiceTerm'
+import type { TermsResponseDTO } from '@/shared/api/terms'
 
-import type { TermsAgreementKey } from '../../hooks/useRegisterForm'
+import type { TermsAgreementKey } from '../../hooks/register'
 import { Term } from './Term'
+import * as S from './Term.style'
 
 type TermsState = Record<TermsAgreementKey, boolean>
 
@@ -21,56 +22,94 @@ type TermsSectionProps = {
   onToggleAll: () => void
   onToggle: (key: TermsAgreementKey) => void
   errors?: TermErrors
+  termsData?: Record<TermsAgreementKey, TermsResponseDTO>
+  isTermsLoading?: boolean
+  termsError?: string
 }
 
-type ModalType = 'service' | 'privacy' | 'marketing' | null
+type ModalType = TermsAgreementKey | null
 
-export const TermsSection = ({ terms, onToggleAll, onToggle, errors }: TermsSectionProps) => {
-  const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
+const TERM_DEFINITIONS: Record<TermsAgreementKey, { defaultTitle: string; necessary: boolean }> = {
+  SERVICE: { defaultTitle: '서비스이용약관', necessary: true },
+  PRIVACY: { defaultTitle: '개인정보처리방침', necessary: true },
+  MARKETING: { defaultTitle: '마케팅정보수신', necessary: false },
+}
+
+const MODAL_LOADING_MESSAGE = '약관 내용을 불러오는 중입니다...'
+const MODAL_ERROR_MESSAGE = '약관 내용을 불러오지 못했습니다.'
+
+export const TermsSection = ({
+  terms,
+  onToggleAll,
+  onToggle,
+  errors,
+  termsData,
+  isTermsLoading,
+  termsError,
+}: TermsSectionProps) => {
   const [openModal, setOpenModal] = useState<ModalType>(null)
+  const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
+
+  const availableTerms = useMemo(() => {
+    return (Object.keys(TERM_DEFINITIONS) as Array<TermsAgreementKey>).map((termKey) => {
+      const payload = termsData?.[termKey]
+      const definition = TERM_DEFINITIONS[termKey]
+      return {
+        key: termKey,
+        title: payload?.title ?? definition.defaultTitle,
+        necessary: payload?.isMandatory ?? definition.necessary,
+      }
+    })
+  }, [termsData])
+
+  const termContent = useMemo(() => {
+    if (!openModal || !termsData) return undefined
+    return termsData[openModal]
+  }, [openModal, termsData])
 
   const closeModal = () => setOpenModal(null)
+
+  const areAllChecked = availableTerms.every(({ key }) => terms[key])
+  const isLoadingTermContent = isTermsLoading && !termContent
+  const loadingChildren = !isLoadingTermContent ? (
+    <S.SpinnerWrapper>
+      <S.LoadingSpinner />
+      <span css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}>
+        {MODAL_LOADING_MESSAGE}
+      </span>
+    </S.SpinnerWrapper>
+  ) : undefined
 
   return (
     <>
       <Flex flexDirection="column" alignItems="flex-start" gap="12px" width="100%" maxWidth="80vw">
-        <Term
-          onChange={onToggleAll}
-          label="전체 동의"
-          checked={terms.service && terms.privacy && terms.marketing}
-        />
-        <Term
-          onChange={() => onToggle('service')}
-          onClick={() => setOpenModal('service')}
-          termTitle="서비스이용약관"
-          label="동의"
-          necessary={true}
-          checked={terms.service}
-        />
-        <Term
-          onChange={() => onToggle('privacy')}
-          onClick={() => setOpenModal('privacy')}
-          termTitle="개인정보처리방침"
-          label="동의"
-          necessary={true}
-          checked={terms.privacy}
-        />
-        <Term
-          onChange={() => onToggle('marketing')}
-          onClick={() => setOpenModal('marketing')}
-          termTitle="마케팅정보수신"
-          label="동의"
-          necessary={false}
-          checked={terms.marketing}
-        />
+        <Term onChange={onToggleAll} label="전체 동의" checked={areAllChecked} />
+        {availableTerms.map(({ key, title, necessary }) => (
+          <Term
+            key={key}
+            onChange={() => onToggle(key)}
+            onClick={() => setOpenModal(key)}
+            termTitle={title}
+            label="동의"
+            necessary={necessary}
+            checked={terms[key]}
+          />
+        ))}
         {hasError && (
           <ErrorMessage errorMessage="모든 필수 항목에 동의하지 않을 경우 회원가입이 불가능합니다." />
         )}
+        {termsError && <ErrorMessage errorMessage={termsError} />}
       </Flex>
 
-      {openModal === 'service' && <ServiceTerm onClose={closeModal} />}
-      {openModal === 'privacy' && <PrivacyTerm onClose={closeModal} />}
-      {openModal === 'marketing' && <MarketingTerm onClose={closeModal} />}
+      {openModal && (
+        <TermModalLayout
+          title={termContent?.title ?? TERM_DEFINITIONS[openModal].defaultTitle}
+          content={isLoadingTermContent ? undefined : (termContent?.content ?? MODAL_ERROR_MESSAGE)}
+          onClose={closeModal}
+        >
+          {loadingChildren}
+        </TermModalLayout>
+      )}
     </>
   )
 }

@@ -17,6 +17,7 @@ import { Route as appRecruitingIndexRouteImport } from './routes/(app)/recruitin
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appApplyIndexRouteImport } from './routes/(app)/apply/index'
 import { Route as authAuthLayoutRouteImport } from './routes/(auth)/auth/_layout'
+import { Route as oauthOauthCallbackIndexRouteImport } from './routes/(oauth)/oauth/callback/index'
 import { Route as authAuthRegisterIndexRouteImport } from './routes/(auth)/auth/register/index'
 import { Route as authAuthLoginIndexRouteImport } from './routes/(auth)/auth/login/index'
 import { Route as appSchoolRecruitingIndexRouteImport } from './routes/(app)/school/recruiting/index'
@@ -68,6 +69,11 @@ const appApplyIndexRoute = appApplyIndexRouteImport.update({
 const authAuthLayoutRoute = authAuthLayoutRouteImport.update({
   id: '/(auth)/auth/_layout',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const oauthOauthCallbackIndexRoute = oauthOauthCallbackIndexRouteImport.update({
+  id: '/(oauth)/oauth/callback/',
+  path: '/oauth/callback/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authAuthRegisterIndexRoute = authAuthRegisterIndexRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
+  '/oauth/callback': typeof oauthOauthCallbackIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/school/recruiting': typeof appSchoolRecruitingIndexRoute
   '/auth/login': typeof authAuthLoginIndexRoute
   '/auth/register': typeof authAuthRegisterIndexRoute
+  '/oauth/callback': typeof oauthOauthCallbackIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesById {
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/(app)/school/recruiting/': typeof appSchoolRecruitingIndexRoute
   '/(auth)/auth/login/': typeof authAuthLoginIndexRoute
   '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
+  '/(oauth)/oauth/callback/': typeof oauthOauthCallbackIndexRoute
   '/(app)/school/recruiting/$recruitingId/': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
+    | '/oauth/callback'
     | '/school/recruiting/$recruitingId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/school/recruiting'
     | '/auth/login'
     | '/auth/register'
+    | '/oauth/callback'
     | '/school/recruiting/$recruitingId'
   id:
     | '__root__'
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/(app)/school/recruiting/'
     | '/(auth)/auth/login/'
     | '/(auth)/auth/register/'
+    | '/(oauth)/oauth/callback/'
     | '/(app)/school/recruiting/$recruitingId/'
   fileRoutesById: FileRoutesById
 }
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   authAuthLayoutRoute: typeof authAuthLayoutRoute
   authAuthLoginIndexRoute: typeof authAuthLoginIndexRoute
   authAuthRegisterIndexRoute: typeof authAuthRegisterIndexRoute
+  oauthOauthCallbackIndexRoute: typeof oauthOauthCallbackIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -346,6 +359,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof authAuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(oauth)/oauth/callback/': {
+      id: '/(oauth)/oauth/callback/'
+      path: '/oauth/callback'
+      fullPath: '/oauth/callback'
+      preLoaderRoute: typeof oauthOauthCallbackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/auth/register/': {
@@ -510,6 +530,7 @@ const rootRouteChildren: RootRouteChildren = {
   authAuthLayoutRoute: authAuthLayoutRoute,
   authAuthLoginIndexRoute: authAuthLoginIndexRoute,
   authAuthRegisterIndexRoute: authAuthRegisterIndexRoute,
+  oauthOauthCallbackIndexRoute: oauthOauthCallbackIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { media } from '@shared/styles/media'
@@ -34,6 +35,9 @@ const ContentSection = styled.section`
   color: ${theme.colors.white};
   padding-right: 12px;
   margin-top: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
 const Heading1 = styled.h1`
@@ -90,7 +94,7 @@ const Blur = styled.div`
   position: absolute;
   bottom: 10px;
   left: 0;
-  width: 80%;
+  width: 100%;
   height: 60px;
   z-index: 999999;
   border-radius: 0 0 16px 16px;
@@ -100,6 +104,33 @@ const Blur = styled.div`
     rgba(39, 39, 39, 1) 70%,
     rgba(39, 39, 39, 1) 100%
   );
+`
+
+const spinRotation = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`
+
+const Spinner = styled.span`
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: ${theme.colors.lime};
+  border-radius: 50%;
+  animation: ${spinRotation} 0.8s linear infinite;
+`
+
+const StatusWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 40px;
 `
 
 export {
@@ -113,6 +144,8 @@ export {
   Heading2,
   ListItem,
   Paragraph,
+  Spinner,
+  StatusWrapper,
   StyledTable,
   TableCell,
   TableHeader,

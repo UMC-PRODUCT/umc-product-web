@@ -14,6 +14,10 @@ type TermModalLayoutProps = {
   content?: string
   children?: ReactNode
   onClose: () => void
+  isLoading?: boolean
+  error?: string
+  loadingLabel?: string
+  errorLabel?: string
 }
 
 const TermMarkdown = ({ content }: { content: string }) => {
@@ -40,7 +44,16 @@ const TermMarkdown = ({ content }: { content: string }) => {
   )
 }
 
-const TermModalLayout = ({ title = '약관', content, children, onClose }: TermModalLayoutProps) => {
+const TermModalLayout = ({
+  title = '약관',
+  content,
+  children,
+  onClose,
+  isLoading,
+  error,
+  loadingLabel = '약관을 불러오는 중입니다...',
+  errorLabel,
+}: TermModalLayoutProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -71,7 +84,24 @@ const TermModalLayout = ({ title = '약관', content, children, onClose }: TermM
               </S.Header>
               <S.ContentWrapper>
                 <S.ContentSection>
-                  {content ? <TermMarkdown content={content} /> : children}
+                  {isLoading ? (
+                    <S.StatusWrapper>
+                      <S.Spinner />
+                      <span css={{ color: theme.colors.gray[300], ...theme.typography.B4.Rg }}>
+                        {loadingLabel}
+                      </span>
+                    </S.StatusWrapper>
+                  ) : error ? (
+                    <S.StatusWrapper>
+                      <span css={{ color: theme.colors.necessary, ...theme.typography.B4.Rg }}>
+                        {errorLabel ?? error}
+                      </span>
+                    </S.StatusWrapper>
+                  ) : content ? (
+                    <TermMarkdown content={content} />
+                  ) : (
+                    children
+                  )}
                   <br />
                 </S.ContentSection>
               </S.ContentWrapper>

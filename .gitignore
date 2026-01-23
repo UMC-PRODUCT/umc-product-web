@@ -30,3 +30,5 @@ coverage
 .copilot
 .codeium
 .serena
+openapi.yaml
+type.d.ts

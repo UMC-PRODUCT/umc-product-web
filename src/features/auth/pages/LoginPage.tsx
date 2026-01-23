@@ -11,10 +11,21 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Divider from '@shared/ui/common/Divider/Divider'
 import Instruction from '@shared/ui/common/Instruction/Instruction'
 
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+
 import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
 
 export const LoginPage = () => {
+  const { setItem, getItem } = useLocalStorage('platform')
+  const handleSocialLogin = (platform: string) => {
+    setItem(platform)
+    const baseUrl = `${import.meta.env.VITE_SERVER_API_URL}/auth/oauth2/authorization/${platform}`
+    window.location.href = `${baseUrl}`
+  }
+
+  const lastPlatform = getItem()
+
   return (
     <Main>
       <IntroBanner />
@@ -28,7 +39,7 @@ export const LoginPage = () => {
             Icon={Kakao}
             variant="solid"
             tone="kakao"
-            onClick={() => {}}
+            onClick={() => handleSocialLogin('kakao')}
           />
           <Button
             disabled={false}
@@ -36,7 +47,7 @@ export const LoginPage = () => {
             Icon={Google}
             variant="solid"
             tone="white"
-            onClick={() => {}}
+            onClick={() => handleSocialLogin('google')}
           />
           <Button
             disabled={false}
@@ -44,14 +55,16 @@ export const LoginPage = () => {
             Icon={Apple}
             variant="solid"
             tone="white"
-            onClick={() => {}}
+            onClick={() => handleSocialLogin('apple')}
           />
-          <Instruction
-            mode="success"
-            Icon={Notice}
-            content={'최근 카카오 계정으로 로그인 하였습니다.'}
-            typography="C3.Md"
-          />
+          {lastPlatform && (
+            <Instruction
+              mode="success"
+              Icon={Notice}
+              content={`최근 ${lastPlatform} 계정으로 로그인 하였습니다.`}
+              typography="C3.Md"
+            />
+          )}
         </ButtonGroup>
       </AuthSection>
     </Main>
