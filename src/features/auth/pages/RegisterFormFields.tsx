@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
+import type { TermsResponseDTO } from '@/shared/api/terms'
 
 import SchoolSelect from '../components/SchoolSelect/SchoolSelect'
 import { TermsSection } from '../components/Term/TermsSection'

@@ -5,7 +5,7 @@ import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Flex from '@shared/ui/common/Flex/Flex'
 import TermModalLayout from '@shared/ui/modals/TermModalLayout/TermModalLayout'
 
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
+import type { TermsResponseDTO } from '@/shared/api/terms'
 
 import type { TermsAgreementKey } from '../../hooks/register'
 import { Term } from './Term'

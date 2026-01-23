@@ -3,7 +3,7 @@ import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react
 import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
-import type { TermsResponseDTO } from '@/features/auth/domain/api'
+import type { TermsResponseDTO } from '@/shared/api/terms'
 
 import type { RegisterForm } from '../schemas/register'
 import { useAuth } from './register/useAuthMutations'
