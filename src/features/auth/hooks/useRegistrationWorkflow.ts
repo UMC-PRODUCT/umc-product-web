@@ -163,7 +163,7 @@ export const useRegistrationWorkflow = ({
             setRegistrationError(null)
 
             navigate({
-              to: '/dashboard',
+              to: '/auth/login',
             })
           },
           onError: (error) => {
