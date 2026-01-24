@@ -137,9 +137,9 @@ export const useRegistrationWorkflow = ({
         terms && Object.keys(terms).length > 0
           ? (Object.entries(terms) as Array<[TermsAgreementKey, TermsResponseDTO]>)
               .map(([termKey, termContent]) => {
-                if (typeof termContent.id !== 'number') return null
+                if (typeof termContent.result.id !== 'number') return null
                 return {
-                  termsId: termContent.id,
+                  termsId: termContent.result.id,
                   isAgreed: Boolean(termsAgreement[termKey]),
                 }
               })

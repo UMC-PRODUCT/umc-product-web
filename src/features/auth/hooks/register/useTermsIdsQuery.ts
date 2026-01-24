@@ -23,7 +23,7 @@ const fetchTermsIds = async () => {
   return entries.reduce<Record<TermsAgreementKey, TermsResponseDTO>>(
     (acc, [termKey], index) => {
       const response = responses[index]
-      const parsedId = Number(response.id)
+      const parsedId = Number(response.result.id)
       if (Number.isNaN(parsedId)) {
         throw new Error(`Terms id for ${termKey} is missing`)
       }

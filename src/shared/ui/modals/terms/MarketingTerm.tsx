@@ -18,8 +18,8 @@ const MarketingTerm = ({ onClose }: TermModalProps) => {
 
   return (
     <TermModalLayout
-      title={data?.title ?? '마케팅 이용약관'}
-      content={data?.content}
+      title={data?.result.title ?? '마케팅 이용약관'}
+      content={data?.result.content}
       onClose={onClose}
       isLoading={isLoading}
       error={error?.message}

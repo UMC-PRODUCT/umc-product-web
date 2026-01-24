@@ -56,8 +56,8 @@ export const TermsSection = ({
       const definition = TERM_DEFINITIONS[termKey]
       return {
         key: termKey,
-        title: payload?.title ?? definition.defaultTitle,
-        necessary: payload?.isMandatory ?? definition.necessary,
+        title: payload?.result.title ?? definition.defaultTitle,
+        necessary: payload?.result.isMandatory ?? definition.necessary,
       }
     })
   }, [termsData])
@@ -103,8 +103,10 @@ export const TermsSection = ({
 
       {openModal && (
         <TermModalLayout
-          title={termContent?.title ?? TERM_DEFINITIONS[openModal].defaultTitle}
-          content={isLoadingTermContent ? undefined : (termContent?.content ?? MODAL_ERROR_MESSAGE)}
+          title={termContent?.result.title ?? TERM_DEFINITIONS[openModal].defaultTitle}
+          content={
+            isLoadingTermContent ? undefined : (termContent?.result.content ?? MODAL_ERROR_MESSAGE)
+          }
           onClose={closeModal}
         >
           {loadingChildren}
