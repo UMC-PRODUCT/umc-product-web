@@ -2,8 +2,7 @@ import styled from '@emotion/styled'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-
-import { Flex } from '../../common/Flex'
+import { Flex } from '@/shared/ui/common/Flex'
 
 export const Title = styled.div`
   ${theme.typography.H3.Sb}
@@ -79,9 +78,4 @@ export const Logo = styled.div<{ bgColor?: string }>`
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-`
-export const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${(props) => props.theme.colors.gray[600]};
 `

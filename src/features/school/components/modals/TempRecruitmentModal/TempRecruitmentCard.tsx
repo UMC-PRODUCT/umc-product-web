@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm'
-import * as S from '@/shared/ui/modals/TempRecruitmentModal/TempRecruitmentCard.style'
-
-import { Button } from '../../common/Button'
-import { Flex } from '../../common/Flex'
-import Section from '../../common/Section/Section'
+import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
+import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentCard.style'
+import { Button } from '@/shared/ui/common/Button'
+import { Flex } from '@/shared/ui/common/Flex'
+import Section from '@/shared/ui/common/Section/Section'
 
 const TempRecruitmentCard = ({
   title,
