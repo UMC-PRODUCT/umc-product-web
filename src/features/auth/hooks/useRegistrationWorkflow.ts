@@ -74,8 +74,8 @@ export const useRegistrationWorkflow = ({
         { email },
         {
           onSuccess: (response) => {
-            if (response.emailVerificationId) {
-              setEmailVerificationId(Number(response.emailVerificationId))
+            if (response.result.emailVerificationId) {
+              setEmailVerificationId(Number(response.result.emailVerificationId))
             }
             setHasEmailBeenSent(true)
             onEmailSent()
@@ -107,10 +107,10 @@ export const useRegistrationWorkflow = ({
           verificationCode: code,
         },
         {
-          onSuccess: (result) => {
+          onSuccess: (response) => {
             clearErrors('emailVerificationCode')
-            if (result.emailVerificationToken) {
-              setValue('emailVerificationToken', result.emailVerificationToken)
+            if (response.result.emailVerificationToken) {
+              setValue('emailVerificationToken', response.result.emailVerificationToken)
             }
             setIsEmailVerified(true)
           },

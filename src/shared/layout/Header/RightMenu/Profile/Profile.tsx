@@ -30,9 +30,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   }, [open])
 
   useEffect(() => {
-    setName(data?.name || '')
-    setNickname(data?.nickname || '')
-    setEmail(data?.email || '')
+    setName(data?.result.name || '')
+    setNickname(data?.result.nickname || '')
+    setEmail(data?.result.email || '')
   }, [data, setName, setNickname, setEmail])
 
   const handleLogout = () => {
@@ -54,9 +54,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
             <S.Avatar />
             <Flex flexDirection="column" alignItems="flex-start" gap="4px">
               <S.NameText>
-                {data?.nickname}/{data?.name}
+                {data?.result.nickname}/{data?.result.name}
               </S.NameText>
-              <S.EmailText>{data?.email}</S.EmailText>
+              <S.EmailText>{data?.result.email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex flexDirection="column" gap="12px">
@@ -64,13 +64,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 소속
               </Badge>
-              {data?.schoolName}
+              {data?.result.schoolName}
             </S.InfoRow>
             <S.InfoRow gap="10px">
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 권한
               </Badge>
-              {data?.status}
+              {data?.result.status}
             </S.InfoRow>
           </Flex>
           {children && <S.MobileOnly>{children}</S.MobileOnly>}
