@@ -102,8 +102,8 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
       )}
       {isModalOpen.isOpen && isModalOpen.modalType === 'deleteAccount' && (
         <DeleteAccountModal
-          nickname={data?.nickname || ''}
-          name={data?.name || ''}
+          nickname={data?.result.nickname || ''}
+          name={data?.result.name || ''}
           onClose={() => setIsModalOpen({ modalType: '', isOpen: false })}
           onClick={() => {
             setIsModalOpen({ modalType: '', isOpen: false })
