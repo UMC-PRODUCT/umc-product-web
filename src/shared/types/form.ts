@@ -103,3 +103,13 @@ export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>
 export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>
 
 export type PartCompletion = '진행 중' | '모집 종료' | '모집 예정'
+
+export type RecruitePhase =
+  | 'BEFORE_APPLY'
+  | 'APPLY_OPEN'
+  | 'DOC_REVIEWING'
+  | 'DOC_RESULT_PUBLISHED'
+  | 'INTERVIEW_WAITING'
+  | 'FINAL_REVIEWING'
+  | 'FINAL_RESULT_PUBLISHED'
+  | 'CLOSED'

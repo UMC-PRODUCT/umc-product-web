@@ -1,6 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
 import { getMyInfo } from '@/features/auth/domain/api'
@@ -8,6 +6,7 @@ import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
 
 type LoginCallbackParams = {
   success?: boolean
@@ -103,28 +102,16 @@ const LoginRedirectPage = () => {
         color: theme.colors.white,
       }}
     >
-      <LoadingSpinner />
+      <Loading
+        size={52}
+        borderWidth={4}
+        spinnerColor={theme.colors.white}
+        gap={12}
+        aria-label="인증을 확인하는 중입니다"
+      />
       <span css={{ marginTop: '12px', ...theme.typography.H4.Sb }}>인증을 확인하고 있습니다.</span>
     </Flex>
   )
 }
 
 export default LoginRedirectPage
-
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`
-
-const LoadingSpinner = styled.div`
-  width: 52px;
-  height: 52px;
-  border: 4px solid rgba(255, 255, 255, 0.25);
-  border-top-color: ${theme.colors.white};
-  border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
-`

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
-import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentCard.style'
+import * as S from '@/features/school/components/TempRecruitmentCard/TempRecruitmentCard.style'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'

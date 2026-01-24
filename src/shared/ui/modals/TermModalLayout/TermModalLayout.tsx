@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 
 import Close from '@shared/assets/icons/close.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
+import Loading from '@shared/ui/common/Loading/Loading'
 import { Modal } from '@shared/ui/common/Modal'
 
 import { theme } from '@/shared/styles/theme'
@@ -86,10 +87,13 @@ const TermModalLayout = ({
                 <S.ContentSection>
                   {isLoading ? (
                     <S.StatusWrapper>
-                      <S.Spinner />
-                      <span css={{ color: theme.colors.gray[300], ...theme.typography.B4.Rg }}>
-                        {loadingLabel}
-                      </span>
+                      <Loading
+                        size={32}
+                        borderWidth={3}
+                        spinnerColor={theme.colors.lime}
+                        label={loadingLabel}
+                        labelColor={theme.colors.gray[300]}
+                      />
                     </S.StatusWrapper>
                   ) : error ? (
                     <S.StatusWrapper>

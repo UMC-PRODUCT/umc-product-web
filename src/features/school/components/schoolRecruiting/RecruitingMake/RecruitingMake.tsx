@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import Create from '@/shared/assets/icons/create.svg?react'
@@ -6,9 +7,11 @@ import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
+import TempRecruitmentModal from '../../modals/TempRecruitmentModal/TempRecruitmentModal'
 import * as S from './RecruitingMake.style'
 
 const RecruitingMake = () => {
+  const [openModal, setOpenModal] = useState(false)
   const navigate = useNavigate()
   const handleCreateRecruiting = () => {
     navigate({
@@ -21,14 +24,7 @@ const RecruitingMake = () => {
   }
 
   const handleLoadRecruiting = () => {
-    const recruitingId = 1 // TODO: 임시저장된 모집 ID 추후 API 연동 필요
-    navigate({
-      to: '/school/recruiting/$recruitingId',
-      params: { recruitingId: String(recruitingId) },
-      search: {
-        source: 'temp',
-      },
-    })
+    setOpenModal(true)
   }
   return (
     <Flex gap={20} flexDirection="column">
@@ -65,6 +61,7 @@ const RecruitingMake = () => {
           </S.Card>
         </S.Grid>
       </Section>
+      {openModal && <TempRecruitmentModal onClose={() => setOpenModal(false)} />}
     </Flex>
   )
 }

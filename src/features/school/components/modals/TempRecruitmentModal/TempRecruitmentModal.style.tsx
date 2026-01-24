@@ -26,7 +26,6 @@ export const ModalButton = styled.button`
 export const ContentWrapper = styled(Flex)`
   white-space: pre-wrap;
   word-break: keep-all;
-  height: 100%;
   max-height: 480px;
   overflow-y: scroll;
   color: ${(props) => props.theme.colors.white};
@@ -34,6 +33,15 @@ export const ContentWrapper = styled(Flex)`
   ${media.down(theme.breakPoints.tablet)} {
     ${(props) => props.theme.typography.B4.Md}
   }
+`
+
+export const EmptyText = styled.div`
+  height: 480px;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  ${theme.typography.B2.Md};
+  color: ${theme.colors.gray[300]};
 `
 
 export const ModalContentWrapper = styled(Flex)`

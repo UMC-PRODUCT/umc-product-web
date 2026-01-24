@@ -3,13 +3,13 @@ import { useMemo, useState } from 'react'
 import { theme } from '@shared/styles/theme'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 import Flex from '@shared/ui/common/Flex/Flex'
+import Loading from '@shared/ui/common/Loading/Loading'
 import TermModalLayout from '@shared/ui/modals/TermModalLayout/TermModalLayout'
 
 import type { TermsResponseDTO } from '@/shared/api/terms'
 
 import type { TermsAgreementKey } from '../../hooks/register'
 import { Term } from './Term'
-import * as S from './Term.style'
 
 type TermsState = Record<TermsAgreementKey, boolean>
 
@@ -72,12 +72,7 @@ export const TermsSection = ({
   const areAllChecked = availableTerms.every(({ key }) => terms[key])
   const isLoadingTermContent = isTermsLoading && !termContent
   const loadingChildren = !isLoadingTermContent ? (
-    <S.SpinnerWrapper>
-      <S.LoadingSpinner />
-      <span css={{ color: theme.colors.gray[400], ...theme.typography.B4.Rg }}>
-        {MODAL_LOADING_MESSAGE}
-      </span>
-    </S.SpinnerWrapper>
+    <Loading label={MODAL_LOADING_MESSAGE} labelColor={theme.colors.gray[400]} />
   ) : undefined
 
   return (

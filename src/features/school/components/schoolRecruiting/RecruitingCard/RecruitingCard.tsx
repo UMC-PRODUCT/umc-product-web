@@ -15,7 +15,7 @@ interface RecruitingCardProps {
   startDate: string
   endDate: string
   applicants: number
-  state: PartCompletion
+  state: string
   editable: boolean
 }
 const RecruitingCard = ({

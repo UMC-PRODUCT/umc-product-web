@@ -19,7 +19,7 @@ export async function register(requestBody: RegisterRequestDTO): Promise<Registe
 }
 
 export async function refresh(requestBody: RefreshRequestDTO): Promise<RefreshResponseDTO> {
-  const { data } = await axiosInstance.post('/auth/refresh', requestBody)
+  const { data } = await axiosInstance.post('/auth/token/renew', requestBody)
   return data.result
 }
 

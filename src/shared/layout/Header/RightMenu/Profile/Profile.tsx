@@ -49,6 +49,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     setNickname('')
     setEmail('')
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
     navigate({
       to: '/auth/login',
     })
