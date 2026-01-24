@@ -33,15 +33,9 @@ const ModalButton = styled.button`
 `
 
 const ContentWrapper = styled(Flex)`
-  padding-left: 14px;
   white-space: pre-wrap;
   word-break: keep-all;
   color: ${(props) => props.theme.colors.white};
-  ${(props) => props.theme.typography.B3.Md}
-  ${media.down(theme.breakPoints.tablet)} {
-    padding-left: 10px;
-    ${(props) => props.theme.typography.B4.Md}
-  }
 `
 
 const ModalContentWrapper = styled(Flex)`
