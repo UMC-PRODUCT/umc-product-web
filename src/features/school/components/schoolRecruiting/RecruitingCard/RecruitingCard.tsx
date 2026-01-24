@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm'
-import DeleteFail from '@/features/school/components/modals/DeleteFail'
+import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
+import DeleteFail from '@/features/school/components/modals/DeleteFail/DeleteFail'
 import type { PartCompletion } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'

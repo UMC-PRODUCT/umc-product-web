@@ -9,8 +9,8 @@ import { memberKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
+import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
 
-import DeleteAccountModal from '../../DeleteAccountModal/DeleteAccountModal'
 import * as S from './Profile.style'
 
 const Profile = ({ children }: { children?: React.ReactNode }) => {
@@ -18,7 +18,10 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const { setName, setNickname, setEmail } = useUserProfileStore()
-  const [isModalOpen, setIsModalOpen] = useState({
+  const [isModalOpen, setIsModalOpen] = useState<{
+    modalType: 'accountLink' | 'deleteAccount' | ''
+    isOpen: boolean
+  }>({
     modalType: '',
     isOpen: false,
   })

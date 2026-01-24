@@ -1,10 +1,10 @@
 import Close from '@shared/assets/icons/close.svg?react'
 import { Modal } from '@shared/ui/common/Modal'
 
+import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentModal.style'
 import { theme } from '@/shared/styles/theme'
-import * as S from '@/shared/ui/modals/TempRecruitmentModal/TempRecruitmentModal.style'
+import { Flex } from '@/shared/ui/common/Flex'
 
-import { Flex } from '../../common/Flex'
 import TempRecruitmentCard from './TempRecruitmentCard'
 
 type TempRecruitmentModalProps = {
