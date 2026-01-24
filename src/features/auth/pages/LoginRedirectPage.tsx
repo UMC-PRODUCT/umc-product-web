@@ -14,6 +14,7 @@ type LoginCallbackParams = {
   code?: string
   email?: string
   accessToken?: string
+  refreshToken?: string
   oAuthVerificationToken?: string
 }
 const useLoginCallbackParams = (): LoginCallbackParams =>
@@ -27,22 +28,25 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
 
     const oAuthVerificationToken = params.get('oAuthVerificationToken') ?? undefined
     const accessToken = params.get('accessToken') ?? undefined
+    const refreshToken = params.get('refreshToken') ?? undefined
 
     return {
       success: success === 'true' ? true : success === 'false' ? false : undefined,
       code: params.get('code') ?? undefined,
       email: params.get('email') ?? undefined,
       accessToken,
+      refreshToken,
       oAuthVerificationToken,
     }
   }, [])
 
 const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
-  const { code, oAuthVerificationToken, email, accessToken } = callbackParams
+  const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
   const { setName, setNickname, setEmail } = useUserProfileStore()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
+  const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
   useEffect(() => {
     if (code === 'REGISTER_REQUIRED') {
       const search: Record<string, string> = {}
@@ -67,9 +71,9 @@ const LoginRedirectPage = () => {
       try {
         const profile = await getMyInfo()
         if (cancelled) return
-        setEmail(profile.email ?? '')
-        setName(profile.name ?? '')
-        setNickname(profile.nickname ?? '')
+        setEmail(profile.result.email ?? '')
+        setName(profile.result.name ?? '')
+        setNickname(profile.result.nickname ?? '')
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
       }
@@ -85,8 +89,9 @@ const LoginRedirectPage = () => {
   useEffect(() => {
     if (!accessToken) return
     setAccessToken(accessToken)
+    setRefreshToken(refreshToken)
     navigate({ to: '/dashboard' })
-  }, [accessToken, setAccessToken])
+  }, [accessToken, refreshToken, setAccessToken, setRefreshToken, navigate])
 
   return (
     <Flex

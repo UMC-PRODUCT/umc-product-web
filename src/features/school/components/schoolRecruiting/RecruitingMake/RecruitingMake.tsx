@@ -11,10 +11,9 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const navigate = useNavigate()
   const handleCreateRecruiting = () => {
-    const recruitingId = 1 // TODO: 새로 생성된 모집 ID 추후 API 연동 필요
     navigate({
       to: '/school/recruiting/$recruitingId',
-      params: { recruitingId: String(recruitingId) },
+      params: { recruitingId: 'new' },
       search: {
         source: undefined,
       },

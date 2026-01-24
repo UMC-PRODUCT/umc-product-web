@@ -14,8 +14,9 @@ export const Route = createFileRoute('/(app)/school/recruiting/$recruitingId/')(
 })
 
 function RouteComponent() {
+  const params = Route.useParams()
   const { source } = Route.useSearch()
   const shouldLoadTempDraft = source === 'temp'
 
-  return <Recruiting shouldLoadTempDraft={shouldLoadTempDraft} />
+  return <Recruiting shouldLoadTempDraft={shouldLoadTempDraft} recruitingId={params.recruitingId} />
 }

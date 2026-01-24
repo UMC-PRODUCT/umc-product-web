@@ -12,6 +12,7 @@ import { RecruitingProvider } from '@/features/school/components/Recruiting/Recr
 import RecruitingModals from '@/features/school/components/Recruiting/RecruitingPage/RecruitingModals'
 import RecruitingStepActions from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepActions'
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
+import type { PostFirstRecruitmentResponseDTO } from '@/features/school/domain/types'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
 import { TEMP_CREATE_FORM_DATA } from '@/features/school/mocks/tempCreateFormData'
@@ -26,17 +27,23 @@ import type { RecruitingForms } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
+import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
+
 type RecruitmentPart = RecruitingForms['recruitmentParts'][number]
 type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 
 type RecruitingProps = {
   shouldLoadTempDraft?: boolean
+  recruitingId?: string
 }
 
-const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
+const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
+  const { usePostFirstRecruitment } = useRecruitingMutation()
+  const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
+  const [currentRecruitingId, setCurrentRecruitingId] = useState<string | undefined>(recruitingId)
   const [modal, setModal] = useState({
     modalName: '',
     isOpen: false,
@@ -44,6 +51,9 @@ const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
   const [isBackConfirmOpen, setIsBackConfirmOpen] = useState(false)
 
   const { form, values, interviewDates } = useRecruitingForm()
+  useEffect(() => {
+    setCurrentRecruitingId(recruitingId)
+  }, [recruitingId])
   const {
     trigger,
     formState: { isDirty },
@@ -90,15 +100,65 @@ const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
     scrollToTop: () => scrollTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   })
 
+  const trimmedTitle = values.title.trim()
+  const hasRecruitmentParts = values.recruitmentParts.length > 0
+  const canTempSave = trimmedTitle.length > 0 && hasRecruitmentParts
+  const normalizedRecruitingId = currentRecruitingId ?? 'new'
+  const isNewRecruiting = normalizedRecruitingId === 'new'
+  const isAutoSaveEnabled = !isNewRecruiting && step > 1 && canTempSave
+
   // 임시저장 자동화
   const { handleSave: handleAutoSave } = useAutoSave({
     getValues: form.getValues,
+    enabled: isAutoSaveEnabled,
     onSave: () => {
       console.log('[Recruiting] submit form payload:', submitFormPayload)
       console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
       form.reset(form.getValues(), { keepErrors: true, keepTouched: true })
     },
   })
+
+  const handleFirstRecruitmentSuccess = (response: PostFirstRecruitmentResponseDTO) => {
+    const recruitmentIdFromResponse = response.result.recruitmentId
+
+    const nextId = String(recruitmentIdFromResponse)
+    setCurrentRecruitingId(nextId)
+    navigate({
+      to: '/school/recruiting/$recruitingId',
+      params: { recruitingId: nextId },
+      replace: true,
+      search: { source: 'temp' },
+    })
+  }
+
+  const handleTempSave = () => {
+    if (!canTempSave) return
+    if (isNewRecruiting) {
+      const data = {
+        recruitmentName: values.title,
+        parts: values.recruitmentParts,
+      }
+      postFirstRecruitmentMutate(data, {
+        onSuccess: handleFirstRecruitmentSuccess,
+      })
+      return
+    }
+    handleAutoSave()
+  }
+
+  const handleNextStep = () => {
+    if (!canProceedStep) return
+    if (isNewRecruiting) {
+      const data = {
+        recruitmentName: values.title,
+        parts: values.recruitmentParts,
+      }
+      postFirstRecruitmentMutate(data, {
+        onSuccess: handleFirstRecruitmentSuccess,
+      })
+    }
+    goToNextStep()
+  }
 
   // TODO: 질문 데이터 - 실제 API 연동 필요
   const questionData: QuestionList = MOCKFORMSDATA_WITH_NO_ANSWER
@@ -206,10 +266,11 @@ const Recruiting = ({ shouldLoadTempDraft = false }: RecruitingProps) => {
         step={step}
         canProceedStep={canProceedStep}
         onPrev={goToPreviousStep}
-        onNext={goToNextStep}
-        onTempSave={handleAutoSave}
+        onNext={handleNextStep}
+        onTempSave={handleTempSave}
         onOpenPreview={openPreview}
         onOpenConfirm={openConfirmModal}
+        isTempSaveDisabled={!canTempSave}
       />
       <RecruitingModals
         isOpen={modal.isOpen}
