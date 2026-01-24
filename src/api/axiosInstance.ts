@@ -2,15 +2,7 @@ import type { AxiosError, AxiosRequestConfig } from 'axios'
 import axios, { AxiosHeaders } from 'axios'
 
 import { refresh } from '@/features/auth/domain/api'
-
-interface IRefreshResponse {
-  isSuccess: boolean
-  code: string
-  message: string
-  result: {
-    accessToken?: string
-  }
-}
+import type { RefreshResponseDTO } from '@/features/auth/domain/types'
 
 const STORAGE_KEYS = {
   ACCESS_TOKEN: 'accessToken',
@@ -54,7 +46,7 @@ export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
 })
 
-let isRedirecting = false
+let refreshPromise: Promise<void> | null = null
 
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = getStoredToken(STORAGE_KEYS.ACCESS_TOKEN)
@@ -81,6 +73,25 @@ const shouldSkipAuthRedirect = (config?: AxiosRequestConfig | undefined) => {
   return headerValue === 'true'
 }
 
+const refreshTokens = async () => {
+  const refreshToken = getStoredToken(STORAGE_KEYS.REFRESH_TOKEN)
+  if (!refreshToken) {
+    throw new Error('refreshToken이 없습니다.')
+  }
+
+  const refreshResponse = await refresh({ refreshToken })
+  if (!refreshResponse.success) {
+    throw new Error('토큰 재발급 실패')
+  }
+
+  const token = refreshResponse.result.accessToken
+  if (!token) {
+    throw new Error('accessToken이 없습니다.')
+  }
+
+  setAccessToken(token)
+}
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -90,43 +101,24 @@ axiosInstance.interceptors.response.use(
 
     const status = error.response?.status
     if (status === 401) {
-      if (isRedirecting) {
-        window.location.href = '/auth/login'
+      const currentUrl = window.location.pathname
+      if (currentUrl === '/' || currentUrl === '/auth/signup') {
         return Promise.reject(error)
       }
 
-      isRedirecting = true
+      let runningRefreshPromise: Promise<void> | null = null
       try {
-        const currentUrl = window.location.pathname
-        if (currentUrl === '/' || currentUrl === '/auth/signup') {
-          return Promise.reject(error)
+        runningRefreshPromise = refreshPromise ?? (refreshPromise = refreshTokens())
+        await runningRefreshPromise
+
+        if (error.config) {
+          return axiosInstance(error.config)
         }
 
-        const refreshToken = getStoredToken(STORAGE_KEYS.REFRESH_TOKEN)
-        if (!refreshToken) {
-          throw new Error('refreshToken이 없습니다.')
-        }
-
-        const refreshResponse = await refresh({ refreshToken })
-        console.log(refreshResponse)
-        if (refreshResponse.code === '200') {
-          const token = refreshResponse.result.accessToken
-          if (token) {
-            setAccessToken(token)
-          }
-          isRedirecting = false
-          if (error.config) {
-            return axiosInstance(error.config)
-          }
-
-          return Promise.reject(error)
-        }
-
-        throw new Error('토큰 재발급 실패')
+        return Promise.reject(error)
       } catch (errors) {
-        isRedirecting = false
         if (axios.isAxiosError(errors)) {
-          const refreshError = errors as AxiosError<IRefreshResponse>
+          const refreshError = errors as AxiosError<RefreshResponseDTO>
           const refreshStatus = refreshError.response?.status
           if (refreshStatus === 401) {
             console.error('refreshToken이 없습니다. 로그인 페이지로 이동합니다.')
@@ -143,6 +135,10 @@ axiosInstance.interceptors.response.use(
         removeRefreshToken()
         window.location.href = '/auth/login'
         return Promise.reject(errors)
+      } finally {
+        if (runningRefreshPromise && refreshPromise === runningRefreshPromise) {
+          refreshPromise = null
+        }
       }
     }
 
