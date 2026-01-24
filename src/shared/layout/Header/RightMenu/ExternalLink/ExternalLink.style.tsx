@@ -44,7 +44,7 @@ export const MenuItem = styled(Flex)({
   color: theme.colors.white,
   ...theme.typography.B3.Md,
   [media.down('1120px')]: {
-    ...theme.typography.B4.Rg,
+    ...theme.typography.B5.Rg,
   },
   svg: {
     width: '20px',

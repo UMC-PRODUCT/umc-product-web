@@ -93,7 +93,34 @@ export const Logout = styled.div({
   display: 'flex',
   justifyContent: 'center',
   color: theme.colors.white,
-  textDecoration: 'underline',
+  alignSelf: 'center',
+  borderBottom: `1px solid ${theme.colors.white}`,
+  width: 'fit-content',
   cursor: 'pointer',
+  ...theme.typography.H5.Md,
+})
+
+export const MenuWrapper = styled(Flex)({
+  alignItems: 'center',
+  flexDirection: 'column',
+  gap: '8px',
+  borderTop: `1px solid ${theme.colors.gray[600]}`,
+  paddingTop: '16px',
+})
+
+export const ModalButton = styled.button({
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  margin: 0,
+  color: theme.colors.white,
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
   ...theme.typography.B5.Rg,
+})
+
+export const DeleteButton = styled(ModalButton)({
+  color: theme.colors.necessary,
 })

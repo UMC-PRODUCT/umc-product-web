@@ -82,6 +82,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
   endDate: string
   applicants: number
   state: PartCompletion
+  editable: boolean
 }> = [
   {
     id: 1,
@@ -90,6 +91,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
     endDate: '2024.06.30',
     applicants: 120,
     state: '진행 중',
+    editable: true,
   },
   {
     id: 2,
@@ -98,6 +100,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
     endDate: '2023.12.31',
     applicants: 98,
     state: '모집 종료',
+    editable: false,
   },
   {
     id: 3,
@@ -106,6 +109,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
     endDate: '2023.06.30',
     applicants: 142,
     state: '모집 종료',
+    editable: false,
   },
   {
     id: 4,
@@ -114,6 +118,7 @@ export const RECRUITING_LIST_MOCKS: Array<{
     endDate: '2024.12.20',
     applicants: 0,
     state: '모집 예정',
+    editable: true,
   },
   {
     id: 5,
@@ -122,5 +127,6 @@ export const RECRUITING_LIST_MOCKS: Array<{
     endDate: '2024.12.20',
     applicants: 0,
     state: '모집 예정',
+    editable: true,
   },
 ]
