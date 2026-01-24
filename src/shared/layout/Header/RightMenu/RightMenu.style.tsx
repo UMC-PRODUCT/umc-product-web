@@ -14,7 +14,7 @@ const navLinkStyle = {
   textDecoration: 'none',
   ...theme.typography.B3.Md,
   [media.down('1120px')]: {
-    ...theme.typography.B4.Rg,
+    ...theme.typography.B5.Rg,
   },
   svg: {
     width: '22px',
@@ -33,10 +33,8 @@ export const Container = styled.nav({
   height: 'fit-content',
 })
 
-// ✅ 외부 링크(진짜 a)
 export const NavAnchor = styled.a(navLinkStyle)
 
-// ✅ 내부 링크(라우터 Link) — 이게 useBlocker에 걸림
 export const NavRouterLink = styled(Link)(navLinkStyle)
 
 export const DesktopMenu = styled.div({

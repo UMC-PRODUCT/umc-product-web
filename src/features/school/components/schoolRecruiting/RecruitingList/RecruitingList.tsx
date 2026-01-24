@@ -43,6 +43,7 @@ const RecruitingList = () => {
                 endDate={recruiting.endDate}
                 applicants={recruiting.applicants}
                 state={recruiting.state}
+                editable={recruiting.editable}
               />
             ))
           ) : (
