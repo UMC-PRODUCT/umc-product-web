@@ -30,7 +30,10 @@ const fetchTermsIds = async () => {
 
       acc[termKey] = {
         ...response,
-        id: parsedId,
+        result: {
+          ...response.result,
+          id: parsedId,
+        },
       }
       return acc
     },

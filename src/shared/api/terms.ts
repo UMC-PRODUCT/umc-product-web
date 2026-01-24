@@ -14,8 +14,10 @@ export type TermsResponseDTO = CommonResponseDTO<{
 }>
 
 export async function getTermsId(requestBody: TermsRequestDTO): Promise<TermsResponseDTO> {
-  const { data } = await axiosInstance.get(`/terms/type/${requestBody.termsType}`, {
+  const { data } = await axiosInstance.get<
+    CommonResponseDTO<{ id: number; title: string; content: string; isMandatory: boolean }>
+  >(`/terms/type/${requestBody.termsType}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
   })
-  return data.result
+  return data
 }
