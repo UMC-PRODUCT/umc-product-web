@@ -13,9 +13,8 @@ import * as S from './RecruitingList.style'
 
 const RecruitingList = () => {
   const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
-  const { data, isLoading, error } = useCustomQuery(
-    recruiteKeys.recruitments({ status: tab }).queryKey,
-    () => getRecruitments({ status: tab }),
+  const { data } = useCustomQuery(recruiteKeys.recruitments({ status: tab }).queryKey, () =>
+    getRecruitments({ status: tab }),
   )
   const recruitments = data?.result.recruitments ?? []
   return (

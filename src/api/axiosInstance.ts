@@ -47,7 +47,6 @@ const removeToken = (key: string) => {
 }
 
 const setAccessToken = (token: string) => setToken(STORAGE_KEYS.ACCESS_TOKEN, token)
-const setRefreshToken = (token: string) => setToken(STORAGE_KEYS.REFRESH_TOKEN, token)
 const removeAccessToken = () => removeToken(STORAGE_KEYS.ACCESS_TOKEN)
 const removeRefreshToken = () => removeToken(STORAGE_KEYS.REFRESH_TOKEN)
 
