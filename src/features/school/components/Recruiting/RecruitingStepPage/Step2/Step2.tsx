@@ -53,7 +53,7 @@ const Step2 = ({
     return dates
   }, [interviewStartAt, interviewEndAt])
 
-  const enabledSlots = useMemo(() => interviewTimeTable.enabled, [interviewTimeTable])
+  const enabledSlots = useMemo(() => interviewTimeTable.enabledByDate, [interviewTimeTable])
 
   const timeRange = useMemo(() => interviewTimeTable.timeRange, [interviewTimeTable])
 
@@ -73,7 +73,7 @@ const Step2 = ({
     ) {
       return
     }
-    setValue('schedule.interviewTimeTable.enabled', [])
+    setValue('schedule.interviewTimeTable.enabledByDate', [])
   }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue])
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const Step2 = ({
       return slotsForDate.length === 0
     })
     updateErrorState(
-      'schedule.interviewTimeTable.enabled',
+      'schedule.interviewTimeTable.enabledByDate',
       hasEmptyDate,
       '모든 면접 날짜에 최소 1개의 시간을 선택해 주세요.',
     )
@@ -270,7 +270,7 @@ const Step2 = ({
             <Flex flexDirection="column" alignItems="flex-start">
               <Label label="면접 시간대 설정" necessary={true} />
               <Controller
-                name="schedule.interviewTimeTable.enabled"
+                name="schedule.interviewTimeTable.enabledByDate"
                 control={control}
                 render={({ field, fieldState }) => (
                   <Flex flexDirection="column" alignItems="flex-start" gap={30}>
