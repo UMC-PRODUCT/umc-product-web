@@ -24,9 +24,11 @@ export function buildDefaultValuesFromQuestions(
     page.questions.forEach((question) => {
       defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
     })
-    defaultValues[String(page.scheduleQuestion.questionId)] = resolveAnswerValue(
-      page.scheduleQuestion.questionId,
-    )
+    if (page.scheduleQuestion) {
+      defaultValues[String(page.scheduleQuestion.questionId)] = resolveAnswerValue(
+        page.scheduleQuestion.questionId,
+      )
+    }
     page.partQuestions.forEach((partQuestionGroup) => {
       partQuestionGroup.questions.forEach((question) => {
         defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)

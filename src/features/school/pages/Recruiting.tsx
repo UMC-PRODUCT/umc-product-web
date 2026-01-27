@@ -87,13 +87,15 @@ const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) 
       ),
     )
 
-    items.push(
-      buildRecruitingItemFromQuestion(
-        page.scheduleQuestion,
-        { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
-        questions.length,
-      ),
-    )
+    if (page.scheduleQuestion) {
+      items.push(
+        buildRecruitingItemFromQuestion(
+          page.scheduleQuestion,
+          { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
+          questions.length,
+        ),
+      )
+    }
 
     const partGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
     partGroups.forEach((partGroup) => {
@@ -147,7 +149,8 @@ const Recruiting = ({ recruitingId }: RecruitingProps) => {
 
   useEffect(() => {
     const result = recruitingData?.result
-    form.reset(buildRecruitingInitialForm(result!))
+    if (!result) return
+    form.reset(buildRecruitingInitialForm(result))
   }, [form, recruitingData?.result])
 
   useEffect(() => {
