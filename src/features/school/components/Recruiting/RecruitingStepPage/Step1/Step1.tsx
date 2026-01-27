@@ -1,7 +1,7 @@
 import type { Control } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
-import { mapPartToApi } from '@/features/school/utils/recruiting/items'
+import { PART_CONFIG } from '@/features/auth/domain'
 import { PART } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -68,7 +68,8 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
               >
                 {PART.map((part) => {
                   const selected = Array.isArray(field.value) ? field.value : []
-                  const partId = mapPartToApi(part)
+                  const partId = part
+                  const partLabel = PART_CONFIG[part].label
                   const isActive = selected.includes(partId)
                   return (
                     <S.Button
@@ -82,7 +83,7 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
                         field.onChange(next)
                       }}
                     >
-                      {part}
+                      {partLabel}
                     </S.Button>
                   )
                 })}

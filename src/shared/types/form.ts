@@ -102,7 +102,7 @@ export type RecruitingInterviewTimeTable = {
   dateRange: range
   timeRange: range
   slotMinutes: string
-  enabledByDate: Array<{ date: string; time: Array<string> }>
+  enabledByDate: Array<{ date: string; times: Array<string> }>
   disabledByDate: Array<{ date: string; times: Array<string> }>
 }
 

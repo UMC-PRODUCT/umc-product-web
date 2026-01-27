@@ -31,13 +31,13 @@ type InterviewTimeTableWithOptionalEnabled = Omit<
   RecruitingForms['schedule']['interviewTimeTable'],
   'enabledByDate'
 > & {
-  enabled?: Array<{ date: string; time: Array<string> }>
+  enabled?: Array<{ date: string; times: Array<string> }>
   enabledByDate?: Array<InterviewDateSlot>
 }
 
 const resolveInterviewEnabled = (
   table: InterviewTimeTableWithOptionalEnabled,
-): Array<{ date: string; time: Array<string> }> => {
+): Array<{ date: string; times: Array<string> }> => {
   const fromEnabled = table.enabled
   if (Array.isArray(fromEnabled)) {
     return fromEnabled
@@ -45,7 +45,7 @@ const resolveInterviewEnabled = (
   const enabledByDate = table.enabledByDate ?? []
   return enabledByDate.map((slot) => ({
     date: slot.date,
-    time: slot.times ?? slot.time ?? [],
+    times: slot.times ?? [],
   }))
 }
 

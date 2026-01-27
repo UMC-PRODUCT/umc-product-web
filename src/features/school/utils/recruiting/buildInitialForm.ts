@@ -49,7 +49,7 @@ export const buildSchedulePayload = (
     },
     slotMinutes: '30',
     enabledByDate: schedule.interviewTimeTable.enabledByDate,
-    disabledByDate: schedule.interviewTimeTable.disabledByDate,
+    disabledByDate: [],
   },
 })
 

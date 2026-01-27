@@ -18,7 +18,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
       enabledByDate: [
         {
           date: '2026-01-05',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -40,7 +40,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-06',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -58,7 +58,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-07',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -76,7 +76,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-08',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',

@@ -53,7 +53,13 @@ const Step2 = ({
     return dates
   }, [interviewStartAt, interviewEndAt])
 
-  const enabledSlots = useMemo(() => interviewTimeTable.enabledByDate, [interviewTimeTable])
+  const enabledSlots = useMemo(
+    () =>
+      interviewTimeTable.enabledByDate.map((slot) => ({
+        ...slot,
+      })),
+    [interviewTimeTable],
+  )
 
   const timeRange = useMemo(() => interviewTimeTable.timeRange, [interviewTimeTable])
 
@@ -104,7 +110,8 @@ const Step2 = ({
   useEffect(() => {
     if (interviewDates.length === 0) return
     const hasEmptyDate = interviewDates.some((date) => {
-      const slotsForDate = enabledSlots.find((slot) => slot.date === date)?.time ?? []
+      const targetSlot = enabledSlots.find((slot) => slot.date === date)
+      const slotsForDate = targetSlot?.times ?? []
       return slotsForDate.length === 0
     })
     updateErrorState(
@@ -281,13 +288,13 @@ const Step2 = ({
                       }}
                       timeRange={timeRange}
                       value={enabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
-                        acc[slot.date] = slot.time
+                        acc[slot.date] = slot.times
                         return acc
                       }, {})}
                       onChange={(nextValue) => {
-                        const nextEnabled = Object.entries(nextValue).map(([date, time]) => ({
+                        const nextEnabled = Object.entries(nextValue).map(([date, times]) => ({
                           date,
-                          time,
+                          times,
                         }))
                         field.onChange(nextEnabled)
                       }}

@@ -154,11 +154,11 @@ export const step2Schema = withDateOrderRules(
 
 const hasSlotsForAllDates = (
   dates: Array<string>,
-  enabledSlots?: Array<{ date: string; time?: Array<string> }>,
+  enabledSlots?: Array<{ date: string; times?: Array<string> }>,
 ) =>
   dates.length > 0 &&
   dates.every((date) => {
-    const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.time ?? []
+    const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.times ?? []
     return slotsForDate.length > 0
   })
 
