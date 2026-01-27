@@ -5,7 +5,7 @@ import { PAGE_INFO } from '@features/school/domain'
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
 import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
-import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingItem, RecruitingPart } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { transformQuestionTypeKorean } from '@/shared/utils/transformKorean'
@@ -46,7 +46,7 @@ const Step5 = ({
   }
 
   function itemPartKey(item: RecruitingItem) {
-    return item.target.kind === 'PART' ? item.target.part : ''
+    return item.target.kind === 'PART' ? (item.target.part ?? '') : ''
   }
 
   return (
@@ -118,14 +118,18 @@ const Step5 = ({
             </S.PageTitle>
             <Flex flexDirection="column" gap={12} css={{ width: '100%' }}>
               {Object.values(
-                partItems.reduce<Record<string, Array<RecruitingItem>>>((acc, item) => {
-                  if (item.target.kind !== 'PART') return acc
-                  acc[item.target.part].push(item)
-                  return acc
-                }, {}),
+                partItems.reduce<Partial<Record<RecruitingPart, Array<RecruitingItem>>>>(
+                  (acc, item) => {
+                    if (item.target.kind !== 'PART' || !item.target.part) return acc
+                    const partKey = item.target.part
+                    if (!acc[partKey]) acc[partKey] = []
+                    acc[partKey].push(item)
+                    return acc
+                  },
+                  {},
+                ),
               ).map((itemsForPart) => {
-                const partKey =
-                  itemsForPart[0]?.target.kind === 'PART' ? itemsForPart[0].target.part : ''
+                const partKey = itemsForPart[0]?.target.part ?? ''
                 const partLabel = partKey ? mapApiPartToPartType(partKey as never) : ''
                 return (
                   <Section

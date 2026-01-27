@@ -20,13 +20,13 @@ export const ACCOUNT_STATE_CONFIG = {
 
 /** 파트 설정 */
 export const PART_CONFIG = {
-  Plan: { label: 'Plan', abilities: ['PM', 'Figma'] },
-  Design: { label: 'Design', abilities: ['UX/UI', 'Figma'] },
-  Web: { label: 'Web', abilities: ['Front-End', 'HTML', 'CSS', 'JavaScript'] },
-  iOS: { label: 'iOS', abilities: ['Front-End', 'Swift'] },
-  Android: { label: 'Android', abilities: ['Front-End', 'Kotlin'] },
-  SpringBoot: { label: 'SpringBoot', abilities: ['Back-End', 'Java'] },
-  'Node.js': { label: 'Node.js', abilities: ['Back-End', 'JavaScript'] },
+  PLAN: { label: 'Plan', abilities: ['PM', 'Figma'] },
+  DESIGN: { label: 'Design', abilities: ['UX/UI', 'Figma'] },
+  WEB: { label: 'Web', abilities: ['Front-End', 'HTML', 'CSS', 'JavaScript'] },
+  IOS: { label: 'iOS', abilities: ['Front-End', 'Swift'] },
+  ANDROID: { label: 'Android', abilities: ['Front-End', 'Kotlin'] },
+  SPRINGBOOT: { label: 'SpringBoot', abilities: ['Back-End', 'Java'] },
+  NODEJS: { label: 'Node.js', abilities: ['Back-End', 'JavaScript'] },
 } as const
 
 /** 배열 형태의 파트 목록 (순서 보장) */

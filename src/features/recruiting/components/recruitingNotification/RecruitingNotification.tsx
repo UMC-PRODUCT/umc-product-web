@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
-import type { PartType } from '@/shared/types/umc'
+import type { RecruitingPart } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -16,7 +16,7 @@ const RecruitingNotification = ({
   content,
 }: {
   title: string
-  parts: Array<PartType>
+  parts: Array<RecruitingPart>
   content: string
 }) => {
   const navigate = useNavigate()

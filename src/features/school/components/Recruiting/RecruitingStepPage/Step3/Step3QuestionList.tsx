@@ -33,7 +33,7 @@ const Step3QuestionList = ({
       <QuestionList
         key={`part-${selectedPart}`}
         control={control}
-        target={{ kind: 'PART', part: selectedPart }}
+        target={{ kind: 'PART', part: selectedPart, pageNo: page }}
         isLocked={isSelectedPartComplete}
       />
     )

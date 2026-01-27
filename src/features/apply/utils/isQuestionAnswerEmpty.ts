@@ -1,16 +1,12 @@
 import type { question, RecruitingSchedule } from '@/shared/types/form'
 
-import type { QuestionUnion } from '../domain/model'
-
 type SharedQuestionOptions = Omit<question, 'maxSelectCount' | 'preferredPartOptions'> &
   Partial<Pick<question, 'maxSelectCount' | 'preferredPartOptions'>>
 
-export type ResumeQuestion =
-  | QuestionUnion
-  | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
+export type ResumeQuestion = question | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
 
 const isQuestionRequired = (question: ResumeQuestion): boolean =>
-  'necessary' in question ? question.necessary : 'required' in question ? question.required : false
+  'necessary' in question ? question.required : 'required' in question ? question.required : false
 
 export function isQuestionAnswerEmpty(question: ResumeQuestion, answerValue: unknown): boolean {
   if (!isQuestionRequired(question)) return false

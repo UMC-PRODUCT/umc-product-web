@@ -79,8 +79,8 @@ export function getSubmissionValues(
   )
 
   const scheduleQuestionIds = pagesData
-    .map((page) => String(page.scheduleQuestion.questionId))
-    .filter((id): id is string => typeof id === 'string')
+    .filter((page) => page.scheduleQuestion !== null)
+    .map((page) => String(page.scheduleQuestion!.questionId))
 
   const partQuestionIds = pagesData.flatMap((page) =>
     page.partQuestions.flatMap((partGroup: { questions: Array<question> }) =>

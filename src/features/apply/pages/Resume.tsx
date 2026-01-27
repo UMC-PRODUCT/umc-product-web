@@ -41,8 +41,6 @@ const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
-  console.log('questionsData', questionsData)
-  console.log('answerData', answerData)
   const questionDataForForm = questionsData?.result
   const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
 
