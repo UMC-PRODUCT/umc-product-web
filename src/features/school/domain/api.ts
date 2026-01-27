@@ -1,8 +1,10 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type {
+  DeleteSingleQuestionResponseDTO,
+  GetApplicationFormResponseDTO,
   GetRecruitmentNoticesResponseDTO,
-  GetRecruitmentSchedulesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
   GetTempSavedRecruitmentResponseDTO,
@@ -12,11 +14,12 @@ import type {
   PatchTempSaveRecruitmentResponseDTO,
   PostFirstRecruitmentRequestDTO,
   PostFirstRecruitmentResponseDTO,
-} from './types'
+  PostRecruitmentRequestPublishDTO,
+} from './apiTypes'
 
 export const postFirstRecruitment = async (
   requestBody: PostFirstRecruitmentRequestDTO,
-): Promise<PostFirstRecruitmentResponseDTO> => {
+): Promise<CommonResponseDTO<PostFirstRecruitmentResponseDTO>> => {
   const { data } = await axiosInstance.post('/recruitments', {
     requestBody,
   })
@@ -26,26 +29,36 @@ export const postFirstRecruitment = async (
 export const patchTempSaveRecruitment = async (
   recruitingId: string,
   requestBody: PatchTempSaveRecruitmentRequestDTO,
-): Promise<PatchTempSaveRecruitmentResponseDTO> => {
-  const { data } = await axiosInstance.patch(`/recruitments/${recruitingId}`, {
-    requestBody,
-  })
+): Promise<CommonResponseDTO<PatchTempSaveRecruitmentResponseDTO>> => {
+  const { data } = await axiosInstance.patch(`/recruitments/${recruitingId}`, requestBody)
   return data
 }
 
 export const patchTempSavedRecruitQuestions = async (
   recruitingId: string,
   requestBody: PatchTempSavedRecruitQuestionsRequestDTO,
-): Promise<PatchTempSavedRecruitQuestionsResponseDTO> => {
-  const { data } = await axiosInstance.patch(`/recruitments/${recruitingId}/application-form`, {
+): Promise<CommonResponseDTO<PatchTempSavedRecruitQuestionsResponseDTO>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitingId}/application-form`,
     requestBody,
-  })
+  )
   return data
 }
-
+export const getTempSavedApplicationQuestions = async (
+  recruitingId: string,
+): Promise<CommonResponseDTO<GetApplicationFormResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/application-form/draft`)
+  return data
+}
+export const getSavedApplicationQuestions = async (
+  recruitingId: string,
+): Promise<CommonResponseDTO<GetApplicationFormResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/application-form`)
+  return data
+}
 export const getRecruitments = async (
   params: GetRecruitmentsRequestDTO,
-): Promise<GetRecruitmentsResponseDTO> => {
+): Promise<CommonResponseDTO<GetRecruitmentsResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments`, {
     params,
   })
@@ -54,28 +67,40 @@ export const getRecruitments = async (
 
 export const getTempSavedRecruitment = async (
   recruitingId: string,
-): Promise<GetTempSavedRecruitmentResponseDTO> => {
+): Promise<CommonResponseDTO<GetTempSavedRecruitmentResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments/${recruitingId}`)
-  return data
-}
-
-export const getRecruitmentSchedules = async (
-  recruitingId: string,
-): Promise<GetRecruitmentSchedulesResponseDTO> => {
-  const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/schedules`)
   return data
 }
 
 export const getRecruitmentNotices = async (
   recruitingId: string,
-): Promise<GetRecruitmentNoticesResponseDTO> => {
+): Promise<CommonResponseDTO<GetRecruitmentNoticesResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/notices`)
   return data
 }
 
 export const postRecruitmentPublish = async (
   recruitingId: string,
-): Promise<PostFirstRecruitmentResponseDTO> => {
-  const { data } = await axiosInstance.post(`/recruitments/${recruitingId}/publish`)
+  requestBody: PostRecruitmentRequestPublishDTO,
+): Promise<CommonResponseDTO<PostFirstRecruitmentResponseDTO>> => {
+  const { data } = await axiosInstance.post(`/recruitments/${recruitingId}/publish`, requestBody)
+  return data
+}
+
+export const deleteRecruitment = async (recruitingId: number) => {
+  const { data } = await axiosInstance.delete(`/recruitments/${recruitingId}`)
+  return data
+}
+
+export const deleteSingleQuestion = async ({
+  recruitmentId,
+  questionId,
+}: {
+  recruitmentId: string
+  questionId: string
+}): Promise<CommonResponseDTO<DeleteSingleQuestionResponseDTO>> => {
+  const { data } = await axiosInstance.delete(
+    `/recruitments/${recruitmentId}/application-form/questions/${questionId}`,
+  )
   return data
 }

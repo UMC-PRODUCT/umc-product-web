@@ -13,7 +13,6 @@ type RecruitingStepActionsProps = {
   onTempSave: () => void
   onOpenPreview: () => void
   onOpenConfirm: () => void
-  isTempSaveDisabled: boolean
 }
 
 const RecruitingStepActions = ({
@@ -24,7 +23,6 @@ const RecruitingStepActions = ({
   onTempSave,
   onOpenPreview,
   onOpenConfirm,
-  isTempSaveDisabled,
 }: RecruitingStepActionsProps) => {
   return (
     <Flex
@@ -53,7 +51,6 @@ const RecruitingStepActions = ({
           label="임시 저장"
           css={{ width: 98 }}
           onClick={onTempSave}
-          disabled={isTempSaveDisabled}
         />
       </Flex>
       <Flex width={'fit-content'} height={39}>

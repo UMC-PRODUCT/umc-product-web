@@ -1,7 +1,19 @@
+import type { question, RecruitingSchedule } from '@/shared/types/form'
+
 import type { QuestionUnion } from '../domain/model'
 
-export function isQuestionAnswerEmpty(question: QuestionUnion, answerValue: unknown): boolean {
-  if (!question.necessary) return false
+type SharedQuestionOptions = Omit<question, 'maxSelectCount' | 'preferredPartOptions'> &
+  Partial<Pick<question, 'maxSelectCount' | 'preferredPartOptions'>>
+
+export type ResumeQuestion =
+  | QuestionUnion
+  | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
+
+const isQuestionRequired = (question: ResumeQuestion): boolean =>
+  'necessary' in question ? question.necessary : 'required' in question ? question.required : false
+
+export function isQuestionAnswerEmpty(question: ResumeQuestion, answerValue: unknown): boolean {
+  if (!isQuestionRequired(question)) return false
 
   if (answerValue === null || answerValue === undefined) return true
 
@@ -17,7 +29,8 @@ export function isQuestionAnswerEmpty(question: QuestionUnion, answerValue: unkn
     return answerValue.length === 0
   }
 
-  if (question.type === 'SCHEDULE') {
+  const questionType = question.type
+  if (questionType === 'SCHEDULE') {
     if (typeof answerValue !== 'object') return true
     const timeTableValues = Object.values(answerValue as Record<string, Array<unknown>>)
     const hasNoSelectedSlots =
@@ -25,7 +38,7 @@ export function isQuestionAnswerEmpty(question: QuestionUnion, answerValue: unkn
     return hasNoSelectedSlots
   }
 
-  if (question.type === 'PORTFOLIO') {
+  if (questionType === 'PORTFOLIO') {
     const v = answerValue as { files?: Array<unknown>; links?: Array<unknown> }
     const filesEmpty = !Array.isArray(v.files) || v.files.length === 0
     const linksEmpty = !Array.isArray(v.links) || v.links.length === 0

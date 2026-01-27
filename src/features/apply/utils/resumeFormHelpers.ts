@@ -2,7 +2,9 @@ import type { FieldErrors } from 'react-hook-form'
 
 import type { PartType } from '@features/auth/domain'
 
-import type { QuestionList, QuestionPage, QuestionUnion } from '../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+import type { pageType, question } from '@/shared/types/form'
+
 import { findPartQuestion } from './findPartQuestion'
 import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
 
@@ -13,43 +15,41 @@ type FormValues = Record<string, unknown>
  */
 export function findFirstErrorPageIndex(
   formErrors: FieldErrors<FormValues>,
-  pages: Array<QuestionPage>,
+  pages: Array<pageType>,
 ): number {
   const errorFieldIds = Object.keys(formErrors)
   if (errorFieldIds.length === 0) return -1
 
   const firstErrorFieldId = errorFieldIds[0]
-  return pages.findIndex((page: QuestionPage) =>
-    (page.questions ?? []).some(
-      (question: QuestionUnion) => String(question.id) === firstErrorFieldId,
-    ),
+  return pages.findIndex((page: pageType) =>
+    page.questions.some((question: question) => String(question.questionId) === firstErrorFieldId),
   )
 }
 
 /**
  * 모든 페이지에서 질문 필드 ID 목록을 추출합니다.
  */
-export function getAllQuestionFieldIds(pages: Array<QuestionPage>): Array<string> {
+export function getAllQuestionFieldIds(pages: Array<pageType>): Array<string> {
   return pages.flatMap((page) =>
-    (page.questions ?? []).map((question: QuestionUnion) => String(question.id)),
+    page.questions.map((question: question) => String(question.questionId)),
   )
 }
 
 /**
  * 특정 페이지에서 필수 질문 필드 ID 목록을 추출합니다.
  */
-export function getPageRequiredFieldIds(page: QuestionPage | undefined): Array<string> {
+export function getPageRequiredFieldIds(page: pageType | undefined): Array<string> {
   if (!page?.questions) return []
   return page.questions
-    .filter((question: QuestionUnion) => question.necessary)
-    .map((question: QuestionUnion) => String(question.id))
+    .filter((question: question) => question.required)
+    .map((question: question) => String(question.questionId))
 }
 
 /**
  * 제출할 파트 목록을 추출합니다.
  */
 export function getSelectedPartsForSubmission(
-  questionData: QuestionList,
+  questionData: RecruitingForms,
   formValues: FormValues,
 ): Array<PartType> {
   const partQuestionId = 3
@@ -57,7 +57,7 @@ export function getSelectedPartsForSubmission(
   if (!partQuestion) return []
 
   const order: Array<1 | 2> = [1, 2]
-  const requiredCount = Math.max(partQuestion.options.length, 1)
+  const requiredCount = Math.max(partQuestion.maxSelectCount ?? 0, 1)
   const effectiveOrder = order.slice(0, requiredCount)
   const answerValue = formValues[String(partQuestionId)]
   return getSelectedPartsFromAnswer(answerValue, effectiveOrder)
@@ -67,20 +67,28 @@ export function getSelectedPartsForSubmission(
  * 제출 가능한 값들만 필터링하여 반환합니다.
  */
 export function getSubmissionValues(
-  questionData: QuestionList,
+  questionData: Array<pageType> | undefined,
   formValues: FormValues,
 ): FormValues {
-  const baseQuestionIds = questionData.pages.flatMap((page) =>
-    (page.questions ?? []).map((question) => String(question.id)),
+  const pagesData = Array.isArray(questionData)
+    ? questionData
+    : (questionData as unknown as Array<pageType>)
+
+  const baseQuestionIds = pagesData.flatMap((page) =>
+    page.questions.map((question: question) => String(question.questionId)),
   )
-  const selectedParts = getSelectedPartsForSubmission(questionData, formValues)
-  const partQuestionIds = selectedParts.flatMap((part) =>
-    questionData.partQuestionBank[part].flatMap((partPage) =>
-      partPage.questions.map((question) => String(question.id)),
+
+  const scheduleQuestionIds = pagesData
+    .map((page) => String(page.scheduleQuestion.questionId))
+    .filter((id): id is string => typeof id === 'string')
+
+  const partQuestionIds = pagesData.flatMap((page) =>
+    page.partQuestions.flatMap((partGroup: { questions: Array<question> }) =>
+      partGroup.questions.map((question: question) => String(question.questionId)),
     ),
   )
 
-  const allowedIds = new Set([...baseQuestionIds, ...partQuestionIds])
+  const allowedIds = new Set([...baseQuestionIds, ...scheduleQuestionIds, ...partQuestionIds])
   return Object.keys(formValues).reduce<FormValues>((acc, key) => {
     if (allowedIds.has(key)) {
       acc[key] = formValues[key]

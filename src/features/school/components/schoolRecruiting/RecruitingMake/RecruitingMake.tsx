@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -13,14 +14,30 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
   const navigate = useNavigate()
+  const { usePostFirstRecruitment } = useRecruitingMutation()
+  const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
+
   const handleCreateRecruiting = () => {
-    navigate({
-      to: '/school/recruiting/$recruitingId',
-      params: { recruitingId: 'new' },
-      search: {
-        source: undefined,
+    postFirstRecruitmentMutate(
+      {},
+      {
+        onSuccess: (data) => {
+          const recruitingId = data.result.result.recruitmentId
+          if (recruitingId) {
+            navigate({
+              to: '/school/recruiting/$recruitingId',
+              params: { recruitingId: String(recruitingId) },
+              search: {
+                source: undefined,
+              },
+            })
+          } else {
+            // Handle error case, e.g., show alert or log
+            console.error('Recruitment ID is undefined')
+          }
+        },
       },
-    })
+    )
   }
 
   const handleLoadRecruiting = () => {

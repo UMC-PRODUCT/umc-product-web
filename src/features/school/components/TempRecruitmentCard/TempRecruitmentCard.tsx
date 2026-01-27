@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 
 import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
 import * as S from '@/features/school/components/TempRecruitmentCard/TempRecruitmentCard.style'
@@ -6,19 +8,41 @@ import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
+import { recruiteKeys } from '../../domain/queryKey'
+import { useRecruitingMutation } from '../../hooks/useRecruitingMutation'
+
 const TempRecruitmentCard = ({
   title,
   tempSavedTime,
   editable,
+  recruitmentId,
 }: {
   title: string
   tempSavedTime: string
   editable?: boolean
+  recruitmentId: number
 }) => {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState({
     open: false,
     name: title,
   })
+  const { useDeleteRecruitment } = useRecruitingMutation()
+  const { mutate: deleteRecruitmentMutate } = useDeleteRecruitment(recruitmentId)
+
+  const handleDeleteRecruitment = () => {
+    deleteRecruitmentMutate(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
+        })
+      },
+      onError: (error) => {
+        console.error('Failed to delete recruitment:', error)
+      },
+    })
+  }
   return (
     <Section
       variant="both"
@@ -39,7 +63,17 @@ const TempRecruitmentCard = ({
       </S.InfoWrapper>
       {editable && (
         <Flex width={126} gap={12} height={28}>
-          <Button label="수정" tone="caution" />
+          <Button
+            label="수정"
+            tone="caution"
+            onClick={() => {
+              navigate({
+                to: '/school/recruiting/$recruitingId',
+                params: { recruitingId: recruitmentId.toString() },
+                search: { source: 'temp' },
+              })
+            }}
+          />
           <Button
             label="삭제"
             tone="necessary"
@@ -56,7 +90,13 @@ const TempRecruitmentCard = ({
         <Button
           label="조회"
           tone="lime"
-          onClick={() => {}}
+          onClick={() =>
+            navigate({
+              to: '/school/recruiting/$recruitingId',
+              params: { recruitingId: recruitmentId.toString() },
+              search: { source: 'temp' },
+            })
+          }
           css={{ width: '65px', height: '28px' }}
         />
       )}
@@ -64,7 +104,7 @@ const TempRecruitmentCard = ({
         <DeleteConfirm
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
-          onClick={() => {}}
+          onClick={handleDeleteRecruitment}
         />
       )}
     </Section>

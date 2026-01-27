@@ -19,16 +19,14 @@ interface PartInfo {
 
 interface BeforeSubmitProps {
   partInfoList: Array<PartInfo>
+  recruitmentId?: string
+  formId?: string
 }
 
 // TODO: API 연동 시 useRecruitmentStatus 훅으로 대체
-const getRecruitmentOpenState = (): boolean => {
-  return true
-}
 
-const BeforeSubmit = ({ partInfoList }: BeforeSubmitProps) => {
+const BeforeSubmit = ({ partInfoList, recruitmentId, formId }: BeforeSubmitProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
-  const isRecruitmentOpen = getRecruitmentOpenState()
 
   const openConfirmModal = () => setIsConfirmModalOpen(true)
   const closeConfirmModal = () => setIsConfirmModalOpen(false)
@@ -52,16 +50,16 @@ const BeforeSubmit = ({ partInfoList }: BeforeSubmitProps) => {
 
       <Button
         label={`UMC ${RECRUITMENT_INFO.generation} 지원하기`}
-        tone={isRecruitmentOpen ? 'lime' : 'darkGray'}
-        disabled={!isRecruitmentOpen}
+        tone={recruitmentId ? 'lime' : 'darkGray'}
+        disabled={!recruitmentId}
         onClick={handleApplyClick}
       />
 
       {isConfirmModalOpen && (
         <ConfirmApplicationModal
+          recruitmentId={recruitmentId!}
           onClose={closeConfirmModal}
-          createNewResume={() => {}}
-          existingResumeId={1}
+          formId={formId}
         />
       )}
     </>

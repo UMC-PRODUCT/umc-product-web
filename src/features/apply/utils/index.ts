@@ -2,6 +2,7 @@ export { buildDefaultValuesFromQuestions } from '@/features/apply/utils/buildDef
 export { findPartQuestion } from '@/features/apply/utils/findPartQuestion'
 export { getAllQuestionsFromPages } from '@/features/apply/utils/getAllQuestionsFromPages'
 export { getSelectedPartsFromAnswer } from '@/features/apply/utils/getSelectedPartsFromAnswer'
+export type { ResumeQuestion } from '@/features/apply/utils/isQuestionAnswerEmpty'
 export { isQuestionAnswerEmpty } from '@/features/apply/utils/isQuestionAnswerEmpty'
 export { resolvePagesWithSlots } from '@/features/apply/utils/resolvePagesWithSlots'
 export {

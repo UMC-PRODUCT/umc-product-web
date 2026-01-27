@@ -1,23 +1,99 @@
+import type { ReactNode } from 'react'
+import { Component, Suspense } from 'react'
+
 import Close from '@shared/assets/icons/close.svg?react'
 import { Modal } from '@shared/ui/common/Modal'
 
 import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentModal.style'
 import { getRecruitments } from '@/features/school/domain/api'
 import { recruiteKeys } from '@/features/school/domain/queryKey'
-import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
+import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
 
 import TempRecruitmentCard from '../../TempRecruitmentCard/TempRecruitmentCard'
 
 type TempRecruitmentModalProps = {
   onClose: () => void
 }
-const TempRecruitmentModal = ({ onClose }: TempRecruitmentModalProps) => {
-  const { data, isLoading, error } = useCustomQuery(
+
+type ModalErrorBoundaryProps = {
+  children: ReactNode
+  fallback: (error: Error, reset: () => void) => ReactNode
+}
+
+type ModalErrorBoundaryState = {
+  error?: Error
+}
+
+class ModalErrorBoundary extends Component<ModalErrorBoundaryProps, ModalErrorBoundaryState> {
+  state: ModalErrorBoundaryState = {}
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  componentDidCatch(error: Error) {
+    console.error(error)
+  }
+
+  resetErrorBoundary = () => {
+    this.setState({ error: undefined })
+  }
+
+  render() {
+    const { error } = this.state
+    if (error) {
+      return this.props.fallback(error, this.resetErrorBoundary)
+    }
+    return this.props.children
+  }
+}
+
+const AsyncBoundary = ({
+  children,
+  fallback,
+  errorFallback,
+}: {
+  children: ReactNode
+  fallback: ReactNode
+  errorFallback: (error: Error, reset: () => void) => ReactNode
+}) => (
+  <ModalErrorBoundary fallback={errorFallback}>
+    <Suspense fallback={fallback}>{children}</Suspense>
+  </ModalErrorBoundary>
+)
+
+const TempRecruitmentList = () => {
+  const { data } = useCustomSuspenseQuery(
     recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
     () => getRecruitments({ status: 'DRAFT' }),
   )
+
+  const recruitments = data.result.recruitments
+
+  if (recruitments.length === 0) {
+    return <S.EmptyText>임시저장된 모집이 없습니다.</S.EmptyText>
+  }
+
+  return (
+    <>
+      {recruitments.map((recruitment) => (
+        <TempRecruitmentCard
+          key={recruitment.recruitmentId}
+          title={recruitment.recruitmentName}
+          tempSavedTime={'2026.01.06'}
+          editable={recruitment.editable}
+          recruitmentId={recruitment.recruitmentId}
+        />
+      ))}
+    </>
+  )
+}
+
+const TempRecruitmentModal = ({ onClose }: TempRecruitmentModalProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -59,17 +135,34 @@ const TempRecruitmentModal = ({ onClose }: TempRecruitmentModalProps) => {
                 flexDirection="column"
                 gap={'8px'}
               >
-                {data?.result.recruitments.map((recruitment) => (
-                  <TempRecruitmentCard
-                    key={recruitment.recruitmentId}
-                    title={recruitment.recruitmentName}
-                    tempSavedTime={'2026.01.06'}
-                    editable={recruitment.editable}
-                  />
-                ))}
-                {data?.result.recruitments.length === 0 && !isLoading && !error && (
-                  <S.EmptyText>임시저장된 모집이 없습니다.</S.EmptyText>
-                )}
+                <AsyncBoundary
+                  fallback={
+                    <S.MessageWrapper>
+                      <Loading
+                        label="로딩 중…"
+                        labelPlacement="bottom"
+                        spinnerColor={theme.colors.lime}
+                        borderColor="rgba(255, 255, 255, 0.2)"
+                        size={40}
+                      />
+                      <S.MessageTitle>임시저장된 모집을 불러오는 중입니다.</S.MessageTitle>
+                      <S.MessageDescription>잠시만 기다려 주세요.</S.MessageDescription>
+                    </S.MessageWrapper>
+                  }
+                  errorFallback={(error, reset) => (
+                    <S.MessageWrapper>
+                      <S.MessageTitle>
+                        임시저장된 모집을 불러오는 중 오류가 발생했습니다.
+                      </S.MessageTitle>
+                      <S.MessageDescription>
+                        {error.message || '잠시 후 다시 시도해 주세요.'}
+                      </S.MessageDescription>
+                      <Button label="다시 시도" tone="lime" onClick={reset} />
+                    </S.MessageWrapper>
+                  )}
+                >
+                  <TempRecruitmentList />
+                </AsyncBoundary>
               </S.ContentWrapper>
             </Modal.Body>
           </S.ModalContentWrapper>

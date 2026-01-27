@@ -1,7 +1,7 @@
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { Option, RecruitingPartApi } from '@/shared/types/form'
+import type { Option, RecruitingPart } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
@@ -10,12 +10,12 @@ import Section from '@/shared/ui/common/Section/Section'
 
 type Step3PartHeaderProps = {
   partOptions: Array<Option<PartType>>
-  selectedPart: RecruitingPartApi | null
+  selectedPart: RecruitingPart | null
   isSelectedPartComplete: boolean
-  partCompletion: Partial<Record<RecruitingPartApi, boolean>>
-  onChangePart: (part: RecruitingPartApi) => void
+  partCompletion: Partial<Record<RecruitingPart, boolean>>
+  onChangePart: (part: RecruitingPart) => void
   onChangeStatus: (isComplete: boolean) => void
-  labelResolver: (part: RecruitingPartApi) => string
+  labelResolver: (part: RecruitingPart) => string
 }
 
 const Step3PartHeader = ({
@@ -49,10 +49,10 @@ const Step3PartHeader = ({
               }
             : undefined
         }
-        onChange={(option) => onChangePart(option.id as RecruitingPartApi)}
+        onChange={(option) => onChangePart(option.id as RecruitingPart)}
         css={{ width: 300, maxWidth: '100%' }}
         optionSuffix={(option) =>
-          partCompletion[option.id as RecruitingPartApi] ? (
+          partCompletion[option.id as RecruitingPart] ? (
             <span
               css={{
                 display: 'inline-flex',

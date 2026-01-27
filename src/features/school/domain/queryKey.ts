@@ -1,11 +1,28 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
-import { getRecruitments } from './api'
-import type { GetRecruitmentsRequestDTO } from './types'
+import {
+  getRecruitments,
+  getSavedApplicationQuestions,
+  getTempSavedApplicationQuestions,
+  getTempSavedRecruitment,
+} from './api'
+import type { GetRecruitmentsRequestDTO } from './apiTypes'
 
-export const recruiteKeys = createQueryKeys('terms', {
+export const recruiteKeys = createQueryKeys('recruitment', {
   recruitments: (status: GetRecruitmentsRequestDTO) => ({
-    queryKey: ['recruitments', status],
+    queryKey: [status],
     queryFn: () => getRecruitments(status),
+  }),
+  getTempSavedRecruitments: (recruitingId: string) => ({
+    queryKey: ['tempSaved', recruitingId],
+    queryFn: () => getTempSavedRecruitment(recruitingId),
+  }),
+  getApplicationForm: (recruitingId: string) => ({
+    queryKey: ['applicationForm'],
+    queryFn: () => getSavedApplicationQuestions(recruitingId),
+  }),
+  getTempSavedApplication: (recruitingId: string) => ({
+    queryKey: ['tempSavedApplication', recruitingId],
+    queryFn: () => getTempSavedApplicationQuestions(recruitingId),
   }),
 })

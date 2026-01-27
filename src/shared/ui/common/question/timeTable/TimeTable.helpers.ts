@@ -5,9 +5,9 @@ export const timeToMinutes = (time: string) => {
   return h * 60 + m
 }
 
-export const buildVisualRange = (timeRange: [string, string]) => {
-  const actualStartMin = timeToMinutes(timeRange[0])
-  const actualEndMin = timeToMinutes(timeRange[1])
+export const buildVisualRange = (timeRange: { start: string; end: string }) => {
+  const actualStartMin = timeToMinutes(timeRange.start)
+  const actualEndMin = timeToMinutes(timeRange.end)
   const visualStartMin = Math.floor(actualStartMin / 60) * 60
   const visualEndMin = Math.ceil(actualEndMin / 60) * 60
   return { actualStartMin, actualEndMin, visualStartMin, visualEndMin }
@@ -31,17 +31,34 @@ export const buildDisabledIndexMap = ({
   timeRange,
 }: {
   dates: Array<string>
-  disabledSlots: Partial<Record<string, Array<string>>>
-  timeRange: [string, string]
+  disabledSlots: Array<{
+    date: string
+    times: Array<string>
+  }>
+  timeRange: {
+    start: string
+    end: string
+  }
 }) => {
   const { actualStartMin, actualEndMin, visualStartMin, visualEndMin } = buildVisualRange(timeRange)
   const totalSlots = Math.floor((visualEndMin - visualStartMin) / 30)
 
+  const disabledByDate = disabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
+    const { date, times } = slot
+    acc[date].push(...times)
+    return acc
+  }, {})
+
   const map = Object.fromEntries(
     dates.map((d) => {
       const set = new Set<number>()
-      const disabledForDate = disabledSlots[d] ?? []
-      disabledForDate.forEach((t) => set.add(timeToIndex(t, visualStartMin)))
+      const disabledTimes = disabledByDate[d] ?? []
+      disabledTimes.forEach((time) => {
+        const index = timeToIndex(time, visualStartMin)
+        if (index >= 0 && index < totalSlots) {
+          set.add(index)
+        }
+      })
 
       for (let i = 0; i < totalSlots; i++) {
         const currentSlotMin = visualStartMin + i * 30

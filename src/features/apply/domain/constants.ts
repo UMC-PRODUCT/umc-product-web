@@ -11,7 +11,7 @@ export const QUESTION_TYPE_CONFIG = {
   DROPDOWN: { label: '드롭다운', icon: 'chevron-down' },
   SCHEDULE: { label: '시간표', icon: 'calendar' },
   PORTFOLIO: { label: '포트폴리오', icon: 'file' },
-  PART: { label: '파트 선택', icon: 'users' },
+  PREFERRED_PART: { label: '파트 선택', icon: 'users' },
 } as const
 
 /** 파일 업로드 상태 */

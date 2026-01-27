@@ -14,7 +14,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
     interviewTimeTable: {
       dateRange: { start: '2026-01-05', end: '2026-01-08' },
       timeRange: { start: '09:00', end: '23:00' },
-      slotMinutes: 30,
+      slotMinutes: '30',
       enabled: [
         {
           date: '2026-01-05',

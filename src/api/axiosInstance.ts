@@ -44,6 +44,9 @@ const removeRefreshToken = () => removeToken(STORAGE_KEYS.REFRESH_TOKEN)
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
 let refreshPromise: Promise<void> | null = null
@@ -55,7 +58,6 @@ axiosInstance.interceptors.request.use((config) => {
     headers.set('Authorization', `Bearer ${accessToken}`)
     config.headers = headers
   }
-
   return config
 })
 

@@ -1,14 +1,18 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteRecruitment,
+  deleteSingleQuestion,
   patchTempSavedRecruitQuestions,
   patchTempSaveRecruitment,
   postFirstRecruitment,
+  postRecruitmentPublish,
 } from '../domain/api'
 import type {
   PatchTempSavedRecruitQuestionsRequestDTO,
   PatchTempSaveRecruitmentRequestDTO,
-} from '../domain/types'
+  PostRecruitmentRequestPublishDTO,
+} from '../domain/apiTypes'
 
 export function useRecruitingMutation() {
   function usePostFirstRecruitment() {
@@ -24,9 +28,26 @@ export function useRecruitingMutation() {
       patchTempSavedRecruitQuestions(recruitingId, data),
     )
   }
+  function useDeleteRecruitment(recruitingId: number) {
+    return useCustomMutation(() => deleteRecruitment(recruitingId))
+  }
+
+  function useDeleteSingleQuestion(recruitingId: string) {
+    return useCustomMutation((questionId: string) =>
+      deleteSingleQuestion({ recruitmentId: recruitingId, questionId }),
+    )
+  }
+  function usePostPublishRecruitment(recrutingId: string) {
+    return useCustomMutation((requestBody: PostRecruitmentRequestPublishDTO) =>
+      postRecruitmentPublish(recrutingId, requestBody),
+    )
+  }
   return {
     usePostFirstRecruitment,
     usePatchTempSaveRecruitment,
     usePatchTempSavedRecruitQuestions,
+    useDeleteRecruitment,
+    useDeleteSingleQuestion,
+    usePostPublishRecruitment,
   }
 }

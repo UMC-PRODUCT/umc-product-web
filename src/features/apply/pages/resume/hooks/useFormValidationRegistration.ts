@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import type { UseFormRegister } from 'react-hook-form'
 
-import type { QuestionPage, QuestionUnion } from '../../../domain/model'
+import type { QuestionPage } from '@/features/apply/domain'
+
 import { createValidationRules } from '../../../schemas/applySchemas'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
@@ -14,8 +15,8 @@ export function useFormValidationRegistration(
   register: UseFormRegister<ResumeFormValues>,
 ) {
   useEffect(() => {
-    resolvedPages.forEach((page: QuestionPage) => {
-      ;(page.questions ?? []).forEach((question: QuestionUnion) => {
+    resolvedPages.forEach((page) => {
+      ;(page.questions ?? []).forEach((question) => {
         const validationRules = createValidationRules(question)
         register(String(question.id), validationRules)
       })

@@ -275,8 +275,11 @@ const Step2 = ({
                 render={({ field, fieldState }) => (
                   <Flex flexDirection="column" alignItems="flex-start" gap={30}>
                     <TimeTable
-                      dates={interviewDates}
-                      timeRange={[timeRange.start, timeRange.end]}
+                      dateRange={{
+                        start: interviewDates[0],
+                        end: interviewDates[interviewDates.length - 1],
+                      }}
+                      timeRange={timeRange}
                       value={enabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
                         acc[slot.date] = slot.time
                         return acc
@@ -289,6 +292,7 @@ const Step2 = ({
                         field.onChange(nextEnabled)
                       }}
                       mode="edit"
+                      disabledSlots={[]}
                     />
                     {fieldState.error && (
                       <ErrorMessage

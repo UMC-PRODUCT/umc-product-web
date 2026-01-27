@@ -1,20 +1,35 @@
-import type { QuestionList, QuestionPage, QuestionUnion } from '../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+
+import type { GetApplicationAnswerResponseDTO } from '../domain/apiTypes'
 
 export type ResumeFormValues = Record<string, unknown>
 
-export function buildDefaultValuesFromQuestions(questionData: QuestionList): ResumeFormValues {
+export function buildDefaultValuesFromQuestions(
+  questionData: RecruitingForms,
+  answerData?: GetApplicationAnswerResponseDTO,
+): ResumeFormValues {
   const defaultValues: ResumeFormValues = {}
+  const answers = Array.isArray(answerData?.answer) ? answerData.answer : []
 
-  questionData.pages.forEach((page: QuestionPage) => {
-    ;(page.questions ?? []).forEach((question: QuestionUnion) => {
-      defaultValues[String(question.id)] = question.answer
+  const findAnswerEntry = (questionId: number) =>
+    answers.find((entry) => entry.questionId === questionId)
+
+  const resolveAnswerValue = (questionId: number) => {
+    const entry = findAnswerEntry(questionId)
+    if (!entry) return undefined
+    return entry.value
+  }
+
+  questionData.pages.forEach((page) => {
+    page.questions.forEach((question) => {
+      defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
     })
-  })
-
-  Object.values(questionData.partQuestionBank).forEach((partPages) => {
-    partPages.forEach((partPage) => {
-      partPage.questions.forEach((question: QuestionUnion) => {
-        defaultValues[String(question.id)] = question.answer
+    defaultValues[String(page.scheduleQuestion.questionId)] = resolveAnswerValue(
+      page.scheduleQuestion.questionId,
+    )
+    page.partQuestions.forEach((partQuestionGroup) => {
+      partQuestionGroup.questions.forEach((question) => {
+        defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
       })
     })
   })

@@ -31,7 +31,7 @@ export const MOCKFORMSDATA_WITH_ANSWER: QuestionList = {
         {
           id: 3,
           questionNumber: 3,
-          type: 'PART',
+          type: 'PREFERRED_PART',
           question: '희망하는 파트를 1지망, 2지망 순으로 선택해 주세요.',
           necessary: true,
           options: [
@@ -345,7 +345,7 @@ export const MOCKFORMSDATA_WITH_NO_ANSWER: QuestionList = {
         {
           id: 3,
           questionNumber: 3,
-          type: 'PART',
+          type: 'PREFERRED_PART',
           question: '희망하는 파트를 1지망, 2지망 순으로 선택해 주세요.',
           necessary: true,
           options: [

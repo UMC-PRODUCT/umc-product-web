@@ -1,12 +1,16 @@
 import dayjs from 'dayjs'
 import { z } from 'zod/v3'
 
-import type { RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingPart } from '@/shared/types/form'
 
 type StepValues = Pick<
   RecruitingForms,
   'title' | 'recruitmentParts' | 'maxPreferredPartCount' | 'schedule' | 'noticeContent' | 'items'
 >
+
+type InterviewTimeTableWithEnabled = RecruitingForms['schedule']['interviewTimeTable'] & {
+  enabled?: Array<{ date: string; time?: Array<string> }>
+}
 
 const recruitmentPartEnum = z.enum([
   'PLAN',
@@ -16,7 +20,7 @@ const recruitmentPartEnum = z.enum([
   'ANDROID',
   'SPRINGBOOT',
   'NODEJS',
-] as [RecruitingPartApi, ...Array<RecruitingPartApi>])
+] as [RecruitingPart, ...Array<RecruitingPart>])
 
 export const step1Schema = z.object({
   title: z.string().trim().min(1, '모집 이름을 입력해 주세요.'),
@@ -32,7 +36,7 @@ const interviewTimeTableSchema = z.object({
     start: z.string(),
     end: z.string(),
   }),
-  slotMinutes: z.number().min(1),
+  slotMinutes: z.string(),
   enabled: z.array(
     z.object({
       date: z.string(),
@@ -150,11 +154,11 @@ export const step2Schema = withDateOrderRules(
 
 const hasSlotsForAllDates = (
   dates: Array<string>,
-  enabled: RecruitingForms['schedule']['interviewTimeTable']['enabled'],
+  enabledSlots?: Array<{ date: string; time?: Array<string> }>,
 ) =>
   dates.length > 0 &&
   dates.every((date) => {
-    const slotsForDate = enabled.find((slot) => slot.date === date)?.time ?? []
+    const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.time ?? []
     return slotsForDate.length > 0
   })
 
@@ -168,7 +172,10 @@ export const getStepReady = (
     const isValid = step2Schema.safeParse(values).success
     if (!isValid) return false
     if (options?.interviewDates) {
-      return hasSlotsForAllDates(options.interviewDates, values.schedule.interviewTimeTable.enabled)
+      return hasSlotsForAllDates(
+        options.interviewDates,
+        (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabled,
+      )
     }
     return true
   }

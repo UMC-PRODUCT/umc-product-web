@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
-import type { QuestionPage } from '../../../domain/model'
+import type { ResumeFormValues } from '@/features/apply/utils/buildDefaultValuesFromQuestions'
+import type { pageType } from '@/shared/types/form'
+
 import { getAllQuestionsFromPages, isQuestionAnswerEmpty } from '../../../utils'
-import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
 /**
  * 폼 완성도를 검증하는 훅
@@ -10,13 +11,13 @@ import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQues
  */
 export function useFormCompleteness(
   currentFormValues: ResumeFormValues,
-  resolvedPages: Array<QuestionPage>,
+  resolvedPages: Array<pageType>,
 ) {
   const isFormIncomplete = useMemo(() => {
     const allQuestions = getAllQuestionsFromPages(resolvedPages)
 
     return allQuestions.some((question) => {
-      const answerValue = currentFormValues[String(question.id)]
+      const answerValue = currentFormValues[String(question.questionId)]
       return isQuestionAnswerEmpty(question, answerValue)
     })
   }, [currentFormValues, resolvedPages])

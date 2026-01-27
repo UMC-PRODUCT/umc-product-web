@@ -1,49 +1,137 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-
-import type { QuestionList } from '@features/apply/domain'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '@/features/apply/hooks/useUnsavedChangeBlocker'
-import { MOCKFORMSDATA_WITH_NO_ANSWER } from '@/features/apply/mocks/questions'
 import * as S from '@/features/school/components/common/common'
 import { RecruitingProvider } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
 import RecruitingModals from '@/features/school/components/Recruiting/RecruitingPage/RecruitingModals'
 import RecruitingStepActions from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepActions'
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
-import type { PostFirstRecruitmentResponseDTO } from '@/features/school/domain/types'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
-import { TEMP_CREATE_FORM_DATA } from '@/features/school/mocks/tempCreateFormData'
-import { ensureRequiredItems } from '@/features/school/utils/recruiting/requiredItems'
-import { normalizeTempRecruitingForm } from '@/features/school/utils/recruiting/tempDraft'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { RecruitingForms } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingItem, RecruitingPart } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
+import type { GetApplicationFormResponseDTO } from '../domain'
+import { recruiteKeys } from '../domain/queryKey'
+import { useGetRecruitingData, useGetTempSavedApplicationData } from '../hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
+import {
+  buildQuestionsPayload,
+  buildRecruitingInitialForm,
+  buildSchedulePayload,
+} from '../utils/recruiting/buildInitialForm'
 
 type RecruitmentPart = RecruitingForms['recruitmentParts'][number]
 type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 
 type RecruitingProps = {
-  shouldLoadTempDraft?: boolean
   recruitingId?: string
 }
 
-const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingProps) => {
+const toRecruitingItemOptions = (
+  options: Array<{ content: string; orderNo?: number }> | undefined,
+  fallbackOrder: number,
+) =>
+  options?.map((option, index) => ({
+    content: option.content,
+    orderNo: option.orderNo ?? fallbackOrder + index + 1,
+  })) ?? []
+
+const buildRecruitingItemFromQuestion = (
+  question: {
+    questionId: number
+    type: string
+    questionText: string
+    required: boolean
+    options?: Array<{ content: string; orderNo?: number }>
+  },
+  target:
+    | { kind: 'COMMON_PAGE'; pageNo: number }
+    | { kind: 'PART'; part: RecruitingPart; pageNo: number },
+  orderIndex: number,
+): RecruitingItem => ({
+  target,
+  question: {
+    questionId: question.questionId,
+    type: question.type as RecruitingItem['question']['type'],
+    questionText: question.questionText,
+    required: question.required,
+    orderNo: orderIndex + 1,
+    options: toRecruitingItemOptions(question.options, orderIndex),
+  },
+})
+
+const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) => {
+  const items: Array<RecruitingItem> = []
+  const pages = formData.pages
+
+  pages.forEach((page) => {
+    const questions = Array.isArray(page.questions) ? page.questions : []
+    questions.forEach((question, index) =>
+      items.push(
+        buildRecruitingItemFromQuestion(
+          question,
+          { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
+          index,
+        ),
+      ),
+    )
+
+    items.push(
+      buildRecruitingItemFromQuestion(
+        page.scheduleQuestion,
+        { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
+        questions.length,
+      ),
+    )
+
+    const partGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
+    partGroups.forEach((partGroup) => {
+      const groupQuestions = Array.isArray(partGroup.questions) ? partGroup.questions : []
+      groupQuestions.forEach((question, index) =>
+        items.push(
+          buildRecruitingItemFromQuestion(
+            question,
+            { kind: 'PART', part: partGroup.part, pageNo: Number(page.page) },
+            index,
+          ),
+        ),
+      )
+    })
+  })
+
+  return items
+}
+
+const Recruiting = ({ recruitingId }: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
-  const { usePostFirstRecruitment } = useRecruitingMutation()
-  const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
-  const [currentRecruitingId, setCurrentRecruitingId] = useState<string | undefined>(recruitingId)
+  const { data: recruitingData } = useGetRecruitingData(recruitingId!)
+  const { data: applicationData } = useGetTempSavedApplicationData(recruitingId!)
+  const {
+    usePatchTempSaveRecruitment,
+    usePatchTempSavedRecruitQuestions,
+    usePostPublishRecruitment,
+  } = useRecruitingMutation()
+  const { mutate: patchTempSaveRecruitmentMutate } = usePatchTempSaveRecruitment(recruitingId!)
+  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchTempSavedRecruitQuestions(
+    recruitingId!,
+  )
+  const { mutate: postPublishRecruitmentMutate } = usePostPublishRecruitment(recruitingId!)
+
+  const queryClient = useQueryClient()
+  const applicationQuery = recruiteKeys.getTempSavedApplication(recruitingId!)
   const [modal, setModal] = useState({
     modalName: '',
     isOpen: false,
@@ -51,13 +139,23 @@ const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingPro
   const [isBackConfirmOpen, setIsBackConfirmOpen] = useState(false)
 
   const { form, values, interviewDates } = useRecruitingForm()
-  useEffect(() => {
-    setCurrentRecruitingId(recruitingId)
-  }, [recruitingId])
+
   const {
     trigger,
     formState: { isDirty },
   } = form
+
+  useEffect(() => {
+    const result = recruitingData?.result
+    form.reset(buildRecruitingInitialForm(result!))
+  }, [form, recruitingData?.result])
+
+  useEffect(() => {
+    const result = applicationData?.result
+    if (!result?.pages.length) return
+
+    form.setValue('items', convertApplicationFormToItems(result), { shouldDirty: false })
+  }, [form, applicationData?.result])
 
   // 모집 파트별 완료 상태 관리
   const partCompletionMap = useMemo(() => {
@@ -71,16 +169,6 @@ const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingPro
   // 화면 이탈 방지
   useBeforeUnload(isDirty)
   const navigationBlocker = useUnsavedChangesBlocker(isDirty)
-
-  useEffect(() => {
-    if (!shouldLoadTempDraft) return
-    const normalizedDraft = normalizeTempRecruitingForm(TEMP_CREATE_FORM_DATA)
-    const normalizedItems = ensureRequiredItems(
-      normalizedDraft.items,
-      normalizedDraft.recruitmentParts,
-    )
-    form.reset({ ...normalizedDraft, items: normalizedItems })
-  }, [form, shouldLoadTempDraft])
 
   const {
     step,
@@ -100,83 +188,53 @@ const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingPro
     scrollToTop: () => scrollTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   })
 
-  const trimmedTitle = values.title.trim()
-  const hasRecruitmentParts = values.recruitmentParts.length > 0
-  const canTempSave = trimmedTitle.length > 0 && hasRecruitmentParts
-  const normalizedRecruitingId = currentRecruitingId ?? 'new'
-  const isNewRecruiting = normalizedRecruitingId === 'new'
-  const isAutoSaveEnabled = !isNewRecruiting && step > 1 && canTempSave
-
   // 임시저장 자동화
-  const { handleSave: handleAutoSave } = useAutoSave({
+  const { handleSave } = useAutoSave({
     getValues: form.getValues,
-    enabled: isAutoSaveEnabled,
     onSave: () => {
-      console.log('[Recruiting] submit form payload:', submitFormPayload)
-      console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
+      patchTempSaveRecruitmentMutate(
+        {
+          title: values.title,
+          recruitmentParts: values.recruitmentParts,
+          maxPreferredPartCount: values.maxPreferredPartCount,
+          schedule: buildSchedulePayload(values.schedule)!,
+          noticeContent: values.noticeContent,
+        },
+        {
+          onSuccess: () => {
+            console.log('[Recruiting] Auto-saved temp recruitment draft successfully.')
+          },
+          onError: (error) => {
+            console.error('Failed to auto-save temp recruitment draft:', error)
+          },
+        },
+      )
+      patchTempSavedRecruitQuestionsMutate(
+        { items: buildQuestionsPayload(values.items) },
+        {
+          onSuccess: () => {
+            console.log('[Recruiting] Auto-saved temp recruitment questions successfully.')
+            queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+          },
+          onError: (error) => {
+            console.error('Failed to auto-save temp recruitment questions:', error)
+          },
+        },
+      )
       form.reset(form.getValues(), { keepErrors: true, keepTouched: true })
     },
   })
 
-  const handleFirstRecruitmentSuccess = (response: PostFirstRecruitmentResponseDTO) => {
-    const recruitmentIdFromResponse = response.result.recruitmentId
-
-    const nextId = String(recruitmentIdFromResponse)
-    setCurrentRecruitingId(nextId)
-    navigate({
-      to: '/school/recruiting/$recruitingId',
-      params: { recruitingId: nextId },
-      replace: true,
-      search: { source: 'temp' },
-    })
-  }
-
-  const handleTempSave = () => {
-    if (!canTempSave) return
-    if (isNewRecruiting) {
-      const data = {
-        recruitmentName: values.title,
-        parts: values.recruitmentParts,
-      }
-      postFirstRecruitmentMutate(data, {
-        onSuccess: handleFirstRecruitmentSuccess,
-      })
-      return
-    }
-    handleAutoSave()
-  }
-
   const handleNextStep = () => {
-    if (!canProceedStep) return
-    if (isNewRecruiting) {
-      const data = {
-        recruitmentName: values.title,
-        parts: values.recruitmentParts,
-      }
-      postFirstRecruitmentMutate(data, {
-        onSuccess: handleFirstRecruitmentSuccess,
-      })
-    }
     goToNextStep()
   }
-
-  // TODO: 질문 데이터 - 실제 API 연동 필요
-  const questionData: QuestionList = MOCKFORMSDATA_WITH_NO_ANSWER
 
   // 폼 제작과 폼 질문을 다른 API로 보내야하여 분리함.
   const submitFormPayload = {
     title: values.title,
     recruitmentParts: values.recruitmentParts,
     maxPreferredPartCount: values.maxPreferredPartCount,
-    schedule: {
-      applyStartAt: values.schedule.applyStartAt,
-      applyEndAt: values.schedule.applyEndAt,
-      docResultAt: values.schedule.docResultAt,
-      interviewStartAt: values.schedule.interviewStartAt,
-      interviewEndAt: values.schedule.interviewEndAt,
-      finalResultAt: values.schedule.finalResultAt,
-      interviewTimeTable: values.schedule.interviewTimeTable,
-    },
+    schedule: buildSchedulePayload(values.schedule)!,
     noticeContent: values.noticeContent,
     status: values.status,
   }
@@ -195,12 +253,32 @@ const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingPro
   const onConfirmSubmit = () => {
     console.log('[Recruiting] submit form payload:', submitFormPayload)
     console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
-
-    navigationBlocker.allowNextNavigationOnce()
-    navigate({
-      to: '/school/recruiting',
-      replace: true,
-    })
+    postPublishRecruitmentMutate(
+      {
+        recruitmentDraft: {
+          title: values.title,
+          recruitmentParts: values.recruitmentParts,
+          maxPreferredPartCount: values.maxPreferredPartCount,
+          schedule: buildSchedulePayload(values.schedule)!,
+          noticeContent: values.noticeContent,
+          status: values.status,
+        },
+        applicationFormQuestions: submitQuestionsPayload,
+      },
+      {
+        onSuccess: () => {
+          console.log('[Recruiting] Published recruitment successfully.')
+          navigationBlocker.allowNextNavigationOnce()
+          navigate({
+            to: '/school/recruiting',
+            replace: true,
+          })
+        },
+        onError: (error) => {
+          console.error('Failed to publish recruitment:', error)
+        },
+      },
+    )
   }
 
   const handleBackClick = () => {
@@ -267,19 +345,18 @@ const Recruiting = ({ shouldLoadTempDraft = false, recruitingId }: RecruitingPro
         canProceedStep={canProceedStep}
         onPrev={goToPreviousStep}
         onNext={handleNextStep}
-        onTempSave={handleTempSave}
+        onTempSave={handleSave}
         onOpenPreview={openPreview}
         onOpenConfirm={openConfirmModal}
-        isTempSaveDisabled={!canTempSave}
       />
       <RecruitingModals
         isOpen={modal.isOpen}
         modalName={modal.modalName}
         title={values.title}
-        questionData={questionData}
         onClosePreview={closePreview}
         onCloseConfirm={closeConfirmModal}
         onConfirmSubmit={onConfirmSubmit}
+        recruitingId={recruitingId!}
       />
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />

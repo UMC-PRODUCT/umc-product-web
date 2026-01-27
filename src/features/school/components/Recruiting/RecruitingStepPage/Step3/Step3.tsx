@@ -6,7 +6,7 @@ import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { Option, RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
+import type { Option, RecruitingForms, RecruitingPart } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 import Navigation from '@/shared/ui/common/Navigation/Navigation'
@@ -23,10 +23,10 @@ interface Step3Props {
   control: Control<RecruitingForms>
   page: number
   setPage: (nextPage: number) => void
-  part: RecruitingPartApi | null
-  setPart: (nextPart: RecruitingPartApi | null) => void
-  partCompletion: Partial<Record<RecruitingPartApi, boolean>>
-  setPartCompletion: (next: Partial<Record<RecruitingPartApi, boolean>>) => void
+  part: RecruitingPart | null
+  setPart: (nextPart: RecruitingPart | null) => void
+  partCompletion: Partial<Record<RecruitingPart, boolean>>
+  setPartCompletion: (next: Partial<Record<RecruitingPart, boolean>>) => void
 }
 
 const Step3 = ({
