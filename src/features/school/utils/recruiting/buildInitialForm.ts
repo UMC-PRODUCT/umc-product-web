@@ -1,4 +1,9 @@
-import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
+import type {
+  RecruitingForms,
+  RecruitingInterviewTimeTable,
+  RecruitingItem,
+  RecruitingSchedule,
+} from '@/shared/types/form'
 
 import type {
   GetTempSavedRecruitmentResponseDTO,
@@ -6,11 +11,22 @@ import type {
 } from '../../domain/apiTypes'
 import { normalizeTempRecruitingForm } from './tempDraft'
 
-const defaultInterviewTimeTable = {
+const defaultInterviewTimeTable: RecruitingInterviewTimeTable = {
   dateRange: { start: '', end: '' },
   timeRange: { start: '09:00', end: '23:00' },
   slotMinutes: '30',
-  enabledByDate: [] as Array<{ date: string; times: Array<string> }>,
+  enabledByDate: [],
+  disabledByDate: [],
+}
+
+const defaultRecruitingSchedule: RecruitingSchedule = {
+  applyStartAt: null,
+  applyEndAt: null,
+  docResultAt: null,
+  interviewStartAt: null,
+  interviewEndAt: null,
+  finalResultAt: null,
+  interviewTimeTable: defaultInterviewTimeTable,
 }
 
 export const buildSchedulePayload = (
@@ -60,28 +76,23 @@ export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
 export function buildRecruitingInitialForm(
   result: GetTempSavedRecruitmentResponseDTO,
 ): RecruitingForms {
-  const schedule = result.schedule
+  const schedule = result.schedule ?? defaultRecruitingSchedule
   const interviewTimeTable = schedule.interviewTimeTable
+  const safeInterviewTimeTable: RecruitingInterviewTimeTable = {
+    ...defaultInterviewTimeTable,
+    ...interviewTimeTable,
+  }
+  const safeSchedule: RecruitingSchedule = {
+    ...defaultRecruitingSchedule,
+    ...schedule,
+    interviewTimeTable: safeInterviewTimeTable,
+  }
 
   return normalizeTempRecruitingForm({
     title: result.title,
     recruitmentParts: result.recruitmentParts,
     maxPreferredPartCount: result.maxPreferredPartCount,
-    schedule: {
-      applyStartAt: schedule.applyStartAt,
-      applyEndAt: schedule.applyEndAt,
-      docResultAt: schedule.docResultAt,
-      interviewStartAt: schedule.interviewStartAt,
-      interviewEndAt: schedule.interviewEndAt,
-      finalResultAt: schedule.finalResultAt,
-      interviewTimeTable: {
-        dateRange: interviewTimeTable.dateRange,
-        timeRange: interviewTimeTable.timeRange,
-        slotMinutes: interviewTimeTable.slotMinutes,
-        enabledByDate: interviewTimeTable.enabledByDate,
-        disabledByDate: interviewTimeTable.disabledByDate,
-      },
-    },
+    schedule: safeSchedule,
     noticeContent: result.noticeContent,
     status: result.status,
     items: [],

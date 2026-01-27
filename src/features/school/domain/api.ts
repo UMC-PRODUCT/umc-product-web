@@ -12,17 +12,14 @@ import type {
   PatchTempSavedRecruitQuestionsResponseDTO,
   PatchTempSaveRecruitmentRequestDTO,
   PatchTempSaveRecruitmentResponseDTO,
-  PostFirstRecruitmentRequestDTO,
   PostFirstRecruitmentResponseDTO,
   PostRecruitmentRequestPublishDTO,
 } from './apiTypes'
 
-export const postFirstRecruitment = async (
-  requestBody: PostFirstRecruitmentRequestDTO,
-): Promise<CommonResponseDTO<PostFirstRecruitmentResponseDTO>> => {
-  const { data } = await axiosInstance.post('/recruitments', {
-    requestBody,
-  })
+export const postFirstRecruitment = async (): Promise<
+  CommonResponseDTO<PostFirstRecruitmentResponseDTO>
+> => {
+  const { data } = await axiosInstance.post('/recruitments')
   return data
 }
 

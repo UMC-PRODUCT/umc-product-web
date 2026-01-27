@@ -46,10 +46,10 @@ export type PostFirstRecruitmentRequestDTO = {
   parts?: Array<RecruitingPart>
 }
 
-export type PostFirstRecruitmentResponseDTO = CommonResponseDTO<{
+export type PostFirstRecruitmentResponseDTO = {
   recruitmentId?: number
   formId?: number
-}>
+}
 export type PatchTempSavedRecruitQuestionsRequestDTO = ApplicationFormPayload
 
 export type GetApplicationFormResponseDTO = RecruitingForms

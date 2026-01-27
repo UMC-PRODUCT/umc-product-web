@@ -26,7 +26,7 @@ export type RecruitingDraft = {
   title: string
   recruitmentParts: Array<RecruitingPart>
   maxPreferredPartCount: number
-  schedule: RecruitingSchedule
+  schedule?: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus
 }

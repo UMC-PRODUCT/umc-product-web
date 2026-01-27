@@ -18,26 +18,18 @@ const RecruitingMake = () => {
   const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
 
   const handleCreateRecruiting = () => {
-    postFirstRecruitmentMutate(
-      {},
-      {
-        onSuccess: (data) => {
-          const recruitingId = data.result.result.recruitmentId
-          if (recruitingId) {
-            navigate({
-              to: '/school/recruiting/$recruitingId',
-              params: { recruitingId: String(recruitingId) },
-              search: {
-                source: undefined,
-              },
-            })
-          } else {
-            // Handle error case, e.g., show alert or log
-            console.error('Recruitment ID is undefined')
-          }
-        },
+    postFirstRecruitmentMutate(undefined, {
+      onSuccess: (data) => {
+        const recruitingId = data.result.recruitmentId
+        navigate({
+          to: '/school/recruiting/$recruitingId',
+          params: { recruitingId: String(recruitingId) },
+          search: {
+            source: undefined,
+          },
+        })
       },
-    )
+    })
   }
 
   const handleLoadRecruiting = () => {

@@ -34,7 +34,7 @@ export const buildDefaultPage2Item = (): RecruitingItem => ({
 })
 
 export const buildDefaultPartItem = (part: RecruitingPart): RecruitingItem => ({
-  target: { kind: 'PART', part },
+  target: { kind: 'PART', part, pageNo: 2 },
   question: {
     type: 'LONG_TEXT',
     questionText: '',
@@ -76,7 +76,7 @@ export const ensureRequiredItems = (
       }
       return item
     })
-    .filter((item) => item.target.kind !== 'PART' || recruitmentParts.includes(item.target.part))
+    .filter((item) => item.target.kind !== 'PART' || recruitmentParts.includes(item.target.part!))
 
   if (!hasPreferredPartItem(next)) {
     next.push(buildPreferredPartItem())

@@ -21,8 +21,18 @@ const getInterviewDateKeys = (start: string | null, end: string | null) => {
   return dates
 }
 
-type InterviewTimeTableWithOptionalEnabled = RecruitingForms['schedule']['interviewTimeTable'] & {
+type InterviewDateSlot = {
+  date: string
+  time?: Array<string>
+  times?: Array<string>
+}
+
+type InterviewTimeTableWithOptionalEnabled = Omit<
+  RecruitingForms['schedule']['interviewTimeTable'],
+  'enabledByDate'
+> & {
   enabled?: Array<{ date: string; time: Array<string> }>
+  enabledByDate?: Array<InterviewDateSlot>
 }
 
 const resolveInterviewEnabled = (
@@ -32,10 +42,10 @@ const resolveInterviewEnabled = (
   if (Array.isArray(fromEnabled)) {
     return fromEnabled
   }
-  const enabledByDate = table.enabledByDate
+  const enabledByDate = table.enabledByDate ?? []
   return enabledByDate.map((slot) => ({
     date: slot.date,
-    time: (slot as { times?: Array<string> }).times ?? slot.time,
+    time: slot.times ?? slot.time ?? [],
   }))
 }
 
