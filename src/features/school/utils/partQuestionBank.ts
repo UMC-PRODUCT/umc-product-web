@@ -2,35 +2,35 @@ import { PART } from '@/shared/constants/umc'
 import type {
   PartQuestionBank,
   PartQuestionBankPayload,
+  RecruitingPart,
   RecruitingQuestion,
 } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
 
-const PART_KEY_MAP: Record<PartType, string> = {
-  Plan: 'Plan',
-  Design: 'Design',
-  Web: 'Web',
-  iOS: 'iOS',
-  Android: 'Android',
-  SpringBoot: 'SpringBoot',
-  'Node.js': 'Node_js',
+const PART_KEY_MAP: Record<RecruitingPart, string> = {
+  PLAN: 'Plan',
+  DESIGN: 'Design',
+  WEB: 'Web',
+  IOS: 'iOS',
+  ANDROID: 'Android',
+  SPRINGBOOT: 'SpringBoot',
+  NODEJS: 'Node.js',
 }
 
-const PART_KEY_REVERSE: Record<string, PartType> = Object.entries(PART_KEY_MAP).reduce(
+const PART_KEY_REVERSE: Record<string, RecruitingPart> = Object.entries(PART_KEY_MAP).reduce(
   (acc, [part, key]) => {
-    acc[key] = part as PartType
+    acc[key] = part as RecruitingPart
     return acc
   },
-  {} as Record<string, PartType>,
+  {} as Record<string, RecruitingPart>,
 )
 
-export const getPartKey = (part: PartType) => PART_KEY_MAP[part]
+export const getPartKey = (part: RecruitingPart) => PART_KEY_MAP[part]
 
 export const getPartFromKey = (key: string) => PART_KEY_REVERSE[key]
 
 export const buildPartQuestionBankPayload = (
   bank: PartQuestionBank,
-  recruitingPart: Array<PartType>,
+  recruitingPart: Array<RecruitingPart>,
 ) => {
   return recruitingPart.reduce<PartQuestionBankPayload>((acc, part) => {
     const key = getPartKey(part)
@@ -46,7 +46,7 @@ export const getAllQuestionIdsFromPartBank = (bank: PartQuestionBank) =>
       : ([] as Array<RecruitingQuestion['questionId']>),
   )
 
-export const getInitialPartQuestionBank = (recruitingPart: Array<PartType>) =>
+export const getInitialPartQuestionBank = (recruitingPart: Array<RecruitingPart>) =>
   recruitingPart.reduce<PartQuestionBank>((acc, part) => {
     const key = getPartKey(part)
     if (!acc[key]) {

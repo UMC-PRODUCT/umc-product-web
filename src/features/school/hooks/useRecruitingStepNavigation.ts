@@ -93,7 +93,7 @@ export const useRecruitingStepNavigation = ({
           setStep3Page(issueItem.target.pageNo)
         } else if (issueItem?.target.kind === 'PART') {
           setStep3Page(3)
-          setStep3Part(issueItem.target.part)
+          setStep3Part(issueItem.target.part ?? null)
         } else {
           setStep3Page(3)
         }
@@ -125,7 +125,7 @@ export const useRecruitingStepNavigation = ({
           'schedule.interviewStartAt',
           'schedule.interviewEndAt',
           'schedule.finalResultAt',
-          'schedule.interviewTimeTable.enabled',
+          'schedule.interviewTimeTable.enabledByDate',
         ])
         return
       }

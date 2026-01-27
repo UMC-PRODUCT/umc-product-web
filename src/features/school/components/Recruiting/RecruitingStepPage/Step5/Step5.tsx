@@ -120,7 +120,6 @@ const Step5 = ({
               {Object.values(
                 partItems.reduce<Record<string, Array<RecruitingItem>>>((acc, item) => {
                   if (item.target.kind !== 'PART') return acc
-                  acc[item.target.part] = acc[item.target.part] ?? []
                   acc[item.target.part].push(item)
                   return acc
                 }, {}),

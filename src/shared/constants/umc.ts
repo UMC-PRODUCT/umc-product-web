@@ -9,8 +9,10 @@
 import type { AccountLevelType, PartType } from '@features/auth/domain'
 import { ACCOUNT_LEVEL_LIST, PART_CONFIG, PART_LIST } from '@features/auth/domain'
 
+import type { RecruitingPart } from '../types/form'
+
 // 하위 호환성을 위한 re-export
-export const PART: Array<PartType> = [...PART_LIST]
+export const PART: Array<RecruitingPart> = [...PART_LIST]
 
 export const FOOTER_INFO: { email: string; generation: number; master: string } = {
   email: 'email.umc@example.com',

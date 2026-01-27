@@ -31,13 +31,13 @@ export const PART_CONFIG = {
 
 /** 배열 형태의 파트 목록 (순서 보장) */
 export const PART_LIST = [
-  'Plan',
-  'Design',
-  'Web',
-  'iOS',
-  'Android',
-  'SpringBoot',
-  'Node.js',
+  'PLAN',
+  'DESIGN',
+  'WEB',
+  'IOS',
+  'ANDROID',
+  'SPRINGBOOT',
+  'NODEJS',
 ] as const
 
 /** 배열 형태의 계정 레벨 목록 (UI용) */
