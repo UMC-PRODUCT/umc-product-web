@@ -11,38 +11,38 @@ type PartInfo = {
 
 export const PART_INFO_MOCK: Array<PartInfo> = [
   {
-    part: 'Plan',
+    part: 'PLAN',
     state: 'OPEN',
-    ability: PART_ABILITY['Plan'],
+    ability: PART_ABILITY['PLAN'],
   },
   {
-    part: 'Design',
+    part: 'DESIGN',
     state: 'OPEN',
-    ability: PART_ABILITY['Design'],
+    ability: PART_ABILITY['DESIGN'],
   },
   {
-    part: 'Android',
+    part: 'ANDROID',
     state: 'OPEN',
-    ability: PART_ABILITY['Android'],
+    ability: PART_ABILITY['ANDROID'],
   },
   {
-    part: 'iOS',
+    part: 'IOS',
     state: 'OPEN',
-    ability: PART_ABILITY['iOS'],
+    ability: PART_ABILITY['IOS'],
   },
   {
-    part: 'Web',
+    part: 'WEB',
     state: 'CLOSED',
-    ability: PART_ABILITY['Web'],
+    ability: PART_ABILITY['WEB'],
   },
   {
-    part: 'SpringBoot',
+    part: 'SPRINGBOOT',
     state: 'CLOSED',
-    ability: PART_ABILITY['SpringBoot'],
+    ability: PART_ABILITY['SPRINGBOOT'],
   },
   {
-    part: 'Node.js',
+    part: 'NODEJS',
     state: 'CLOSED',
-    ability: PART_ABILITY['Node.js'],
+    ability: PART_ABILITY['NODEJS'],
   },
 ]

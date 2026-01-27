@@ -18,7 +18,7 @@ export type AccountStateType = keyof typeof ACCOUNT_STATE_CONFIG
 
 /** 파트 타입 (상수에서 유도) */
 export type PartType = keyof typeof PART_CONFIG
-
+export type PartSmallType = 'Plan' | 'Design' | 'Web' | 'iOS' | 'Android' | 'SpringBoot' | 'Node.js'
 /** 파트 목록 타입 */
 export type PartListType = typeof PART_LIST
 

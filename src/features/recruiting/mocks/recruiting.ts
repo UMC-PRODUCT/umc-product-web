@@ -29,7 +29,7 @@ export const RECRUITING_NOTICE = {
 
 export const MOCK_PART_CURRICULUM: Array<PartData> = [
   {
-    id: 'Plan',
+    id: 'PLAN',
     label: 'Plan',
     requiredSkill: 'Figma 기초',
     curriculum: [
@@ -49,7 +49,7 @@ export const MOCK_PART_CURRICULUM: Array<PartData> = [
     ],
   },
   {
-    id: 'Design',
+    id: 'DESIGN',
     label: 'Design',
     requiredSkill: 'Figma 기초',
     curriculum: [

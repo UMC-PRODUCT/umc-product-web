@@ -18,13 +18,13 @@ const DEFAULT_RECRUITING_PARTS: Array<RecruitingPart> = [
 ]
 
 const PART_TYPE_TO_RECRUITING_PART: Record<PartType, RecruitingPart> = {
-  Plan: 'PLAN',
-  Design: 'DESIGN',
-  Web: 'WEB',
-  iOS: 'IOS',
-  Android: 'ANDROID',
-  SpringBoot: 'SPRINGBOOT',
-  'Node.js': 'NODEJS',
+  PLAN: 'PLAN',
+  DESIGN: 'DESIGN',
+  WEB: 'WEB',
+  IOS: 'IOS',
+  ANDROID: 'ANDROID',
+  SPRINGBOOT: 'SPRINGBOOT',
+  NODEJS: 'NODEJS',
 }
 
 export function resolvePagesWithSlots(

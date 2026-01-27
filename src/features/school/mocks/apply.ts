@@ -4,31 +4,31 @@ import type { PartCompletion } from '@/shared/types/form'
 
 export const APPLY_PART_STATUS_MOCKS: Array<PartApplyStatus> = [
   {
-    part: 'Plan',
+    part: 'PLAN',
     applyNum: 42,
   },
   {
-    part: 'Design',
+    part: 'DESIGN',
     applyNum: 37,
   },
   {
-    part: 'Web',
+    part: 'WEB',
     applyNum: 45,
   },
   {
-    part: 'Android',
+    part: 'ANDROID',
     applyNum: 33,
   },
   {
-    part: 'iOS',
+    part: 'IOS',
     applyNum: 29,
   },
   {
-    part: 'SpringBoot',
+    part: 'SPRINGBOOT',
     applyNum: 31,
   },
   {
-    part: 'Node.js',
+    part: 'NODEJS',
     applyNum: 27,
   },
   {
@@ -39,37 +39,37 @@ export const APPLY_PART_STATUS_MOCKS: Array<PartApplyStatus> = [
 
 export const EVALUATION_PART_STATUS_MOCKS: Array<PartEvaluationStatus> = [
   {
-    part: 'Plan',
+    part: 'PLAN',
     document: '서류 평가 예정',
     interview: '면접 평가 전',
   },
   {
-    part: 'Design',
+    part: 'DESIGN',
     document: '서류 평가 중',
     interview: '면접 평가 전',
   },
   {
-    part: 'Web',
+    part: 'WEB',
     document: '서류 평가 완료',
     interview: '면접 평가 예정',
   },
   {
-    part: 'Android',
+    part: 'ANDROID',
     document: '서류 평가 완료',
     interview: '면접 평가 예정',
   },
   {
-    part: 'iOS',
+    part: 'IOS',
     document: '서류 평가 완료',
     interview: '면접 평가 중',
   },
   {
-    part: 'SpringBoot',
+    part: 'SPRINGBOOT',
     document: '서류 평가 완료',
     interview: '면접 평가 중',
   },
   {
-    part: 'Node.js',
+    part: 'NODEJS',
     document: '서류 평가 완료',
     interview: '면접 평가 완료',
   },
