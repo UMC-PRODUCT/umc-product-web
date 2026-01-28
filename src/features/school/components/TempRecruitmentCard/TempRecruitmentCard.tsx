@@ -70,7 +70,7 @@ const TempRecruitmentCard = ({
               navigate({
                 to: '/school/recruiting/$recruitingId',
                 params: { recruitingId: recruitmentId.toString() },
-                search: { source: 'temp' },
+                search: { source: 'temp', step: 1 },
               })
             }}
           />
@@ -94,7 +94,7 @@ const TempRecruitmentCard = ({
             navigate({
               to: '/school/recruiting/$recruitingId',
               params: { recruitingId: recruitmentId.toString() },
-              search: { source: 'temp' },
+              search: { source: 'temp', step: 1 },
             })
           }
           css={{ width: '65px', height: '28px' }}

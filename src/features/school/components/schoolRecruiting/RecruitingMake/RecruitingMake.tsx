@@ -25,7 +25,8 @@ const RecruitingMake = () => {
           to: '/school/recruiting/$recruitingId',
           params: { recruitingId: String(recruitingId) },
           search: {
-            source: undefined,
+            source: 'temp',
+            step: 1,
           },
         })
       },
