@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useResumeForm } from '@features/apply/pages/resume/useResumeForm'
+
 import ResumeContent from '@/features/apply/components/ResumeContent'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { media } from '@/shared/styles/media'
@@ -7,7 +9,6 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
-import { useResumeForm } from '../../../../apply/pages/resume/useResumeForm'
 import { useGetApplicationFormData } from '../../../hooks/useGetRecruitingData'
 import * as S from './RecruitingPreview.style'
 
@@ -79,9 +80,7 @@ const RecruitingPreview = ({
                 gap={22}
               >
                 <ResumeContent
-                  questionData={{
-                    ...questionData.pages,
-                  }}
+                  questionData={questionData.pages}
                   displayLastSavedTime={null}
                   handleSave={() => {}}
                   isEdit={false}

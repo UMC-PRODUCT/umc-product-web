@@ -32,7 +32,13 @@ export type pageType = {
     type: QuestionType
     questionText: string
     required: boolean
-    schedule: RecruitingSchedule
+    schedule: {
+      dateRange: range
+      timeRange: range
+      slotMinutes: string
+      enabledByDate: Array<{ date: string; times: Array<string> }>
+      disabledByDate: Array<{ date: string; times: Array<string> }>
+    }
   } | null
   partQuestions: Array<{
     part: RecruitingPart

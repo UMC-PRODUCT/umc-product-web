@@ -136,7 +136,7 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
   const { mutate: postPublishRecruitmentMutate } = usePostPublishRecruitment(recruitingId!)
 
   const queryClient = useQueryClient()
-  const applicationQuery = recruiteKeys.getTempSavedApplication(recruitingId!)
+
   const [modal, setModal] = useState({
     modalName: '',
     isOpen: false,
@@ -210,6 +210,7 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
         },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [recruitingId] })
             console.log('[Recruiting] Auto-saved temp recruitment draft successfully.')
           },
           onError: (error) => {
@@ -222,7 +223,7 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
         {
           onSuccess: () => {
             console.log('[Recruiting] Auto-saved temp recruitment questions successfully.')
-            queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+            queryClient.invalidateQueries({ queryKey: [recruitingId] })
           },
           onError: (error) => {
             console.error('Failed to auto-save temp recruitment questions:', error)
@@ -255,25 +256,21 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
   }
 
   // 모달 관련 함수
-  const openPreview = () => setModal({ isOpen: true, modalName: 'recruitingPreview' })
+  const openPreview = () => {
+    queryClient.invalidateQueries({
+      queryKey: recruiteKeys.getApplicationForm(recruitingId!).queryKey,
+    })
+    setModal({ isOpen: true, modalName: 'recruitingPreview' })
+  }
   const closePreview = () => setModal({ isOpen: false, modalName: '' })
   const openConfirmModal = () => setModal({ isOpen: true, modalName: 'createRecruitingConfirm' })
   const closeConfirmModal = () => setModal({ isOpen: false, modalName: '' })
 
   // 폼 제출 함수
   const onConfirmSubmit = () => {
-    console.log('[Recruiting] submit form payload:', submitFormPayload)
-    console.log('[Recruiting] submit questions payload:', submitQuestionsPayload)
     postPublishRecruitmentMutate(
       {
-        recruitmentDraft: {
-          title: values.title,
-          recruitmentParts: values.recruitmentParts,
-          maxPreferredPartCount: values.maxPreferredPartCount,
-          schedule: buildSchedulePayload(values.schedule)!,
-          noticeContent: values.noticeContent,
-          status: values.status,
-        },
+        recruitmentDraft: submitFormPayload,
         applicationFormQuestions: submitQuestionsPayload,
       },
       {

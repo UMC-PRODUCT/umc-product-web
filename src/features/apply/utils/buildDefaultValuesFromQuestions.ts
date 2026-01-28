@@ -22,16 +22,23 @@ export function buildDefaultValuesFromQuestions(
 
   const pages = Array.isArray(questionData.pages) ? questionData.pages : []
   pages.forEach((page) => {
-    page.questions.forEach((question) => {
+    const questions = Array.isArray(page.questions) ? page.questions : []
+    questions.forEach((question) => {
       defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
     })
+
     if (page.scheduleQuestion) {
       defaultValues[String(page.scheduleQuestion.questionId)] = resolveAnswerValue(
         page.scheduleQuestion.questionId,
       )
     }
-    page.partQuestions.forEach((partQuestionGroup) => {
-      partQuestionGroup.questions.forEach((question) => {
+
+    const partQuestions = Array.isArray(page.partQuestions) ? page.partQuestions : []
+    partQuestions.forEach((partQuestionGroup) => {
+      const nestedQuestions = Array.isArray(partQuestionGroup.questions)
+        ? partQuestionGroup.questions
+        : []
+      nestedQuestions.forEach((question) => {
         defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
       })
     })

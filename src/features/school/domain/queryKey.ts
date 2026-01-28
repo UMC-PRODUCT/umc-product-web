@@ -18,11 +18,11 @@ export const recruiteKeys = createQueryKeys('recruitment', {
     queryFn: () => getTempSavedRecruitment(recruitingId),
   }),
   getApplicationForm: (recruitingId: string) => ({
-    queryKey: ['applicationForm'],
+    queryKey: ['applicationForm', recruitingId],
     queryFn: () => getSavedApplicationQuestions(recruitingId),
   }),
   getTempSavedApplication: (recruitingId: string) => ({
-    queryKey: ['tempSavedApplication', recruitingId],
+    queryKey: ['tempSaved', recruitingId],
     queryFn: () => getTempSavedApplicationQuestions(recruitingId),
   }),
 })
