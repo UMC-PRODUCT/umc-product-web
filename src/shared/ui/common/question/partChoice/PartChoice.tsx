@@ -25,7 +25,7 @@ const PartChoice = ({
   const selectedOptions = Array.isArray(value) ? value : []
   const renderedOptions = Array.isArray(preferredPartOptions) ? preferredPartOptions : []
   const normalizedMaxSelectCount =
-    typeof maxSelectCount === 'number' ? Math.max(maxSelectCount, 0) : 0
+    typeof maxSelectCount === 'number' ? Math.max(maxSelectCount, 1) : 1
   const ranks = Array.from({ length: normalizedMaxSelectCount }, (_, index) => index + 1)
 
   const handleOptionSelect = (targetId: number, option: RecruitingPart) => {
@@ -38,7 +38,6 @@ const PartChoice = ({
 
   const getSelectedOption = (targetId: number) =>
     selectedOptions.find((item) => item.id === targetId)?.answer
-
   return (
     <Flex flexDirection="column" gap={22}>
       {ranks.map((targetId) => {
