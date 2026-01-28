@@ -1,15 +1,15 @@
+import type { PartSmallType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option, RecruitingPart } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
 type Step3PartHeaderProps = {
-  partOptions: Array<Option<PartType>>
+  partOptions: Array<Option<PartSmallType>>
   selectedPart: RecruitingPart | null
   isSelectedPartComplete: boolean
   partCompletion: Partial<Record<RecruitingPart, boolean>>

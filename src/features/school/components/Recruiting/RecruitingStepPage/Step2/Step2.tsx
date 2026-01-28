@@ -40,18 +40,22 @@ const Step2 = ({
   const lastErrorStateRef = useRef<Record<string, boolean>>({})
 
   const interviewDates = useMemo(() => {
-    if (!interviewStartAt || !interviewEndAt) return []
-    const start = dayjs(interviewStartAt).startOf('day')
-    const end = dayjs(interviewEndAt).startOf('day')
-    if (end.isBefore(start, 'day')) return []
+    const { start, end } = interviewTimeTable.dateRange
+    if (!start || !end) return []
+    const startDate = dayjs(start)
+    const endDate = dayjs(end)
+    if (endDate.isBefore(startDate, 'day')) return []
     const dates: Array<string> = []
-    let current = start
-    while (!current.isAfter(end, 'day')) {
+    let current = startDate
+    while (!current.isAfter(endDate, 'day')) {
       dates.push(current.format('YYYY-MM-DD'))
       current = current.add(1, 'day')
     }
     return dates
-  }, [interviewStartAt, interviewEndAt])
+  }, [interviewTimeTable.dateRange])
+  const hasTimeTableRange = Boolean(
+    interviewTimeTable.dateRange.start && interviewTimeTable.dateRange.end,
+  )
 
   const enabledSlots = useMemo(
     () =>
@@ -65,6 +69,7 @@ const Step2 = ({
 
   const lastInterviewRangeKey = useRef<string>('')
   useEffect(() => {
+    if (!hasTimeTableRange) return
     const startKey = interviewStartAt ? dayjs(interviewStartAt).valueOf() : 'null'
     const endKey = interviewEndAt ? dayjs(interviewEndAt).valueOf() : 'null'
     const nextKey = `${startKey}-${endKey}`
@@ -80,7 +85,7 @@ const Step2 = ({
       return
     }
     setValue('schedule.interviewTimeTable.enabledByDate', [])
-  }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue])
+  }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue, hasTimeTableRange])
 
   useEffect(() => {
     if (!interviewStartAt || !interviewEndAt) {

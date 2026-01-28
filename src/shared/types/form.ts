@@ -117,6 +117,7 @@ export type RecruitingItemTarget = {
 export type RecruitingItemOption = {
   content: string
   orderNo: number
+  optionId?: number
 }
 
 export type RecruitingItemQuestion = {

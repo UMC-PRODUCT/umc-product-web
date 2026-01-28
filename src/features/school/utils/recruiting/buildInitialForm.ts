@@ -69,6 +69,7 @@ export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
       options: item.question.options?.map((option) => ({
         content: option.content,
         orderNo: option.orderNo,
+        optionId: option.optionId,
       })),
     },
   }))

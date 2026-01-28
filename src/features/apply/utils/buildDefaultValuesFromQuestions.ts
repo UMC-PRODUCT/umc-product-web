@@ -20,7 +20,8 @@ export function buildDefaultValuesFromQuestions(
     return entry.value
   }
 
-  questionData.pages.forEach((page) => {
+  const pages = Array.isArray(questionData.pages) ? questionData.pages : []
+  pages.forEach((page) => {
     page.questions.forEach((question) => {
       defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
     })

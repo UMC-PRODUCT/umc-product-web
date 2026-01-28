@@ -36,15 +36,18 @@ type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 
 type RecruitingProps = {
   recruitingId?: string
+  initialStepNumber?: number
+  onStepNumberChange?: (nextStep: number) => void
 }
 
 const toRecruitingItemOptions = (
-  options: Array<{ content: string; orderNo?: number }> | undefined,
+  options: Array<{ content: string; orderNo?: number; optionId?: number }> | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
     content: option.content,
     orderNo: option.orderNo ?? fallbackOrder + index + 1,
+    optionId: option.optionId,
   })) ?? []
 
 const buildRecruitingItemFromQuestion = (
@@ -53,7 +56,7 @@ const buildRecruitingItemFromQuestion = (
     type: string
     questionText: string
     required: boolean
-    options?: Array<{ content: string; orderNo?: number }>
+    options?: Array<{ content: string; orderNo?: number; optionId?: number }>
   },
   target:
     | { kind: 'COMMON_PAGE'; pageNo: number }
@@ -115,7 +118,7 @@ const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) 
   return items
 }
 
-const Recruiting = ({ recruitingId }: RecruitingProps) => {
+const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
@@ -189,6 +192,8 @@ const Recruiting = ({ recruitingId }: RecruitingProps) => {
     trigger,
     partCompletion: partCompletionMap,
     scrollToTop: () => scrollTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    initialStepNumber,
+    onStepNumberChange,
   })
 
   // 임시저장 자동화
@@ -228,8 +233,11 @@ const Recruiting = ({ recruitingId }: RecruitingProps) => {
     },
   })
 
-  const handleNextStep = () => {
-    goToNextStep()
+  const handleNextStep = async () => {
+    const moved = await goToNextStep()
+    if (moved) {
+      handleSave()
+    }
   }
 
   // 폼 제작과 폼 질문을 다른 API로 보내야하여 분리함.

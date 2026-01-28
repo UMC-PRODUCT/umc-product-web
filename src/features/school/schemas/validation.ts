@@ -9,7 +9,7 @@ type StepValues = Pick<
 >
 
 type InterviewTimeTableWithEnabled = RecruitingForms['schedule']['interviewTimeTable'] & {
-  enabled?: Array<{ date: string; time?: Array<string> }>
+  enabledByDate?: Array<{ date: string; times?: Array<string> }>
 }
 
 const recruitmentPartEnum = z.enum([
@@ -37,10 +37,10 @@ const interviewTimeTableSchema = z.object({
     end: z.string(),
   }),
   slotMinutes: z.string(),
-  enabled: z.array(
+  enabledByDate: z.array(
     z.object({
       date: z.string(),
-      time: z.array(z.string()),
+      times: z.array(z.string()),
     }),
   ),
 })
@@ -174,7 +174,7 @@ export const getStepReady = (
     if (options?.interviewDates) {
       return hasSlotsForAllDates(
         options.interviewDates,
-        (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabled,
+        (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabledByDate,
       )
     }
     return true
@@ -207,6 +207,7 @@ const itemQuestionSchema = z.object({
       z.object({
         content: z.string(),
         orderNo: z.number(),
+        optionId: z.number().optional(),
       }),
     )
     .optional(),

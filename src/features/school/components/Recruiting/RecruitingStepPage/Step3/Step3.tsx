@@ -2,12 +2,12 @@ import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
+import type { PartSmallType } from '@/features/auth/domain/model'
 import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option, RecruitingForms, RecruitingPart } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 import Navigation from '@/shared/ui/common/Navigation/Navigation'
 import Section from '@/shared/ui/common/Section/Section'
@@ -40,9 +40,9 @@ const Step3 = ({
 }: Step3Props) => {
   const recruitmentParts = useWatch({ control, name: 'recruitmentParts' })
   const items = useWatch({ control, name: 'items' })
-  const partOptions = useMemo<Array<Option<PartType>>>(
+  const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
-      recruitmentParts.reduce<Array<Option<PartType>>>((acc, partValue) => {
+      recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
         const label = mapApiPartToPartType(partValue)
         acc.push({ label, id: partValue })
         return acc
