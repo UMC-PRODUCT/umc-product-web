@@ -6,7 +6,10 @@ import { CheckChoice } from './CheckChoice'
 interface MultipleChoiceQuestionProps {
   value?: Array<string>
   onChange?: (selectedOptions: Array<string>) => void
-  options: Array<string>
+  options: Array<{
+    optionId?: string
+    content: string
+  }>
   mode: QuestionMode
 }
 
@@ -30,16 +33,15 @@ export const MultipleChoice = ({
 
   return (
     <Flex flexDirection="column" gap={10}>
-      {options.map((option, optionIndex) => {
-        const isOptionSelected = selectedOptions.includes(option)
-        const uniqueKey = `${option}-${optionIndex}`
-
+      {options.map((option, index) => {
+        const optionId = option.optionId ?? `${option.content}-${index}`
+        const isOptionSelected = selectedOptions.includes(optionId)
         return (
           <CheckChoice
-            key={uniqueKey}
-            content={option}
+            key={optionId}
+            content={option.content}
             isChecked={isOptionSelected}
-            onToggle={() => handleOptionToggle(option)}
+            onToggle={() => handleOptionToggle(optionId)}
             mode={mode}
           />
         )

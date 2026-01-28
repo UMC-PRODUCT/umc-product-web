@@ -1,4 +1,3 @@
-import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { media } from '@shared/styles/media'
@@ -106,24 +105,6 @@ const Blur = styled.div`
   );
 `
 
-const spinRotation = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`
-
-const Spinner = styled.span`
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(255, 255, 255, 0.25);
-  border-top-color: ${theme.colors.lime};
-  border-radius: 50%;
-  animation: ${spinRotation} 0.8s linear infinite;
-`
-
 const StatusWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -144,7 +125,6 @@ export {
   Heading2,
   ListItem,
   Paragraph,
-  Spinner,
   StatusWrapper,
   StyledTable,
   TableCell,

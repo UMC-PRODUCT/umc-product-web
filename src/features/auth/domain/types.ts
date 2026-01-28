@@ -1,0 +1,40 @@
+import type { CommonResponseDTO } from '@/shared/types/api'
+
+export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
+export type RegisterRequestDTO = {
+  oAuthVerificationToken?: string
+  name?: string
+  nickname?: string
+  emailVerificationToken?: string
+  schoolId?: number
+  profileImageId?: number
+  termsAgreements?: Array<{
+    termsId?: number
+    isAgreed?: boolean
+  }>
+}
+export type RefreshResponseDTO = CommonResponseDTO<{ accessToken?: string }>
+export type RefreshRequestDTO = {
+  refreshToken?: string
+}
+export type EmailVerificationRequestDTO = {
+  email?: string
+}
+export type EmailVerificationResponseDTO = CommonResponseDTO<{ emailVerificationId?: string }>
+
+export type VerificationCodeRequestDTO = {
+  emailVerificationId?: number
+  verificationCode?: string
+}
+export type VerificationCodeResponseDTO = CommonResponseDTO<{ emailVerificationToken?: string }>
+
+export type MyInfoResponseDTO = CommonResponseDTO<{
+  id?: number
+  name?: string
+  nickname?: string
+  email?: string
+  schoolId?: number
+  schoolName?: number
+  profileImageLink?: number
+  status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
+}>

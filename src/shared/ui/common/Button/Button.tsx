@@ -1,33 +1,15 @@
 import { forwardRef } from 'react'
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
 
 import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@shared/types/component'
 import type { TypoToken } from '@shared/types/typo'
+
+import Loading from '@/shared/ui/common/Loading/Loading'
 
 import { StyledButton } from './Button.style'
 
 const DEFAULT_BORDER_RADIUS = 6
 const DEFAULT_TYPOGRAPHY: TypoToken = 'B3.Md'
 const ICON_SIZE = 20
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`
-
-const Spinner = styled.span`
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: ${spin} 0.8s linear infinite;
-  display: inline-flex;
-`
 
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   label?: string
@@ -81,7 +63,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...restProps}
       >
         {Icon && <Icon color={iconColor} width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
-        {isLoading ? <Spinner /> : label}
+        {isLoading ? (
+          <Loading
+            size={16}
+            borderWidth={2}
+            spinnerColor="currentColor"
+            borderColor="rgba(255, 255, 255, 0.45)"
+            gap={0}
+            aria-hidden="true"
+          />
+        ) : (
+          label
+        )}
       </StyledButton>
     )
   },

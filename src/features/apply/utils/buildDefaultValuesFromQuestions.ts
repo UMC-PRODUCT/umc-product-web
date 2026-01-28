@@ -1,20 +1,45 @@
-import type { QuestionList, QuestionPage, QuestionUnion } from '../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+
+import type { GetApplicationAnswerResponseDTO } from '../domain/apiTypes'
 
 export type ResumeFormValues = Record<string, unknown>
 
-export function buildDefaultValuesFromQuestions(questionData: QuestionList): ResumeFormValues {
+export function buildDefaultValuesFromQuestions(
+  questionData: RecruitingForms,
+  answerData?: GetApplicationAnswerResponseDTO,
+): ResumeFormValues {
   const defaultValues: ResumeFormValues = {}
+  const answers = Array.isArray(answerData?.answer) ? answerData.answer : []
 
-  questionData.pages.forEach((page: QuestionPage) => {
-    ;(page.questions ?? []).forEach((question: QuestionUnion) => {
-      defaultValues[String(question.id)] = question.answer
+  const findAnswerEntry = (questionId: number) =>
+    answers.find((entry) => entry.questionId === questionId)
+
+  const resolveAnswerValue = (questionId: number) => {
+    const entry = findAnswerEntry(questionId)
+    if (!entry) return undefined
+    return entry.value
+  }
+
+  const pages = Array.isArray(questionData.pages) ? questionData.pages : []
+  pages.forEach((page) => {
+    const questions = Array.isArray(page.questions) ? page.questions : []
+    questions.forEach((question) => {
+      defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
     })
-  })
 
-  Object.values(questionData.partQuestionBank).forEach((partPages) => {
-    partPages.forEach((partPage) => {
-      partPage.questions.forEach((question: QuestionUnion) => {
-        defaultValues[String(question.id)] = question.answer
+    if (page.scheduleQuestion) {
+      defaultValues[String(page.scheduleQuestion.questionId)] = resolveAnswerValue(
+        page.scheduleQuestion.questionId,
+      )
+    }
+
+    const partQuestions = Array.isArray(page.partQuestions) ? page.partQuestions : []
+    partQuestions.forEach((partQuestionGroup) => {
+      const nestedQuestions = Array.isArray(partQuestionGroup.questions)
+        ? partQuestionGroup.questions
+        : []
+      nestedQuestions.forEach((question) => {
+        defaultValues[String(question.questionId)] = resolveAnswerValue(question.questionId)
       })
     })
   })

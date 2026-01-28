@@ -1,14 +1,52 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType, QuestionUnion } from '@features/apply/domain/model'
-import type { PartType } from '@features/auth/domain'
+import type { QuestionType } from '@features/apply/domain/model'
 
 export type Option<T> = { label: T; id: string | number }
 
 type RecruitingFormValues = Record<string, unknown>
+
+export type option = {
+  optionId: string
+  content: string
+}
+export type question = {
+  questionId: number
+  type: QuestionType
+  questionText: string
+  required: boolean
+  options: Array<option>
+  maxSelectCount: number | null
+  preferredPartOptions: Array<{
+    recruitmentPartId: number
+    label: string
+    value: RecruitingPart
+  }>
+}
+
+export type pageType = {
+  page: number
+  questions: Array<question>
+  scheduleQuestion: {
+    questionId: number
+    type: QuestionType
+    questionText: string
+    required: boolean
+    schedule: {
+      dateRange: range
+      timeRange: range
+      slotMinutes: string
+      enabledByDate: Array<{ date: string; times: Array<string> }>
+      disabledByDate: Array<{ date: string; times: Array<string> }>
+    }
+  } | null
+  partQuestions: Array<{
+    part: RecruitingPart
+    questions: Array<question>
+  }>
+}
 export interface ResumeFormSectionProps {
-  questions: Array<QuestionUnion>
-  partQuestions: Array<QuestionUnion>
+  pages: Array<pageType>
   control: Control<RecruitingFormValues>
   setValue: UseFormSetValue<RecruitingFormValues>
   clearErrors: UseFormClearErrors<RecruitingFormValues>
@@ -22,7 +60,7 @@ export interface ResumeFormSectionProps {
 }
 export interface RecruitingForms {
   title: string
-  recruitmentParts: Array<RecruitingPartApi>
+  recruitmentParts: Array<RecruitingPart>
   maxPreferredPartCount: number
   schedule: RecruitingSchedule
   noticeContent: string
@@ -47,16 +85,14 @@ export interface RecruitingQuestionPage {
   questions: Array<RecruitingQuestion>
 }
 
-export type RecruitingPartApi =
-  | 'PLAN'
-  | 'DESIGN'
-  | 'WEB'
-  | 'IOS'
-  | 'ANDROID'
-  | 'SPRINGBOOT'
-  | 'NODEJS'
+export type RecruitingPart = 'PLAN' | 'DESIGN' | 'WEB' | 'IOS' | 'ANDROID' | 'SPRINGBOOT' | 'NODEJS'
 
-export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED'
+export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED'
+
+export type range = {
+  start: string
+  end: string
+}
 
 export type RecruitingSchedule = {
   applyStartAt: string | null
@@ -69,24 +105,29 @@ export type RecruitingSchedule = {
 }
 
 export type RecruitingInterviewTimeTable = {
-  dateRange: { start: string; end: string }
-  timeRange: { start: string; end: string }
-  slotMinutes: number
-  enabled: Array<{ date: string; time: Array<string> }>
+  dateRange: range
+  timeRange: range
+  slotMinutes: string
+  enabledByDate: Array<{ date: string; times: Array<string> }>
+  disabledByDate: Array<{ date: string; times: Array<string> }>
 }
 
 export type RecruitingItemQuestionType = Exclude<QuestionType, 'PART'> | 'PREFERRED_PART'
 
-export type RecruitingItemTarget =
-  | { kind: 'COMMON_PAGE'; pageNo: number }
-  | { kind: 'PART'; part: RecruitingPartApi }
+export type RecruitingItemTarget = {
+  kind: 'COMMON_PAGE' | 'PART'
+  pageNo: number
+  part?: RecruitingPart
+}
 
 export type RecruitingItemOption = {
   content: string
   orderNo: number
+  optionId?: string
 }
 
 export type RecruitingItemQuestion = {
+  questionId?: number
   type: RecruitingItemQuestionType
   questionText: string
   required: boolean
@@ -100,6 +141,16 @@ export type RecruitingItem = {
 }
 
 export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>>
-export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>
+export type PartQuestionBankPayload = Partial<Record<RecruitingPart, Array<RecruitingQuestion>>>
 
 export type PartCompletion = '진행 중' | '모집 종료' | '모집 예정'
+
+export type RecruitePhase =
+  | 'BEFORE_APPLY'
+  | 'APPLY_OPEN'
+  | 'DOC_REVIEWING'
+  | 'DOC_RESULT_PUBLISHED'
+  | 'INTERVIEW_WAITING'
+  | 'FINAL_REVIEWING'
+  | 'FINAL_RESULT_PUBLISHED'
+  | 'CLOSED'

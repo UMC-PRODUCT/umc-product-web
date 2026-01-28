@@ -36,6 +36,15 @@ export const ContentWrapper = styled(Flex)`
   }
 `
 
+export const EmptyText = styled.div`
+  height: 480px;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  ${theme.typography.B2.Md};
+  color: ${theme.colors.gray[300]};
+`
+
 export const ModalContentWrapper = styled(Flex)`
   flex-direction: column;
   gap: 16px;
@@ -78,4 +87,24 @@ export const Logo = styled.div<{ bgColor?: string }>`
   justify-content: center;
   align-items: center;
   border-radius: 12px;
+`
+export const MessageWrapper = styled(Flex)`
+  width: 100%;
+  min-height: 480px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+`
+
+export const MessageTitle = styled.div`
+  ${theme.typography.B2.Md}
+  color: ${theme.colors.white};
+  text-align: center;
+`
+
+export const MessageDescription = styled.div`
+  ${theme.typography.B3.Rg}
+  color: ${theme.colors.gray[400]};
+  text-align: center;
 `

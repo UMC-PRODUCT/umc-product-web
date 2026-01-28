@@ -6,7 +6,7 @@ export const DASHBOARD_USER_MOCK: DashboardUser = {
 }
 
 export const DASHBOARD_PROGRESS_MOCK: DashboardProgress = {
-  parts: ['SpringBoot', 'Web'],
+  parts: ['SPRINGBOOT', 'WEB'],
   document: '미정',
   final: '미정',
 }

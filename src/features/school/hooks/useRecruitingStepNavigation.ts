@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FieldPath, UseFormTrigger } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -13,6 +13,8 @@ type UseRecruitingStepNavigationParams = {
   trigger: UseFormTrigger<RecruitingForms>
   scrollToTop?: () => void
   partCompletion?: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>
+  initialStepNumber?: number
+  onStepNumberChange?: (nextStep: number) => void
 }
 
 export const useRecruitingStepNavigation = ({
@@ -21,8 +23,10 @@ export const useRecruitingStepNavigation = ({
   trigger,
   scrollToTop,
   partCompletion,
+  initialStepNumber,
+  onStepNumberChange,
 }: UseRecruitingStepNavigationParams) => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(initialStepNumber ?? 1)
   const [step3Page, setStep3Page] = useState(1)
   const [step3Part, setStep3Part] = useState<RecruitingForms['recruitmentParts'][number] | null>(
     null,
@@ -36,6 +40,20 @@ export const useRecruitingStepNavigation = ({
       return
     }
     scrollToTopUtil()
+  }
+
+  useEffect(() => {
+    if (typeof initialStepNumber !== 'number') return
+    setStep((currentStep) => (currentStep === initialStepNumber ? currentStep : initialStepNumber))
+  }, [initialStepNumber])
+
+  const setStepWithSync = (nextStep: number) => {
+    setStep(nextStep)
+    onStepNumberChange?.(nextStep)
+  }
+
+  const setStep3PageWithSync = (nextPage: number) => {
+    setStep3Page(nextPage)
   }
 
   // 검증 실패 시 해당 필드로 포커스 이동 후 스크롤
@@ -59,7 +77,7 @@ export const useRecruitingStepNavigation = ({
 
   const goToPreviousStep = () => {
     if (step > 1) {
-      setStep(step - 1)
+      setStepWithSync(step - 1)
       return
     }
     navigate({
@@ -72,7 +90,7 @@ export const useRecruitingStepNavigation = ({
   const validateStep3 = async () => {
     if (!allPartsCompleted) {
       const firstIncompletePart = values.recruitmentParts.find((part) => !partCompletion?.[part])
-      setStep3Page(3)
+      setStep3PageWithSync(3)
       setStep3Part(firstIncompletePart ?? null)
       scrollToTopInternal()
       return false
@@ -84,18 +102,18 @@ export const useRecruitingStepNavigation = ({
     if (!validation.success) {
       const firstIssue = validation.error.issues[0]
       if (firstIssue.path[0] === 'recruitmentParts' && typeof firstIssue.path[1] === 'string') {
-        setStep3Page(3)
+        setStep3PageWithSync(3)
         setStep3Part(firstIssue.path[1] as RecruitingForms['recruitmentParts'][number])
       } else {
         const issueIndex = typeof firstIssue.path[1] === 'number' ? firstIssue.path[1] : null
         const issueItem = issueIndex !== null ? values.items[issueIndex] : null
         if (issueItem?.target.kind === 'COMMON_PAGE') {
-          setStep3Page(issueItem.target.pageNo)
+          setStep3PageWithSync(issueItem.target.pageNo)
         } else if (issueItem?.target.kind === 'PART') {
-          setStep3Page(3)
-          setStep3Part(issueItem.target.part)
+          setStep3PageWithSync(3)
+          setStep3Part(issueItem.target.part ?? null)
         } else {
-          setStep3Page(3)
+          setStep3PageWithSync(3)
         }
       }
       await triggerAndScrollToTop(['items'])
@@ -109,7 +127,7 @@ export const useRecruitingStepNavigation = ({
     if (step === 1) {
       if (!getStepReady(1, values)) {
         await triggerAndScrollToTop(['title', 'recruitmentParts'])
-        return
+        return false
       }
     }
     if (step === 2) {
@@ -125,32 +143,33 @@ export const useRecruitingStepNavigation = ({
           'schedule.interviewStartAt',
           'schedule.interviewEndAt',
           'schedule.finalResultAt',
-          'schedule.interviewTimeTable.enabled',
+          'schedule.interviewTimeTable.enabledByDate',
         ])
-        return
+        return false
       }
     }
     if (step === 3) {
       const isStep3Valid = await validateStep3()
       if (!isStep3Valid) {
-        return
+        return false
       }
     }
     if (step === 4) {
       if (!getStepReady(4, values)) {
         await triggerAndScrollToTop(['noticeContent'])
-        return
+        return false
       }
     }
-    setStep(step + 1)
+    setStepWithSync(step + 1)
     requestAnimationFrame(scrollToTopInternal)
+    return true
   }
 
   return {
     step,
-    setStep,
+    setStep: setStepWithSync,
     step3PageNumber: step3Page,
-    setStep3PageNumber: setStep3Page,
+    setStep3PageNumber: setStep3PageWithSync,
     step3SelectedPart: step3Part,
     setStep3SelectedPart: setStep3Part,
     canProceedStep,

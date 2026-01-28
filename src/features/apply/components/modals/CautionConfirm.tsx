@@ -6,16 +6,20 @@ import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayou
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
 
+import { useApplyMutation } from '../../hooks/useApplyMutation'
+
 const CautionConfirm = ({
   onClose,
-  createNewResume,
-  existingResumeId,
+  recruitmentId,
+  formId,
 }: {
   onClose: () => void
-  createNewResume: () => void
-  existingResumeId: number
+  recruitmentId: string
+  formId?: string
 }) => {
   const navigate = useNavigate()
+  const { useResetDraftApplication } = useApplyMutation()
+  const { mutate: resetDraft } = useResetDraftApplication()
   return (
     <AlertModalLayout
       mode={'warning'}
@@ -35,11 +39,18 @@ const CautionConfirm = ({
       >
         <Button
           onClick={() => {
-            createNewResume()
-            onClose()
-            navigate({
-              to: `/apply/new`,
-              search: { page: 1 },
+            resetDraft(recruitmentId, {
+              onSuccess: (data) => {
+                onClose()
+                navigate({
+                  to: `/apply/$recruitmentId/$resumeId`,
+                  search: { page: 1 },
+                  params: {
+                    recruitmentId: String(recruitmentId),
+                    resumeId: data.result.formResponseId,
+                  },
+                })
+              },
             })
           }}
           label="새로 작성하기"
@@ -49,8 +60,11 @@ const CautionConfirm = ({
         <Button
           onClick={() => {
             navigate({
-              to: `/apply/$resumeId`,
-              params: { resumeId: String(existingResumeId) },
+              to: `/apply/$recruitmentId/$resumeId`,
+              params: {
+                recruitmentId: String(recruitmentId),
+                resumeId: String(formId),
+              },
               search: { page: 1 },
             })
             onClose()

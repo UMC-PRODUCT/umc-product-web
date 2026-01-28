@@ -18,8 +18,8 @@ const PrivacyTerm = ({ onClose }: TermModalProps) => {
 
   return (
     <TermModalLayout
-      title={data?.title ?? '개인정보 처리방침'}
-      content={data?.content}
+      title={data?.result.title ?? '개인정보 처리방침'}
+      content={data?.result.content}
       onClose={onClose}
       isLoading={isLoading}
       error={error?.message}

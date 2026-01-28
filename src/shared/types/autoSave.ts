@@ -4,6 +4,7 @@ export interface UseAutoSaveOptions<TFormValues extends FieldValues> {
   getValues: UseFormGetValues<TFormValues>
   interval?: number
   onSave?: (values: TFormValues) => void
+  enabled?: boolean
 }
 
 export interface UseAutoSaveReturn {

@@ -9,8 +9,10 @@
 import type { AccountLevelType, PartType } from '@features/auth/domain'
 import { ACCOUNT_LEVEL_LIST, PART_CONFIG, PART_LIST } from '@features/auth/domain'
 
+import type { RecruitingPart } from '../types/form'
+
 // 하위 호환성을 위한 re-export
-export const PART: Array<PartType> = [...PART_LIST]
+export const PART: Array<RecruitingPart> = [...PART_LIST]
 
 export const FOOTER_INFO: { email: string; generation: number; master: string } = {
   email: 'email.umc@example.com',
@@ -28,11 +30,11 @@ export const ACCOUNT_LEVEL: Array<{ id: number; label: AccountLevelType }> = ACC
 
 // PART_ABILITY는 PART_CONFIG에서 유도
 export const PART_ABILITY: Record<PartType, Array<string>> = {
-  Plan: [...PART_CONFIG.Plan.abilities],
-  Design: [...PART_CONFIG.Design.abilities],
-  Web: [...PART_CONFIG.Web.abilities],
-  iOS: [...PART_CONFIG.iOS.abilities],
-  Android: [...PART_CONFIG.Android.abilities],
-  SpringBoot: [...PART_CONFIG.SpringBoot.abilities],
-  'Node.js': [...PART_CONFIG['Node.js'].abilities],
+  PLAN: [...PART_CONFIG.PLAN.abilities],
+  DESIGN: [...PART_CONFIG.DESIGN.abilities],
+  WEB: [...PART_CONFIG.WEB.abilities],
+  IOS: [...PART_CONFIG.IOS.abilities],
+  ANDROID: [...PART_CONFIG.ANDROID.abilities],
+  SPRINGBOOT: [...PART_CONFIG.SPRINGBOOT.abilities],
+  NODEJS: [...PART_CONFIG.NODEJS.abilities],
 }

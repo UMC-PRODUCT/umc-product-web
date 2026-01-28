@@ -52,7 +52,13 @@ export const DashboardPage = ({ progress, applyData }: DashboardPageProps) => {
           <PageTitle title={`${nickname}/${name} 님의 지원서`} />
           <Section variant="outline" gap={16} css={sectionBorder}>
             {applyData.map(({ title, resumeId, state }) => (
-              <ApplyResumeCard key={resumeId} title={title} resumeId={resumeId} state={state} />
+              <ApplyResumeCard
+                key={resumeId}
+                title={title}
+                resumeId={resumeId}
+                state={state}
+                recruitmentId={1} // TODO: 추후 수정 예정
+              />
             ))}
           </Section>
         </Flex>

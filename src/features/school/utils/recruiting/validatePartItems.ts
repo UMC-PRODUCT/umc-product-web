@@ -1,9 +1,6 @@
-import type { RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingPart } from '@/shared/types/form'
 
-export const isPartItemsValid = (
-  items: RecruitingForms['items'],
-  targetPart: RecruitingPartApi,
-) => {
+export const isPartItemsValid = (items: RecruitingForms['items'], targetPart: RecruitingPart) => {
   const partItems = items.filter(
     (item) => item.target.kind === 'PART' && item.target.part === targetPart,
   )

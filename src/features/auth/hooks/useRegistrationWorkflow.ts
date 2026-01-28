@@ -74,8 +74,8 @@ export const useRegistrationWorkflow = ({
         { email },
         {
           onSuccess: (response) => {
-            if (response.emailVerificationId) {
-              setEmailVerificationId(Number(response.emailVerificationId))
+            if (response.result.emailVerificationId) {
+              setEmailVerificationId(Number(response.result.emailVerificationId))
             }
             setHasEmailBeenSent(true)
             onEmailSent()
@@ -107,10 +107,10 @@ export const useRegistrationWorkflow = ({
           verificationCode: code,
         },
         {
-          onSuccess: (result) => {
+          onSuccess: (response) => {
             clearErrors('emailVerificationCode')
-            if (result.emailVerificationToken) {
-              setValue('emailVerificationToken', result.emailVerificationToken)
+            if (response.result.emailVerificationToken) {
+              setValue('emailVerificationToken', response.result.emailVerificationToken)
             }
             setIsEmailVerified(true)
           },
@@ -137,9 +137,9 @@ export const useRegistrationWorkflow = ({
         terms && Object.keys(terms).length > 0
           ? (Object.entries(terms) as Array<[TermsAgreementKey, TermsResponseDTO]>)
               .map(([termKey, termContent]) => {
-                if (typeof termContent.id !== 'number') return null
+                if (typeof termContent.result.id !== 'number') return null
                 return {
-                  termsId: termContent.id,
+                  termsId: termContent.result.id,
                   isAgreed: Boolean(termsAgreement[termKey]),
                 }
               })

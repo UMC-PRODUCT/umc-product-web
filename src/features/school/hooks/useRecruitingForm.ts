@@ -27,8 +27,9 @@ const defaultValues: RecruitingForms = {
     interviewTimeTable: {
       dateRange: { start: '', end: '' },
       timeRange: { start: '09:00', end: '23:00' },
-      slotMinutes: 30,
-      enabled: [],
+      slotMinutes: '30',
+      enabledByDate: [],
+      disabledByDate: [],
     },
   },
   noticeContent: '',

@@ -40,25 +40,36 @@ const Step2 = ({
   const lastErrorStateRef = useRef<Record<string, boolean>>({})
 
   const interviewDates = useMemo(() => {
-    if (!interviewStartAt || !interviewEndAt) return []
-    const start = dayjs(interviewStartAt).startOf('day')
-    const end = dayjs(interviewEndAt).startOf('day')
-    if (end.isBefore(start, 'day')) return []
+    const { start, end } = interviewTimeTable.dateRange
+    if (!start || !end) return []
+    const startDate = dayjs(start)
+    const endDate = dayjs(end)
+    if (endDate.isBefore(startDate, 'day')) return []
     const dates: Array<string> = []
-    let current = start
-    while (!current.isAfter(end, 'day')) {
+    let current = startDate
+    while (!current.isAfter(endDate, 'day')) {
       dates.push(current.format('YYYY-MM-DD'))
       current = current.add(1, 'day')
     }
     return dates
-  }, [interviewStartAt, interviewEndAt])
+  }, [interviewTimeTable.dateRange])
+  const hasTimeTableRange = Boolean(
+    interviewTimeTable.dateRange.start && interviewTimeTable.dateRange.end,
+  )
 
-  const enabledSlots = useMemo(() => interviewTimeTable.enabled, [interviewTimeTable])
+  const enabledSlots = useMemo(
+    () =>
+      interviewTimeTable.enabledByDate.map((slot) => ({
+        ...slot,
+      })),
+    [interviewTimeTable],
+  )
 
   const timeRange = useMemo(() => interviewTimeTable.timeRange, [interviewTimeTable])
 
   const lastInterviewRangeKey = useRef<string>('')
   useEffect(() => {
+    if (!hasTimeTableRange) return
     const startKey = interviewStartAt ? dayjs(interviewStartAt).valueOf() : 'null'
     const endKey = interviewEndAt ? dayjs(interviewEndAt).valueOf() : 'null'
     const nextKey = `${startKey}-${endKey}`
@@ -73,8 +84,8 @@ const Step2 = ({
     ) {
       return
     }
-    setValue('schedule.interviewTimeTable.enabled', [])
-  }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue])
+    setValue('schedule.interviewTimeTable.enabledByDate', [])
+  }, [enabledSlots, interviewDates, interviewEndAt, interviewStartAt, setValue, hasTimeTableRange])
 
   useEffect(() => {
     if (!interviewStartAt || !interviewEndAt) {
@@ -104,11 +115,12 @@ const Step2 = ({
   useEffect(() => {
     if (interviewDates.length === 0) return
     const hasEmptyDate = interviewDates.some((date) => {
-      const slotsForDate = enabledSlots.find((slot) => slot.date === date)?.time ?? []
+      const targetSlot = enabledSlots.find((slot) => slot.date === date)
+      const slotsForDate = targetSlot?.times ?? []
       return slotsForDate.length === 0
     })
     updateErrorState(
-      'schedule.interviewTimeTable.enabled',
+      'schedule.interviewTimeTable.enabledByDate',
       hasEmptyDate,
       '모든 면접 날짜에 최소 1개의 시간을 선택해 주세요.',
     )
@@ -270,25 +282,29 @@ const Step2 = ({
             <Flex flexDirection="column" alignItems="flex-start">
               <Label label="면접 시간대 설정" necessary={true} />
               <Controller
-                name="schedule.interviewTimeTable.enabled"
+                name="schedule.interviewTimeTable.enabledByDate"
                 control={control}
                 render={({ field, fieldState }) => (
                   <Flex flexDirection="column" alignItems="flex-start" gap={30}>
                     <TimeTable
-                      dates={interviewDates}
-                      timeRange={[timeRange.start, timeRange.end]}
+                      dateRange={{
+                        start: interviewDates[0],
+                        end: interviewDates[interviewDates.length - 1],
+                      }}
+                      timeRange={timeRange}
                       value={enabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
-                        acc[slot.date] = slot.time
+                        acc[slot.date] = slot.times
                         return acc
                       }, {})}
                       onChange={(nextValue) => {
-                        const nextEnabled = Object.entries(nextValue).map(([date, time]) => ({
+                        const nextEnabled = Object.entries(nextValue).map(([date, times]) => ({
                           date,
-                          time,
+                          times,
                         }))
                         field.onChange(nextEnabled)
                       }}
                       mode="edit"
+                      disabledSlots={[]}
                     />
                     {fieldState.error && (
                       <ErrorMessage

@@ -13,6 +13,8 @@ import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 
+import { useGetActiveRecruitmentId } from '../hooks/useGetApplicationQuery'
+
 type ApplyPageProps = {
   partInfoList: Array<{
     part: PartType
@@ -24,7 +26,7 @@ type ApplyPageProps = {
 
 export const ApplyPage = ({ partInfoList, isAlreadySubmitted }: ApplyPageProps) => {
   const { schoolName, generation, recruitmentPeriod, activityPeriod } = RECRUITMENT_INFO
-
+  const { data } = useGetActiveRecruitmentId()
   const formattedRecruitmentPeriod = formatRecruitmentPeriod(
     recruitmentPeriod.start,
     recruitmentPeriod.end,
@@ -46,7 +48,10 @@ export const ApplyPage = ({ partInfoList, isAlreadySubmitted }: ApplyPageProps) 
             <S.Info>활동 기간 | {formattedActivityPeriod}</S.Info>
           </Flex>
         </Flex>
-        {isAlreadySubmitted ? <AfterSubmit /> : <BeforeSubmit partInfoList={partInfoList} />}
+        {isAlreadySubmitted && <AfterSubmit />}
+        {!isAlreadySubmitted && (
+          <BeforeSubmit partInfoList={partInfoList} recruitmentId={data?.result.recruitmentId} />
+        )}
       </Flex>
     </PageLayout>
   )

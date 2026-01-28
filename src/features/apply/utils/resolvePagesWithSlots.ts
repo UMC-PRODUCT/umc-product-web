@@ -1,44 +1,66 @@
 import type { PartType } from '@features/auth/domain'
 
-import { PART } from '@/shared/constants/umc'
+import type { RecruitingForms } from '@/features/school/domain'
+import type { RecruitingPart } from '@/shared/types/form'
 
-import type {
-  PartQuestionBankPage,
-  QuestionList,
-  QuestionPage,
-  QuestionUnion,
-} from '../domain/model'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
 import { findPartQuestion } from './findPartQuestion'
 import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
 
+const DEFAULT_RECRUITING_PARTS: Array<RecruitingPart> = [
+  'PLAN',
+  'DESIGN',
+  'WEB',
+  'IOS',
+  'ANDROID',
+  'SPRINGBOOT',
+  'NODEJS',
+]
+
+const PART_TYPE_TO_RECRUITING_PART: Record<PartType, RecruitingPart> = {
+  PLAN: 'PLAN',
+  DESIGN: 'DESIGN',
+  WEB: 'WEB',
+  IOS: 'IOS',
+  ANDROID: 'ANDROID',
+  SPRINGBOOT: 'SPRINGBOOT',
+  NODEJS: 'NODEJS',
+}
+
 export function resolvePagesWithSlots(
-  questionData: QuestionList,
+  questionData: RecruitingForms,
   formValues: ResumeFormValues,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
-): Array<QuestionPage> {
+) {
   const partQuestionId = 3
   const partOrder: Array<1 | 2> = [1, 2]
   const labelMode = options?.labelMode ?? 'ranked'
   const showAllParts = options?.showAllParts ?? false
 
-  const answerValue = formValues[String(partQuestionId)]
-  const partQuestion = findPartQuestion(questionData, partQuestionId)
-  const availableParts = Object.keys(questionData.partQuestionBank) as Array<PartType>
-  if (!partQuestion || showAllParts) {
-    const mergedQuestions = availableParts.flatMap((part, index) => {
-      const label = labelMode === 'part' ? `${part} 파트 질문` : `${index + 1}지망 - ${part}`
-      const partPages = questionData.partQuestionBank[part]
-      return partPages.flatMap((partPage: PartQuestionBankPage) =>
-        partPage.questions.map(
-          (question) => ({ ...question, __partLabel: label }) as unknown as QuestionUnion,
-        ),
-      )
-    })
-    const resolvedPages = questionData.pages.map((page) => {
-      const isPartQuestionPage = page.page === 3
+  const pages = Array.isArray(questionData.pages) ? questionData.pages : []
+  const partQuestionGroups = pages.flatMap((page) =>
+    Array.isArray(page.partQuestions) ? page.partQuestions : [],
+  )
 
-      if (!isPartQuestionPage) {
+  const partQuestion = findPartQuestion(questionData, partQuestionId)
+  const availableParts = Array.from(new Set(partQuestionGroups.map((group) => group.part)))
+  const resolvedParts = availableParts.length > 0 ? availableParts : DEFAULT_RECRUITING_PARTS
+
+  const mapPartQuestions = (part: RecruitingPart, label: string) =>
+    partQuestionGroups
+      .filter((group) => group.part === part)
+      .flatMap((group) => group.questions.map((question) => ({ ...question, __partLabel: label })))
+
+  const mergedCommonQuestions = (parts: Array<RecruitingPart>) =>
+    parts.flatMap((part, index) => {
+      const label = labelMode === 'part' ? `${part} 파트 질문` : `${index + 1}지망 - ${part}`
+      return mapPartQuestions(part, label)
+    })
+
+  const resolvedPages = (questions: Array<RecruitingPart>) => {
+    const mergedQuestions = mergedCommonQuestions(questions)
+    return pages.map((page) => {
+      if (page.page !== 3) {
         return page
       }
 
@@ -47,38 +69,23 @@ export function resolvePagesWithSlots(
         questions: mergedQuestions,
       }
     })
-
-    return resolvedPages.map((page, index) => ({ ...page, page: index + 1 }))
   }
+
+  if (!partQuestion || showAllParts) {
+    const resolved = resolvedPages(resolvedParts)
+    return resolved.map((page, index) => ({ ...page, page: index + 1 }))
+  }
+
+  const answerValue = formValues[String(partQuestionId)]
   const requiredCount = Math.max(partQuestion.options.length, 1)
   const effectiveOrder = partOrder.slice(0, requiredCount)
   const selectedParts = getSelectedPartsFromAnswer(answerValue, effectiveOrder)
-  const fallbackParts = PART.slice(0, requiredCount)
-  const partsForQuestions = effectiveOrder.map(
-    (_, index) => selectedParts[index] ?? fallbackParts[index],
-  )
-  const mergedQuestions = partsForQuestions.flatMap((part, index) => {
-    const label = labelMode === 'part' ? `${part} 질문` : `${index + 1}지망 - ${part}`
-    const partPages = questionData.partQuestionBank[part]
-    return partPages.flatMap((partPage: PartQuestionBankPage) =>
-      partPage.questions.map(
-        (question) => ({ ...question, __partLabel: label }) as unknown as QuestionUnion,
-      ),
-    )
+
+  const preferenceParts = effectiveOrder.map((_, index) => {
+    const selectedPart = selectedParts[index]
+    const normalized = PART_TYPE_TO_RECRUITING_PART[selectedPart]
+    return normalized
   })
-
-  const resolvedPages = questionData.pages.map((page) => {
-    const isPartQuestionPage = page.page === 3
-
-    if (!isPartQuestionPage) {
-      return page
-    }
-
-    return {
-      ...page,
-      questions: mergedQuestions,
-    }
-  })
-
-  return resolvedPages.map((page, index) => ({ ...page, page: index + 1 }))
+  const resolved = resolvedPages(preferenceParts)
+  return resolved.map((page, index) => ({ ...page, page: index + 1 }))
 }

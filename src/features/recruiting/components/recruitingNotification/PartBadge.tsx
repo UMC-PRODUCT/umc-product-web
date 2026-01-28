@@ -1,8 +1,8 @@
-import type { PartType } from '@/shared/types/umc'
+import type { RecruitingPart } from '@/shared/types/form'
 
 import * as S from './PartBadge.style'
 
-const PartBadge = ({ partName }: { partName: PartType }) => {
+const PartBadge = ({ partName }: { partName: RecruitingPart }) => {
   return <S.PartBadge>{partName}</S.PartBadge>
 }
 

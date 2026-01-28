@@ -6,8 +6,9 @@ import type {
   UseInfiniteQueryOptions,
   UseMutationOptions,
   UseQueryOptions,
+  UseSuspenseQueryOptions,
 } from '@tanstack/react-query'
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
 type DefaultQueryOptions = {
   staleTime?: number
@@ -41,6 +42,39 @@ export const useCustomQuery = <
   const { staleTime, retry, refetchOnWindowFocus, ...restOptions } = safeOptions
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+    queryKey,
+    queryFn,
+    staleTime: staleTime ?? STALE_TIME,
+    retry: retry ?? RETRY,
+    refetchOnWindowFocus: false,
+    ...restOptions,
+  })
+}
+
+export const useCustomSuspenseQuery = <
+  TQueryFnData,
+  TError,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey,
+>(
+  queryKey: TQueryKey,
+  queryFn: QueryFunction<TQueryFnData, TQueryKey>,
+  options?: Omit<
+    UseSuspenseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    'queryKey' | 'queryFn'
+  > &
+    DefaultQueryOptions,
+) => {
+  const safeOptions =
+    options ??
+    ({} as Omit<
+      UseSuspenseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+      'queryKey' | 'queryFn'
+    > &
+      DefaultQueryOptions)
+  const { staleTime, retry, refetchOnWindowFocus, ...restOptions } = safeOptions
+
+  return useSuspenseQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn,
     staleTime: staleTime ?? STALE_TIME,

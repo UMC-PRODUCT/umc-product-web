@@ -21,12 +21,41 @@ const getInterviewDateKeys = (start: string | null, end: string | null) => {
   return dates
 }
 
+type InterviewDateSlot = {
+  date: string
+  time?: Array<string>
+  times?: Array<string>
+}
+
+type InterviewTimeTableWithOptionalEnabled = Omit<
+  RecruitingForms['schedule']['interviewTimeTable'],
+  'enabledByDate'
+> & {
+  enabled?: Array<{ date: string; times: Array<string> }>
+  enabledByDate?: Array<InterviewDateSlot>
+}
+
+const resolveInterviewEnabled = (
+  table: InterviewTimeTableWithOptionalEnabled,
+): Array<{ date: string; times: Array<string> }> => {
+  const fromEnabled = table.enabled
+  if (Array.isArray(fromEnabled)) {
+    return fromEnabled
+  }
+  const enabledByDate = table.enabledByDate ?? []
+  return enabledByDate.map((slot) => ({
+    date: slot.date,
+    times: slot.times ?? [],
+  }))
+}
+
 export const normalizeTempRecruitingForm = (data: RecruitingForms): RecruitingForms => {
   const schedule = data.schedule
   const interviewStartAt = formatDateString(schedule.interviewStartAt)
   const interviewEndAt = formatDateString(schedule.interviewEndAt)
   const allowedInterviewDates = getInterviewDateKeys(interviewStartAt, interviewEndAt)
-  const normalizedEnabled = schedule.interviewTimeTable.enabled.filter((slot) =>
+  const interviewTimeTable = schedule.interviewTimeTable as InterviewTimeTableWithOptionalEnabled
+  const normalizedEnabled = resolveInterviewEnabled(interviewTimeTable).filter((slot) =>
     allowedInterviewDates.includes(slot.date),
   )
   const dateRange =
@@ -50,7 +79,7 @@ export const normalizeTempRecruitingForm = (data: RecruitingForms): RecruitingFo
       interviewTimeTable: {
         ...schedule.interviewTimeTable,
         dateRange,
-        enabled: normalizedEnabled,
+        enabledByDate: normalizedEnabled,
       },
     },
   }

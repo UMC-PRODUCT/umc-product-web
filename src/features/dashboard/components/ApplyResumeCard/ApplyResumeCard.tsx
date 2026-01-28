@@ -14,9 +14,10 @@ interface ApplyResumeCardProps {
   title: string
   resumeId: number
   state: ResumeType
+  recruitmentId: number
 }
 
-const ApplyResumeCard = ({ title, resumeId, state }: ApplyResumeCardProps) => {
+const ApplyResumeCard = ({ title, resumeId, state, recruitmentId }: ApplyResumeCardProps) => {
   const navigate = useNavigate()
   return (
     <S.CardWrapper variant="solid" flexDirection="row">
@@ -47,8 +48,8 @@ const ApplyResumeCard = ({ title, resumeId, state }: ApplyResumeCardProps) => {
         variant={'solid'}
         onClick={() =>
           navigate({
-            to: `/dashboard/$resumeId`,
-            params: { resumeId: String(resumeId) },
+            to: `/dashboard/$recruitmentId/$resumeId`,
+            params: { resumeId: String(resumeId), recruitmentId: String(recruitmentId) },
             search: { page: 1 },
           })
         }

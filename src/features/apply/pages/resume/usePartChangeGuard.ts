@@ -1,10 +1,24 @@
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionUnion } from '../../domain/model'
+import type { RecruitingPart } from '@/shared/types/form'
+
+import type { QuestionType } from '../../domain'
 import { usePartAnswerReset, usePartChangeModalState, usePartSelectionChange } from './hooks'
 
 type UsePartChangeGuardArgs = {
-  partQuestions: Array<QuestionUnion>
+  pages: Array<{
+    part: RecruitingPart
+    questions: Array<{
+      questionId: number
+      type: QuestionType
+      questionText: string
+      required: boolean
+      options?: Array<{
+        optionId: string
+        content: string
+      }>
+    }>
+  }>
   setValue: UseFormSetValue<Record<string, unknown>>
   clearErrors: UseFormClearErrors<Record<string, unknown>>
   hasPartAnswers: boolean
@@ -19,7 +33,7 @@ type UsePartChangeGuardArgs = {
  * - usePartSelectionChange: 파트 선택 변경 처리
  */
 export const usePartChangeGuard = ({
-  partQuestions,
+  pages,
   setValue,
   clearErrors,
   hasPartAnswers,
@@ -34,7 +48,7 @@ export const usePartChangeGuard = ({
   } = usePartChangeModalState()
 
   // 2. 파트 답변 초기화 로직
-  const { resetPartQuestionAnswers } = usePartAnswerReset(partQuestions, setValue, clearErrors)
+  const { resetPartQuestionAnswers } = usePartAnswerReset(pages, setValue, clearErrors)
 
   // 3. 파트 선택 변경 처리
   const { requestPartChange, handleConfirmPartChange, handleCancelPartChange } =

@@ -47,7 +47,7 @@ export const ModalContentWrapper = styled(Flex)`
   gap: 16px;
   background-color: ${(props) => props.theme.colors.gray[700]};
   border-radius: 8px;
-  width: 90vw;
+  width: 600px;
   max-width: 90vw;
   height: 500px;
   padding: 20px;

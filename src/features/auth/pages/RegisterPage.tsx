@@ -99,7 +99,7 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     const termsData = termsIdsQuery.data
 
     return (Object.entries(termsData) as Array<[TermsAgreementKey, TermsResponseDTO]>)
-      .filter(([, content]) => Boolean(content.isMandatory))
+      .filter(([, content]) => Boolean(content.result.isMandatory))
       .map(([termKey]) => termKey)
   }, [hasLoadedTerms, termsIdsQuery.data])
   const areTermsAgreed =

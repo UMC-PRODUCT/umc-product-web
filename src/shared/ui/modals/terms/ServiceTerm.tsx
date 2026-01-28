@@ -18,8 +18,8 @@ const ServiceTerm = ({ onClose }: TermModalProps) => {
 
   return (
     <TermModalLayout
-      title={data?.title ?? '서비스이용약관'}
-      content={data?.content}
+      title={data?.result.title ?? '서비스이용약관'}
+      content={data?.result.content}
       onClose={onClose}
       isLoading={isLoading}
       error={error?.message}

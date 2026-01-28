@@ -1,5 +1,11 @@
-import type { ResumeData } from '@features/apply/domain/model'
+import { useMemo } from 'react'
+import { useParams } from '@tanstack/react-router'
 
+import type { QuestionAnswerValue } from '@/features/apply/domain'
+import {
+  useGetApplicationAnswer,
+  useGetApplicationQuestions,
+} from '@/features/apply/hooks/useGetApplicationQuery'
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
@@ -9,23 +15,37 @@ import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
 interface ViewResumeProps {
-  resumeData: ResumeData
   currentPage: number
   onPageChange: (nextPage: number) => void
 }
 
-const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) => {
+const ViewResume = ({ currentPage, onPageChange }: ViewResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
+  const { recruitmentId, resumeId } = useParams({
+    from: '/(app)/dashboard/$recruitmentId/$resumeId/',
+  })
 
-  const totalPages = resumeData.pages.length
+  const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
+  const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const answerMap = useMemo(() => {
+    if (!answerData) {
+      return new Map<number, QuestionAnswerValue>()
+    }
+    const answers = Array.isArray(answerData.result.answer) ? answerData.result.answer : []
+    return answers.reduce<Map<number, QuestionAnswerValue>>((acc, entry) => {
+      acc.set(entry.questionId, entry.value as unknown as QuestionAnswerValue)
+      return acc
+    }, new Map<number, QuestionAnswerValue>())
+  }, [answerData])
+  const totalPages = 3
+
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
-  const currentPageData = resumeData.pages[currentPageIndex] ?? resumeData.pages[0]
-  const currentQuestions = currentPageData.questions ?? []
+  const currentPageData = questionsData?.result.pages[currentPageIndex]
+  const currentQuestions = currentPageData?.questions ?? []
 
   const pageTitle = `UMC ${schoolName} ${generation} 지원서`
-  const submittedTimeText = resumeData.lastSavedTime
-    ? `${resumeData.lastSavedTime}에 제출됨.`
-    : null
+  // const submittedTimeText = formData.submittedAt ? `${formData.submittedAt}에 제출됨.` : null
+  const submittedTimeText = '2024.06.01 14:30에 제출됨.' // TODO: 지원서 제출 시간 API 연동 필요
 
   return (
     <PageLayout>
@@ -33,20 +53,33 @@ const ViewResume = ({ resumeData, currentPage, onPageChange }: ViewResumeProps) 
         <PageTitle title={pageTitle} />
       </Flex>
 
-      <S.BorderSection alignItems="flex-start">{resumeData.description}</S.BorderSection>
+      <S.BorderSection alignItems="flex-start">
+        {questionsData?.result.noticeContent}
+      </S.BorderSection>
 
       <S.BorderSection>
         <Flex justifyContent="flex-end">
           <Flex justifyContent="flex-end" alignItems="center" gap="18px">
-            {submittedTimeText && <span className="last-saved-time">{submittedTimeText}</span>}
+            <span className="last-saved-time">{submittedTimeText}</span>
           </Flex>
         </Flex>
       </S.BorderSection>
 
       <S.BorderSection>
-        {currentQuestions.map((question) => (
-          <Flex key={question.id} flexDirection="column" gap={8} width="100%">
-            <Question data={question} value={question.answer} mode="view" />
+        {currentQuestions.map((question, idx) => (
+          <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
+            <Question
+              questionId={question.questionId}
+              questionNumber={idx + 1}
+              type={question.type}
+              question={question.questionText}
+              options={question.options}
+              required={question.required}
+              maxSelectCount={question.maxSelectCount}
+              preferredPartOptions={question.preferredPartOptions}
+              mode="view"
+              value={answerMap.get(question.questionId)}
+            />
           </Flex>
         ))}
 

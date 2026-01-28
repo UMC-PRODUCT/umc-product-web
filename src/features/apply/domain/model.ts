@@ -5,6 +5,9 @@
 
 import type { PartType } from '@features/auth/domain'
 
+import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
+import type { RecruitingPart } from '@/shared/types/form'
+
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 
 // ============================================
@@ -95,27 +98,16 @@ export interface FileUploadQuestion extends BaseQuestion {
 }
 
 export interface PartQuestion extends BaseQuestion {
-  type: 'PART'
+  type: 'PREFERRED_PART'
   answer: Array<{ id: number; answer: PartType }>
   options: Array<{ id: number; options: Array<PartType> }>
 }
-
-/** 질문 유니온 타입 */
-export type QuestionUnion =
-  | TextQuestion
-  | LongTextQuestion
-  | MultipleChoiceQuestion
-  | ChoiceQuestion
-  | DropdownQuestion
-  | TimeTableQuestion
-  | FileUploadQuestion
-  | PartQuestion
 
 /** 질문 답변 값 타입 */
 export type QuestionAnswerValue =
   | string
   | Array<string>
-  | Array<{ id: number; answer: PartType }>
+  | Array<{ id: number; answer: RecruitingPart }>
   | TimeTableSlots
   | FileUploadAnswer
   | undefined
@@ -124,33 +116,23 @@ export type QuestionAnswerValue =
 // 지원서 관련 타입
 // ============================================
 
-/** 질문 페이지 */
-export interface QuestionPage {
-  page: number
-  questions?: Array<QuestionUnion>
-}
-
-/** 파트별 질문 은행 페이지 */
-export interface PartQuestionBankPage {
-  questions: Array<QuestionUnion>
-}
-
 /** 질문 목록 (전체 지원서 구조) */
 export interface QuestionList {
-  id: number
-  title: string
-  description: string
-  lastSavedTime: string
-  pages: Array<QuestionPage>
-  partQuestionBank: Record<PartType, Array<PartQuestionBankPage>>
-}
-
-/** 지원서 데이터 */
-export interface ResumeData {
-  id: number
-  description: string
-  lastSavedTime: string
-  pages: Array<QuestionPage>
+  recruitmentId: number
+  noticeTitle: string
+  noticeContent: string
+  lastSavedTime?: string
+  pages: Array<{
+    page: number
+    questions: Array<QuestionSummary>
+    scheduleQuestion: QuestionSummary & {
+      schedule: RequiredScheduleWithDisabled
+    }
+    partQuestions: Array<{
+      part: RecruitingPart
+      questions: Array<QuestionSummary>
+    }>
+  }>
 }
 
 export interface FileUploadValue {

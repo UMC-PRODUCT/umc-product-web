@@ -7,8 +7,8 @@ const SchoolRecruiting = () => {
   return (
     <PageLayout>
       <Flex flexDirection="column" gap={100}>
-        <RecruitingMake></RecruitingMake>
-        <RecruitingList></RecruitingList>
+        <RecruitingMake />
+        <RecruitingList />
       </Flex>
     </PageLayout>
   )
