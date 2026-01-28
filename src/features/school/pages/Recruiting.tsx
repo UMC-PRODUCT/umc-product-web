@@ -41,7 +41,7 @@ type RecruitingProps = {
 }
 
 const toRecruitingItemOptions = (
-  options: Array<{ content: string; orderNo?: number; optionId?: number }> | undefined,
+  options: Array<{ content: string; orderNo?: number; optionId?: string }> | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
@@ -56,7 +56,7 @@ const buildRecruitingItemFromQuestion = (
     type: string
     questionText: string
     required: boolean
-    options?: Array<{ content: string; orderNo?: number; optionId?: number }>
+    options?: Array<{ content: string; orderNo?: number; optionId?: string }>
   },
   target:
     | { kind: 'COMMON_PAGE'; pageNo: number }

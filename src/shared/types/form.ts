@@ -7,7 +7,7 @@ export type Option<T> = { label: T; id: string | number }
 type RecruitingFormValues = Record<string, unknown>
 
 export type option = {
-  optionId: number
+  optionId: string
   content: string
 }
 export type question = {
@@ -117,7 +117,7 @@ export type RecruitingItemTarget = {
 export type RecruitingItemOption = {
   content: string
   orderNo: number
-  optionId?: number
+  optionId?: string
 }
 
 export type RecruitingItemQuestion = {

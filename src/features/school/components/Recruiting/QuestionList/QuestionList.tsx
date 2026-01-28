@@ -171,14 +171,32 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderIndex(null)
   }
 
+  const visibleQuestions = useMemo(
+    () =>
+      filteredIndices
+        .map((itemIndex, orderIndex) => {
+          const questionField = fields[itemIndex]
+          return { orderIndex, itemIndex, questionField }
+        })
+        .filter(
+          (
+            entry,
+          ): entry is {
+            orderIndex: number
+            itemIndex: number
+            questionField: (typeof fields)[number]
+          } => Boolean(entry),
+        ),
+    [filteredIndices, fields],
+  )
+
   return (
     <Flex flexDirection="column" gap={18}>
-      {filteredIndices.map((itemIndex, orderIndex) => {
-        const question = fields[itemIndex]
+      {visibleQuestions.map(({ itemIndex, orderIndex, questionField }) => {
         const isFixed = fixedIndices.has(itemIndex)
         return (
           <div
-            key={question.id}
+            key={questionField.id}
             onDragOver={handleDragOver(itemIndex)}
             onDrop={handleDrop(itemIndex)}
             css={{ width: '100%' }}

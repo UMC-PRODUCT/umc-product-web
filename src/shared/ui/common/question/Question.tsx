@@ -15,12 +15,12 @@ import { Text } from './text/Text'
 import QuestionLayout from './QuestionLayout'
 
 type ChoiceOption = {
-  optionId: number
+  optionId?: string
   content: string
 }
 
 type PartOption = {
-  optionId: number
+  optionId?: string
   content: RecruitingPart
 }
 

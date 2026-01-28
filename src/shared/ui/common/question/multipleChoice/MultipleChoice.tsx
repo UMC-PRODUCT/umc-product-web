@@ -7,7 +7,7 @@ interface MultipleChoiceQuestionProps {
   value?: Array<string>
   onChange?: (selectedOptions: Array<string>) => void
   options: Array<{
-    optionId: number
+    optionId?: string
     content: string
   }>
   mode: QuestionMode
@@ -33,14 +33,15 @@ export const MultipleChoice = ({
 
   return (
     <Flex flexDirection="column" gap={10}>
-      {options.map((option) => {
-        const isOptionSelected = selectedOptions.includes(String(option.optionId))
+      {options.map((option, index) => {
+        const optionId = option.optionId ?? `${option.content}-${index}`
+        const isOptionSelected = selectedOptions.includes(optionId)
         return (
           <CheckChoice
-            key={option.optionId}
+            key={optionId}
             content={option.content}
             isChecked={isOptionSelected}
-            onToggle={() => handleOptionToggle(String(option.optionId))}
+            onToggle={() => handleOptionToggle(optionId)}
             mode={mode}
           />
         )

@@ -207,7 +207,7 @@ const itemQuestionSchema = z.object({
       z.object({
         content: z.string(),
         orderNo: z.number(),
-        optionId: z.number().optional(),
+        optionId: z.string().optional(),
       }),
     )
     .optional(),

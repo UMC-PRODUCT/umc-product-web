@@ -14,7 +14,7 @@ type UsePartChangeGuardArgs = {
       questionText: string
       required: boolean
       options?: Array<{
-        optionId: number
+        optionId: string
         content: string
       }>
     }>

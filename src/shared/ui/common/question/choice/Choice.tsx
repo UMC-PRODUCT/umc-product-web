@@ -7,7 +7,7 @@ interface SingleChoiceQuestionProps {
   value?: string
   onChange?: (selectedOption: string) => void
   options: Array<{
-    optionId: number
+    optionId?: string
     content: string
   }>
   mode: QuestionMode
@@ -22,8 +22,8 @@ export const Choice = ({ value, onChange, options, mode }: SingleChoiceQuestionP
 
   return (
     <Flex flexDirection="column" gap={10}>
-      {options.map((option) => {
-        const uniqueKey = `choice-${option.optionId}`
+      {options.map((option, index) => {
+        const uniqueKey = option.optionId ?? `choice-${index}`
         const handleClick = isEditable ? () => handleOptionSelect(option.content) : undefined
 
         return (
