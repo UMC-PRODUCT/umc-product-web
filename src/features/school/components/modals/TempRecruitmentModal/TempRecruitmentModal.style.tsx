@@ -26,6 +26,7 @@ export const ModalButton = styled.button`
 export const ContentWrapper = styled(Flex)`
   white-space: pre-wrap;
   word-break: keep-all;
+  height: 100%;
   max-height: 480px;
   overflow-y: scroll;
   color: ${(props) => props.theme.colors.white};
@@ -87,7 +88,6 @@ export const Logo = styled.div<{ bgColor?: string }>`
   align-items: center;
   border-radius: 12px;
 `
-
 export const MessageWrapper = styled(Flex)`
   width: 100%;
   min-height: 480px;
