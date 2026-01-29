@@ -3,8 +3,6 @@ import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { getActiveRecruitmentId } from '../domain/api'
 import { userRecruitement } from '../domain/queryKey'
 
-type CustomQueryOptions = Parameters<typeof useCustomQuery>[2]
-
 export function useGetActiveRecruitmentId() {
   return useCustomQuery(userRecruitement.getActiveRecruitmentId().queryKey, getActiveRecruitmentId)
 }
@@ -30,19 +28,17 @@ export function useGetSpecificPartRecruiting(recruitmentId: string) {
   )
 }
 
-export function useGetRecruitmentSchedules(recruitmentId: string, options?: CustomQueryOptions) {
+export function useGetRecruitmentSchedules(recruitmentId: string) {
   const query = userRecruitement.getRecruitmentSchedules(recruitmentId)
   return useCustomQuery(query.queryKey, query.queryFn, {
-    ...(options ?? {}),
-    enabled: Boolean(recruitmentId) && (options?.enabled ?? true),
+    enabled: Boolean(recruitmentId),
   })
 }
 
-export function useGetRecruitmentNotice(recruitmentId: string, options?: CustomQueryOptions) {
+export function useGetRecruitmentNotice(recruitmentId: string) {
   const query = userRecruitement.getRecruitmentNotice(recruitmentId)
   return useCustomQuery(query.queryKey, query.queryFn, {
-    ...(options ?? {}),
-    enabled: Boolean(recruitmentId) && (options?.enabled ?? true),
+    enabled: Boolean(recruitmentId),
   })
 }
 

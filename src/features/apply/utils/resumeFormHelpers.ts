@@ -57,7 +57,7 @@ export function getSelectedPartsForSubmission(
   if (!partQuestion) return []
 
   const order: Array<1 | 2> = [1, 2]
-  const requiredCount = Math.max(partQuestion.maxSelectCount ?? 0, 1)
+  const requiredCount = Math.max(Number(partQuestion.maxSelectCount ?? 0), 1)
   const effectiveOrder = order.slice(0, requiredCount)
   const answerValue = formValues[String(partQuestionId)]
   return getSelectedPartsFromAnswer(answerValue, effectiveOrder)

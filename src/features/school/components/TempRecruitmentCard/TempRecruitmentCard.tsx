@@ -20,7 +20,7 @@ const TempRecruitmentCard = ({
   title: string
   tempSavedTime: string
   editable?: boolean
-  recruitmentId: number
+  recruitmentId: string
 }) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
