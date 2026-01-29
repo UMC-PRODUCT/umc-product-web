@@ -1,5 +1,7 @@
 import type { question, RecruitingSchedule } from '@/shared/types/form'
 
+import { isOptionAnswerValue } from './optionAnswer'
+
 type SharedQuestionOptions = Omit<question, 'maxSelectCount' | 'preferredPartOptions'> &
   Partial<Pick<question, 'maxSelectCount' | 'preferredPartOptions'>>
 
@@ -12,6 +14,10 @@ export function isQuestionAnswerEmpty(question: ResumeQuestion, answerValue: unk
   if (!isQuestionRequired(question)) return false
 
   if (answerValue === null || answerValue === undefined) return true
+
+  if (isOptionAnswerValue(answerValue)) {
+    return answerValue.selectedOptionIds.length === 0
+  }
 
   if (typeof answerValue === 'string') {
     return answerValue.trim().length === 0

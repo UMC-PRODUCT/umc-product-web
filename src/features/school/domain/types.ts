@@ -11,6 +11,7 @@ import type {
 export type QuestionOption = {
   content: string
   orderNo: number
+  isOther?: boolean
 }
 
 export type ScheduleSlot = {
@@ -69,3 +70,13 @@ export type RecruitingForms = {
   noticeContent: string
   pages: Array<pageType>
 }
+
+export type Phase =
+  | 'BEFORE_APPLY'
+  | 'APPLY_OPEN'
+  | 'DOC_REVIEWING'
+  | 'DOC_RESULT_PUBLISHED'
+  | 'INTERVIEW_WAITING'
+  | 'FINAL_REVIEWING'
+  | 'FINAL_RESULT_PUBLISHED'
+  | 'CLOSED'

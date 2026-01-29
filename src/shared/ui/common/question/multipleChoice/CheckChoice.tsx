@@ -11,10 +11,25 @@ interface CheckChoiceProps {
   isChecked: boolean
   onToggle: () => void
   mode: QuestionMode
+  isOtherOption: boolean
 }
 
-export const CheckChoice = ({ content, isChecked, onToggle, mode }: CheckChoiceProps) => {
+export const CheckChoice = ({
+  content,
+  isChecked,
+  onToggle,
+  mode,
+  isOtherOption,
+}: CheckChoiceProps) => {
   const isEditable = mode === 'edit'
+  const isOtherInputEnabled = isEditable && isOtherOption
+
+  const handleOtherInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isEditable || !isOtherOption || isChecked) return
+    if (event.target.value.trim().length > 0) {
+      onToggle()
+    }
+  }
 
   const handleClick = () => {
     if (!isEditable) return
@@ -40,17 +55,45 @@ export const CheckChoice = ({ content, isChecked, onToggle, mode }: CheckChoiceP
         onClick={(e) => e.stopPropagation()}
         css={{ pointerEvents: 'none', display: 'flex', alignItems: 'center' }}
       >
-        <Checkbox checked={isChecked} onCheckedChange={() => {}} tabIndex={-1} />
+        <Checkbox
+          css={{ border: `1.25px solid ${theme.colors.gray[400]}` }}
+          checked={isChecked}
+          onCheckedChange={() => {}}
+          tabIndex={-1}
+        />
       </div>
-      <span
-        css={{
-          color: theme.colors.white,
-          userSelect: 'none',
-          ...theme.typography.B3.Md,
-        }}
-      >
-        {content}
-      </span>
+      {!isOtherOption && (
+        <span
+          css={{
+            color: theme.colors.white,
+            userSelect: 'none',
+            ...theme.typography.B3.Md,
+          }}
+        >
+          {content}
+        </span>
+      )}
+      {isOtherOption && (
+        <span
+          css={{
+            color: theme.colors.gray[400],
+            userSelect: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            ...theme.typography.B3.Rg,
+          }}
+        >
+          기타:
+          <Input
+            isActive={isChecked}
+            disabled={!isOtherInputEnabled}
+            aria-disabled={!isOtherInputEnabled}
+            tabIndex={isOtherInputEnabled ? 0 : -1}
+            onChange={handleOtherInputChange}
+          />
+        </span>
+      )}
     </ChoiceContainer>
   )
 }
@@ -71,4 +114,12 @@ const ChoiceContainer = styled.div<{ $isEditable: boolean }>`
       border-radius: 4px;
     }
   }
+`
+
+const Input = styled.input<{ isActive?: boolean }>`
+  background-color: transparent;
+  border-bottom: 1px solid
+    ${({ isActive }) => (isActive ? theme.colors.lime : theme.colors.gray[500])};
+  border-right: none;
+  color: ${theme.colors.white};
 `

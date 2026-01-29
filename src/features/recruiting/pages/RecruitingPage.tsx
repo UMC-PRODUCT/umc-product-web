@@ -1,30 +1,33 @@
-import type { PartData } from '@features/recruiting/domain'
-
+import {
+  useGetActiveRecruitmentId,
+  useGetRecruitmentNotice,
+  useGetRecruitmentSchedules,
+} from '@/features/apply/hooks/useGetApplicationQuery'
 import PartCurriculum from '@/features/recruiting/components/partCurriculum/PartCurriculum'
 import RecruitingCalendar from '@/features/recruiting/components/recruitingCalendar/RecruitingCalendar'
-import { PART } from '@/shared/constants/umc'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
-import type { CalendarEvents } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import RecruitingNotification from '../components/recruitingNotification/RecruitingNotification'
 
-type RecruitingPageProps = {
-  notice: {
-    title: string
-    content: string
-  }
-  events: CalendarEvents
-  curriculum: Array<PartData>
-}
+export const RecruitingPage = () => {
+  const { data: activeRecruitmentId } = useGetActiveRecruitmentId()
+  const recruitmentId = activeRecruitmentId?.result.recruitmentId
+  const { data: noticeData } = useGetRecruitmentNotice(recruitmentId ?? '')
+  const { data: scheduleData } = useGetRecruitmentSchedules(recruitmentId ?? '')
 
-export const RecruitingPage = ({ notice, events, curriculum }: RecruitingPageProps) => {
+  if (!recruitmentId) return null
+
   return (
     <PageLayout>
       <Flex flexDirection="column" gap={112}>
-        <RecruitingNotification title={notice.title} content={notice.content} parts={PART} />
-        <RecruitingCalendar events={events} />
-        <PartCurriculum curriculum={curriculum} />
+        <RecruitingNotification
+          title={noticeData?.result.title ?? ''}
+          content={noticeData?.result.content ?? ''}
+          parts={noticeData?.result.parts ?? []}
+        />
+        <RecruitingCalendar events={scheduleData?.result ?? { recruitmentId: '', schedules: [] }} />
+        <PartCurriculum curriculum={[]} />
       </Flex>
     </PageLayout>
   )

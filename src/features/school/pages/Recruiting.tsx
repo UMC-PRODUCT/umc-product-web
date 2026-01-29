@@ -10,6 +10,7 @@ import { RecruitingProvider } from '@/features/school/components/Recruiting/Recr
 import RecruitingModals from '@/features/school/components/Recruiting/RecruitingPage/RecruitingModals'
 import RecruitingStepActions from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepActions'
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
+import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
@@ -41,13 +42,16 @@ type RecruitingProps = {
 }
 
 const toRecruitingItemOptions = (
-  options: Array<{ content: string; orderNo?: number; optionId?: string }> | undefined,
+  options:
+    | Array<{ content: string; orderNo?: number; optionId?: string; isOther?: boolean }>
+    | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
     content: option.content,
     orderNo: option.orderNo ?? fallbackOrder + index + 1,
     optionId: option.optionId,
+    isOther: option.isOther ?? isOtherOptionContent(option.content),
   })) ?? []
 
 const buildRecruitingItemFromQuestion = (
@@ -221,8 +225,13 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
       patchTempSavedRecruitQuestionsMutate(
         { items: buildQuestionsPayload(values.items) },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             console.log('[Recruiting] Auto-saved temp recruitment questions successfully.')
+            form.setValue('items', convertApplicationFormToItems(data.result), {
+              shouldDirty: false,
+              shouldTouch: false,
+              shouldValidate: true,
+            })
             queryClient.invalidateQueries({ queryKey: [recruitingId] })
           },
           onError: (error) => {

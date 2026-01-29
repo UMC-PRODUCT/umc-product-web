@@ -99,7 +99,7 @@ const RecruitingPreview = ({
                     status: '',
                     recruitmentFormTitle: title,
                     noticeTitle: title,
-                    noticeContent: '',
+                    noticeContent: questionData.noticeContent,
                     pages: [],
                   }}
                 />

@@ -4,7 +4,7 @@ import type {
   QuestionType,
 } from '@features/apply/domain/model'
 
-import type { QuestionMode, RecruitingPart } from '@/shared/types/form'
+import type { OptionAnswerValue, QuestionMode, RecruitingPart } from '@/shared/types/form'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
@@ -17,6 +17,7 @@ import QuestionLayout from './QuestionLayout'
 type ChoiceOption = {
   optionId?: string
   content: string
+  isOther?: boolean
 }
 
 type PartOption = {
@@ -37,7 +38,7 @@ interface QuestionProps {
   mode: QuestionMode
   onChange?: (questionId: number, newValue: QuestionAnswerValue) => void
   errorMessage?: string
-  maxSelectCount: number | null
+  maxSelectCount: string | null
   preferredPartOptions: Array<{
     recruitmentPartId: number
     label: string
@@ -81,7 +82,7 @@ export const Question = ({
         return (
           <MultipleChoice
             options={options}
-            value={value as Array<string> | undefined}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
             mode={mode}
           />
@@ -99,7 +100,7 @@ export const Question = ({
       case 'RADIO':
         return (
           <Choice
-            value={value as string | undefined}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
             options={options as Array<ChoiceOption>}
             mode={mode}

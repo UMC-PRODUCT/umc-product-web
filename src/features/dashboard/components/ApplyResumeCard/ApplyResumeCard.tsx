@@ -2,7 +2,6 @@ import { useNavigate } from '@tanstack/react-router'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -12,9 +11,9 @@ import * as S from './ApplyResumeCard.style'
 
 interface ApplyResumeCardProps {
   title: string
-  resumeId: number
-  state: ResumeType
-  recruitmentId: number
+  resumeId: string
+  state: string
+  recruitmentId: string
 }
 
 const ApplyResumeCard = ({ title, resumeId, state, recruitmentId }: ApplyResumeCardProps) => {

@@ -1,38 +1,68 @@
-import type { QuestionMode } from '@/shared/types/form'
+import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import RadioChoice from './RadioChoice'
 
+type ChoiceOption = {
+  optionId?: string
+  content: string
+  isOther?: boolean
+}
+
 interface SingleChoiceQuestionProps {
-  value?: string
-  onChange?: (selectedOption: string) => void
-  options: Array<{
-    optionId?: string
-    content: string
-  }>
+  value?: OptionAnswerValue
+  onChange?: (selectedOption: OptionAnswerValue) => void
+  options: Array<ChoiceOption>
   mode: QuestionMode
 }
 
+const getOptionId = (option: ChoiceOption, index: number) =>
+  option.optionId ?? `${option.content}-${index}`
+
 export const Choice = ({ value, onChange, options, mode }: SingleChoiceQuestionProps) => {
   const isEditable = mode === 'edit'
+  const selectedOptions = value?.selectedOptionIds ?? []
+  const selectedOptionId = selectedOptions[0]
 
-  const handleOptionSelect = (selectedOption: string) => {
-    onChange?.(selectedOption)
+  const handleOptionSelect = (optionId: string, isOtherOption: boolean) => {
+    const nextValue: OptionAnswerValue = {
+      selectedOptionIds: [optionId],
+      ...(isOtherOption ? { otherText: value?.otherText } : {}),
+    }
+    onChange?.(nextValue)
+  }
+
+  const handleOtherTextChange = (text: string, optionId: string) => {
+    if (!isEditable) return
+    const hasText = text.length > 0
+    const nextSelection = hasText ? [optionId] : selectedOptions
+    onChange?.({
+      selectedOptionIds: nextSelection,
+      otherText: text,
+    })
   }
 
   return (
     <Flex flexDirection="column" gap={10}>
       {options.map((option, index) => {
-        const uniqueKey = option.optionId ?? `choice-${index}`
-        const handleClick = isEditable ? () => handleOptionSelect(option.content) : undefined
-
+        const optionId = getOptionId(option, index)
+        const handleClick = isEditable
+          ? () => handleOptionSelect(optionId, Boolean(option.isOther))
+          : undefined
+        const isOtherOption = option.isOther ?? false
         return (
           <RadioChoice
-            key={uniqueKey}
+            key={optionId}
+            optionId={optionId}
             content={option.content}
-            value={value}
+            value={selectedOptionId}
             mode={mode}
             onClick={handleClick}
+            isOtherOption={isOtherOption}
+            otherInputValue={isOtherOption ? (value?.otherText ?? '') : undefined}
+            onOtherInputChange={
+              isOtherOption ? (text) => handleOtherTextChange(text, optionId) : undefined
+            }
           />
         )
       })}

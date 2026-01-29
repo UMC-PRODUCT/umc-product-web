@@ -2,6 +2,10 @@ import { useEffect } from 'react'
 import type { Control, FieldErrors, FieldPath } from 'react-hook-form'
 import { useController, useFormState } from 'react-hook-form'
 
+import {
+  isOtherOptionContent,
+  OTHER_OPTION_LABEL,
+} from '@/features/school/constants/questionOption'
 import CloseIcon from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms, RecruitingItemOption } from '@/shared/types/form'
@@ -55,20 +59,17 @@ const getDuplicateOptionMessage = (options: Array<RecruitingItemOption>) => {
   return hasDuplicate ? '동일한 선택지는 입력할 수 없습니다.' : undefined
 }
 
-const OTHER_OPTION_LABEL = '기타 (사용자 입력)'
+const annotateOption = (option: RecruitingItemOption, index: number) => ({
+  ...option,
+  orderNo: index + 1,
+  isOther: option.isOther ?? isOtherOptionContent(option.content),
+})
 
 const normalizeOptions = (rawOptions: Array<RecruitingItemOption>) => {
-  const normalized = rawOptions.map((option, index) => ({
-    ...option,
-    orderNo: index + 1,
-  }))
-  const otherOptions = normalized.filter((option) => option.content === OTHER_OPTION_LABEL)
-  const regularOptions = normalized.filter((option) => option.content !== OTHER_OPTION_LABEL)
-  const next = [...regularOptions, ...otherOptions].map((option, index) => ({
-    ...option,
-    orderNo: index + 1,
-  }))
-  return next
+  const normalized = rawOptions.map((option, index) => annotateOption(option, index))
+  const otherOptions = normalized.filter((option) => option.isOther)
+  const regularOptions = normalized.filter((option) => !option.isOther)
+  return [...regularOptions, ...otherOptions].map((option, index) => annotateOption(option, index))
 }
 
 const QuestionOptionsEditor = ({
@@ -85,7 +86,11 @@ const QuestionOptionsEditor = ({
   const rawOptions = Array.isArray(field.value) ? field.value : []
   const options = rawOptions.map((option, index) => {
     if (typeof option === 'string') {
-      return { content: option, orderNo: index + 1 }
+      return {
+        content: option,
+        orderNo: index + 1,
+        isOther: isOtherOptionContent(option),
+      }
     }
     return option as RecruitingItemOption
   })
@@ -136,12 +141,16 @@ const QuestionOptionsEditor = ({
 
   const handleAppendOther = () => {
     if (isLocked) return
-    const hasOther = normalizedOptions.some((option) => option.content === OTHER_OPTION_LABEL)
+    const hasOther = normalizedOptions.some((option) => option.isOther)
     if (hasOther) return
     field.onChange(
       normalizeOptions([
         ...normalizedOptions,
-        { content: OTHER_OPTION_LABEL, orderNo: normalizedOptions.length + 1 },
+        {
+          content: OTHER_OPTION_LABEL,
+          orderNo: normalizedOptions.length + 1,
+          isOther: true,
+        },
       ]),
     )
   }
@@ -150,7 +159,7 @@ const QuestionOptionsEditor = ({
     <Flex flexDirection="column" gap={12} alignItems="flex-start">
       {normalizedOptions.map((option, index) => {
         const optionValue = typeof option.content === 'string' ? option.content : ''
-        const isOtherOption = optionValue === OTHER_OPTION_LABEL
+        const isOtherOption = option.isOther === true ? true : isOtherOptionContent(optionValue)
         return (
           <Flex key={`${name}-${index}`} gap={10} maxWidth={550} alignItems="center">
             <S.OptionMarker $variant={variant} />

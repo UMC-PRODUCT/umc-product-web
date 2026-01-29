@@ -6,7 +6,7 @@
 import type { PartType } from '@features/auth/domain'
 
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
-import type { RecruitingPart } from '@/shared/types/form'
+import type { OptionAnswerValue, RecruitingPart } from '@/shared/types/form'
 
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 
@@ -68,13 +68,13 @@ export interface LongTextQuestion extends BaseQuestion {
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
   type: 'CHECKBOX'
-  answer: Array<string>
+  answer: OptionAnswerValue
   options: Array<string>
 }
 
 export interface ChoiceQuestion extends BaseQuestion {
   type: 'RADIO'
-  answer: string
+  answer: OptionAnswerValue
   options: Array<string>
 }
 
@@ -107,6 +107,7 @@ export interface PartQuestion extends BaseQuestion {
 export type QuestionAnswerValue =
   | string
   | Array<string>
+  | OptionAnswerValue
   | Array<{ id: number; answer: RecruitingPart }>
   | TimeTableSlots
   | FileUploadAnswer

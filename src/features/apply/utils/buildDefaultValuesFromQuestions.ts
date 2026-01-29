@@ -1,6 +1,8 @@
 import type { RecruitingForms } from '@/features/school/domain'
+import type { OptionAnswerValue } from '@/shared/types/form'
 
 import type { GetApplicationAnswerResponseDTO } from '../domain/apiTypes'
+import { isOptionAnswerValue } from './optionAnswer'
 
 export type ResumeFormValues = Record<string, unknown>
 
@@ -14,10 +16,19 @@ export function buildDefaultValuesFromQuestions(
   const findAnswerEntry = (questionId: number) =>
     answers.find((entry) => entry.questionId === questionId)
 
+  const normalizeOptionAnswerValue = (value: OptionAnswerValue): OptionAnswerValue => ({
+    ...value,
+    selectedOptionIds: value.selectedOptionIds.map(String),
+  })
+
   const resolveAnswerValue = (questionId: number) => {
     const entry = findAnswerEntry(questionId)
     if (!entry) return undefined
-    return entry.value
+    const answerValue = entry.value
+    if (isOptionAnswerValue(answerValue)) {
+      return normalizeOptionAnswerValue(answerValue)
+    }
+    return answerValue
   }
 
   const pages = Array.isArray(questionData.pages) ? questionData.pages : []

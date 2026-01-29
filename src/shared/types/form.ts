@@ -9,6 +9,11 @@ type RecruitingFormValues = Record<string, unknown>
 export type option = {
   optionId: string
   content: string
+  isOther?: boolean
+}
+export type OptionAnswerValue = {
+  selectedOptionIds: Array<string>
+  otherText?: string
 }
 export type question = {
   questionId: number
@@ -16,7 +21,7 @@ export type question = {
   questionText: string
   required: boolean
   options: Array<option>
-  maxSelectCount: number | null
+  maxSelectCount: string | null
   preferredPartOptions: Array<{
     recruitmentPartId: number
     label: string
@@ -124,6 +129,7 @@ export type RecruitingItemOption = {
   content: string
   orderNo: number
   optionId?: string
+  isOther?: boolean
 }
 
 export type RecruitingItemQuestion = {

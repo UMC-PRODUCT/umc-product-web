@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 
-import type { CalendarEvents, EventSegment } from '@/shared/types/calendar'
+import type { EventSegment } from '@/shared/types/calendar'
 
 const toStartOfDay = (value: string | Date) => dayjs(value).startOf('day')
 
@@ -15,9 +15,11 @@ const getWeekEnd = (current: Dayjs) => {
 }
 
 // --- 로직: 이벤트 세그먼트 생성 ---
-export const processEventsIntoSegments = (events: CalendarEvents): Array<EventSegment> => {
+export const processEventsIntoSegments = (
+  events: Array<{ kind: string; type: string; startDate: string; endDate: string }>,
+): Array<EventSegment> => {
   const segments: Array<EventSegment> = []
-  events.forEach((event) => {
+  events.forEach((event, idx) => {
     const start = toStartOfDay(event.startDate)
     const end = toStartOfDay(event.endDate)
     let current = start
@@ -28,8 +30,8 @@ export const processEventsIntoSegments = (events: CalendarEvents): Array<EventSe
       const span = segmentEnd.diff(current, 'day') + 1
 
       segments.push({
-        id: event.id,
-        title: event.title,
+        id: idx,
+        title: event.kind,
         originalStart: start.toDate(),
         originalEnd: end.toDate(),
         segmentStart: current.toDate(),

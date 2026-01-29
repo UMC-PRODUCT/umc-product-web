@@ -23,7 +23,7 @@ export type GetApplicationAnswerResponseDTO = {
   }>
 }
 export type GetRecruitmentSchedulesResponseDTO = {
-  recruitmentId: number
+  recruitmentId: string
   schedules: Array<{
     type: string
     kind: string

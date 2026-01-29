@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
 import DeleteFail from '@/features/school/components/modals/DeleteFail/DeleteFail'
+import type { Phase } from '@/features/school/domain'
+import { PhaseBadgeTone } from '@/features/school/utils/phaseBadgeTone'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -14,8 +17,9 @@ interface RecruitingCardProps {
   startDate: string
   endDate: string
   applicants: number
-  state: string
+  state: Phase
   editable: boolean
+  recruitmentId: string
 }
 const RecruitingCard = ({
   title,
@@ -24,14 +28,15 @@ const RecruitingCard = ({
   applicants,
   state,
   editable,
+  recruitmentId,
 }: RecruitingCardProps) => {
-  const badgeTone = state === '진행 중' ? 'lime' : state === '모집 종료' ? 'gray' : 'white'
+  const badgeTone = PhaseBadgeTone({ phase: state })
   const [isModalOpen, setIsModalOpen] = useState({
     modalName: '',
     open: false,
     name: title,
   })
-
+  const navigate = useNavigate()
   return (
     <Section
       variant="solid"
@@ -82,7 +87,11 @@ const RecruitingCard = ({
         <Button
           label="조회"
           tone="lime"
-          onClick={() => {}}
+          onClick={() =>
+            navigate({
+              to: `/school/recruiting/${recruitmentId}/preview`,
+            })
+          }
           css={{ width: '65px', height: '28px' }}
         />
       )}

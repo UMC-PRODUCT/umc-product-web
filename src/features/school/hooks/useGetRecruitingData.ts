@@ -16,3 +16,8 @@ export const useGetTempSavedApplicationData = (recruitingId: string) => {
   const { queryKey, queryFn } = recruiteKeys.getTempSavedApplication(recruitingId)
   return useCustomQuery(queryKey, queryFn)
 }
+
+export const useGetRecruitmentsList = (status: 'ONGOING' | 'CLOSED' | 'SCHEDULED') => {
+  const { queryKey, queryFn } = recruiteKeys.recruitments({ status })
+  return useCustomQuery(queryKey, queryFn)
+}

@@ -1,5 +1,7 @@
 import type { RecruitingItemQuestionType } from '@/shared/types/form'
 
+import type { Phase } from './types'
+
 export const PAGE_INFO = [
   {
     page: 1,
@@ -70,4 +72,15 @@ export const STEP_NAME = [
     step: 5,
     name: '최종 검토',
   },
+] as const
+
+export const PHASE: Array<Phase> = [
+  'BEFORE_APPLY',
+  'APPLY_OPEN',
+  'DOC_REVIEWING',
+  'DOC_RESULT_PUBLISHED',
+  'INTERVIEW_WAITING',
+  'FINAL_REVIEWING',
+  'FINAL_RESULT_PUBLISHED',
+  'CLOSED',
 ] as const

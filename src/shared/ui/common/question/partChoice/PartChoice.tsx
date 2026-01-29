@@ -13,7 +13,7 @@ type PartChoiceProps = {
     label: string
     value: RecruitingPart
   }>
-  maxSelectCount: number | null
+  maxSelectCount: string | null
 }
 const PartChoice = ({
   maxSelectCount,
@@ -25,7 +25,7 @@ const PartChoice = ({
   const selectedOptions = Array.isArray(value) ? value : []
   const renderedOptions = Array.isArray(preferredPartOptions) ? preferredPartOptions : []
   const normalizedMaxSelectCount =
-    typeof maxSelectCount === 'number' ? Math.max(maxSelectCount, 1) : 1
+    typeof maxSelectCount === 'string' ? Math.max(Number(maxSelectCount), 1) : 1
   const ranks = Array.from({ length: normalizedMaxSelectCount }, (_, index) => index + 1)
 
   const handleOptionSelect = (targetId: number, option: RecruitingPart) => {
@@ -45,7 +45,7 @@ const PartChoice = ({
         return (
           <Flex key={targetId} gap={13}>
             <S.StyledSpan>{targetId}지망:</S.StyledSpan>
-            <Flex height={60} css={{ overflowX: 'auto' }}>
+            <Flex css={{ overflowX: 'auto' }}>
               <Flex gap={20} height={37} width={'fit-content'}>
                 {renderedOptions.map((option) => (
                   <Button

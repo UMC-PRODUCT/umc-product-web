@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import CalendarIcon from '@/shared/assets/icons/calendar.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { CalendarEvents } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
 import { getEventDateText, processEventsIntoSegments } from '@/shared/utils/calendar'
 
@@ -16,7 +15,15 @@ import * as S from './RecruitingCalendar.style'
 import 'react-calendar/dist/Calendar.css'
 
 type RecruitingCalendarProps = {
-  events: CalendarEvents
+  events: {
+    recruitmentId: string
+    schedules: Array<{
+      type: string
+      kind: string
+      startDate: string
+      endDate: string
+    }>
+  }
 }
 
 const toStartOfDay = (value: Date) => dayjs(value).startOf('day')
@@ -30,7 +37,7 @@ const isWithinRange = (target: Date, start: Date, end: Date) => {
 
 const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
   const today = useMemo(() => toStartOfDay(new Date()).toDate(), [])
-  const allSegments = useMemo(() => processEventsIntoSegments(events), [events])
+  const allSegments = useMemo(() => processEventsIntoSegments(events.schedules), [events])
 
   const [activeStartDate, setActiveStartDate] = useState<Date>(today)
   const [selectedDate, setSelectedDate] = useState<Date>(today)

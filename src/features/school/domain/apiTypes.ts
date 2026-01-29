@@ -1,7 +1,7 @@
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { RecruitingPart, RecruitingStatus } from '@/shared/types/form'
 
-import type { ApplicationFormPayload, RecruitingDraft, RecruitingForms } from './types'
+import type { ApplicationFormPayload, Phase, RecruitingDraft, RecruitingForms } from './types'
 
 export type GetRecruitmentsRequestDTO = {
   status: RecruitingStatus
@@ -11,12 +11,12 @@ export type GetRecruitmentsResponseDTO = {
   recruitments: Array<{
     schoolName: string
     gisu: string
-    recruitmentId: number
+    recruitmentId: string
     recruitmentName: string
     startDate: string
     endDate: string
     applicantCount: number
-    phase: string
+    phase: Phase
     phaseLabel: string
     editable: boolean
   }>
