@@ -41,7 +41,7 @@ interface QuestionProps {
   errorMessage?: string
   maxSelectCount: string | null
   preferredPartOptions: Array<{
-    recruitmentPartId: string
+    recruitmentPartId: string | number
     label: string
     value: PartType
   }> | null
