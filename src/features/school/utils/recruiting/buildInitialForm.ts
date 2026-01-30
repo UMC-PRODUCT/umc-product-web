@@ -1,3 +1,4 @@
+import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type {
   RecruitingForms,
   RecruitingInterviewTimeTable,
@@ -70,6 +71,7 @@ export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
         content: option.content,
         orderNo: option.orderNo,
         optionId: option.optionId,
+        isOther: option.isOther ?? isOtherOptionContent(option.content),
       })),
     },
   }))

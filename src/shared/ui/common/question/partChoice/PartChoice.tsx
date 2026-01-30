@@ -1,19 +1,26 @@
-import type { QuestionMode, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { QuestionMode } from '@/shared/types/form'
 
 import { Button } from '../../Button'
 import { Flex } from '../../Flex'
 import * as S from './PartChoice.style'
 
+type PartSelectionValue = {
+  id: number
+  answer: PartType
+  recruitmentPartId?: string
+}
+
 type PartChoiceProps = {
-  value: Array<{ id: number; answer: RecruitingPart }> | undefined
-  onChange?: (selectedOptions: Array<{ id: number; answer: RecruitingPart }>) => void
+  value: Array<PartSelectionValue> | undefined
+  onChange?: (selectedOptions: Array<PartSelectionValue>) => void
   mode: QuestionMode
   preferredPartOptions: Array<{
-    recruitmentPartId: number
+    recruitmentPartId: string | number
     label: string
-    value: RecruitingPart
+    value: PartType
   }>
-  maxSelectCount: number | null
+  maxSelectCount: string | null
 }
 const PartChoice = ({
   maxSelectCount,
@@ -25,13 +32,27 @@ const PartChoice = ({
   const selectedOptions = Array.isArray(value) ? value : []
   const renderedOptions = Array.isArray(preferredPartOptions) ? preferredPartOptions : []
   const normalizedMaxSelectCount =
-    typeof maxSelectCount === 'number' ? Math.max(maxSelectCount, 1) : 1
+    typeof maxSelectCount === 'string' ? Math.max(Number(maxSelectCount), 1) : 1
   const ranks = Array.from({ length: normalizedMaxSelectCount }, (_, index) => index + 1)
 
-  const handleOptionSelect = (targetId: number, option: RecruitingPart) => {
+  const handleOptionSelect = (
+    targetId: number,
+    optionValue: PartType,
+    recruitmentPartId: string | number,
+  ) => {
+    const normalizedRecruitmentPartId = String(recruitmentPartId)
+    const optionEntry = {
+      id: targetId,
+      answer: optionValue,
+      recruitmentPartId: normalizedRecruitmentPartId,
+    }
     const updatedSelection = selectedOptions.some((item) => item.id === targetId)
-      ? selectedOptions.map((item) => (item.id === targetId ? { ...item, answer: option } : item))
-      : [...selectedOptions, { id: targetId, answer: option }]
+      ? selectedOptions.map((item) =>
+          item.id === targetId
+            ? { ...item, answer: optionValue, recruitmentPartId: normalizedRecruitmentPartId }
+            : item,
+        )
+      : [...selectedOptions.filter((item) => item.id !== targetId), optionEntry]
 
     onChange?.(updatedSelection)
   }
@@ -42,20 +63,23 @@ const PartChoice = ({
     <Flex flexDirection="column" gap={22}>
       {ranks.map((targetId) => {
         const selectedOption = getSelectedOption(targetId)
+
         return (
           <Flex key={targetId} gap={13}>
             <S.StyledSpan>{targetId}지망:</S.StyledSpan>
-            <Flex height={60} css={{ overflowX: 'auto' }}>
+            <Flex css={{ overflowX: 'auto' }}>
               <Flex gap={20} height={37} width={'fit-content'}>
                 {renderedOptions.map((option) => (
                   <Button
                     variant="outline"
                     tone={selectedOption === option.value ? 'lime' : 'gray'}
-                    key={`${option.recruitmentPartId}-${targetId}`}
+                    key={`${String(option.recruitmentPartId)}-${targetId}`}
                     label={option.label}
                     type="button"
                     onClick={
-                      mode === 'edit' ? () => handleOptionSelect(targetId, option.value) : undefined
+                      mode === 'edit'
+                        ? () => handleOptionSelect(targetId, option.value, option.recruitmentPartId)
+                        : undefined
                     }
                     css={{
                       width: 'fit-content',

@@ -1,24 +1,39 @@
 import { useNavigate } from '@tanstack/react-router'
 
+import type { UserApplicationBadgeType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
-import { transformRecruitingKorean } from '@/shared/utils/transformKorean'
+import { transformUserRecruitmentBadgeToKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './ApplyResumeCard.style'
 
 interface ApplyResumeCardProps {
   title: string
-  resumeId: number
-  state: ResumeType
-  recruitmentId: number
+  resumeId: string
+  state: UserApplicationBadgeType
+  recruitmentId: string
 }
 
 const ApplyResumeCard = ({ title, resumeId, state, recruitmentId }: ApplyResumeCardProps) => {
   const navigate = useNavigate()
+  const handleNavigate = () => {
+    if (state === 'DRAFT') {
+      navigate({
+        to: `/apply/$recruitmentId/$resumeId`,
+        params: { recruitmentId: String(recruitmentId), resumeId: String(resumeId) },
+        search: { page: 1 },
+      })
+    } else {
+      navigate({
+        to: `/dashboard/$recruitmentId/$resumeId`,
+        params: { resumeId: String(resumeId), recruitmentId: String(recruitmentId) },
+        search: { page: 1 },
+      })
+    }
+  }
   return (
     <S.CardWrapper variant="solid" flexDirection="row">
       <Flex
@@ -31,8 +46,8 @@ const ApplyResumeCard = ({ title, resumeId, state, recruitmentId }: ApplyResumeC
         <Button
           className="status"
           variant="solid"
-          tone={state === 'NOW' ? 'lime' : 'gray'}
-          label={transformRecruitingKorean(state)}
+          tone={state === 'SUBMITTED' ? 'lime' : 'gray'}
+          label={transformUserRecruitmentBadgeToKorean(state)}
           onClick={() => {}}
           css={{
             ...theme.typography.B4.Sb,
@@ -46,13 +61,7 @@ const ApplyResumeCard = ({ title, resumeId, state, recruitmentId }: ApplyResumeC
         tone="lime"
         typo="B4.Md"
         variant={'solid'}
-        onClick={() =>
-          navigate({
-            to: `/dashboard/$recruitmentId/$resumeId`,
-            params: { resumeId: String(resumeId), recruitmentId: String(recruitmentId) },
-            search: { page: 1 },
-          })
-        }
+        onClick={handleNavigate}
         css={{
           cursor: 'pointer',
           '.badge-text-short': { display: 'none' },

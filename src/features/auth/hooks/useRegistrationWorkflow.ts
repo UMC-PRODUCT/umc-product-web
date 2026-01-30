@@ -3,15 +3,16 @@ import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react
 import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
-import type { TermsResponseDTO } from '@/shared/api/terms'
+import type { CommonResponseDTO } from '@/shared/types/api'
 
+import type { GetTermsResponseDTO } from '../domain/types'
 import type { RegisterForm } from '../schemas/register'
 import { useAuth } from './register/useAuthMutations'
 import type { TermsAgreementKey } from './register/useTermsAgreementState'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
-type TermsContentRecord = Record<TermsAgreementKey, TermsResponseDTO>
+type TermsContentRecord = Record<TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO>>
 
 interface RegistrationWorkflowProps {
   watchedEmail: string
@@ -35,7 +36,7 @@ export const useRegistrationWorkflow = ({
   const { mutate: verifyCodeMutate } = useVerifyCode()
   const { mutate: registerMutate } = useRegister()
 
-  const [emailVerificationId, setEmailVerificationId] = useState<number | null>(null)
+  const [emailVerificationId, setEmailVerificationId] = useState<string | null>(null)
   const [hasEmailBeenSent, setHasEmailBeenSent] = useState(false)
   const [isEmailVerified, setIsEmailVerified] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -74,8 +75,8 @@ export const useRegistrationWorkflow = ({
         { email },
         {
           onSuccess: (response) => {
-            if (response.result.emailVerificationId) {
-              setEmailVerificationId(Number(response.result.emailVerificationId))
+            if (response.emailVerificationId) {
+              setEmailVerificationId(response.emailVerificationId)
             }
             setHasEmailBeenSent(true)
             onEmailSent()
@@ -109,8 +110,8 @@ export const useRegistrationWorkflow = ({
         {
           onSuccess: (response) => {
             clearErrors('emailVerificationCode')
-            if (response.result.emailVerificationToken) {
-              setValue('emailVerificationToken', response.result.emailVerificationToken)
+            if (response.emailVerificationToken) {
+              setValue('emailVerificationToken', response.emailVerificationToken)
             }
             setIsEmailVerified(true)
           },
@@ -135,11 +136,17 @@ export const useRegistrationWorkflow = ({
 
       const mappedTermsAgreements =
         terms && Object.keys(terms).length > 0
-          ? (Object.entries(terms) as Array<[TermsAgreementKey, TermsResponseDTO]>)
+          ? (
+              Object.entries(terms) as Array<
+                [TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO>]
+              >
+            )
               .map(([termKey, termContent]) => {
-                if (typeof termContent.result.id !== 'number') return null
+                const rawId = termContent.result.id
+                const termsId = typeof rawId === 'number' ? rawId : Number(rawId)
+                if (!Number.isFinite(termsId)) return null
                 return {
-                  termsId: termContent.result.id,
+                  termsId,
                   isAgreed: Boolean(termsAgreement[termKey]),
                 }
               })

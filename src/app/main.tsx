@@ -57,7 +57,7 @@ if (rootElement && !rootElement.innerHTML) {
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
-          <RouterProvider router={router}></RouterProvider>
+          <RouterProvider router={router} />
         </ThemeProvider>
       </TanStackQueryProvider.Provider>
     </StrictMode>,

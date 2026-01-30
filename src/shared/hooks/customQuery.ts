@@ -53,7 +53,7 @@ export const useCustomQuery = <
 
 export const useCustomSuspenseQuery = <
   TQueryFnData,
-  TError,
+  TError extends Error = Error,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(

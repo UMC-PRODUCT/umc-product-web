@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 
-import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/apiTypes'
+import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
 import type { RecruitingForms } from '@/features/school/domain'
 
 import { buildDefaultValuesFromQuestions } from '../../../utils'

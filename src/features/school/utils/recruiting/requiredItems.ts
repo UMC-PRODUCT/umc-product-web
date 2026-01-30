@@ -1,4 +1,5 @@
-import type { RecruitingItem, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { RecruitingItem } from '@/shared/types/form'
 
 const PREFERRED_PART_TEXT = '희망하는 파트를 선택해 주세요.'
 const SCHEDULE_TEXT = '면접 가능한 시간을 선택해 주세요.'
@@ -33,7 +34,7 @@ export const buildDefaultPage2Item = (): RecruitingItem => ({
   },
 })
 
-export const buildDefaultPartItem = (part: RecruitingPart): RecruitingItem => ({
+export const buildDefaultPartItem = (part: PartType): RecruitingItem => ({
   target: { kind: 'PART', part, pageNo: 2 },
   question: {
     type: 'LONG_TEXT',
@@ -64,7 +65,7 @@ export const hasPage2CommonItem = (items: Array<RecruitingItem>) =>
 
 export const ensureRequiredItems = (
   items: Array<RecruitingItem>,
-  recruitmentParts: Array<RecruitingPart>,
+  recruitmentParts: Array<PartType>,
 ) => {
   const next = items
     .map((item) => {

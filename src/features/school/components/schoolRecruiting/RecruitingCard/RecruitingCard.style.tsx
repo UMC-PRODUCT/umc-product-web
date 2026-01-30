@@ -6,7 +6,7 @@ import Section from '@/shared/ui/common/Section/Section'
 
 export const Title = styled.div`
   ${theme.typography.H4.Sb}
-  color: ${theme.colors.white}
+  color: ${theme.colors.white};
 `
 export const InfoWrapper = styled.div`
   display: flex;
@@ -16,14 +16,17 @@ export const InfoWrapper = styled.div`
   .label {
     ${theme.typography.B4.Rg}
     color: ${theme.colors.gray[400]};
+    white-space: nowrap;
   }
   .dateInfo {
     ${theme.typography.B4.Md}
     color: ${theme.colors.white};
+    white-space: nowrap;
   }
   .recruiteNum {
     ${theme.typography.B4.Sb}
     color: ${theme.colors.lime};
+    white-space: nowrap;
   }
 `
 
@@ -32,14 +35,15 @@ export const LeftInfo = styled(Section)`
   gap: 26px;
   padding: 0;
   ${media.down(theme.breakPoints.tablet)} {
-    gap: 10px;
+    justify-content: space-between;
+    width: 100%;
   }
   .state {
     position: relative;
     ${media.down(theme.breakPoints.tablet)} {
       position: absolute;
       top: 2px;
-      left: 130px;
+      right: 0;
     }
   }
 `

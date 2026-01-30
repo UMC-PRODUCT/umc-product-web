@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from '@tanstack/react-router'
 
 import Logo from '@shared/assets/brand_logo.svg?react'
 import Notice from '@shared/assets/icons/notice.svg?react'
@@ -17,15 +18,23 @@ import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
 
 export const LoginPage = () => {
-  const { setItem, getItem } = useLocalStorage('platform')
+  const navigate = useNavigate()
+  const { setItem, getItem: getPlatform } = useLocalStorage('platform')
+  const { getItem: getAccessToken } = useLocalStorage('accessToken')
+  const accessToken = getAccessToken()
+
   const handleSocialLogin = (platform: string) => {
     setItem(platform)
     const baseUrl = `${import.meta.env.VITE_SERVER_API_URL}/auth/oauth2/authorization/${platform}`
     window.location.href = `${baseUrl}`
   }
 
-  const lastPlatform = getItem()
+  const lastPlatform = getPlatform()
 
+  if (accessToken) {
+    navigate({ to: '/', replace: true })
+    return null
+  }
   return (
     <Main>
       <IntroBanner />

@@ -28,7 +28,7 @@ export function useRecruitingMutation() {
       patchTempSavedRecruitQuestions(recruitingId, data),
     )
   }
-  function useDeleteRecruitment(recruitingId: number) {
+  function useDeleteRecruitment(recruitingId: string) {
     return useCustomMutation(() => deleteRecruitment(recruitingId))
   }
 

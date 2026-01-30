@@ -1,13 +1,13 @@
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
 
 import type { QuestionType } from '../../domain'
 import { usePartAnswerReset, usePartChangeModalState, usePartSelectionChange } from './hooks'
 
 type UsePartChangeGuardArgs = {
   pages: Array<{
-    part: RecruitingPart
+    part: PartType
     questions: Array<{
       questionId: number
       type: QuestionType

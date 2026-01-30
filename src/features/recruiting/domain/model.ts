@@ -3,7 +3,7 @@
  * 리크루팅 정보, 커리큘럼 관련 타입
  */
 
-import type { RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
 
 /** 커리큘럼 항목 */
 export interface CurriculumItem {
@@ -13,7 +13,7 @@ export interface CurriculumItem {
 
 /** 파트 데이터 (커리큘럼 포함) */
 export interface PartData {
-  id: RecruitingPart
+  id: PartType
   label: string
   requiredSkill?: string
   curriculum: Array<CurriculumItem>

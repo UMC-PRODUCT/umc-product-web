@@ -9,10 +9,8 @@
 import type { AccountLevelType, PartType } from '@features/auth/domain'
 import { ACCOUNT_LEVEL_LIST, PART_CONFIG, PART_LIST } from '@features/auth/domain'
 
-import type { RecruitingPart } from '../types/form'
-
 // 하위 호환성을 위한 re-export
-export const PART: Array<RecruitingPart> = [...PART_LIST]
+export const PART: Array<PartType> = [...PART_LIST]
 
 export const FOOTER_INFO: { email: string; generation: number; master: string } = {
   email: 'email.umc@example.com',
@@ -38,3 +36,12 @@ export const PART_ABILITY: Record<PartType, Array<string>> = {
   SPRINGBOOT: [...PART_CONFIG.SPRINGBOOT.abilities],
   NODEJS: [...PART_CONFIG.NODEJS.abilities],
 }
+export type RECRUITING_SCHEDULE_TYPE =
+  | 'APPLY_WINDOW'
+  | 'DOC_REVIEW_WINDOW'
+  | 'DOC_RESULT_AT'
+  | 'INTERVIEW_WINDOW'
+  | 'FINAL_REVIEW_WINDOW'
+  | 'FINAL_RESULT_AT'
+
+export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'

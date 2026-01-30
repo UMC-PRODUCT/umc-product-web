@@ -61,14 +61,16 @@ export const ModalContentWrapper = styled(Flex)`
 
   ${media.up(theme.breakPoints.tablet)} {
     width: 800px;
-    min-width: 800px;
+    max-width: 90vw;
+    min-width: 90vw;
     height: 700px;
     padding: 39px 58px;
   }
 
   ${media.up(theme.breakPoints.desktop)} {
     width: 1080px;
-    min-width: 1080px;
+    min-width: 90vw;
+    max-width: 90vw;
     height: 840px;
     padding: 39px 58px;
   }

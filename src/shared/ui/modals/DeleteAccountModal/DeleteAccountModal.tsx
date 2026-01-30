@@ -34,13 +34,7 @@ ${nickname}/${name} 님의 계정을 삭제하시겠습니까?`
           marginTop: '40px',
         }}
       >
-        <Button
-          type="button"
-          label={'취소하기'}
-          tone="gray"
-          onClick={onClose}
-          typo="C3.Md"
-        ></Button>
+        <Button type="button" label={'취소하기'} tone="gray" onClick={onClose} typo="C3.Md" />
         <Button
           type="button"
           label={'삭제하기'}
@@ -50,7 +44,7 @@ ${nickname}/${name} 님의 계정을 삭제하시겠습니까?`
             onClick()
             onClose()
           }}
-        ></Button>
+        />
       </Flex>
     </AlertModalLayout>
   )

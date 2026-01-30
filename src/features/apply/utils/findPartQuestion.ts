@@ -3,11 +3,14 @@ import type { question } from '@/shared/types/form'
 
 export function findPartQuestion(
   questionData: RecruitingForms,
-  sourceQuestionId: number,
+  sourceQuestionId?: number,
 ): question | undefined {
   for (const page of questionData.pages) {
     for (const question of page.questions) {
-      if (question.questionId === sourceQuestionId && question.type === 'PREFERRED_PART') {
+      if (
+        question.type === 'PREFERRED_PART' &&
+        (sourceQuestionId == null || question.questionId === sourceQuestionId)
+      ) {
         return question
       }
     }

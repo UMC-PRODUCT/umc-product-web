@@ -2,10 +2,9 @@ import styled from '@emotion/styled'
 
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
-import type { TermsResponseDTO } from '@/shared/api/terms'
-
 import SchoolSelect from '../components/SchoolSelect/SchoolSelect'
 import { TermsSection } from '../components/Term/TermsSection'
+import type { GetTermsResponseDTO } from '../domain/types'
 import type { SchoolOption, TermsAgreementKey } from '../hooks/register'
 import type { RegistrationFieldValues, UseRegisterFormReturn } from '../hooks/useRegisterForm'
 
@@ -27,7 +26,7 @@ type RegisterFormFieldsProps = {
   termsAgreement: Record<TermsAgreementKey, boolean>
   toggleTermAgreement: (key: TermsAgreementKey) => void
   toggleAllTermsAgreement: () => void
-  termsData?: Record<TermsAgreementKey, TermsResponseDTO>
+  termsData?: Record<TermsAgreementKey, GetTermsResponseDTO>
   isTermsLoading?: boolean
   termsError?: string
 }

@@ -1,3 +1,6 @@
+import type { ChangeEvent } from 'react'
+
+import { theme } from '@/shared/styles/theme'
 import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -5,17 +8,37 @@ import * as S from '../choice/shared'
 
 const RadioChoice = ({
   content,
+  optionId,
   onClick,
   value,
   mode,
+  isOtherOption,
+  otherInputValue,
+  onOtherInputChange,
+  placeholder,
 }: {
   content: string
+  optionId: string
   onClick?: () => void
   value?: string
   mode: QuestionMode
+  isOtherOption: boolean
+  otherInputValue?: string
+  onOtherInputChange?: (text: string) => void
+  placeholder?: string
 }) => {
-  const isChecked = value === content // 체크 여부 판단
+  const isChecked = value === optionId // 체크 여부 판단
   const isEditable = mode === 'edit'
+  const isOtherInputEditable = isEditable && isOtherOption
+
+  const handleOtherInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!isOtherInputEditable) return
+    const text = event.target.value
+    onOtherInputChange?.(text)
+    if (!isChecked && text.trim().length > 0) {
+      onClick?.()
+    }
+  }
 
   return (
     <Flex
@@ -32,7 +55,20 @@ const RadioChoice = ({
         $isChecked={isChecked} // 스타일용 props
         $isInteractive={isEditable}
       />
-      <S.RadioChoiceText>{content}</S.RadioChoiceText>
+      {!isOtherOption ? (
+        <S.RadioChoiceText>{content}</S.RadioChoiceText>
+      ) : (
+        <S.RadioChoiceText css={{ color: `${theme.colors.gray[500]}` }}>
+          기타:
+          <S.Input
+            isActive={isChecked}
+            value={otherInputValue ?? ''}
+            onChange={handleOtherInputChange}
+            placeholder={placeholder}
+            disabled={!isOtherInputEditable}
+          />
+        </S.RadioChoiceText>
+      )}
     </Flex>
   )
 }

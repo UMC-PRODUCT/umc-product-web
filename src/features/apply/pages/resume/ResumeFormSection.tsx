@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
+import type { ControllerRenderProps } from 'react-hook-form'
 import { Controller, useWatch } from 'react-hook-form'
 
 import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { question, ResumeFormSectionProps } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
@@ -31,6 +32,13 @@ const ResumeFormSection = ({
   isEdit,
 }: ResumeFormSectionProps) => {
   const normalizedPages = useMemo(() => (Array.isArray(pages) ? pages : []), [pages])
+  const partQuestionGroups = useMemo(
+    () =>
+      normalizedPages.flatMap((page) =>
+        Array.isArray(page.partQuestions) ? page.partQuestions : [],
+      ),
+    [normalizedPages],
+  )
 
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -45,7 +53,15 @@ const ResumeFormSection = ({
 
   const partQuestionIds = useMemo(() => {
     return normalizedPages
-      .flatMap((page) => (Array.isArray(page.questions) ? page.questions : []))
+      .flatMap((page) => {
+        const baseQuestions = Array.isArray(page.questions) ? page.questions : []
+        const partQuestions = Array.isArray(page.partQuestions)
+          ? page.partQuestions.flatMap((partGroup) =>
+              Array.isArray(partGroup.questions) ? partGroup.questions : [],
+            )
+          : []
+        return [...baseQuestions, ...partQuestions]
+      })
       .map((question) => question.questionId)
   }, [normalizedPages])
 
@@ -56,26 +72,46 @@ const ResumeFormSection = ({
 
   const hasPartAnswers = useMemo(() => {
     if (partQuestionIds.length === 0) return false
-    return normalizedPages.some((page) =>
-      (Array.isArray(page.questions) ? page.questions : []).some((question) => {
+    return normalizedPages.some((page) => {
+      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
+      const pagePartQuestions = Array.isArray(page.partQuestions)
+        ? page.partQuestions.flatMap((partGroup) =>
+            Array.isArray(partGroup.questions) ? partGroup.questions : [],
+          )
+        : []
+      return [...pageQuestions, ...pagePartQuestions].some((question) => {
         const index = partQuestionIds.indexOf(question.questionId)
         const answerValue = partQuestionValues[index]
         return !isAnswerEmpty(question, answerValue)
-      }),
-    )
+      })
+    })
   }, [partQuestionValues, normalizedPages, partQuestionIds])
 
   const {
     isPartChangeModalOpen,
     partChangeRanksText,
+    requestPartChange,
     handleConfirmPartChange,
     handleCancelPartChange,
   } = usePartChangeGuard({
-    pages: normalizedPages[2]?.partQuestions ?? [],
+    pages: partQuestionGroups,
     setValue,
     clearErrors,
     hasPartAnswers,
   })
+
+  const handleFieldValueChange = (
+    question: question,
+    field: ControllerRenderProps<Record<string, unknown>, string>,
+    newValue: QuestionAnswerValue,
+  ) => {
+    requestPartChange({
+      questionId: question.questionId,
+      currentValue: field.value as QuestionAnswerValue,
+      nextValue: newValue,
+    })
+    field.onChange(newValue)
+  }
 
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, normalizedPages.length - 1))
   const activePage = normalizedPages[currentPageIndex]
@@ -83,9 +119,15 @@ const ResumeFormSection = ({
   const activePagePartQuestions = Array.isArray(activePage.partQuestions)
     ? activePage.partQuestions
     : []
-  const activePageQuestions = Array.isArray(activePage.questions) ? activePage.questions : []
+  const activePagePartQuestionIds = new Set(
+    activePagePartQuestions.flatMap((group) =>
+      Array.isArray(group.questions) ? group.questions.map((question) => question.questionId) : [],
+    ),
+  )
+  const activePageQuestions = (
+    Array.isArray(activePage.questions) ? activePage.questions : []
+  ).filter((question) => !activePagePartQuestionIds.has(question.questionId))
   const activeScheduleQuestion = activePage.scheduleQuestion ? activePage.scheduleQuestion : null
-  console.log('activeScheduleQuestion', activeScheduleQuestion)
   return (
     <form onSubmit={handleFormSubmit}>
       <Flex key={activePage.page} flexDirection="column" gap={24}>
@@ -95,13 +137,12 @@ const ResumeFormSection = ({
             flexDirection="column"
             gap={12}
           >
-            <PartDivider label={partQuestion.part} />
+            <PartDivider label={partQuestion.label ?? partQuestion.part} />
             {partQuestion.questions.map((question, idx) => (
               <Controller
                 key={question.questionId}
                 name={String(question.questionId)}
                 control={control}
-                defaultValue={undefined}
                 render={({ field }) => (
                   <Question
                     questionId={question.questionId}
@@ -111,7 +152,7 @@ const ResumeFormSection = ({
                     type={question.type}
                     options={question.options}
                     value={field.value as QuestionAnswerValue}
-                    onChange={field.onChange}
+                    onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
                     errorMessage={getFieldErrorMessage(question.questionId)}
                     mode={isEdit ? 'edit' : 'view'}
                     maxSelectCount={question.maxSelectCount}
@@ -128,7 +169,6 @@ const ResumeFormSection = ({
             key={question.questionId}
             name={String(question.questionId)}
             control={control}
-            defaultValue={undefined}
             render={({ field }) => (
               <Question
                 questionId={question.questionId}
@@ -138,7 +178,7 @@ const ResumeFormSection = ({
                 type={question.type}
                 options={question.options}
                 value={field.value as QuestionAnswerValue}
-                onChange={field.onChange}
+                onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
                 preferredPartOptions={question.preferredPartOptions}
                 errorMessage={getFieldErrorMessage(question.questionId)}
                 mode={isEdit ? 'edit' : 'view'}
@@ -157,7 +197,6 @@ const ResumeFormSection = ({
             <Controller
               name={String(activeScheduleQuestion.questionId)}
               control={control}
-              defaultValue={undefined}
               render={({ field }) => (
                 <TimeTable
                   dateRange={activeScheduleQuestion.schedule.dateRange}

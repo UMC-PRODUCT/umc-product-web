@@ -12,235 +12,227 @@ const Header = styled(Flex)`
     width: fit-content;
   }
 `
+
 const DateNavigator = styled(Flex)`
   ${theme.typography.B1.Sb}
   width: fit-content;
   color: ${theme.colors.white};
   gap: 16px;
 `
+
 const StyledCalendarWrapper = styled.div`
   width: 100%;
 
-  .react-calendar {
+  .fc {
+    --fc-border-color: ${theme.colors.gray[800]};
+    --fc-daygrid-event-dot-width: 0px; /* 기본 점 숨김 */
+  }
+
+  /* 전체 배경 및 테두리 초기화 */
+  .fc-theme-standard .fc-scrollgrid {
+    border: none;
+  }
+
+  .fc-theme-standard th,
+  .fc-theme-standard td {
     background: transparent;
-    border: none;
-    width: 100%;
-    overflow: visible;
   }
 
-  .react-calendar__viewContainer {
-    overflow: visible;
+  .fc-scrollgrid-section-header,
+  .fc-scrollgrid-section-header td,
+  .fc-scrollgrid-section-header th {
+    background: transparent !important;
   }
 
-  .react-calendar__month-view {
-    overflow: visible;
+  .fc-theme-standard td {
+    border: 1px solid ${theme.colors.gray[600]};
   }
 
-  .react-calendar__month-view > div {
-    overflow: visible;
+  /* 요일 헤더 영역 (일~토) */
+  .fc-col-header {
+    background-color: transparent;
   }
 
-  .react-calendar__month-view__days {
-    overflow: visible !important;
-    ${media.down(theme.breakPoints.tablet)} {
-      border: 1px solid ${theme.colors.gray[600]};
-    }
-  }
+  .fc-col-header-cell {
+    border: none !important; /* 헤더 사이의 세로선 제거 */
+    background: transparent !important; /* 하얀 배경 제거 */
+    padding: 12px 0;
+    border-bottom: 1px solid ${theme.colors.gray[800]};
 
-  /* 날짜 타일 설정 */
-  .react-calendar__tile {
-    height: 150px;
-    position: relative;
-    border: none;
-    outline: none;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    background: none !important;
-    color: ${theme.colors.white};
-    cursor: default;
-    overflow: visible !important;
-    z-index: auto;
-    pointer-events: none;
-    ${theme.typography.B1.Md}
-
-    &:enabled:hover,
-    &:enabled:focus,
-    &--active {
-      background: none !important;
-    }
-
-    /* 주말 색상 */
-    &.react-calendar__month-view__days__day--weekend {
-      color: ${theme.colors.gray[400]};
-    }
-    &:nth-of-type(7n) {
-      color: ${theme.colors.gray[400]};
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 0.5px solid ${theme.colors.gray[600]};
-      pointer-events: none;
-      z-index: 1;
-      ${media.down(theme.breakPoints.tablet)} {
-        border: none;
-      }
-    }
-
-    ${media.down(theme.breakPoints.desktop)} {
-      height: 100px;
-      align-items: center;
-    }
-
-    ${media.down(theme.breakPoints.tablet)} {
-      height: 64px;
-      align-items: center;
-      pointer-events: auto;
-    }
-  }
-
-  .react-calendar__tile:has(.event-bar-container) {
-    z-index: 100 !important;
-  }
-
-  .react-calendar__month-view__weekdays {
-    color: ${theme.colors.white};
-    abbr {
+    .fc-col-header-cell-cushion {
+      ${theme.typography.B3.Md}
+      color: ${theme.colors.white} !important;
       text-decoration: none;
     }
   }
 
-  .react-calendar__tile--now {
-    abbr {
-      background-color: ${theme.colors.lime} !important;
-      color: ${theme.colors.black} !important;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-    }
-    ${media.down(theme.breakPoints.tablet)} {
-      background: none !important;
-      color: ${theme.colors.lime} !important;
-      abbr {
-        background-color: transparent;
-        font-weight: bold;
-        width: 26px;
-        height: 26px;
-      }
+  .fc-col-header-cell.fc-day-sun .fc-col-header-cell-cushion,
+  .fc-col-header-cell.fc-day-sat .fc-col-header-cell-cushion {
+    color: ${theme.colors.gray[400]} !important;
+  }
+
+  .fc-day-other {
+    .fc-daygrid-day-top,
+    .fc-daygrid-day-events,
+    .fc-daygrid-day-bg {
+      visibility: hidden; /* 영역은 유지하되 내용을 숨김 */
+      margin-top: 3px;
     }
   }
 
-  /* 기본: 선택된 날짜는 하얀색 동그라미 */
-  .react-calendar__tile--active {
-    ${media.down(theme.breakPoints.tablet)} {
-      background: none !important;
-
-      abbr {
-        background-color: ${theme.colors.white} !important;
-        color: ${theme.colors.black} !important;
-        border-radius: 50%;
-        width: 26px;
-        height: 26px;
-      }
-    }
+  /* 날짜 칸(Tile) 스타일 */
+  .fc-daygrid-day {
+    min-height: 150px !important;
+    height: 150px;
+    max-height: 150px;
+    background-color: ${theme.colors.black};
   }
 
-  /* 오늘이면서 동시에 선택된 날 */
-  .react-calendar__tile--now.react-calendar__tile--active {
-    abbr {
-      background-color: ${theme.colors.lime} !important;
-      color: ${theme.colors.black} !important;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-    }
-    ${media.down(theme.breakPoints.tablet)} {
-      color: ${theme.colors.black} !important;
-
-      abbr {
-        background-color: ${theme.colors.lime} !important;
-        color: ${theme.colors.black} !important;
-        width: 26px;
-        height: 26px;
-      }
-    }
-  }
-  .react-calendar__navigation {
-    display: none;
+  /* 날짜 숫자 위치 및 스타일 */
+  .fc-daygrid-day-top {
+    border-top: none;
+    flex-direction: row-reverse; /* 숫자를 오른쪽으로 정렬 */
+    padding: 12px 14px 0 0; /* 우측 상단 여백 */
   }
 
-  .react-calendar__month-view__days__day--neighboringMonth {
-    pointer-events: none;
-    abbr {
-      display: none;
-    }
-    div {
-      display: none;
-    }
+  .fc-daygrid-day-number {
+    ${theme.typography.B1.Md}
+    color: ${theme.colors.white};
+    text-decoration: none;
   }
 
-  .react-calendar__tile abbr {
-    position: relative;
-    z-index: 200;
+  .fc-day-today {
+    background-color: ${theme.colors.black} !important;
+  }
+
+  .fc-day-sun .fc-daygrid-day-number,
+  .fc-day-sat .fc-daygrid-day-number {
+    color: ${theme.colors.gray[400]};
+  }
+
+  /* 선택된 날짜 표시 */
+  .fc-daygrid-day.fc-selected-day .fc-daygrid-day-number {
+    background: ${theme.colors.white};
+    color: ${theme.colors.black};
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 오늘 날짜는 기본적으로 lime 텍스트 */
+  .fc-day-today .fc-daygrid-day-number {
+    color: ${theme.colors.lime};
+  }
+
+  /* 오늘 날짜가 선택된 경우 lime 원형 */
+  .fc-daygrid-day.fc-selected-day.fc-day-today .fc-daygrid-day-number {
+    background: ${theme.colors.lime};
+    color: ${theme.colors.black};
+  }
+
+  /* 이벤트 바(Event Bar) 컨테이너 스타일 */
+  .fc-event-track {
+    margin-bottom: 4px;
+  }
+
+  .fc-daygrid-event-harness {
+    margin-bottom: 4px !important; /* 이벤트 바 사이 간격 */
+  }
+
+  .fc-daygrid-event {
+    border: none !important;
+    border-radius: 0 4px 4px 0; /* 왼쪽은 보더를 위해 각지게 */
+    margin: 0 4px 0 0 !important;
+    cursor: pointer;
+    background: linear-gradient(
+      90deg,
+      #2b2b2b 0%,
+      rgba(43, 43, 43, 0.7) 80%,
+      rgba(43, 43, 43, 0.4) 100%
+    ) !important;
+  }
+
+  .fc-daygrid-day-frame & .fc-scrollgrid-sync-inner {
+    width: 150px !important;
+    height: 150px !important;
+    min-height: 150px !important;
+  }
+
+  .fc-event {
+    margin-right: 0 !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* 모바일 대응 */
+  ${media.down(theme.breakPoints.tablet)} {
+    border: 1px solid ${theme.colors.gray[600]};
+    height: auto;
+    .fc-daygrid-day {
+      min-height: 80px !important;
+    }
+    .event-title,
+    .event-range {
+      display: none; /* 모바일은 바만 표시 (디자인 시안 참고) */
+    }
+    .fc-daygrid-day {
+      min-height: 64px !important;
+      height: 64px;
+      max-height: 64px;
+      background-color: ${theme.colors.black};
+    }
+    .fc-daygrid-day-top {
+      border-top: none;
+      text-align: center;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+    .fc-theme-standard td {
+      border: 1px solid ${theme.colors.gray[600]};
+      border-left: none;
+      border-right: none;
+    }
+    .fc-daygrid-day-events {
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
   }
 `
 
-const EventBarContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
+const EventBar = styled.div<{ $isHighlighted: boolean }>`
   width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 50;
-`
-
-const EventBar = styled.div<{ $isHighlighted: boolean; $isStart: boolean; $span: number }>`
-  position: absolute;
-  top: 45px;
-  left: 0;
-  width: calc(${(props) => props.$span} * 100% + (${(props) => props.$span - 1} * 0.5px));
-  height: 36px;
+  height: 32px;
   display: flex;
   align-items: center;
-  padding: 0 0 0 14px;
-  ${theme.typography.B3.Md}
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 150;
-  background: linear-gradient(
-    90deg,
-    #2b2b2b 0%,
-    rgba(43, 43, 43, 0.7) 80%,
-    rgba(43, 43, 43, 0.4) 100%
-  );
-  color: ${(props) => (props.$isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`)};
-  border-left: ${(props) =>
-    props.$isStart
-      ? `4px solid ${props.$isHighlighted ? `${theme.colors.lime}` : `${theme.colors.white}`}`
-      : 'none'};
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 8px;
+  padding: 0 12px;
+  border-left: 3px solid
+    ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
+
+  .event-title {
+    ${(props) => (props.$isHighlighted ? theme.typography.B3.Sb : theme.typography.B3.Md)}
+    color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
+    white-space: nowrap;
+  }
+
+  .event-range {
+    font-size: 11px;
+    ${(props) => (props.$isHighlighted ? theme.typography.B3.Sb : theme.typography.B3.Md)}
+    color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 
   ${media.down(theme.breakPoints.tablet)} {
     height: 11px;
-    pointer-events: auto;
-    span {
-      display: none;
-    }
-  }
-  ${media.down(theme.breakPoints.desktop)} {
-    ${theme.typography.B5.Md}
-    padding: 0 0 0 5px;
+    padding: 0;
   }
 `
-
-const EventItem = styled.div<{ $isHighlighted?: boolean }>`
+const EventItem = styled.div<{ $isHighlighted?: boolean; $isTodayActive?: boolean }>`
   display: none;
   flex-direction: row;
   align-items: center;
@@ -259,7 +251,7 @@ const EventItem = styled.div<{ $isHighlighted?: boolean }>`
     display: flex;
     align-items: center;
     border-radius: 50%;
-    background-color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
+    background-color: ${(props) => (props.$isTodayActive ? theme.colors.lime : theme.colors.white)};
   }
 
   svg {
@@ -267,43 +259,18 @@ const EventItem = styled.div<{ $isHighlighted?: boolean }>`
   }
 `
 
-const EventDot = styled.div<{ $isHighlighted: boolean }>`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: ${(props) =>
-    props.$isHighlighted ? theme.colors.lime : theme.colors.gray[400]};
-`
-
-const EventInfo = styled.div`
+const EventInfo = styled.div<{ $isTodayActive?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
-
   .title {
     ${theme.typography.B3.Md}
-    color: ${theme.colors.white};
+    color: ${(props) => (props.$isTodayActive ? theme.colors.lime : theme.colors.white)};
   }
   .period {
     ${theme.typography.B5.Rg}
-    color: ${theme.colors.gray[300]};
+    color: ${theme.colors.gray[400]};
   }
 `
 
-const EmptyText = styled.div`
-  ${theme.typography.B2.Md}
-  color: ${theme.colors.gray[600]};
-  padding: 20px 0;
-  text-align: center;
-`
-export {
-  DateNavigator,
-  EmptyText,
-  EventBar,
-  EventBarContainer,
-  EventDot,
-  EventInfo,
-  EventItem,
-  Header,
-  StyledCalendarWrapper,
-}
+export { DateNavigator, EventBar, EventInfo, EventItem, Header, StyledCalendarWrapper }

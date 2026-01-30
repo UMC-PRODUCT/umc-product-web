@@ -1,5 +1,3 @@
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
-
 import CreateRecruitingConfirm from '../modals/CreateRecruitingConferm'
 import RecruitingPreview from '../modals/RecruitingPreview'
 
@@ -22,10 +20,9 @@ const RecruitingModals = ({
   onConfirmSubmit,
   recruitingId,
 }: RecruitingModalsProps) => {
-  const questionDatas = useGetApplicationFormData(recruitingId).data?.result
   return (
     <>
-      {isOpen && modalName === 'recruitingPreview' && questionDatas && (
+      {isOpen && modalName === 'recruitingPreview' && (
         <RecruitingPreview recruitingId={recruitingId} title={title} onClose={onClosePreview} />
       )}
       {isOpen && modalName === 'createRecruitingConfirm' && (

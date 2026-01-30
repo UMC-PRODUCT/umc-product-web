@@ -40,7 +40,16 @@ export const RadioChoiceInput = styled.input<{
   }
 `
 
-export const RadioChoiceText = styled.span`
+export const RadioChoiceText = styled.div`
   color: ${theme.colors.white};
+  display: flex;
+  align-items: center;
   ${theme.typography.B3.Rg}
+`
+export const Input = styled.input<{ isActive: boolean }>`
+  background-color: transparent;
+  border-bottom: 1px solid
+    ${({ isActive }) => (isActive ? theme.colors.lime : theme.colors.gray[500])};
+  border-right: none;
+  color: ${theme.colors.white};
 `

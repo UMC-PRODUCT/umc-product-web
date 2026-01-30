@@ -1,7 +1,11 @@
+import type { RecruitingStepType } from '../../domain/types'
 import * as S from './ProgressBar.style'
 
 interface Step {
   label: string
+  step: RecruitingStepType | null | undefined
+  done: boolean
+  active: boolean
 }
 
 interface StepperProps {
@@ -10,23 +14,26 @@ interface StepperProps {
 }
 
 const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
-  if (steps.length === 0) return null
   const progressWidth =
-    steps.length > 1 ? (currentStepIndex / (steps.length - 1)) * 100 : steps.length === 1 ? 100 : 0
+    steps.length > 1
+      ? (Number(currentStepIndex) / (steps.length - 1)) * 100
+      : steps.length === 1
+        ? 100
+        : 0
   return (
     <S.StepperWrapper>
       <S.ProgressLineContainer>
         <S.ActiveLine $progressWidth={progressWidth} />
       </S.ProgressLineContainer>
-      {steps.map((step, index) => {
-        const isActive = index <= currentStepIndex
-        return (
-          <S.StepItem key={step.label}>
-            <S.Dot $isActive={isActive} />
-            <S.Label $isActive={isActive}>{step.label}</S.Label>
-          </S.StepItem>
-        )
-      })}
+      {steps.length > 0 &&
+        steps.map((step) => {
+          return (
+            <S.StepItem key={step.step}>
+              <S.Dot $isActive={step.active} />
+              <S.Label $isActive={step.active}>{step.label}</S.Label>
+            </S.StepItem>
+          )
+        })}
     </S.StepperWrapper>
   )
 }

@@ -84,7 +84,7 @@ export const postRecruitmentPublish = async (
   return data
 }
 
-export const deleteRecruitment = async (recruitingId: number) => {
+export const deleteRecruitment = async (recruitingId: string) => {
   const { data } = await axiosInstance.delete(`/recruitments/${recruitingId}`)
   return data
 }

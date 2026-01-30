@@ -1,9 +1,9 @@
 import type { QuestionType } from '@/features/apply/domain'
+import type { PartType } from '@/features/auth/domain'
 import type {
   pageType,
   RecruitingInterviewTimeTable,
   RecruitingItem,
-  RecruitingPart,
   RecruitingSchedule,
   RecruitingStatus,
 } from '@/shared/types/form'
@@ -11,6 +11,7 @@ import type {
 export type QuestionOption = {
   content: string
   orderNo: number
+  isOther?: boolean
 }
 
 export type ScheduleSlot = {
@@ -24,7 +25,7 @@ export type InterviewTimeTableWithDisabled = RecruitingInterviewTimeTable & {
 
 export type RecruitingDraft = {
   title: string
-  recruitmentParts: Array<RecruitingPart>
+  recruitmentParts: Array<PartType>
   maxPreferredPartCount: number
   schedule?: RecruitingSchedule
   noticeContent: string
@@ -69,3 +70,13 @@ export type RecruitingForms = {
   noticeContent: string
   pages: Array<pageType>
 }
+
+export type Phase =
+  | 'BEFORE_APPLY'
+  | 'APPLY_OPEN'
+  | 'DOC_REVIEWING'
+  | 'DOC_RESULT_PUBLISHED'
+  | 'INTERVIEW_WAITING'
+  | 'FINAL_REVIEWING'
+  | 'FINAL_RESULT_PUBLISHED'
+  | 'CLOSED'

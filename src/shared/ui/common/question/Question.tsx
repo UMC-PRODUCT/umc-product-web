@@ -4,7 +4,8 @@ import type {
   QuestionType,
 } from '@features/apply/domain/model'
 
-import type { QuestionMode, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
@@ -17,11 +18,12 @@ import QuestionLayout from './QuestionLayout'
 type ChoiceOption = {
   optionId?: string
   content: string
+  isOther?: boolean
 }
 
 type PartOption = {
   optionId?: string
-  content: RecruitingPart
+  content: PartType
 }
 
 type QuestionOptions = Array<ChoiceOption | PartOption>
@@ -37,11 +39,11 @@ interface QuestionProps {
   mode: QuestionMode
   onChange?: (questionId: number, newValue: QuestionAnswerValue) => void
   errorMessage?: string
-  maxSelectCount: number | null
+  maxSelectCount: string | null
   preferredPartOptions: Array<{
-    recruitmentPartId: number
+    recruitmentPartId: string | number
     label: string
-    value: RecruitingPart
+    value: PartType
   }> | null
 }
 
@@ -62,7 +64,6 @@ export const Question = ({
   const handleValueChange = (newValue: QuestionAnswerValue) => {
     onChange?.(questionId, newValue)
   }
-  console.log(options)
   const renderQuestionInput = () => {
     switch (type) {
       case 'LONG_TEXT':
@@ -81,7 +82,7 @@ export const Question = ({
         return (
           <MultipleChoice
             options={options}
-            value={value as Array<string> | undefined}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
             mode={mode}
           />
@@ -99,7 +100,7 @@ export const Question = ({
       case 'RADIO':
         return (
           <Choice
-            value={value as string | undefined}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
             options={options as Array<ChoiceOption>}
             mode={mode}
@@ -109,7 +110,7 @@ export const Question = ({
       case 'PREFERRED_PART':
         return (
           <PartChoice
-            value={value as Array<{ id: number; answer: RecruitingPart }> | undefined}
+            value={value as Array<{ id: number; answer: PartType }> | undefined}
             onChange={handleValueChange}
             preferredPartOptions={preferredPartOptions!}
             mode={mode}

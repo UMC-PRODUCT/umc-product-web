@@ -5,21 +5,25 @@ import { useNavigate } from '@tanstack/react-router'
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '@/features/apply/hooks/useUnsavedChangeBlocker'
+import type { PartType } from '@/features/auth/domain'
 import * as S from '@/features/school/components/common/common'
 import { RecruitingProvider } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
 import RecruitingModals from '@/features/school/components/Recruiting/RecruitingPage/RecruitingModals'
 import RecruitingStepActions from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepActions'
 import RecruitingStepForm from '@/features/school/components/Recruiting/RecruitingPage/RecruitingStepForm'
+import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { RecruitingForms, RecruitingItem, RecruitingPart } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import type { GetApplicationFormResponseDTO } from '../domain'
 import { recruiteKeys } from '../domain/queryKey'
@@ -41,13 +45,16 @@ type RecruitingProps = {
 }
 
 const toRecruitingItemOptions = (
-  options: Array<{ content: string; orderNo?: number; optionId?: string }> | undefined,
+  options:
+    | Array<{ content: string; orderNo?: number; optionId?: string; isOther?: boolean }>
+    | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
     content: option.content,
     orderNo: option.orderNo ?? fallbackOrder + index + 1,
     optionId: option.optionId,
+    isOther: option.isOther ?? isOtherOptionContent(option.content),
   })) ?? []
 
 const buildRecruitingItemFromQuestion = (
@@ -60,7 +67,7 @@ const buildRecruitingItemFromQuestion = (
   },
   target:
     | { kind: 'COMMON_PAGE'; pageNo: number }
-    | { kind: 'PART'; part: RecruitingPart; pageNo: number },
+    | { kind: 'PART'; part: PartType; pageNo: number },
   orderIndex: number,
 ): RecruitingItem => ({
   target,
@@ -118,7 +125,11 @@ const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) 
   return items
 }
 
-const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: RecruitingProps) => {
+const RecruitingContent = ({
+  recruitingId,
+  initialStepNumber,
+  onStepNumberChange,
+}: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const [partCompletionByPart, setPartCompletionByPart] = useState<PartCompletionMap>({})
@@ -151,17 +162,15 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
   } = form
 
   useEffect(() => {
-    const result = recruitingData?.result
-    if (!result) return
+    const result = recruitingData.result
     form.reset(buildRecruitingInitialForm(result))
-  }, [form, recruitingData?.result])
+  }, [form, recruitingData.result])
 
   useEffect(() => {
-    const result = applicationData?.result
-    if (!result?.pages.length) return
-
+    const result = applicationData.result
+    if (!result.pages.length) return
     form.setValue('items', convertApplicationFormToItems(result), { shouldDirty: false })
-  }, [form, applicationData?.result])
+  }, [form, applicationData.result])
 
   // 모집 파트별 완료 상태 관리
   const partCompletionMap = useMemo(() => {
@@ -221,8 +230,13 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
       patchTempSavedRecruitQuestionsMutate(
         { items: buildQuestionsPayload(values.items) },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             console.log('[Recruiting] Auto-saved temp recruitment questions successfully.')
+            form.setValue('items', convertApplicationFormToItems(data.result), {
+              shouldDirty: false,
+              shouldTouch: false,
+              shouldValidate: true,
+            })
             queryClient.invalidateQueries({ queryKey: [recruitingId] })
           },
           onError: (error) => {
@@ -373,5 +387,11 @@ const Recruiting = ({ recruitingId, initialStepNumber, onStepNumberChange }: Rec
     </PageLayout>
   )
 }
+
+const Recruiting = (props: RecruitingProps) => (
+  <AsyncBoundary fallback={<SuspenseFallback label="모집 데이터를 불러오는 중입니다." />}>
+    <RecruitingContent {...props} />
+  </AsyncBoundary>
+)
 
 export default Recruiting

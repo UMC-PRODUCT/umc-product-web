@@ -1,8 +1,6 @@
 import { useState } from 'react'
 
-import { getRecruitments } from '@/features/school/domain/api'
-import { recruiteKeys } from '@/features/school/domain/queryKey'
-import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -13,10 +11,8 @@ import * as S from './RecruitingList.style'
 
 const RecruitingList = () => {
   const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
-  const { data } = useCustomQuery(recruiteKeys.recruitments({ status: tab }).queryKey, () =>
-    getRecruitments({ status: tab }),
-  )
-  const recruitments = data?.result.recruitments ?? []
+  const { data } = useGetRecruitmentsList(tab)
+  const recruitments = data.result.recruitments
   return (
     <Flex gap={20} flexDirection="column">
       <PageTitle title="모집 목록" />
@@ -43,12 +39,13 @@ const RecruitingList = () => {
           {recruitments.length > 0 ? (
             recruitments.map((recruitment) => (
               <RecruitingCard
+                recruitmentId={recruitment.recruitmentId}
                 key={recruitment.recruitmentId}
                 title={recruitment.recruitmentName}
                 startDate={recruitment.startDate}
                 endDate={recruitment.endDate}
                 applicants={recruitment.applicantCount}
-                state={recruitment.phaseLabel}
+                state={recruitment.phase}
                 editable={recruitment.editable}
               />
             ))

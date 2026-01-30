@@ -4,11 +4,13 @@ export { getAllQuestionsFromPages } from '@/features/apply/utils/getAllQuestions
 export { getSelectedPartsFromAnswer } from '@/features/apply/utils/getSelectedPartsFromAnswer'
 export type { ResumeQuestion } from '@/features/apply/utils/isQuestionAnswerEmpty'
 export { isQuestionAnswerEmpty } from '@/features/apply/utils/isQuestionAnswerEmpty'
+export { isOptionAnswerValue } from '@/features/apply/utils/optionAnswer'
 export { resolvePagesWithSlots } from '@/features/apply/utils/resolvePagesWithSlots'
 export {
   findFirstErrorPageIndex,
   getAllQuestionFieldIds,
   getPageRequiredFieldIds,
   getSelectedPartsForSubmission,
-  getSubmissionValues,
+  getSubmissionFormValues,
+  getSubmissionItems,
 } from '@/features/apply/utils/resumeFormHelpers'

@@ -20,13 +20,13 @@ export type RefreshRequestDTO = {
 export type EmailVerificationRequestDTO = {
   email?: string
 }
-export type EmailVerificationResponseDTO = CommonResponseDTO<{ emailVerificationId?: string }>
+export type EmailVerificationResponseDTO = { emailVerificationId?: string }
 
 export type VerificationCodeRequestDTO = {
-  emailVerificationId?: number
+  emailVerificationId?: string
   verificationCode?: string
 }
-export type VerificationCodeResponseDTO = CommonResponseDTO<{ emailVerificationToken?: string }>
+export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
 
 export type MyInfoResponseDTO = CommonResponseDTO<{
   id?: number
@@ -38,3 +38,10 @@ export type MyInfoResponseDTO = CommonResponseDTO<{
   profileImageLink?: number
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
 }>
+
+export type GetTermsResponseDTO = {
+  id: string
+  title: string
+  content: string
+  isMandatory: boolean
+}

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
+import { useNavigate } from '@tanstack/react-router'
 
 import Logo from '@shared/assets/brand_logo.svg?react'
 import { media } from '@shared/styles/media'
@@ -7,13 +8,14 @@ import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 
-import type { TermsResponseDTO } from '@/shared/api/terms'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
-import type { TermsAgreementKey } from '../hooks/register'
 import { useSchoolSelection, useTermsAgreement } from '../hooks/register'
-import { useTermsIds } from '../hooks/register/useTermsIdsQuery'
+import { useTerms } from '../hooks/register/useTermsIdsQuery'
 import { useRegisterForm } from '../hooks/useRegisterForm'
 import { useRegistrationWorkflow } from '../hooks/useRegistrationWorkflow'
 import type { RegisterForm } from '../schemas/register'
@@ -24,8 +26,11 @@ type RegisterPageProps = {
   email?: string
 }
 
-export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProps) => {
+const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProps) => {
+  const { getItem: getAccessToken } = useLocalStorage('accessToken')
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)
+  const accessToken = getAccessToken()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -36,11 +41,16 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     watchedEmail,
     formState,
   } = useRegisterForm()
+
   const { errors, isValid } = formState
   const { selectedSchool, handleSchoolSelect } = useSchoolSelection(setValue)
   const { termsAgreement, toggleTermAgreement, toggleAllTermsAgreement } =
     useTermsAgreement(setValue)
-  const termsIdsQuery = useTermsIds()
+
+  const serviceTerm = useTerms({ termsType: 'SERVICE' })
+  const privacyTerm = useTerms({ termsType: 'PRIVACY' })
+  const marketingTerm = useTerms({ termsType: 'MARKETING' })
+  const hasLoadedTerms = serviceTerm.isSuccess && privacyTerm.isSuccess && marketingTerm.isSuccess
 
   const {
     handleSendVerificationEmail,
@@ -58,7 +68,13 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     setError,
     clearErrors,
     onEmailSent: () => setIsEmailVerificationModalOpen(true),
-    terms: termsIdsQuery.data,
+    terms: hasLoadedTerms
+      ? {
+          SERVICE: serviceTerm.data,
+          PRIVACY: privacyTerm.data,
+          MARKETING: marketingTerm.data,
+        }
+      : undefined,
   })
 
   useEffect(() => {
@@ -90,18 +106,20 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     handleRegisterSubmit(formData, schoolId, termsAgreement)
   }
 
-  const hasLoadedTerms = termsIdsQuery.isSuccess && Boolean(termsIdsQuery.data)
   const requiredTerms = useMemo(() => {
     if (!hasLoadedTerms) {
       return []
     }
-
-    const termsData = termsIdsQuery.data
-
-    return (Object.entries(termsData) as Array<[TermsAgreementKey, TermsResponseDTO]>)
+    const termsEntries = [
+      ['MARKETING', marketingTerm.data],
+      ['PRIVACY', privacyTerm.data],
+      ['SERVICE', serviceTerm.data],
+    ] as const
+    return termsEntries
       .filter(([, content]) => Boolean(content.result.isMandatory))
       .map(([termKey]) => termKey)
-  }, [hasLoadedTerms, termsIdsQuery.data])
+  }, [hasLoadedTerms, serviceTerm.data, privacyTerm.data, marketingTerm.data])
+
   const areTermsAgreed =
     requiredTerms.length === 0 || requiredTerms.every((termKey) => termsAgreement[termKey])
 
@@ -130,13 +148,25 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     termsAgreement,
     toggleTermAgreement,
     toggleAllTermsAgreement,
-    termsData: termsIdsQuery.data,
-    isTermsLoading: termsIdsQuery.isLoading,
-    termsError: termsIdsQuery.error?.message,
+    termsData: hasLoadedTerms
+      ? {
+          SERVICE: serviceTerm.data.result,
+          PRIVACY: privacyTerm.data.result,
+          MARKETING: marketingTerm.data.result,
+        }
+      : undefined,
+    isTermsLoading: serviceTerm.isFetching || privacyTerm.isFetching || marketingTerm.isFetching,
+    termsError:
+      serviceTerm.error?.message || privacyTerm.error?.message || marketingTerm.error?.message,
   }
 
   const closeEmailVerificationModal = () => {
     setIsEmailVerificationModalOpen(false)
+  }
+
+  if (accessToken) {
+    navigate({ to: '/', replace: true })
+    return null
   }
 
   return (
@@ -170,6 +200,12 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     </AuthSection>
   )
 }
+
+export const RegisterPage = (props: RegisterPageProps) => (
+  <AsyncBoundary fallback={<SuspenseFallback label="약관 정보를 불러오는 중입니다." />}>
+    <RegisterPageContent {...props} />
+  </AsyncBoundary>
+)
 
 const ResponsiveLogo = styled(Logo)`
   width: 264px;
