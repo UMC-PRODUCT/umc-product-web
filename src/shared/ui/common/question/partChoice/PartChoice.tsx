@@ -16,7 +16,7 @@ type PartChoiceProps = {
   onChange?: (selectedOptions: Array<PartSelectionValue>) => void
   mode: QuestionMode
   preferredPartOptions: Array<{
-    recruitmentPartId: string
+    recruitmentPartId: string | number
     label: string
     value: PartType
   }>
@@ -38,16 +38,19 @@ const PartChoice = ({
   const handleOptionSelect = (
     targetId: number,
     optionValue: PartType,
-    recruitmentPartId: string,
+    recruitmentPartId: string | number,
   ) => {
+    const normalizedRecruitmentPartId = String(recruitmentPartId)
     const optionEntry = {
       id: targetId,
       answer: optionValue,
-      recruitmentPartId,
+      recruitmentPartId: normalizedRecruitmentPartId,
     }
     const updatedSelection = selectedOptions.some((item) => item.id === targetId)
       ? selectedOptions.map((item) =>
-          item.id === targetId ? { ...item, answer: optionValue, recruitmentPartId } : item,
+          item.id === targetId
+            ? { ...item, answer: optionValue, recruitmentPartId: normalizedRecruitmentPartId }
+            : item,
         )
       : [...selectedOptions.filter((item) => item.id !== targetId), optionEntry]
 
@@ -70,7 +73,7 @@ const PartChoice = ({
                   <Button
                     variant="outline"
                     tone={selectedOption === option.value ? 'lime' : 'gray'}
-                    key={`${option.recruitmentPartId}-${targetId}`}
+                    key={`${String(option.recruitmentPartId)}-${targetId}`}
                     label={option.label}
                     type="button"
                     onClick={
