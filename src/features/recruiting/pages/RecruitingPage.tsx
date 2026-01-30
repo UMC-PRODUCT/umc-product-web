@@ -5,19 +5,25 @@ import {
 } from '@/features/apply/hooks/useGetApplicationQuery'
 import PartCurriculum from '@/features/recruiting/components/partCurriculum/PartCurriculum'
 import RecruitingCalendar from '@/features/recruiting/components/recruitingCalendar/RecruitingCalendar'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import RecruitingNotification from '../components/recruitingNotification/RecruitingNotification'
 
-export const RecruitingPage = () => {
+const RecruitingPageContent = () => {
   const { data: activeRecruitmentId } = useGetActiveRecruitmentId()
 
   const recruitmentId = activeRecruitmentId.result.recruitmentId
+  if (!recruitmentId) return null
+
+  return <RecruitingPageDetail recruitmentId={recruitmentId} />
+}
+
+const RecruitingPageDetail = ({ recruitmentId }: { recruitmentId: string }) => {
   const { data: noticeData } = useGetRecruitmentNotice(recruitmentId)
   const { data: scheduleData } = useGetRecruitmentSchedules(recruitmentId)
-
-  if (!recruitmentId) return null
 
   return (
     <PageLayout>
@@ -33,3 +39,9 @@ export const RecruitingPage = () => {
     </PageLayout>
   )
 }
+
+export const RecruitingPage = () => (
+  <AsyncBoundary fallback={<SuspenseFallback label="모집 일정을 불러오는 중입니다." />}>
+    <RecruitingPageContent />
+  </AsyncBoundary>
+)

@@ -30,7 +30,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
   const answerMap = useMemo(() => {
-    const answers = Array.isArray(answerData.result.answer) ? answerData.result.answer : []
+    const answers = Array.isArray(answerData.result.answers) ? answerData.result.answers : []
     return answers.reduce<Map<number, QuestionAnswerValue>>((acc, entry) => {
       acc.set(entry.questionId, entry.value as unknown as QuestionAnswerValue)
       return acc

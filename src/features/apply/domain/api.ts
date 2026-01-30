@@ -8,6 +8,8 @@ import type {
   GetRecruitmentNotice,
   GetRecruitmentSchedulesResponseDTO,
   GetSpecificPartRecruiting,
+  PatchApplicationAnswerRequestDTO,
+  PatchApplicationAnswerResponseDTO,
   PostFirstDraftResponseDTO,
   PostResetDraftResponseDTO,
   PostSubmitApplicationResponseDTO,
@@ -85,14 +87,16 @@ export const postClearDraftApplication = async (
   return data
 }
 
-export const patchSaveDraftApplication = async (
-  recruitmentId: string,
-  formResponseId: string,
-  answers: Record<string, unknown>,
-): Promise<CommonResponseDTO<null>> => {
+export const patchSaveDraftApplication = async ({
+  recruitmentId,
+  formResponseId,
+  items,
+}: PatchApplicationAnswerRequestDTO): Promise<
+  CommonResponseDTO<PatchApplicationAnswerResponseDTO>
+> => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/applications/${formResponseId}/answers`,
-    { answers },
+    { items },
   )
   return data
 }

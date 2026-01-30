@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FieldErrors } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
@@ -15,6 +16,8 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 import { scrollToTop } from '@/shared/utils/scrollToTop'
 
 import ResumeContent from '../components/ResumeContent'
+import { userRecruitement } from '../domain/queryKey'
+import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
   useGetApplicationAnswer,
   useGetApplicationQuestions,
@@ -24,7 +27,8 @@ import {
   findFirstErrorPageIndex,
   getAllQuestionFieldIds,
   getPageRequiredFieldIds,
-  getSubmissionValues,
+  getSubmissionFormValues,
+  getSubmissionItems,
 } from '../utils'
 import { useResumeForm } from './resume/useResumeForm'
 
@@ -42,6 +46,8 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const { usePatchApplication } = useApplyMutation()
+  const { mutate: patchApplication } = usePatchApplication()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
   const resumeForm = useResumeForm(questionDataForForm, answerData.result)
@@ -58,17 +64,56 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     isDirty,
     isFormIncomplete,
     resolvedPages,
+    defaultValues,
   } = resumeForm
 
   const totalPages = resolvedPages.length
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
-
+  const displayLastSavedTime = (() => {
+    const raw = answerData.result.lastSavedAt
+    if (!raw) return null
+    const savedDate = new Date(raw)
+    if (Number.isNaN(savedDate.getTime())) return null
+    const formatter = new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    const parts = formatter.formatToParts(savedDate)
+    const getPart = (type: Intl.DateTimeFormatPart['type']) =>
+      parts.find((part) => part.type === type)?.value ?? ''
+    const year = getPart('year')
+    const month = getPart('month')
+    const day = getPart('day')
+    const hour = getPart('hour')
+    const minute = getPart('minute')
+    if (!year || !month || !day || !hour || !minute) return null
+    return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`
+  })()
+  const queryClient = useQueryClient()
   useBeforeUnload(isDirty)
   const navigationBlocker = useUnsavedChangesBlocker(isDirty)
 
   const { handleSave } = useAutoSave({
     getValues,
+    onSave: (formValues) => {
+      const answers = getSubmissionItems(questionsData.result.pages, formValues, defaultValues)
+      patchApplication(
+        { recruitmentId, formResponseId: resumeId, items: answers },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+            })
+          },
+        },
+      )
+    },
     interval: AUTO_SAVE_INTERVAL_MS,
   })
 
@@ -106,8 +151,13 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
 
     if (isValid) {
       handleSubmit((formValues: FormValues) => {
-        const submissionValues = getSubmissionValues(questionsData.result.pages, formValues)
-        console.log('최종 제출 데이터:', submissionValues)
+        const submissionItems = getSubmissionItems(
+          questionsData.result.pages,
+          formValues,
+          defaultValues,
+        )
+        const submissionValues = getSubmissionFormValues(questionsData.result.pages, formValues)
+        console.log('최종 제출 데이터:', submissionItems)
         setIsSubmitModalOpen(false)
         reset(submissionValues)
       })()
@@ -125,7 +175,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       <ResumeContent
         pages={resolvedPages}
         formData={questionDataForForm}
-        displayLastSavedTime={''}
+        displayLastSavedTime={displayLastSavedTime}
         handleSave={handleSave}
         control={control}
         setValue={setValue}

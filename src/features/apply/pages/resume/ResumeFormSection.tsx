@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
+import type { ControllerRenderProps } from 'react-hook-form'
 import { Controller, useWatch } from 'react-hook-form'
 
 import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { question, ResumeFormSectionProps } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
@@ -89,6 +90,7 @@ const ResumeFormSection = ({
   const {
     isPartChangeModalOpen,
     partChangeRanksText,
+    requestPartChange,
     handleConfirmPartChange,
     handleCancelPartChange,
   } = usePartChangeGuard({
@@ -97,6 +99,19 @@ const ResumeFormSection = ({
     clearErrors,
     hasPartAnswers,
   })
+
+  const handleFieldValueChange = (
+    question: question,
+    field: ControllerRenderProps<Record<string, unknown>, string>,
+    newValue: QuestionAnswerValue,
+  ) => {
+    requestPartChange({
+      questionId: question.questionId,
+      currentValue: field.value as QuestionAnswerValue,
+      nextValue: newValue,
+    })
+    field.onChange(newValue)
+  }
 
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, normalizedPages.length - 1))
   const activePage = normalizedPages[currentPageIndex]
@@ -128,7 +143,6 @@ const ResumeFormSection = ({
                 key={question.questionId}
                 name={String(question.questionId)}
                 control={control}
-                defaultValue={undefined}
                 render={({ field }) => (
                   <Question
                     questionId={question.questionId}
@@ -138,7 +152,7 @@ const ResumeFormSection = ({
                     type={question.type}
                     options={question.options}
                     value={field.value as QuestionAnswerValue}
-                    onChange={(_, newValue) => field.onChange(newValue)}
+                    onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
                     errorMessage={getFieldErrorMessage(question.questionId)}
                     mode={isEdit ? 'edit' : 'view'}
                     maxSelectCount={question.maxSelectCount}
@@ -155,7 +169,6 @@ const ResumeFormSection = ({
             key={question.questionId}
             name={String(question.questionId)}
             control={control}
-            defaultValue={undefined}
             render={({ field }) => (
               <Question
                 questionId={question.questionId}
@@ -165,7 +178,7 @@ const ResumeFormSection = ({
                 type={question.type}
                 options={question.options}
                 value={field.value as QuestionAnswerValue}
-                onChange={(_, newValue) => field.onChange(newValue)}
+                onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
                 preferredPartOptions={question.preferredPartOptions}
                 errorMessage={getFieldErrorMessage(question.questionId)}
                 mode={isEdit ? 'edit' : 'view'}
@@ -184,7 +197,6 @@ const ResumeFormSection = ({
             <Controller
               name={String(activeScheduleQuestion.questionId)}
               control={control}
-              defaultValue={undefined}
               render={({ field }) => (
                 <TimeTable
                   dateRange={activeScheduleQuestion.schedule.dateRange}

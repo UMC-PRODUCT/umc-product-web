@@ -34,21 +34,13 @@ export function useGetSpecificPartRecruiting(recruitmentId: string) {
 export function useGetRecruitmentSchedules(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
   const query = userRecruitement.getRecruitmentSchedules(queryId)
-  type QueryFnData = Awaited<ReturnType<typeof query.queryFn>>
-  return useCustomSuspenseQuery<QueryFnData, unknown, QueryFnData, typeof query.queryKey>(
-    query.queryKey,
-    query.queryFn,
-  )
+  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
 }
 
 export function useGetRecruitmentNotice(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
   const query = userRecruitement.getRecruitmentNotice(queryId)
-  type QueryFnData = Awaited<ReturnType<typeof query.queryFn>>
-  return useCustomSuspenseQuery<QueryFnData, unknown, QueryFnData, typeof query.queryKey>(
-    query.queryKey,
-    query.queryFn,
-  )
+  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
 }
 
 export function useGetMyApplicationStatus(recruitmentId: string) {

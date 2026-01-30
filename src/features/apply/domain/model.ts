@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from 'react'
+
 import type { PartType } from '@/features/auth/domain'
 import type { RECRUITING_SCHEDULE_TYPE } from '@/features/recruiting/domain'
 import type { RecruitingForms } from '@/features/school/domain'
@@ -161,7 +163,7 @@ export interface UseFileUploadOptions {
 /** 파일 업로드 훅 반환값 */
 export interface UseFileUploadReturn {
   uploadedFiles: Array<UploadedFile>
-  setUploadedFiles: React.Dispatch<React.SetStateAction<Array<UploadedFile>>>
+  setUploadedFiles: Dispatch<SetStateAction<Array<UploadedFile>>>
   processFiles: (fileList: FileList | null) => void
   simulateUpload: (fileId: string, file: File) => void
   updateFileStatus: (fileId: string, status: FileUploadStatus, progress: number) => void
@@ -186,7 +188,7 @@ export type GetApplicationAnswerResponseDTO = {
   status: string // TODO: enum 으로 변경
   lastSavedAt: string
   submittedAt: string | null
-  answer: Array<{
+  answers: Array<{
     questionId: number
     value: {
       addtionalProp1: {}
@@ -283,4 +285,62 @@ export type GetSpecificPartRecruiting = {
     draftFormResponseId: string
     applicationId: string
   }
+}
+export type AnswerItem = {
+  questionId: string
+  answeredType: QuestionType
+  value:
+    | shortTextAnswer
+    | longTextAnswer
+    | radioAnswer
+    | checkboxAnswer
+    | portfolioAnswer
+    | preferredPartAnswer
+    | scheduleAnswer
+}
+
+export type shortTextAnswer = {
+  text: string
+}
+
+export type longTextAnswer = {
+  text: string
+}
+
+export type radioAnswer = {
+  selectedOptionId: string
+  otherText?: string
+}
+
+export type checkboxAnswer = {
+  selectedOptionIds: Array<string>
+  otherText?: string
+}
+
+export type portfolioAnswer = {
+  files: Array<{
+    fileId: string
+  }>
+  links: Array<{
+    url: string
+  }>
+}
+
+export type preferredPartAnswer = {
+  selections: Array<{ id: string; answer: PartType }>
+}
+
+export type scheduleAnswer = {
+  slots: TimeTableSlots
+}
+
+export type PatchApplicationAnswerRequestDTO = {
+  recruitmentId: string
+  formResponseId: string
+  items: Array<AnswerItem>
+}
+
+export type PatchApplicationAnswerResponseDTO = {
+  formResponseId: string
+  savedQuestionIds: Array<string>
 }

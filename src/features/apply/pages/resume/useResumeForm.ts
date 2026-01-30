@@ -3,7 +3,7 @@ import type { useForm } from 'react-hook-form'
 import type { RecruitingForms } from '@/features/school/domain'
 import type { pageType } from '@/shared/types/form'
 
-import type { GetApplicationAnswerResponseDTO } from '../../domain/apiTypes'
+import type { GetApplicationAnswerResponseDTO } from '../../domain/model'
 import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
 import {
   useFormCompleteness,
@@ -24,6 +24,7 @@ export interface UseResumeFormReturn {
   isDirty: boolean
   isFormIncomplete: boolean
   resolvedPages: Array<pageType>
+  defaultValues: ResumeFormValues
 }
 
 /**
@@ -91,5 +92,6 @@ export function useResumeForm(
     isDirty,
     isFormIncomplete,
     resolvedPages,
+    defaultValues,
   }
 }

@@ -11,5 +11,6 @@ export {
   getAllQuestionFieldIds,
   getPageRequiredFieldIds,
   getSelectedPartsForSubmission,
-  getSubmissionValues,
+  getSubmissionFormValues,
+  getSubmissionItems,
 } from '@/features/apply/utils/resumeFormHelpers'

@@ -5,12 +5,18 @@ import { Button } from '../../Button'
 import { Flex } from '../../Flex'
 import * as S from './PartChoice.style'
 
+type PartSelectionValue = {
+  id: number
+  answer: PartType
+  recruitmentPartId?: string
+}
+
 type PartChoiceProps = {
-  value: Array<{ id: number; answer: PartType }> | undefined
-  onChange?: (selectedOptions: Array<{ id: number; answer: PartType }>) => void
+  value: Array<PartSelectionValue> | undefined
+  onChange?: (selectedOptions: Array<PartSelectionValue>) => void
   mode: QuestionMode
   preferredPartOptions: Array<{
-    recruitmentPartId: number
+    recruitmentPartId: string
     label: string
     value: PartType
   }>
@@ -29,12 +35,21 @@ const PartChoice = ({
     typeof maxSelectCount === 'string' ? Math.max(Number(maxSelectCount), 1) : 1
   const ranks = Array.from({ length: normalizedMaxSelectCount }, (_, index) => index + 1)
 
-  const handleOptionSelect = (targetId: number, optionValue: PartType) => {
+  const handleOptionSelect = (
+    targetId: number,
+    optionValue: PartType,
+    recruitmentPartId: string,
+  ) => {
+    const optionEntry = {
+      id: targetId,
+      answer: optionValue,
+      recruitmentPartId,
+    }
     const updatedSelection = selectedOptions.some((item) => item.id === targetId)
       ? selectedOptions.map((item) =>
-          item.id === targetId ? { ...item, answer: optionValue } : item,
+          item.id === targetId ? { ...item, answer: optionValue, recruitmentPartId } : item,
         )
-      : [...selectedOptions, { id: targetId, answer: optionValue }]
+      : [...selectedOptions.filter((item) => item.id !== targetId), optionEntry]
 
     onChange?.(updatedSelection)
   }
@@ -59,7 +74,9 @@ const PartChoice = ({
                     label={option.label}
                     type="button"
                     onClick={
-                      mode === 'edit' ? () => handleOptionSelect(targetId, option.value) : undefined
+                      mode === 'edit'
+                        ? () => handleOptionSelect(targetId, option.value, option.recruitmentPartId)
+                        : undefined
                     }
                     css={{
                       width: 'fit-content',
