@@ -1,13 +1,20 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { z } from 'zod/v3'
 
 import { SchoolPage } from '@features/management/pages/SchoolPage'
 
+import { MANAGE_SCHOOL_TAB_VALUES } from '@/features/management/domain/constants'
 import type { ManageSchoolTabName } from '@/features/management/domain/model'
 
-const tabSchema = z.object({
-  tab: z.enum(['add', 'delete', 'edit'] as const).optional(),
-})
+type SchoolTab = (typeof MANAGE_SCHOOL_TAB_VALUES)[number]
+
+const isSchoolTab = (value: string): value is SchoolTab =>
+  MANAGE_SCHOOL_TAB_VALUES.includes(value as SchoolTab)
+
+const parseTabSearch = (search: Record<string, unknown>) => {
+  const tabValue = typeof search.tab === 'string' ? search.tab : undefined
+  const tab = tabValue && isSchoolTab(tabValue) ? tabValue : undefined
+  return { tab }
+}
 
 const RouteComponent = () => {
   const { tab } = Route.useSearch()
@@ -26,6 +33,6 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management/school/')({
-  validateSearch: (search) => tabSchema.parse(search),
+  validateSearch: (search) => parseTabSearch(search),
   component: RouteComponent,
 })

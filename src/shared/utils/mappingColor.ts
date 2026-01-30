@@ -1,6 +1,6 @@
 import type { EvaluationDocumentType, EvaluationFinalType } from '../types/umc'
 
-export function mappingRecruitingColor(status: string) {
+export function mappingRecruitingColor(status: string | null | undefined) {
   switch (status) {
     case '미정':
       return 'gray'

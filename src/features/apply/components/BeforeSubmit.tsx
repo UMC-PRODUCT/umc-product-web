@@ -1,67 +1,87 @@
 import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
-import type { PartType } from '@features/auth/domain'
-import type { RecruitingType } from '@features/management/domain'
+import { PART_CONFIG } from '@features/auth/domain'
+import type { PartType } from '@features/auth/domain/model'
 
 import * as S from '@/features/apply/components/ApplyPage.style'
-import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import { Button } from '@/shared/ui/common/Button'
 import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
 
+import { useApplyMutation } from '../hooks/useApplyMutation'
 import ConfirmApplicationModal from './modals/CautionConfirm'
 import PartInfoCard from './PartInfoCard'
 
-interface PartInfo {
-  part: PartType
-  state: RecruitingType
-  ability: Array<string>
-}
-
 interface BeforeSubmitProps {
-  partInfoList: Array<PartInfo>
+  partInfoList: Array<{
+    part: PartType
+    status: string
+    recruitmentPartId: string
+  }>
+  draftFormResponseId?: string
+  recruitmentId?: string
+  submitStatus: 'DRAFT' | 'NONE' | 'SUBMITTED'
 }
 
 // TODO: API 연동 시 useRecruitmentStatus 훅으로 대체
-const getRecruitmentOpenState = (): boolean => {
-  return true
-}
 
-const BeforeSubmit = ({ partInfoList }: BeforeSubmitProps) => {
+const BeforeSubmit = ({
+  submitStatus,
+  partInfoList,
+  recruitmentId,
+  draftFormResponseId,
+}: BeforeSubmitProps & { submitStatus: string }) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
-  const isRecruitmentOpen = getRecruitmentOpenState()
-
+  const navigate = useNavigate()
   const openConfirmModal = () => setIsConfirmModalOpen(true)
   const closeConfirmModal = () => setIsConfirmModalOpen(false)
-
+  const { useFirstCreateDraft } = useApplyMutation()
+  const { mutate: firstCreateDraft } = useFirstCreateDraft()
   const handleApplyClick = () => {
-    openConfirmModal()
+    if (submitStatus === 'NONE') {
+      firstCreateDraft(recruitmentId!, {
+        onSuccess: (data) => {
+          navigate({
+            to: `/apply/$recruitmentId/$resumeId`,
+            search: { page: 1 },
+            params: {
+              recruitmentId: String(recruitmentId),
+              resumeId: data.result.formResponseId,
+            },
+          })
+        },
+      })
+    } else {
+      openConfirmModal()
+    }
   }
 
   return (
     <>
       <S.PartInfoListContainer gap="16px" flexDirection="column">
-        {partInfoList.map(({ part, state, ability }) => (
+        {partInfoList.map(({ part, status, recruitmentPartId }) => (
           <PartInfoCard
-            key={part}
-            partName={part}
-            recruitmentState={transformResumeStatusKorean(state)}
-            requiredAbilities={ability}
+            key={recruitmentPartId}
+            partName={PART_TYPE_TO_SMALL_PART[part]}
+            recruitmentState={transformResumeStatusKorean(status)}
+            requiredAbilities={Array.from(PART_CONFIG[part].abilities)}
           />
         ))}
       </S.PartInfoListContainer>
 
       <Button
-        label={`UMC ${RECRUITMENT_INFO.generation} 지원하기`}
-        tone={isRecruitmentOpen ? 'lime' : 'darkGray'}
-        disabled={!isRecruitmentOpen}
+        label={`UMC 지원하기`}
+        tone={recruitmentId ? 'lime' : 'darkGray'}
+        disabled={!recruitmentId}
         onClick={handleApplyClick}
       />
 
       {isConfirmModalOpen && (
         <ConfirmApplicationModal
+          recruitmentId={recruitmentId!}
           onClose={closeConfirmModal}
-          createNewResume={() => {}}
-          existingResumeId={1}
+          formId={draftFormResponseId}
         />
       )}
     </>

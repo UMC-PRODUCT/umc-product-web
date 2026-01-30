@@ -1,4 +1,5 @@
-import type { RecruitingItem, RecruitingPartApi } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { RecruitingItem } from '@/shared/types/form'
 
 const PREFERRED_PART_TEXT = '희망하는 파트를 선택해 주세요.'
 const SCHEDULE_TEXT = '면접 가능한 시간을 선택해 주세요.'
@@ -33,8 +34,8 @@ export const buildDefaultPage2Item = (): RecruitingItem => ({
   },
 })
 
-export const buildDefaultPartItem = (part: RecruitingPartApi): RecruitingItem => ({
-  target: { kind: 'PART', part },
+export const buildDefaultPartItem = (part: PartType): RecruitingItem => ({
+  target: { kind: 'PART', part, pageNo: 2 },
   question: {
     type: 'LONG_TEXT',
     questionText: '',
@@ -64,7 +65,7 @@ export const hasPage2CommonItem = (items: Array<RecruitingItem>) =>
 
 export const ensureRequiredItems = (
   items: Array<RecruitingItem>,
-  recruitmentParts: Array<RecruitingPartApi>,
+  recruitmentParts: Array<PartType>,
 ) => {
   const next = items
     .map((item) => {
@@ -76,7 +77,7 @@ export const ensureRequiredItems = (
       }
       return item
     })
-    .filter((item) => item.target.kind !== 'PART' || recruitmentParts.includes(item.target.part))
+    .filter((item) => item.target.kind !== 'PART' || recruitmentParts.includes(item.target.part!))
 
   if (!hasPreferredPartItem(next)) {
     next.push(buildPreferredPartItem())

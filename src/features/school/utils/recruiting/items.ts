@@ -1,5 +1,4 @@
-import type { RecruitingPartApi } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
+import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 
 const partToApiMap = {
   Plan: 'PLAN',
@@ -9,7 +8,7 @@ const partToApiMap = {
   Android: 'ANDROID',
   SpringBoot: 'SPRINGBOOT',
   'Node.js': 'NODEJS',
-} as const satisfies Record<PartType, RecruitingPartApi>
+} as const satisfies Record<PartSmallType, PartType>
 
 const apiToPartMap = {
   PLAN: 'Plan',
@@ -19,8 +18,8 @@ const apiToPartMap = {
   ANDROID: 'Android',
   SPRINGBOOT: 'SpringBoot',
   NODEJS: 'Node.js',
-} as const satisfies Record<RecruitingPartApi, PartType>
+} as const satisfies Record<PartType, PartSmallType>
 
-export const mapPartToApi = (part: PartType): RecruitingPartApi => partToApiMap[part]
+export const mapPartToApi = (part: PartSmallType): PartType => partToApiMap[part]
 
-export const mapApiPartToPartType = (part: RecruitingPartApi): PartType => apiToPartMap[part]
+export const mapApiPartToPartType = (part: PartType): PartSmallType => apiToPartMap[part]

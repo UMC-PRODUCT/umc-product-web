@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import type { ForwardedRef } from 'react'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
+import dayjs from 'dayjs'
 
 import type { QuestionMode } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
@@ -15,21 +16,42 @@ import * as S from './TimeTable.style'
 import { useTimeTableSelection } from './useTimeTableSelection'
 
 interface ScheduleSelectorProps {
-  dates: Array<string>
-  timeRange: [string, string] // 예: ['16:30', '22:00']
-  disabledSlots?: Partial<Record<string, Array<string>>>
+  dateRange: {
+    start: string
+    end: string
+  }
+  timeRange: {
+    start: string
+    end: string
+  }
+  disabledSlots: Array<{
+    date: string
+    times: Array<string>
+  }>
   value?: Partial<Record<string, Array<string>>>
   onChange?: (selected: Record<string, Array<string>>) => void
   mode: QuestionMode
 }
 
 const TimeTableComponent = (
-  { dates, timeRange, disabledSlots = {}, value = {}, onChange, mode }: ScheduleSelectorProps,
+  { dateRange, timeRange, disabledSlots = [], value = {}, onChange, mode }: ScheduleSelectorProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) => {
   const isEditable = mode === 'edit'
   const mainAreaRef = useRef<HTMLDivElement>(null)
   const [showScrollShadow, setShowScrollShadow] = useState(true)
+  const dates = useMemo(() => {
+    const start = dayjs(dateRange.start).startOf('day')
+    const end = dayjs(dateRange.end).startOf('day')
+    if (end.isBefore(start, 'day')) return []
+    const items: Array<string> = []
+    let current = start
+    while (!current.isAfter(end, 'day')) {
+      items.push(current.format('YYYY-MM-DD'))
+      current = current.add(1, 'day')
+    }
+    return items
+  }, [dateRange])
   const {
     map: disabledIdxMap,
     totalSlots,
@@ -40,8 +62,8 @@ const TimeTableComponent = (
     [dates, disabledSlots, timeRange],
   )
   const dateCount = dates.length
-  const timeRangeStart = timeRange[0]
-  const timeRangeEnd = timeRange[1]
+  const timeRangeStart = timeRange.start
+  const timeRangeEnd = timeRange.end
 
   // 시간 라벨: 무조건 1시간 단위로만 생성
   const timeLabels = useMemo(

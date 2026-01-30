@@ -57,7 +57,7 @@ const Step4 = ({ control }: { control: Control<RecruitingForms> }) => {
               }}
             />
           )}
-        ></Controller>
+        />
       </Section>
     </Flex>
   )

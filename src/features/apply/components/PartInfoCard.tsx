@@ -1,13 +1,12 @@
-import type { PartType } from '@features/auth/domain'
-
 import * as S from '@/features/apply/components/ApplyPage.style'
+import type { PartSmallType } from '@/features/auth/domain/model'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
 interface PartInfoCardProps {
-  partName: PartType
+  partName: PartSmallType
   recruitmentState: string
-  requiredAbilities: Array<string>
+  requiredAbilities: ReadonlyArray<string>
 }
 
 const PartInfoCard = ({ partName, recruitmentState, requiredAbilities }: PartInfoCardProps) => {

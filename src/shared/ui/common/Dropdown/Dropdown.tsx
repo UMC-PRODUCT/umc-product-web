@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, UIEvent } from 'react'
 import { forwardRef } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as SelectPrimitive from '@radix-ui/react-select'
@@ -20,6 +20,7 @@ type DropdownProps<T> = {
   css?: Interpolation<Theme>
   className?: string
   optionSuffix?: (option: Option<T>) => ReactNode
+  onScrollEnd?: () => void
 }
 
 const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((props, ref) => {
@@ -34,6 +35,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     className,
     css,
     optionSuffix,
+    onScrollEnd,
   } = props
   const isValuePropProvided = Object.prototype.hasOwnProperty.call(props, 'value')
   const controlledValue = value ? String(value.id) : ''
@@ -41,6 +43,14 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     const selectedOption = options.find((opt) => String(opt.id) === selectedValue)
     if (selectedOption) {
       onChange?.(selectedOption)
+    }
+  }
+
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget
+    const distanceToBottom = target.scrollHeight - target.scrollTop - target.clientHeight
+    if (distanceToBottom < 32) {
+      onScrollEnd?.()
     }
   }
 
@@ -65,7 +75,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
 
       <SelectPrimitive.Portal>
         <S.StyledContent position="popper" sideOffset={4}>
-          <S.StyledViewport>
+          <S.StyledViewport onScroll={handleScroll}>
             {options.map((option) => (
               <S.StyledItem key={option.id} value={String(option.id)}>
                 <SelectPrimitive.ItemText asChild>

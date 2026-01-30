@@ -3,7 +3,7 @@ import { theme } from '@shared/styles/theme'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-const EmailSendModal = ({ onClose }: { onClose: () => void }) => {
+const EmailSendModal = ({ onClose, onClick }: { onClose: () => void; onClick: () => void }) => {
   return (
     <AlertModalLayout
       mode={'success'}
@@ -19,6 +19,7 @@ const EmailSendModal = ({ onClose }: { onClose: () => void }) => {
         </span>
         <button
           type="button"
+          onClick={onClick}
           css={{
             color: theme.colors.lime,
             borderBottom: '1px solid',

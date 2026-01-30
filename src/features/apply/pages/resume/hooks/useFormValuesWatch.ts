@@ -2,7 +2,9 @@ import { useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
-import type { QuestionList, QuestionPage } from '../../../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+import type { pageType } from '@/shared/types/form'
+
 import { resolvePagesWithSlots } from '../../../utils'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
@@ -13,7 +15,7 @@ import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQues
  */
 export function useFormValuesWatch(
   control: Control<ResumeFormValues>,
-  questionData: QuestionList,
+  questionData: RecruitingForms,
   defaultValues: ResumeFormValues,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ) {
@@ -24,7 +26,7 @@ export function useFormValuesWatch(
 
   const currentFormValues = watchedFormValues as ResumeFormValues
 
-  const resolvedPages = useMemo<Array<QuestionPage>>(
+  const resolvedPages: Array<pageType> = useMemo(
     () => resolvePagesWithSlots(questionData, currentFormValues, options),
     [questionData, currentFormValues, options],
   )

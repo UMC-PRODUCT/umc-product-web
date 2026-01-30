@@ -30,14 +30,8 @@ const AlreadyExistAccount = ({ onClose }: { onClose: () => void }) => {
           tone="gray"
           onClick={() => navigate({ to: '/auth/login' })}
           typo="C3.Md"
-        ></Button>
-        <Button
-          type="button"
-          label={'계정 연동하기'}
-          tone="lime"
-          typo="C3.Md"
-          onClick={onClose}
-        ></Button>
+        />
+        <Button type="button" label={'계정 연동하기'} tone="lime" typo="C3.Md" onClick={onClose} />
       </Flex>
     </AlertModalLayout>
   )

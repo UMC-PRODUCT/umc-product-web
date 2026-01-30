@@ -85,6 +85,8 @@ export default [
       'react/prop-types': 'off', // TypeScript 사용 시 불필요
       'react/no-unknown-property': ['error', { ignore: ['css'] }], // Emotion css prop 허용
 
+      'react/self-closing-comp': 'error',
+
       // React Hooks 규칙
       ...reactHooksPlugin.configs.recommended.rules,
 

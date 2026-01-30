@@ -1,21 +1,21 @@
+import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { Option, RecruitingPartApi } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
+import type { Option } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
 type Step3PartHeaderProps = {
-  partOptions: Array<Option<PartType>>
-  selectedPart: RecruitingPartApi | null
+  partOptions: Array<Option<PartSmallType>>
+  selectedPart: PartType | null
   isSelectedPartComplete: boolean
-  partCompletion: Partial<Record<RecruitingPartApi, boolean>>
-  onChangePart: (part: RecruitingPartApi) => void
+  partCompletion: Partial<Record<PartType, boolean>>
+  onChangePart: (part: PartType) => void
   onChangeStatus: (isComplete: boolean) => void
-  labelResolver: (part: RecruitingPartApi) => string
+  labelResolver: (part: PartType) => string
 }
 
 const Step3PartHeader = ({
@@ -49,10 +49,10 @@ const Step3PartHeader = ({
               }
             : undefined
         }
-        onChange={(option) => onChangePart(option.id as RecruitingPartApi)}
+        onChange={(option) => onChangePart(option.id as PartType)}
         css={{ width: 300, maxWidth: '100%' }}
         optionSuffix={(option) =>
-          partCompletion[option.id as RecruitingPartApi] ? (
+          partCompletion[option.id as PartType] ? (
             <span
               css={{
                 display: 'inline-flex',

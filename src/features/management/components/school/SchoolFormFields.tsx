@@ -51,7 +51,7 @@ export const SchoolFormFields = ({
         />
       </S.InputRow>
       <S.TextAreaWrapper alignItems="flex-start">
-        <Label label="비고" necessary={false}></Label>
+        <Label label="비고" necessary={false} />
         <S.TextArea placeholder="추가 정보를 입력하세요." {...register('note')} />
       </S.TextAreaWrapper>
       <Flex

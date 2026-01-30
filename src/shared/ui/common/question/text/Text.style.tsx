@@ -17,5 +17,9 @@ const TextArea = styled.input`
   &::placeholder {
     color: ${theme.colors.gray[500]};
   }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `
 export { TextArea }

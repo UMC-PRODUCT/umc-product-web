@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
+import type { PartType } from '@/features/auth/domain'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
-import type { PartType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'

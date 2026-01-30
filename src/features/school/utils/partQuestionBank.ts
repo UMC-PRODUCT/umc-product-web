@@ -1,19 +1,19 @@
+import type { PartType } from '@/features/auth/domain'
 import { PART } from '@/shared/constants/umc'
 import type {
   PartQuestionBank,
   PartQuestionBankPayload,
   RecruitingQuestion,
 } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
 
 const PART_KEY_MAP: Record<PartType, string> = {
-  Plan: 'Plan',
-  Design: 'Design',
-  Web: 'Web',
-  iOS: 'iOS',
-  Android: 'Android',
-  SpringBoot: 'SpringBoot',
-  'Node.js': 'Node_js',
+  PLAN: 'Plan',
+  DESIGN: 'Design',
+  WEB: 'Web',
+  IOS: 'iOS',
+  ANDROID: 'Android',
+  SPRINGBOOT: 'SpringBoot',
+  NODEJS: 'Node.js',
 }
 
 const PART_KEY_REVERSE: Record<string, PartType> = Object.entries(PART_KEY_MAP).reduce(

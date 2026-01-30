@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from '@tanstack/react-router'
 
 import Logo from '@shared/assets/brand_logo.svg?react'
 import Notice from '@shared/assets/icons/notice.svg?react'
@@ -11,16 +12,35 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Divider from '@shared/ui/common/Divider/Divider'
 import Instruction from '@shared/ui/common/Instruction/Instruction'
 
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+
 import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
 
 export const LoginPage = () => {
+  const navigate = useNavigate()
+  const { setItem, getItem: getPlatform } = useLocalStorage('platform')
+  const { getItem: getAccessToken } = useLocalStorage('accessToken')
+  const accessToken = getAccessToken()
+
+  const handleSocialLogin = (platform: string) => {
+    setItem(platform)
+    const baseUrl = `${import.meta.env.VITE_SERVER_API_URL}/auth/oauth2/authorization/${platform}`
+    window.location.href = `${baseUrl}`
+  }
+
+  const lastPlatform = getPlatform()
+
+  if (accessToken) {
+    navigate({ to: '/', replace: true })
+    return null
+  }
   return (
     <Main>
-      <IntroBanner></IntroBanner>
+      <IntroBanner />
       <AuthSection size="md">
-        <Logo></Logo>
-        <Divider label="로그인 또는 회원가입"></Divider>
+        <Logo />
+        <Divider label="로그인 또는 회원가입" />
         <ButtonGroup>
           <Button
             disabled={false}
@@ -28,30 +48,32 @@ export const LoginPage = () => {
             Icon={Kakao}
             variant="solid"
             tone="kakao"
-            onClick={() => {}}
-          ></Button>
+            onClick={() => handleSocialLogin('kakao')}
+          />
           <Button
             disabled={false}
             label="Google로 계속하기"
             Icon={Google}
             variant="solid"
             tone="white"
-            onClick={() => {}}
-          ></Button>
+            onClick={() => handleSocialLogin('google')}
+          />
           <Button
             disabled={false}
             label="Apple로 계속하기"
             Icon={Apple}
             variant="solid"
             tone="white"
-            onClick={() => {}}
-          ></Button>
-          <Instruction
-            mode="success"
-            Icon={Notice}
-            content={'최근 카카오 계정으로 로그인 하였습니다.'}
-            typography="C3.Md"
-          ></Instruction>
+            onClick={() => handleSocialLogin('apple')}
+          />
+          {lastPlatform && (
+            <Instruction
+              mode="success"
+              Icon={Notice}
+              content={`최근 ${lastPlatform} 계정으로 로그인 하였습니다.`}
+              typography="C3.Md"
+            />
+          )}
         </ButtonGroup>
       </AuthSection>
     </Main>

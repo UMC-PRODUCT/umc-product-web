@@ -1,12 +1,16 @@
-import type { PartQuestion, QuestionList } from '../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+import type { question } from '@/shared/types/form'
 
 export function findPartQuestion(
-  questionData: QuestionList,
-  sourceQuestionId: number,
-): PartQuestion | undefined {
+  questionData: RecruitingForms,
+  sourceQuestionId?: number,
+): question | undefined {
   for (const page of questionData.pages) {
-    for (const question of page.questions ?? []) {
-      if (question.id === sourceQuestionId && question.type === 'PART') {
+    for (const question of page.questions) {
+      if (
+        question.type === 'PREFERRED_PART' &&
+        (sourceQuestionId == null || question.questionId === sourceQuestionId)
+      ) {
         return question
       }
     }

@@ -14,11 +14,11 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
     interviewTimeTable: {
       dateRange: { start: '2026-01-05', end: '2026-01-08' },
       timeRange: { start: '09:00', end: '23:00' },
-      slotMinutes: 30,
-      enabled: [
+      slotMinutes: '30',
+      enabledByDate: [
         {
           date: '2026-01-05',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -40,7 +40,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-06',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -58,7 +58,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-07',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -76,7 +76,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
         },
         {
           date: '2026-01-08',
-          time: [
+          times: [
             '12:30',
             '13:00',
             '13:30',
@@ -93,6 +93,7 @@ export const TEMP_CREATE_FORM_DATA: RecruitingForms = {
           ],
         },
       ],
+      disabledByDate: [],
     },
   },
   noticeContent: '공지 내용입니다~',

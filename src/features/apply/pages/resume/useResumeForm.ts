@@ -1,6 +1,9 @@
 import type { useForm } from 'react-hook-form'
 
-import type { QuestionList, QuestionPage } from '../../domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+import type { pageType } from '@/shared/types/form'
+
+import type { GetApplicationAnswerResponseDTO } from '../../domain/model'
 import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
 import {
   useFormCompleteness,
@@ -20,7 +23,8 @@ export interface UseResumeFormReturn {
   errors: ReturnType<typeof useForm<ResumeFormValues>>['formState']['errors']
   isDirty: boolean
   isFormIncomplete: boolean
-  resolvedPages: Array<QuestionPage>
+  resolvedPages: Array<pageType>
+  defaultValues: ResumeFormValues
 }
 
 /**
@@ -33,9 +37,21 @@ export interface UseResumeFormReturn {
  * - useFormValidationRegistration: 동적 검증 규칙 등록
  */
 export function useResumeForm(
-  questionData: QuestionList,
+  questionData?: RecruitingForms,
+  answerData?: GetApplicationAnswerResponseDTO,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ): UseResumeFormReturn {
+  const defaultQuestionData: RecruitingForms = {
+    recruitmentid: 0,
+    formId: 0,
+    status: 'DRAFT',
+    recruitmentFormTitle: '',
+    noticeTitle: '',
+    noticeContent: '',
+    pages: [],
+  }
+  const effectiveQuestionData = questionData ?? defaultQuestionData
+
   // 1. 폼 초기 설정
   const {
     control,
@@ -48,12 +64,12 @@ export function useResumeForm(
     reset,
     defaultValues,
     formState: { errors, isDirty },
-  } = useFormSetup(questionData)
+  } = useFormSetup(effectiveQuestionData, answerData)
 
   // 2. 폼 값 감시 및 동적 페이지 해석
   const { currentFormValues, resolvedPages } = useFormValuesWatch(
     control,
-    questionData,
+    effectiveQuestionData,
     defaultValues,
     options,
   )
@@ -76,5 +92,6 @@ export function useResumeForm(
     isDirty,
     isFormIncomplete,
     resolvedPages,
+    defaultValues,
   }
 }

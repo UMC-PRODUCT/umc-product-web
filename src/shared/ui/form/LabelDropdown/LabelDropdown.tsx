@@ -19,6 +19,7 @@ type LabelDropdownProps<T> = {
     error: boolean
     errorMessage: string
   }
+  onScrollEnd?: () => void
 }
 
 const LabelDropdown = <T,>({
@@ -28,6 +29,7 @@ const LabelDropdown = <T,>({
   value,
   error,
   onChange,
+  onScrollEnd,
 }: LabelDropdownProps<T>) => {
   const baseId = useId()
   const triggerId = `${baseId}-selector`
@@ -42,7 +44,7 @@ const LabelDropdown = <T,>({
             typo="B4.Md"
             responsiveTypo={{ tablet: 'C5.Md' }}
             errorMessage={error.errorMessage}
-          ></ErrorMessage>
+          />
         )}
       </S.SelectHeader>
       <Dropdown
@@ -52,6 +54,7 @@ const LabelDropdown = <T,>({
         onChange={onChange}
         id={triggerId}
         ariaLabelledby={labelId}
+        onScrollEnd={onScrollEnd}
       />
     </Field>
   )

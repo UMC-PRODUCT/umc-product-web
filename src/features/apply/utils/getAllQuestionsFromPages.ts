@@ -1,5 +1,5 @@
-import type { QuestionPage, QuestionUnion } from '../domain/model'
+import type { pageType } from '@/shared/types/form'
 
-export function getAllQuestionsFromPages(pages: Array<QuestionPage>): Array<QuestionUnion> {
-  return pages.flatMap((page) => page.questions ?? [])
+export function getAllQuestionsFromPages(pages: Array<pageType>) {
+  return pages.flatMap((page) => page.questions)
 }

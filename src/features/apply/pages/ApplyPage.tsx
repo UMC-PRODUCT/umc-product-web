@@ -1,53 +1,74 @@
-import type { PartType } from '@features/auth/domain'
-import type { RecruitingType } from '@features/management/domain'
-
 import AfterSubmit from '@/features/apply/components/AfterSubmit'
 import * as S from '@/features/apply/components/ApplyPage.style'
 import BeforeSubmit from '@/features/apply/components/BeforeSubmit'
-import {
-  formatActivityPeriod,
-  formatRecruitmentPeriod,
-  RECRUITMENT_INFO,
-} from '@/shared/constants/recruitment'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import { formatActivityPeriod, formatRecruitmentPeriod } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-type ApplyPageProps = {
-  partInfoList: Array<{
-    part: PartType
-    state: RecruitingType
-    ability: Array<string>
-  }>
-  isAlreadySubmitted: boolean
-}
+import {
+  useGetActiveRecruitmentId,
+  useGetSpecificPartRecruiting,
+} from '../hooks/useGetApplicationQuery'
 
-export const ApplyPage = ({ partInfoList, isAlreadySubmitted }: ApplyPageProps) => {
-  const { schoolName, generation, recruitmentPeriod, activityPeriod } = RECRUITMENT_INFO
+const ApplyPageContent = () => {
+  const { data: recruitmentIdData } = useGetActiveRecruitmentId()
+  const recruitmentId = recruitmentIdData.result.recruitmentId
+  const { data: specificPartRecruitingData } = useGetSpecificPartRecruiting(recruitmentId)
+
+  const { result } = specificPartRecruitingData
 
   const formattedRecruitmentPeriod = formatRecruitmentPeriod(
-    recruitmentPeriod.start,
-    recruitmentPeriod.end,
+    result.recruitmentPeriod?.startsAt,
+    result.recruitmentPeriod?.endsAt,
   )
 
   const formattedActivityPeriod = formatActivityPeriod(
-    activityPeriod.start,
-    activityPeriod.end,
-    activityPeriod.duration,
+    result.activityPeriod?.startsAt,
+    result.activityPeriod?.endsAt,
   )
+  const submitStatus = result.myApplication.status
 
+  const isAlreadySubmitted =
+    submitStatus === 'DRAFT' ? false : submitStatus === 'NONE' ? false : true
   return (
     <PageLayout>
       <Flex flexDirection="column" gap="35px" maxWidth="868px">
         <Flex flexDirection="column" gap="22px">
-          <PageTitle title={`UMC ${schoolName} ${generation} 추가모집`} />
+          <PageTitle title={result.title} />
           <Flex gap="9px" flexDirection="column" alignItems="flex-start">
             <S.Info>모집 기간 | {formattedRecruitmentPeriod}</S.Info>
             <S.Info>활동 기간 | {formattedActivityPeriod}</S.Info>
           </Flex>
         </Flex>
-        {isAlreadySubmitted ? <AfterSubmit /> : <BeforeSubmit partInfoList={partInfoList} />}
+        {isAlreadySubmitted && <AfterSubmit />}
+        {!isAlreadySubmitted && (
+          <BeforeSubmit
+            submitStatus={submitStatus}
+            partInfoList={result.parts}
+            recruitmentId={recruitmentId}
+            draftFormResponseId={result.myApplication.draftFormResponseId}
+          />
+        )}
       </Flex>
     </PageLayout>
   )
 }
+
+export const ApplyPage = () => (
+  <AsyncBoundary
+    fallback={<SuspenseFallback label="모집 정보를 불러오는 중입니다." />}
+    errorFallback={() => (
+      <PageLayout>
+        <Flex flexDirection="column" gap={112} css={{ color: theme.colors.gray[400] }}>
+          현재 진행 중인 모집이 없습니다.
+        </Flex>
+      </PageLayout>
+    )}
+  >
+    <ApplyPageContent />
+  </AsyncBoundary>
+)

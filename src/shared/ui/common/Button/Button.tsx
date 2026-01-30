@@ -3,6 +3,8 @@ import { forwardRef } from 'react'
 import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@shared/types/component'
 import type { TypoToken } from '@shared/types/typo'
 
+import Loading from '@/shared/ui/common/Loading/Loading'
+
 import { StyledButton } from './Button.style'
 
 const DEFAULT_BORDER_RADIUS = 6
@@ -17,6 +19,7 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
   typo?: TypoToken
   Icon?: SvgIconComponent
   iconColor?: string
+  isLoading?: boolean
 }
 
 /**
@@ -37,18 +40,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       Icon,
       className,
       iconColor,
+      isLoading = false,
       ...restProps
     },
     ref,
   ) => {
-    const handleClick = disabled ? undefined : onClick
+    const isDisabled = disabled || isLoading
+    const handleClick = isDisabled ? undefined : onClick
 
     return (
       <StyledButton
         ref={ref}
         type={type}
         onClick={handleClick}
-        disabled={disabled}
+        disabled={isDisabled}
         className={className}
         $tone={tone}
         $variant={variant}
@@ -58,7 +63,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...restProps}
       >
         {Icon && <Icon color={iconColor} width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
-        {label}
+        {isLoading ? (
+          <Loading
+            size={16}
+            borderWidth={2}
+            spinnerColor="currentColor"
+            borderColor="rgba(255, 255, 255, 0.45)"
+            gap={0}
+            aria-hidden="true"
+          />
+        ) : (
+          label
+        )}
       </StyledButton>
     )
   },

@@ -1,6 +1,12 @@
-/**
- * Apply 도메인 상수
- */
+import type { PartSmallType, PartType } from '@/features/auth/domain/model'
+
+import type { DocumentStatusType, FinalStatusType } from './model'
+
+const createStatusConfig = <T extends string>(
+  values: Record<T, { label: string; color: string }>,
+) => values
+
+/** Apply 도메인 상수 */
 
 /** 질문 타입 설정 */
 export const QUESTION_TYPE_CONFIG = {
@@ -11,7 +17,7 @@ export const QUESTION_TYPE_CONFIG = {
   DROPDOWN: { label: '드롭다운', icon: 'chevron-down' },
   SCHEDULE: { label: '시간표', icon: 'calendar' },
   PORTFOLIO: { label: '포트폴리오', icon: 'file' },
-  PART: { label: '파트 선택', icon: 'users' },
+  PREFERRED_PART: { label: '파트 선택', icon: 'users' },
 } as const
 
 /** 파일 업로드 상태 */
@@ -29,18 +35,49 @@ export const RESUME_STATUS_CONFIG = {
 } as const
 
 /** 서류 평가 상태 */
-export const DOCUMENT_STATUS_CONFIG = {
+export const DOCUMENT_STATUS_CONFIG = createStatusConfig<DocumentStatusType>({
   PENDING: { label: '미정', color: 'gray' },
   EVALUATING: { label: '평가 중', color: 'yellow' },
   PASSED: { label: '서류 합격', color: 'green' },
   FAILED: { label: '불합격', color: 'red' },
-} as const
+})
 
 /** 최종 평가 상태 */
-export const FINAL_STATUS_CONFIG = {
+export const FINAL_STATUS_CONFIG = createStatusConfig<FinalStatusType>({
   PENDING: { label: '미정', color: 'gray' },
   SCHEDULED: { label: '예정', color: 'blue' },
   EVALUATING: { label: '평가 중', color: 'yellow' },
   PASSED: { label: '최종 합격', color: 'green' },
   FAILED: { label: '불합격', color: 'red' },
-} as const
+})
+
+/** 모집 파트 목록 / 매핑 */
+export const DEFAULT_RECRUITING_PARTS = [
+  'PLAN',
+  'DESIGN',
+  'WEB',
+  'IOS',
+  'ANDROID',
+  'SPRINGBOOT',
+  'NODEJS',
+] as ReadonlyArray<PartType>
+
+export const PART_TYPE_TO_SMALL_PART: Record<PartType, PartSmallType> = {
+  PLAN: 'Plan',
+  DESIGN: 'Design',
+  WEB: 'Web',
+  IOS: 'iOS',
+  ANDROID: 'Android',
+  SPRINGBOOT: 'SpringBoot',
+  NODEJS: 'Node.js',
+}
+
+export const SMALL_PART_TO_PART_TYPE: Record<PartSmallType, PartType> = {
+  Plan: 'PLAN',
+  Design: 'DESIGN',
+  Web: 'WEB',
+  iOS: 'IOS',
+  Android: 'ANDROID',
+  SpringBoot: 'SPRINGBOOT',
+  'Node.js': 'NODEJS',
+}

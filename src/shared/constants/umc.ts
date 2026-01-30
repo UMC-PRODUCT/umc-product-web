@@ -28,11 +28,20 @@ export const ACCOUNT_LEVEL: Array<{ id: number; label: AccountLevelType }> = ACC
 
 // PART_ABILITY는 PART_CONFIG에서 유도
 export const PART_ABILITY: Record<PartType, Array<string>> = {
-  Plan: [...PART_CONFIG.Plan.abilities],
-  Design: [...PART_CONFIG.Design.abilities],
-  Web: [...PART_CONFIG.Web.abilities],
-  iOS: [...PART_CONFIG.iOS.abilities],
-  Android: [...PART_CONFIG.Android.abilities],
-  SpringBoot: [...PART_CONFIG.SpringBoot.abilities],
-  'Node.js': [...PART_CONFIG['Node.js'].abilities],
+  PLAN: [...PART_CONFIG.PLAN.abilities],
+  DESIGN: [...PART_CONFIG.DESIGN.abilities],
+  WEB: [...PART_CONFIG.WEB.abilities],
+  IOS: [...PART_CONFIG.IOS.abilities],
+  ANDROID: [...PART_CONFIG.ANDROID.abilities],
+  SPRINGBOOT: [...PART_CONFIG.SPRINGBOOT.abilities],
+  NODEJS: [...PART_CONFIG.NODEJS.abilities],
 }
+export type RECRUITING_SCHEDULE_TYPE =
+  | 'APPLY_WINDOW'
+  | 'DOC_REVIEW_WINDOW'
+  | 'DOC_RESULT_AT'
+  | 'INTERVIEW_WINDOW'
+  | 'FINAL_REVIEW_WINDOW'
+  | 'FINAL_RESULT_AT'
+
+export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'

@@ -1,8 +1,28 @@
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { forwardRef } from 'react'
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react'
+import { createContext, forwardRef, useContext, useEffect, useMemo } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 
 import * as S from './Modal.style'
+
+const modalLayers: Array<number> = []
+let nextModalLayer = 1
+
+const registerModalLayer = () => {
+  const layer = nextModalLayer++
+  modalLayers.push(layer)
+  return layer
+}
+
+const unregisterModalLayer = (layer: number) => {
+  const index = modalLayers.indexOf(layer)
+  if (index >= 0) {
+    modalLayers.splice(index, 1)
+  }
+}
+
+const ModalLayerContext = createContext(0)
+
+const useModalLayer = () => useContext(ModalLayerContext)
 
 // ============================================================================
 // Modal.Root
@@ -10,7 +30,16 @@ import * as S from './Modal.style'
 type ModalRootProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Root>
 
 const ModalRoot = ({ children, ...props }: ModalRootProps) => {
-  return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>
+  const layer = useMemo(() => registerModalLayer(), [])
+  useEffect(() => {
+    return () => unregisterModalLayer(layer)
+  }, [layer])
+
+  return (
+    <ModalLayerContext.Provider value={layer}>
+      <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>
+    </ModalLayerContext.Provider>
+  )
 }
 
 // ============================================================================
@@ -48,7 +77,9 @@ const ModalPortal = ({ children, ...props }: ModalPortalProps) => {
 type ModalOverlayProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 
 const ModalOverlay = forwardRef<HTMLDivElement, ModalOverlayProps>((props, ref) => {
-  return <S.StyledOverlay ref={ref} {...props} />
+  const layer = useModalLayer()
+  const style: CSSProperties = { '--modal-layer': layer } as CSSProperties
+  return <S.StyledOverlay data-layer={layer} ref={ref} style={style} {...props} />
 })
 ModalOverlay.displayName = 'Modal.Overlay'
 
@@ -59,8 +90,15 @@ type ModalContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content
 
 const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
   ({ children, ...props }, ref) => {
+    const layer = useModalLayer()
+    const style: CSSProperties = { '--modal-layer': layer } as CSSProperties
     return (
-      <S.StyledContent ref={ref} onOpenAutoFocus={(e) => e.preventDefault()} {...props}>
+      <S.StyledContent
+        ref={ref}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        style={style}
+        {...props}
+      >
         {children}
       </S.StyledContent>
     )

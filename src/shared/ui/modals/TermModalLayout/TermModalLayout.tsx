@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 
 import Close from '@shared/assets/icons/close.svg?react'
 import Flex from '@shared/ui/common/Flex/Flex'
+import Loading from '@shared/ui/common/Loading/Loading'
 import { Modal } from '@shared/ui/common/Modal'
 
 import { theme } from '@/shared/styles/theme'
@@ -14,9 +15,13 @@ type TermModalLayoutProps = {
   content?: string
   children?: ReactNode
   onClose: () => void
+  isLoading?: boolean
+  error?: string
+  loadingLabel?: string
+  errorLabel?: string
 }
 
-const TermMarkdown = ({ content }: { content: string }) => {
+export const TermMarkdown = ({ content }: { content: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -40,7 +45,16 @@ const TermMarkdown = ({ content }: { content: string }) => {
   )
 }
 
-const TermModalLayout = ({ title = '약관', content, children, onClose }: TermModalLayoutProps) => {
+const TermModalLayout = ({
+  title = '약관',
+  content,
+  children,
+  onClose,
+  isLoading,
+  error,
+  loadingLabel = '약관을 불러오는 중입니다...',
+  errorLabel,
+}: TermModalLayoutProps) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -71,7 +85,27 @@ const TermModalLayout = ({ title = '약관', content, children, onClose }: TermM
               </S.Header>
               <S.ContentWrapper>
                 <S.ContentSection>
-                  {content ? <TermMarkdown content={content} /> : children}
+                  {isLoading ? (
+                    <S.StatusWrapper>
+                      <Loading
+                        size={32}
+                        borderWidth={3}
+                        spinnerColor={theme.colors.lime}
+                        label={loadingLabel}
+                        labelColor={theme.colors.gray[300]}
+                      />
+                    </S.StatusWrapper>
+                  ) : error ? (
+                    <S.StatusWrapper>
+                      <span css={{ color: theme.colors.necessary, ...theme.typography.B4.Rg }}>
+                        {errorLabel ?? error}
+                      </span>
+                    </S.StatusWrapper>
+                  ) : content ? (
+                    <TermMarkdown content={content} />
+                  ) : (
+                    children
+                  )}
                   <br />
                 </S.ContentSection>
               </S.ContentWrapper>

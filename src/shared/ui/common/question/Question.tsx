@@ -1,11 +1,11 @@
 import type {
   FileUploadAnswer,
   QuestionAnswerValue,
-  QuestionUnion,
+  QuestionType,
 } from '@features/apply/domain/model'
 
-import type { QuestionMode } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/umc'
+import type { PartType } from '@/features/auth/domain'
+import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
@@ -13,24 +13,59 @@ import { LongText } from './longText/LongText'
 import { MultipleChoice } from './multipleChoice/MultipleChoice'
 import PartChoice from './partChoice/PartChoice'
 import { Text } from './text/Text'
-import { TimeTable } from './timeTable/TimeTable'
 import QuestionLayout from './QuestionLayout'
 
+type ChoiceOption = {
+  optionId?: string
+  content: string
+  isOther?: boolean
+}
+
+type PartOption = {
+  optionId?: string
+  content: PartType
+}
+
+type QuestionOptions = Array<ChoiceOption | PartOption>
+
 interface QuestionProps {
-  data: QuestionUnion
+  questionId: number
+  type: QuestionType
+  question: string
+  questionNumber: number
+  required: boolean
+  options: QuestionOptions
   value?: QuestionAnswerValue
   mode: QuestionMode
   onChange?: (questionId: number, newValue: QuestionAnswerValue) => void
   errorMessage?: string
+  maxSelectCount: string | null
+  preferredPartOptions: Array<{
+    recruitmentPartId: string | number
+    label: string
+    value: PartType
+  }> | null
 }
 
-export const Question = ({ data, value, onChange, errorMessage, mode }: QuestionProps) => {
+export const Question = ({
+  questionId,
+  type,
+  question,
+  questionNumber,
+  required,
+  options,
+  value,
+  onChange,
+  errorMessage,
+  mode,
+  maxSelectCount,
+  preferredPartOptions,
+}: QuestionProps) => {
   const handleValueChange = (newValue: QuestionAnswerValue) => {
-    onChange?.(data.id, newValue)
+    onChange?.(questionId, newValue)
   }
-
   const renderQuestionInput = () => {
-    switch (data.type) {
+    switch (type) {
       case 'LONG_TEXT':
         return (
           <LongText
@@ -46,20 +81,8 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
       case 'CHECKBOX':
         return (
           <MultipleChoice
-            options={data.options}
-            value={value as Array<string> | undefined}
-            onChange={handleValueChange}
-            mode={mode}
-          />
-        )
-
-      case 'SCHEDULE':
-        return (
-          <TimeTable
-            dates={data.dates}
-            timeRange={data.timeRange}
-            value={(value ?? {}) as Record<string, Array<string>>}
-            disabledSlots={data.disabled ?? {}}
+            options={options}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
             mode={mode}
           />
@@ -77,20 +100,21 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
       case 'RADIO':
         return (
           <Choice
-            value={value as string | undefined}
+            value={value as OptionAnswerValue | undefined}
             onChange={handleValueChange}
-            options={data.options}
+            options={options as Array<ChoiceOption>}
             mode={mode}
           />
         )
 
-      case 'PART':
+      case 'PREFERRED_PART':
         return (
           <PartChoice
             value={value as Array<{ id: number; answer: PartType }> | undefined}
             onChange={handleValueChange}
-            options={data.options}
+            preferredPartOptions={preferredPartOptions!}
             mode={mode}
+            maxSelectCount={maxSelectCount}
           />
         )
 
@@ -101,9 +125,9 @@ export const Question = ({ data, value, onChange, errorMessage, mode }: Question
 
   return (
     <QuestionLayout
-      isRequired={data.necessary}
-      questionText={data.question}
-      questionNumber={data.questionNumber}
+      isRequired={required}
+      questionText={question}
+      questionNumber={questionNumber}
       errorMessage={errorMessage}
     >
       {renderQuestionInput()}

@@ -1,145 +1,211 @@
 /** @jsxImportSource @emotion/react */
-import type { ComponentProps, ReactNode } from 'react'
-import { useMemo, useState } from 'react'
-import Calendar from 'react-calendar'
+import type { ComponentProps } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import FullCalendar from '@fullcalendar/react'
 import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
 
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import CalendarIcon from '@/shared/assets/icons/calendar.svg?react'
+import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import type { CalendarEvents } from '@/shared/types/calendar'
+import type { CalendarEvent } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
-import { getEventDateText, processEventsIntoSegments } from '@/shared/utils/calendar'
+import { getEventDateText } from '@/shared/utils/calendar'
+import { transformRecruitingScheduleTypeKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './RecruitingCalendar.style'
 
-import 'react-calendar/dist/Calendar.css'
+dayjs.extend(isBetween)
 
 type RecruitingCalendarProps = {
-  events: CalendarEvents
+  events: {
+    recruitmentId: string
+    schedules: Array<{
+      type: RECRUITING_SCHEDULE_TYPE
+      kind: string
+      startDate: string
+      endDate: string
+    }>
+  }
 }
 
 const toStartOfDay = (value: Date) => dayjs(value).startOf('day')
 
-const isSameDay = (left: Date, right: Date) => dayjs(left).isSame(right, 'day')
-
-const isWithinRange = (target: Date, start: Date, end: Date) => {
-  const time = toStartOfDay(target).valueOf()
-  return time >= toStartOfDay(start).valueOf() && time <= toStartOfDay(end).valueOf()
+type RecruitmentCalendarEvent = CalendarEvent & {
+  extendedProps: {
+    kind: string
+    displayRange: string
+  }
 }
 
 const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
   const today = useMemo(() => toStartOfDay(new Date()).toDate(), [])
-  const allSegments = useMemo(() => processEventsIntoSegments(events), [events])
-
   const [activeStartDate, setActiveStartDate] = useState<Date>(today)
   const [selectedDate, setSelectedDate] = useState<Date>(today)
+  const calendarRef = useRef<FullCalendar>(null)
 
-  const handleDateChange: ComponentProps<typeof Calendar>['onChange'] = (value) => {
-    const nextValue = Array.isArray(value) ? value[0] : value
-    if (!nextValue) return
-    setSelectedDate(toStartOfDay(nextValue).toDate())
-  }
+  useEffect(() => {
+    const api = calendarRef.current?.getApi()
+    if (!api) return
+    const raf = requestAnimationFrame(() => {
+      api.updateSize()
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [activeStartDate])
 
-  const handleActiveStartDateChange: ComponentProps<typeof Calendar>['onActiveStartDateChange'] = ({
-    activeStartDate: nextDate,
-  }) => {
-    if (!nextDate) return
-    setActiveStartDate(nextDate)
-  }
+  const calendarEvents = useMemo<Array<RecruitmentCalendarEvent>>(
+    () =>
+      events.schedules.map((schedule, idx) => {
+        const start = dayjs(schedule.startDate)
+        const end = dayjs(schedule.endDate)
+        const startDate = start.format('YYYY-MM-DD')
+        const endDate = end.format('YYYY-MM-DD')
+        const displayRange = start.isSame(end, 'day')
+          ? ''
+          : `(${start.format('MM/DD')}~${end.format('MM/DD')})`
+        return {
+          id: idx,
+          title: schedule.type,
+          startDate,
+          endDate,
+          extendedProps: {
+            kind: schedule.kind,
+            displayRange,
+          },
+        }
+      }),
+    [events],
+  )
 
-  // 선택된 날짜의 이벤트 필터링
   const selectedEvents = useMemo(() => {
-    return allSegments
-      .filter((seg) => isWithinRange(selectedDate, seg.originalStart, seg.originalEnd))
-      .filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i)
-  }, [selectedDate, allSegments])
+    return calendarEvents.filter((event) => {
+      const start = dayjs(event.startDate)
+      const end = dayjs(event.endDate)
+      return dayjs(selectedDate).isBetween(start, end, 'day', '[]')
+    })
+  }, [calendarEvents, selectedDate])
 
-  // 월 이동 핸들러
+  const handleDateClick: ComponentProps<typeof FullCalendar>['dateClick'] = ({ date }) => {
+    setSelectedDate(toStartOfDay(date).toDate())
+  }
+
+  const handleDatesSet: ComponentProps<typeof FullCalendar>['datesSet'] = ({ view }) => {
+    setActiveStartDate(dayjs(view.currentStart).toDate())
+  }
+
   const handleMonth = (offset: number) => {
-    setActiveStartDate((prev) => dayjs(prev).add(offset, 'month').toDate())
+    const api = calendarRef.current?.getApi()
+    if (!api) return
+    const nextDate = dayjs(activeStartDate).add(offset, 'month').toDate()
+    api.gotoDate(nextDate)
   }
 
   return (
     <Flex flexDirection="column" gap="24px">
-      {/* 헤더 섹션 */}
       <S.Header flexDirection="row" justifyContent="space-between">
         <PageTitle title="모집 일정" />
         <S.DateNavigator width="fit-content">
-          <Arrow css={{ transform: 'rotate(90deg)' }} onClick={() => handleMonth(-1)} />
+          <Arrow
+            color="white"
+            css={{ transform: 'rotate(90deg)' }}
+            onClick={() => handleMonth(-1)}
+          />
           {dayjs(activeStartDate).format('YYYY년 M월')}
-          <Arrow css={{ transform: 'rotate(270deg)' }} onClick={() => handleMonth(1)} />
+          <Arrow
+            color="white"
+            css={{ transform: 'rotate(270deg)' }}
+            onClick={() => handleMonth(1)}
+          />
         </S.DateNavigator>
       </S.Header>
 
-      {/* 캘린더 섹션 */}
       <S.StyledCalendarWrapper>
-        <Calendar
-          calendarType="gregory"
-          view="month"
-          prev2Label={null}
-          next2Label={null}
-          prevLabel={null}
-          nextLabel={null} // 네비게이션 숨김
-          value={selectedDate}
-          activeStartDate={activeStartDate}
-          onActiveStartDateChange={handleActiveStartDateChange}
-          onChange={handleDateChange}
-          formatDay={(_: string | undefined, date: Date) => dayjs(date).format('D')}
-          tileContent={({
-            date,
-            view,
-          }: {
-            date: Date
-            view: 'month' | 'year' | 'decade' | 'century'
-          }): ReactNode => {
-            if (view !== 'month') return null
-            const segment = allSegments.find((seg) => isSameDay(seg.segmentStart, date))
-            if (!segment) return null
-
-            const isHighlighted = isWithinRange(today, segment.originalStart, segment.originalEnd)
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          fixedWeekCount={false}
+          locale="ko"
+          firstDay={0}
+          height="auto"
+          headerToolbar={false}
+          events={calendarEvents.map((event) => ({
+            id: String(event.id),
+            title: event.title,
+            start: event.startDate,
+            end: dayjs(event.endDate).add(1, 'day').format('YYYY-MM-DD'),
+            extendedProps: event.extendedProps,
+          }))}
+          dateClick={handleDateClick}
+          datesSet={handleDatesSet}
+          eventContent={(eventInfo) => {
+            const start = eventInfo.event.start
+            const end = eventInfo.event.end
+            const isHighlighted =
+              !!start &&
+              dayjs(today).isBetween(
+                dayjs(start),
+                dayjs(end ?? start).subtract(1, 'day'),
+                'day',
+                '[]',
+              )
 
             return (
-              <S.EventBarContainer>
-                <S.EventBar
-                  $span={segment.span}
-                  $isHighlighted={isHighlighted}
-                  $isStart={segment.isStart}
-                >
-                  {segment.isStart && (
-                    <span className="event-title">
-                      {segment.title}
-                      {!isSameDay(segment.originalStart, segment.originalEnd) &&
-                        ` (${dayjs(segment.originalStart).format('MM/DD')}~${dayjs(
-                          segment.originalEnd,
-                        ).format('MM/DD')})`}
-                    </span>
+              <S.EventBar $isHighlighted={isHighlighted}>
+                <span className="event-title">
+                  {transformRecruitingScheduleTypeKorean(
+                    eventInfo.event.title as RECRUITING_SCHEDULE_TYPE,
                   )}
-                </S.EventBar>
-              </S.EventBarContainer>
+                </span>
+                {eventInfo.event.extendedProps.displayRange ? (
+                  <span className="event-range">{eventInfo.event.extendedProps.displayRange}</span>
+                ) : null}
+              </S.EventBar>
             )
+          }}
+          // 날짜 칸 렌더링 커스텀 (선택된 날짜 표시)
+          dayCellContent={(args) => {
+            return args.dayNumberText.replace('일', '')
+          }}
+          dayHeaderContent={(args) => {
+            // 요일 이름만 깔끔하게 반환 (일, 월, 화...)
+            return args.text.replace('요일', '')
+          }}
+          dayCellClassNames={({ date }) => {
+            const isSelected = dayjs(date).isSame(selectedDate, 'day')
+            return isSelected ? ['fc-selected-day'] : []
           }}
         />
       </S.StyledCalendarWrapper>
 
-      {/* 하단 리스트 섹션 */}
       <Flex flexDirection="column" gap="12px">
-        {selectedEvents.map((event) => (
-          <S.EventItem
-            key={event.id}
-            $isHighlighted={isWithinRange(today, event.originalStart, event.originalEnd)}
-          >
-            <div className="icon">
-              <CalendarIcon />
-            </div>
-            <S.EventInfo>
-              <div className="title">{event.title}</div>
-              <div className="period">
-                {getEventDateText(event.originalStart, event.originalEnd)}
+        {selectedEvents.map((event) => {
+          const isTodayActive = dayjs(today).isBetween(
+            dayjs(event.startDate),
+            dayjs(event.endDate),
+            'day',
+            '[]',
+          )
+
+          return (
+            <S.EventItem key={event.id} $isTodayActive={isTodayActive}>
+              <div className="icon">
+                <CalendarIcon />
               </div>
-            </S.EventInfo>
-          </S.EventItem>
-        ))}
+              <S.EventInfo $isTodayActive={isTodayActive}>
+                <div className="title">
+                  {transformRecruitingScheduleTypeKorean(event.title as RECRUITING_SCHEDULE_TYPE)}
+                </div>
+                <div className="period">
+                  {getEventDateText(dayjs(event.startDate).toDate(), dayjs(event.endDate).toDate())}
+                </div>
+              </S.EventInfo>
+            </S.EventItem>
+          )
+        })}
       </Flex>
     </Flex>
   )

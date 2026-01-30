@@ -1,4 +1,4 @@
-import type { PartType } from '@/shared/types/umc'
+import type { PartType } from '@/features/auth/domain'
 
 import * as S from './PartBadge.style'
 

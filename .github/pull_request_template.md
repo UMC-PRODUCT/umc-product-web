@@ -29,3 +29,13 @@
 ## 📎 참고 자료 (선택)
 
 > 관련 문서, 스크린샷, 또는 예시 등이 있다면 여기에 첨부해주세요
+
+@copilot 이 PR을 아래 기준으로 검토해주세요:
+
+.github/instructions/architecture.instructions.md 파일을 지침으로 삼으세요.
+폴더/파일 위치가 프로젝트 구조 규칙과 일치하는지
+컴포넌트가 단일 책임 원칙(SRP)을 지키는지
+import 방향이 올바른지 (shared → features 역방향 없음)
+명명/케이스가 일관적인지 (PascalCase vs camelCase)
+배럴(index.ts) 사용이 현 패턴을 따르는지
+응답은 한국어로, 발견된 위반 항목과 추천 구조를 포함해주세요.

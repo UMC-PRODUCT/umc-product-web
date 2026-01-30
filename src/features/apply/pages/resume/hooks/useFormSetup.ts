@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 
-import type { QuestionList } from '../../../domain/model'
+import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
+import type { RecruitingForms } from '@/features/school/domain'
+
 import { buildDefaultValuesFromQuestions } from '../../../utils'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
@@ -10,8 +12,14 @@ import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQues
  * - useForm 초기화
  * - 기본값 생성 및 리셋
  */
-export function useFormSetup(questionData: QuestionList) {
-  const defaultValues = useMemo(() => buildDefaultValuesFromQuestions(questionData), [questionData])
+export function useFormSetup(
+  questionData: RecruitingForms,
+  answerData?: GetApplicationAnswerResponseDTO,
+) {
+  const defaultValues = useMemo(
+    () => buildDefaultValuesFromQuestions(questionData, answerData),
+    [questionData, answerData],
+  )
 
   const form = useForm<ResumeFormValues>({
     mode: 'onChange',

@@ -11,9 +11,6 @@
 // Auth 도메인에서 re-export
 export type { AccountLevelType, AccountStateType, PartType } from '@features/auth/domain'
 
-// Apply 도메인에서 re-export
-export type { DocumentStatusType, FinalStatusType } from '@features/apply/domain'
-
 // Management 도메인에서 re-export
 export type {
   EvaluationDocumentType,
@@ -24,3 +21,5 @@ export type {
 
 // Dashboard 도메인에서 re-export
 export type { ResumeType } from '@features/dashboard/domain'
+
+export type TermsType = 'SERVICE' | 'PRIVACY' | 'MARKETING'

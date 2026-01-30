@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
-import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm'
-import DeleteFail from '@/features/school/components/modals/DeleteFail'
-import type { PartCompletion } from '@/shared/types/form'
+import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
+import DeleteFail from '@/features/school/components/modals/DeleteFail/DeleteFail'
+import type { Phase } from '@/features/school/domain'
+import { PhaseBadgeTone } from '@/features/school/utils/phaseBadgeTone'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -15,16 +17,26 @@ interface RecruitingCardProps {
   startDate: string
   endDate: string
   applicants: number
-  state: PartCompletion
+  state: Phase
+  editable: boolean
+  recruitmentId: string
 }
-const RecruitingCard = ({ title, startDate, endDate, applicants, state }: RecruitingCardProps) => {
-  const badgeTone = state === '진행 중' ? 'lime' : state === '모집 종료' ? 'gray' : 'white'
+const RecruitingCard = ({
+  title,
+  startDate,
+  endDate,
+  applicants,
+  state,
+  editable,
+  recruitmentId,
+}: RecruitingCardProps) => {
+  const badgeTone = PhaseBadgeTone({ phase: state })
   const [isModalOpen, setIsModalOpen] = useState({
     modalName: '',
     open: false,
     name: title,
   })
-
+  const navigate = useNavigate()
   return (
     <Section
       variant="solid"
@@ -55,32 +67,47 @@ const RecruitingCard = ({ title, startDate, endDate, applicants, state }: Recrui
           </Badge>
         </S.LeftInfo>
       </S.InfoWrapper>
-      <Flex width={126} gap={12} height={28}>
-        <Button label="수정" tone="caution" />
+      {editable && (
+        <Flex width={126} gap={12} height={28}>
+          <Button label="수정" tone="caution" />
+          <Button
+            label="삭제"
+            tone="necessary"
+            onClick={() =>
+              setIsModalOpen({
+                modalName: applicants > 0 ? 'deleteFail' : 'deleteConfirm',
+                open: true,
+                name: title,
+              })
+            }
+          />
+        </Flex>
+      )}
+      {!editable && (
         <Button
-          label="삭제"
-          tone="necessary"
+          label="조회"
+          tone="lime"
           onClick={() =>
-            setIsModalOpen({
-              modalName: applicants > 0 ? 'deleteFail' : 'deleteConfirm',
-              open: true,
-              name: title,
+            navigate({
+              to: `/school/recruiting/${recruitmentId}/preview`,
             })
           }
+          css={{ width: '65px', height: '28px' }}
         />
-      </Flex>
-      {isModalOpen.open && isModalOpen.modalName === 'deleteConfirm' ? (
+      )}
+      {isModalOpen.open && isModalOpen.modalName === 'deleteConfirm' && (
         <DeleteConfirm
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
           onClick={() => {}}
         />
-      ) : isModalOpen.open && isModalOpen.modalName === 'deleteFail' ? (
+      )}
+      {isModalOpen.open && isModalOpen.modalName === 'deleteFail' && (
         <DeleteFail
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
         />
-      ) : null}
+      )}
     </Section>
   )
 }

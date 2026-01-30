@@ -1,27 +1,28 @@
-import type { JSX } from 'react'
 import { useMemo } from 'react'
+import type { ControllerRenderProps } from 'react-hook-form'
 import { Controller, useWatch } from 'react-hook-form'
 
-import CautionPartChange from '@/features/apply/components/modals/CautionPartChange'
 import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { question, ResumeFormSectionProps } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
+import QuestionLayout from '@/shared/ui/common/question/QuestionLayout'
+import { TimeTable } from '@/shared/ui/common/question/timeTable/TimeTable'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 
-import type { QuestionAnswerValue, QuestionUnion } from '../../domain/model'
+import CautionPartChange from '../../components/modals/CautionPartChange'
+import type { QuestionAnswerValue } from '../../domain/model'
 import { isAnswerEmpty } from './ResumeFormSection.helpers'
 import { usePartChangeGuard } from './usePartChangeGuard'
 
 const ResumeFormSection = ({
-  questions,
-  partQuestions,
-  control,
+  pages,
   setValue,
   clearErrors,
+  control,
   errors,
   currentPage,
   totalPages,
@@ -30,6 +31,15 @@ const ResumeFormSection = ({
   onPageChange,
   isEdit,
 }: ResumeFormSectionProps) => {
+  const normalizedPages = useMemo(() => (Array.isArray(pages) ? pages : []), [pages])
+  const partQuestionGroups = useMemo(
+    () =>
+      normalizedPages.flatMap((page) =>
+        Array.isArray(page.partQuestions) ? page.partQuestions : [],
+      ),
+    [normalizedPages],
+  )
+
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault()
   }
@@ -41,10 +51,19 @@ const ResumeFormSection = ({
 
   const submitButtonTone = isSubmitDisabled ? 'gray' : 'lime'
 
-  const partQuestionIds = useMemo(
-    () => partQuestions.map((question) => question.id),
-    [partQuestions],
-  )
+  const partQuestionIds = useMemo(() => {
+    return normalizedPages
+      .flatMap((page) => {
+        const baseQuestions = Array.isArray(page.questions) ? page.questions : []
+        const partQuestions = Array.isArray(page.partQuestions)
+          ? page.partQuestions.flatMap((partGroup) =>
+              Array.isArray(partGroup.questions) ? partGroup.questions : [],
+            )
+          : []
+        return [...baseQuestions, ...partQuestions]
+      })
+      .map((question) => question.questionId)
+  }, [normalizedPages])
 
   const partQuestionValues = useWatch({
     control,
@@ -53,11 +72,20 @@ const ResumeFormSection = ({
 
   const hasPartAnswers = useMemo(() => {
     if (partQuestionIds.length === 0) return false
-    return partQuestions.some((question, index) => {
-      const answerValue = partQuestionValues[index]
-      return !isAnswerEmpty(question, answerValue)
+    return normalizedPages.some((page) => {
+      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
+      const pagePartQuestions = Array.isArray(page.partQuestions)
+        ? page.partQuestions.flatMap((partGroup) =>
+            Array.isArray(partGroup.questions) ? partGroup.questions : [],
+          )
+        : []
+      return [...pageQuestions, ...pagePartQuestions].some((question) => {
+        const index = partQuestionIds.indexOf(question.questionId)
+        const answerValue = partQuestionValues[index]
+        return !isAnswerEmpty(question, answerValue)
+      })
     })
-  }, [partQuestionIds.length, partQuestions, partQuestionValues])
+  }, [partQuestionValues, normalizedPages, partQuestionIds])
 
   const {
     isPartChangeModalOpen,
@@ -66,69 +94,123 @@ const ResumeFormSection = ({
     handleConfirmPartChange,
     handleCancelPartChange,
   } = usePartChangeGuard({
-    partQuestions,
+    pages: partQuestionGroups,
     setValue,
     clearErrors,
     hasPartAnswers,
   })
 
-  const questionsWithLabels = questions as Array<QuestionUnion & { __partLabel?: string }>
-  const renderedQuestions = questionsWithLabels.reduce<{
-    elements: Array<JSX.Element>
-    lastLabel?: string
-  }>(
-    (acc, question) => {
-      const label = question.__partLabel
-      const showLabel = Boolean(label) && label !== acc.lastLabel
+  const handleFieldValueChange = (
+    question: question,
+    field: ControllerRenderProps<Record<string, unknown>, string>,
+    newValue: QuestionAnswerValue,
+  ) => {
+    requestPartChange({
+      questionId: question.questionId,
+      currentValue: field.value as QuestionAnswerValue,
+      nextValue: newValue,
+    })
+    field.onChange(newValue)
+  }
 
-      const nextElements = [...acc.elements]
+  const currentPageIndex = Math.max(0, Math.min(currentPage - 1, normalizedPages.length - 1))
+  const activePage = normalizedPages[currentPageIndex]
 
-      if (showLabel && label) {
-        nextElements.push(<PartDivider key={`label-${label}`} label={label} />)
-      }
+  const activePagePartQuestions = Array.isArray(activePage.partQuestions)
+    ? activePage.partQuestions
+    : []
+  const activePagePartQuestionIds = new Set(
+    activePagePartQuestions.flatMap((group) =>
+      Array.isArray(group.questions) ? group.questions.map((question) => question.questionId) : [],
+    ),
+  )
+  const activePageQuestions = (
+    Array.isArray(activePage.questions) ? activePage.questions : []
+  ).filter((question) => !activePagePartQuestionIds.has(question.questionId))
+  const activeScheduleQuestion = activePage.scheduleQuestion ? activePage.scheduleQuestion : null
+  return (
+    <form onSubmit={handleFormSubmit}>
+      <Flex key={activePage.page} flexDirection="column" gap={24}>
+        {activePagePartQuestions.map((partQuestion, index) => (
+          <Flex
+            key={`${activePage.page}-${partQuestion.part}-${index}`}
+            flexDirection="column"
+            gap={12}
+          >
+            <PartDivider label={partQuestion.label ?? partQuestion.part} />
+            {partQuestion.questions.map((question, idx) => (
+              <Controller
+                key={question.questionId}
+                name={String(question.questionId)}
+                control={control}
+                render={({ field }) => (
+                  <Question
+                    questionId={question.questionId}
+                    question={question.questionText}
+                    questionNumber={idx + 1}
+                    required={question.required}
+                    type={question.type}
+                    options={question.options}
+                    value={field.value as QuestionAnswerValue}
+                    onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
+                    errorMessage={getFieldErrorMessage(question.questionId)}
+                    mode={isEdit ? 'edit' : 'view'}
+                    maxSelectCount={question.maxSelectCount}
+                    preferredPartOptions={question.preferredPartOptions}
+                  />
+                )}
+              />
+            ))}
+          </Flex>
+        ))}
 
-      nextElements.push(
-        <Flex key={question.id} flexDirection="column" gap={8} width="100%">
+        {activePageQuestions.map((question, idx) => (
           <Controller
-            name={String(question.id)}
+            key={question.questionId}
+            name={String(question.questionId)}
             control={control}
             render={({ field }) => (
               <Question
-                mode={isEdit ? 'edit' : 'view'}
-                data={question}
+                questionId={question.questionId}
+                question={question.questionText}
+                questionNumber={idx + 1}
+                required={question.required}
+                type={question.type}
+                options={question.options}
                 value={field.value as QuestionAnswerValue}
-                onChange={(_, newValue) => {
-                  if (question.type === 'PART') {
-                    const isBlocked = requestPartChange({
-                      questionId: question.id,
-                      currentValue: field.value as QuestionAnswerValue,
-                      nextValue: newValue,
-                    })
-                    if (isBlocked) {
-                      return
-                    }
-                  }
-
-                  field.onChange(newValue, { shouldDirty: true, shouldTouch: true })
-                }}
-                errorMessage={getFieldErrorMessage(question.id)}
+                onChange={(_, newValue) => handleFieldValueChange(question, field, newValue)}
+                preferredPartOptions={question.preferredPartOptions}
+                errorMessage={getFieldErrorMessage(question.questionId)}
+                mode={isEdit ? 'edit' : 'view'}
+                maxSelectCount={question.maxSelectCount}
               />
             )}
           />
-        </Flex>,
-      )
-
-      return {
-        elements: nextElements,
-        lastLabel: showLabel && label ? label : acc.lastLabel,
-      }
-    },
-    { elements: [] },
-  ).elements
-
-  return (
-    <form onSubmit={handleFormSubmit}>
-      {renderedQuestions}
+        ))}
+        {activeScheduleQuestion && (
+          <QuestionLayout
+            questionNumber={activePageQuestions.length + 1}
+            questionText={activeScheduleQuestion.questionText}
+            isRequired={activeScheduleQuestion.required}
+            errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
+          >
+            <Controller
+              name={String(activeScheduleQuestion.questionId)}
+              control={control}
+              render={({ field }) => (
+                <TimeTable
+                  dateRange={activeScheduleQuestion.schedule.dateRange}
+                  timeRange={activeScheduleQuestion.schedule.timeRange}
+                  value={field.value as Record<string, Array<string>>}
+                  disabledSlots={activeScheduleQuestion.schedule.disabledByDate}
+                  onChange={field.onChange}
+                  mode={isEdit ? 'edit' : 'view'}
+                />
+              )}
+            />
+          </QuestionLayout>
+        )}
+      </Flex>
 
       <ResumeNavigation
         currentPage={currentPage}

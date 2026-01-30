@@ -1,6 +1,7 @@
 import type { Control } from 'react-hook-form'
 
-import type { RecruitingForms, RecruitingPartApi } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { RecruitingForms } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import QuestionList from '../../QuestionList/QuestionList'
@@ -9,7 +10,7 @@ import * as S from '../common'
 type Step3QuestionListProps = {
   page: number
   control: Control<RecruitingForms>
-  selectedPart: RecruitingPartApi | null
+  selectedPart: PartType | null
   isSelectedPartComplete: boolean
 }
 
@@ -33,7 +34,7 @@ const Step3QuestionList = ({
       <QuestionList
         key={`part-${selectedPart}`}
         control={control}
-        target={{ kind: 'PART', part: selectedPart }}
+        target={{ kind: 'PART', part: selectedPart, pageNo: page }}
         isLocked={isSelectedPartComplete}
       />
     )

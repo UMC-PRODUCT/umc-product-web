@@ -1,31 +1,57 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
-import type { PartData } from '@features/recruiting/domain'
 import { PART_REQUIRED_SKILL } from '@features/recruiting/domain'
 
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
+import type { PartType } from '@/features/auth/domain'
+import { useGetCurriculums } from '@/features/management/hooks/getManagementQueries'
 import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
-import type { PartType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import * as S from './PartCurriculum.style'
 
-type PartCurriculumProps = {
-  curriculum: Array<PartData>
-}
+const CurriculumTimeline = ({ activeTab }: { activeTab: PartType }) => {
+  const { data } = useGetCurriculums(activeTab)
+  const currentData = data.result.workbooks
 
-const PartCurriculum = ({ curriculum }: PartCurriculumProps) => {
-  const [activeTab, setActiveTab] = useState<PartType>('Plan')
-  const currentData = curriculum.find((d) => d.id === activeTab) || curriculum[0] // TODO: 데이터 수정 예정
-
-  const firstColWeeks = currentData.curriculum.filter((item) => item.week <= 6)
-  const secondColWeeks = currentData.curriculum.filter((item) => item.week >= 7)
+  const firstColWeeks = currentData.filter((item) => Number(item.weekNo) <= 6)
+  const secondColWeeks = currentData.filter((item) => Number(item.weekNo) >= 7)
 
   const secondLastIndex = secondColWeeks.length > 0 ? secondColWeeks.length - 1 : -1
   const lenFirstColumn = firstColWeeks.length
+
+  return (
+    <S.TimelineGrid>
+      <S.FirstColumn $indexLength={lenFirstColumn}>
+        {firstColWeeks.map((item) => (
+          <S.WeekRow key={item.weekNo}>
+            <S.Dot />
+            <S.WeekLabel>{item.weekNo.toString().padStart(2, '0')}주차</S.WeekLabel>
+            <S.ContentLabel>{item.title}</S.ContentLabel>
+          </S.WeekRow>
+        ))}
+      </S.FirstColumn>
+
+      <S.SecondColumn $lastIndex={secondLastIndex}>
+        {secondColWeeks.map((item) => (
+          <S.WeekRow key={item.weekNo}>
+            <S.Dot />
+            <S.WeekLabel>{item.weekNo.toString().padStart(2, '0')}주차</S.WeekLabel>
+            <S.ContentLabel>{item.title}</S.ContentLabel>
+          </S.WeekRow>
+        ))}
+      </S.SecondColumn>
+    </S.TimelineGrid>
+  )
+}
+
+const PartCurriculum = () => {
+  const [activeTab, setActiveTab] = useState<PartType>('PLAN')
 
   return (
     <Flex flexDirection="column" gap="24px">
@@ -34,7 +60,7 @@ const PartCurriculum = ({ curriculum }: PartCurriculumProps) => {
         <S.TabList>
           {PART.map((id) => (
             <S.TabItem key={id} $active={activeTab === id} onClick={() => setActiveTab(id)}>
-              {id}
+              {PART_TYPE_TO_SMALL_PART[id]}
             </S.TabItem>
           ))}
         </S.TabList>
@@ -53,27 +79,9 @@ const PartCurriculum = ({ curriculum }: PartCurriculumProps) => {
           </span>
         </S.Requirement>
 
-        <S.TimelineGrid>
-          <S.FirstColumn $indexLength={lenFirstColumn}>
-            {firstColWeeks.map((item) => (
-              <S.WeekRow key={item.week}>
-                <S.Dot />
-                <S.WeekLabel>{item.week.toString().padStart(2, '0')}주차</S.WeekLabel>
-                <S.ContentLabel>{item.content}</S.ContentLabel>
-              </S.WeekRow>
-            ))}
-          </S.FirstColumn>
-
-          <S.SecondColumn $lastIndex={secondLastIndex}>
-            {secondColWeeks.map((item) => (
-              <S.WeekRow key={item.week}>
-                <S.Dot />
-                <S.WeekLabel>{item.week.toString().padStart(2, '0')}주차</S.WeekLabel>
-                <S.ContentLabel>{item.content}</S.ContentLabel>
-              </S.WeekRow>
-            ))}
-          </S.SecondColumn>
-        </S.TimelineGrid>
+        <Suspense fallback={<SuspenseFallback />}>
+          <CurriculumTimeline activeTab={activeTab} />
+        </Suspense>
       </Flex>
     </Flex>
   )

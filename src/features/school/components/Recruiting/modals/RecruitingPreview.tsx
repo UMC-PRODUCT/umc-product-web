@@ -1,46 +1,37 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
-import type { PartQuestionBankPage, QuestionList } from '@features/apply/domain'
+import { useResumeForm } from '@features/apply/pages/resume/useResumeForm'
 
 import ResumeContent from '@/features/apply/components/ResumeContent'
-import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
+import { useGetApplicationFormData } from '../../../hooks/useGetRecruitingData'
 import * as S from './RecruitingPreview.style'
 
 const RecruitingPreview = ({
   onClose,
   title,
-  questionData,
+  recruitingId,
 }: {
   onClose: () => void
   title: string
-  questionData: QuestionList
+  recruitingId: string
 }) => {
+  const { data } = useGetApplicationFormData(recruitingId)
+  const questionData = data.result
   const [currentPage, setCurrentPage] = useState(1)
+
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
     questionData,
+    undefined,
     { labelMode: 'part', showAllParts: true },
   )
-  const partQuestions = useMemo(
-    () =>
-      Object.values(questionData.partQuestionBank).flatMap(
-        (partPages: Array<PartQuestionBankPage>) =>
-          partPages.flatMap((partPage) => partPage.questions),
-      ),
-    [questionData.partQuestionBank],
-  )
+
   const totalPages = resolvedPages.length
-  const currentPageIndex = Math.max(Math.min(currentPage - 1, totalPages - 1), 0)
-  const currentPageData = resolvedPages[currentPageIndex] ?? {
-    page: currentPageIndex + 1,
-    questions: [],
-  }
-  const currentQuestions = currentPageData.questions ?? []
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)
@@ -87,11 +78,9 @@ const RecruitingPreview = ({
                 gap={22}
               >
                 <ResumeContent
-                  questionData={questionData}
+                  pages={resolvedPages}
                   displayLastSavedTime={null}
                   handleSave={() => {}}
-                  currentQuestions={currentQuestions}
-                  partQuestions={partQuestions}
                   isEdit={false}
                   control={control}
                   setValue={setValue}
@@ -102,6 +91,15 @@ const RecruitingPreview = ({
                   isFormIncomplete={isFormIncomplete}
                   openSubmitModal={() => {}}
                   handlePageNavigation={handlePageNavigation}
+                  formData={{
+                    recruitmentid: 0,
+                    formId: 0,
+                    status: '',
+                    recruitmentFormTitle: title,
+                    noticeTitle: title,
+                    noticeContent: questionData.noticeContent,
+                    pages: [],
+                  }}
                 />
               </S.ContentWrapper>
             </Modal.Body>

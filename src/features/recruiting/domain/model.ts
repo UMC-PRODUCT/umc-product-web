@@ -3,7 +3,7 @@
  * 리크루팅 정보, 커리큘럼 관련 타입
  */
 
-import type { PartType } from '@features/auth/domain'
+import type { PartType } from '@/features/auth/domain'
 
 /** 커리큘럼 항목 */
 export interface CurriculumItem {

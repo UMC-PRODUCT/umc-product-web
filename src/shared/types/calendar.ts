@@ -1,3 +1,5 @@
+import type { RECRUITING_SCHEDULE_TYPE } from '../constants/umc'
+
 export type CalendarEvent = {
   id: number
   title: string
@@ -9,7 +11,7 @@ export type CalendarEvents = Array<CalendarEvent>
 
 export type EventSegment = {
   id: number
-  title: string
+  title: RECRUITING_SCHEDULE_TYPE
   originalStart: Date
   originalEnd: Date
   segmentStart: Date

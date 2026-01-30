@@ -1,26 +1,24 @@
-import type { ApplySummary, DashboardProgress, DashboardUser } from '@features/dashboard/domain'
-
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import ApplyResumeCard from '../components/ApplyResumeCard/ApplyResumeCard'
 import ApplyStatement from '../components/ApplyStatement/ApplyStatement'
 import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
 import ProgressStage from '../components/ProgressStage/ProgressStage'
+import { useMyApplications } from '../hooks/useDashboardQueries'
 
-type DashboardPageProps = {
-  user: DashboardUser
-  progress: DashboardProgress
-  applyData: Array<ApplySummary>
-}
-
-export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps) => {
-  const { nickname, fullName } = user
-  const { parts, document, final } = progress
+const DashboardPageContent = () => {
+  const { data } = useMyApplications()
+  const dashboardData = data.result
+  const current = dashboardData.current
+  const applications = dashboardData.applications
+  const displayName = `${dashboardData.nickName}/${dashboardData.name}`
   const sectionBorder = {
     border: `1px solid ${theme.colors.gray[700]}`,
     [media.down(theme.breakPoints.tablet)]: {
@@ -32,7 +30,7 @@ export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps)
     <PageLayout>
       <Flex flexDirection="column" gap={96}>
         <Flex gap={22} flexDirection="column">
-          <PageTitle title={`${nickname}/${fullName} 님의 지원 현황`} />
+          <PageTitle title={`${displayName} 님의 지원 현황`} />
           <Section
             variant="outline"
             padding={16}
@@ -43,20 +41,35 @@ export const DashboardPage = ({ user, progress, applyData }: DashboardPageProps)
             }}
           >
             <div css={gridStyle}>
-              <ApplyStatement parts={parts} document={document} final={final} />
-              <ProgressStage />
+              <ApplyStatement current={current} />
+              <ProgressStage progress={current?.progress} />
             </div>
           </Section>
         </Flex>
         <Flex flexDirection="column" gap={22}>
-          <PageTitle title={`${nickname}/${fullName} 님의 지원서`} />
+          <PageTitle title={`${displayName} 님의 지원서`} />
           <Section variant="outline" gap={16} css={sectionBorder}>
-            {applyData.map(({ title, resumeId, state }) => (
-              <ApplyResumeCard key={resumeId} title={title} resumeId={resumeId} state={state} />
+            {applications.map(({ recruitmentTitle, formResponseId, badge, recruitmentId }) => (
+              <ApplyResumeCard
+                key={`${recruitmentId}-${formResponseId}`}
+                title={recruitmentTitle}
+                resumeId={formResponseId}
+                state={badge}
+                recruitmentId={recruitmentId}
+              />
             ))}
+            {applications.length === 0 && (
+              <div css={{ color: theme.colors.gray[400] }}>지원서 작성 기록이 없습니다.</div>
+            )}
           </Section>
         </Flex>
       </Flex>
     </PageLayout>
   )
 }
+
+export const DashboardPage = () => (
+  <AsyncBoundary fallback={<SuspenseFallback label="지원 현황을 불러오는 중입니다." />}>
+    <DashboardPageContent />
+  </AsyncBoundary>
+)

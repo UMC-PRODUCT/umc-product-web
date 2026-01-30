@@ -1,8 +1,7 @@
-import type { QuestionList } from '@features/apply/domain'
-
+import type { RecruitingForms } from '@/features/school/domain'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { ResumeFormSectionProps } from '@/shared/types/form'
+import type { pageType, ResumeFormSectionProps } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -10,11 +9,10 @@ import ResumeFormSection from '../pages/resume/ResumeFormSection'
 import * as S from './ResumeContent.style'
 
 interface ResumeContentProps {
-  questionData: Pick<QuestionList, 'description'>
+  pages: Array<pageType>
+  formData: RecruitingForms
   displayLastSavedTime: string | null
   handleSave: () => void
-  currentQuestions: ResumeFormSectionProps['questions']
-  partQuestions: ResumeFormSectionProps['partQuestions']
   control: ResumeFormSectionProps['control']
   setValue: ResumeFormSectionProps['setValue']
   clearErrors: ResumeFormSectionProps['clearErrors']
@@ -28,11 +26,9 @@ interface ResumeContentProps {
 }
 
 const ResumeContent = ({
-  questionData,
+  pages,
   displayLastSavedTime,
   handleSave,
-  currentQuestions,
-  partQuestions,
   control,
   setValue,
   clearErrors,
@@ -43,10 +39,11 @@ const ResumeContent = ({
   openSubmitModal,
   handlePageNavigation,
   isEdit,
+  formData,
 }: ResumeContentProps) => {
   return (
     <>
-      <S.BorderedSection alignItems="flex-start">{questionData.description}</S.BorderedSection>
+      <S.BorderedSection alignItems="flex-start">{formData.noticeContent}</S.BorderedSection>
       <S.BorderedSection>
         <Flex justifyContent="flex-end">
           <Flex justifyContent="flex-end" alignItems="center" gap="18px">
@@ -73,8 +70,7 @@ const ResumeContent = ({
 
       <S.BorderedSection>
         <ResumeFormSection
-          questions={currentQuestions}
-          partQuestions={partQuestions}
+          pages={pages}
           control={control}
           setValue={setValue}
           clearErrors={clearErrors}

@@ -1,21 +1,27 @@
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
+import { transformNextRecruitmentMonthKorean } from '@/shared/utils/transformKorean'
 
+import type { Progress, Step } from '../../domain/apiType'
+import type { RecruitingStepType } from '../../domain/types'
+import { getRecruitingStep } from '../../utils/getRecruitingStep'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import * as S from './ProgressStage.style'
 
-const Step = [
-  { label: '지원 전' },
-  { label: '서류 평가 중' },
-  { label: '서류 결과 발표' },
-  { label: '면접 대기 중' },
-  { label: '최종 평가 중' },
-  { label: '최종 결과 발표' },
+const progressStage: Array<Step> = [
+  { label: '지원서 작성', step: 'BEFORE_APPLY', done: false, active: false },
+  { label: '서류 심사 중', step: 'DOC_REVIEWING', done: false, active: false },
+  { label: '서류 합격 발표', step: 'DOC_RESULT_PUBLISHED', done: false, active: false },
+  { label: '면접 대기', step: 'INTERVIEW_WAITING', done: false, active: false },
+  { label: '최종 심사 중', step: 'FINAL_REVIEWING', done: false, active: false },
+  { label: '최종 합격 발표', step: 'FINAL_RESULT_PUBLISHED', done: false, active: false },
 ]
-
-const ProgressStage = () => {
-  const currentStepIndex = 4
+interface ProgressStageProps {
+  progress: Progress | undefined | null
+}
+const ProgressStage = ({ progress }: ProgressStageProps) => {
+  const currentStepIndex = getRecruitingStep(progress?.currentStep as RecruitingStepType)
   return (
     <Section
       variant="solid"
@@ -27,8 +33,11 @@ const ProgressStage = () => {
       }}
     >
       <S.Title>진행 단계</S.Title>
-      <ProgressBar steps={Step} currentStepIndex={currentStepIndex} />
-      <S.Info>* 최종 합불 발표 예정일: 20xx년 xx월 xx일</S.Info>
+      <ProgressBar steps={progress?.steps ?? progressStage} currentStepIndex={currentStepIndex} />
+      <S.Info>
+        * {transformNextRecruitmentMonthKorean(progress?.noticeType ?? '')}
+        {progress?.noticeDate ?? ' 추후 공지'}
+      </S.Info>
     </Section>
   )
 }

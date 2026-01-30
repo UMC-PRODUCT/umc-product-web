@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
+import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
+
+import { memberKeys } from '@/features/auth/domain/queryKeys'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
+import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
 
 import * as S from './Profile.style'
 
@@ -10,12 +17,15 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  // 추후 수정 예정
-  const school = '중앙대학교'
-  const rights = '총괄'
-  const name = '성이름'
-  const nickname = '닉넴'
-  const email = 'umc1234'
+  const { setName, setNickname, setEmail } = useUserProfileStore()
+  const [isModalOpen, setIsModalOpen] = useState<{
+    modalType: 'accountLink' | 'deleteAccount' | ''
+    isOpen: boolean
+  }>({
+    modalType: '',
+    isOpen: false,
+  })
+  const { data } = useCustomQuery(memberKeys.me().queryKey, memberKeys.me().queryFn)
 
   useEffect(() => {
     if (!open) return
@@ -28,8 +38,18 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
 
+  useEffect(() => {
+    setName(data?.result.name || '')
+    setNickname(data?.result.nickname || '')
+    setEmail(data?.result.email || '')
+  }, [data, setName, setNickname, setEmail])
+
   const handleLogout = () => {
-    // 로그아웃 로직 추가 예정
+    setName('')
+    setNickname('')
+    setEmail('')
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
     navigate({
       to: '/auth/login',
     })
@@ -44,9 +64,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
             <S.Avatar />
             <Flex flexDirection="column" alignItems="flex-start" gap="4px">
               <S.NameText>
-                {nickname}/{name}
+                {data?.result.nickname}/{data?.result.name}
               </S.NameText>
-              <S.EmailText>{email}</S.EmailText>
+              <S.EmailText>{data?.result.email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex flexDirection="column" gap="12px">
@@ -54,18 +74,45 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 소속
               </Badge>
-              {school}
+              {data?.result.schoolName}
             </S.InfoRow>
             <S.InfoRow gap="10px">
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 권한
               </Badge>
-              {rights}
+              {data?.result.status}
             </S.InfoRow>
           </Flex>
           {children && <S.MobileOnly>{children}</S.MobileOnly>}
+          <S.MenuWrapper alignItems="flex-start">
+            <S.ModalButton
+              type="button"
+              onClick={() => setIsModalOpen({ modalType: 'accountLink', isOpen: true })}
+            >
+              계정 연동 <ArrowUp width={16} />
+            </S.ModalButton>
+            <S.DeleteButton
+              type="button"
+              onClick={() => setIsModalOpen({ modalType: 'deleteAccount', isOpen: true })}
+            >
+              계정 삭제
+            </S.DeleteButton>
+          </S.MenuWrapper>
           <S.Logout onClick={handleLogout}>로그아웃</S.Logout>
         </S.Modal>
+      )}
+      {isModalOpen.isOpen && isModalOpen.modalType === 'deleteAccount' && (
+        <DeleteAccountModal
+          nickname={data?.result.nickname || ''}
+          name={data?.result.name || ''}
+          onClose={() => setIsModalOpen({ modalType: '', isOpen: false })}
+          onClick={() => {
+            setIsModalOpen({ modalType: '', isOpen: false })
+          }}
+        />
+      )}
+      {isModalOpen.isOpen && isModalOpen.modalType === 'accountLink' && (
+        <AccountModal onClose={() => setIsModalOpen({ modalType: '', isOpen: false })} />
       )}
     </S.Container>
   )

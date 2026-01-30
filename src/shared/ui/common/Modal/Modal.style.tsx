@@ -6,7 +6,7 @@ import { theme } from '@shared/styles/theme'
 export const StyledOverlay = styled(DialogPrimitive.Overlay)`
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: calc(1000 + var(--modal-layer, 0));
   background-color: rgba(0, 0, 0, 0.3);
 
   &[data-state='open'] {
@@ -41,7 +41,7 @@ export const StyledContent = styled(DialogPrimitive.Content)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001;
+  z-index: calc(1001 + var(--modal-layer, 0));
   width: fit-content;
 
   &:focus {

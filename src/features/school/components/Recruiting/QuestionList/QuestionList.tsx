@@ -2,7 +2,11 @@ import type { DragEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Control } from 'react-hook-form'
 import { useFieldArray, useWatch } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
+import { useParams } from '@tanstack/react-router'
 
+import { recruiteKeys } from '@/features/school/domain/queryKey'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms, RecruitingItemTarget } from '@/shared/types/form'
@@ -20,13 +24,18 @@ type QuestionListProps = {
 
 const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) => {
   const draggingId = useRef<number | null>(null)
+  const { recruitingId } = useParams({ from: '/(app)/school/recruiting/$recruitingId/' })
+
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
   const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
   const draggingIndexRef = useRef<number | null>(null)
   const placeholderHeightRef = useRef<number>(0)
-
+  const { useDeleteSingleQuestion } = useRecruitingMutation()
+  const { mutate: deleteSingleQuestionMutate } = useDeleteSingleQuestion(recruitingId)
+  const queryClient = useQueryClient()
+  const applicationQuery = recruiteKeys.getTempSavedApplication(recruitingId)
   const { fields, append, remove, move, update } = useFieldArray({
     control,
     name: 'items' as never,
@@ -105,7 +114,14 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
 
   const handleDeleteQuestion = (index: number, isFixed: boolean) => {
     if (isLocked || isFixed) return
+    const item = normalizedItems[index]
+    const questionId = item.question.questionId
     remove(index)
+    deleteSingleQuestionMutate(String(questionId), {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+      },
+    })
   }
 
   const handleDragStart = (index: number) => (event: DragEvent<HTMLDivElement>) => {
@@ -155,14 +171,32 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderIndex(null)
   }
 
+  const visibleQuestions = useMemo(
+    () =>
+      filteredIndices
+        .map((itemIndex, orderIndex) => {
+          const questionField = fields[itemIndex]
+          return { orderIndex, itemIndex, questionField }
+        })
+        .filter(
+          (
+            entry,
+          ): entry is {
+            orderIndex: number
+            itemIndex: number
+            questionField: (typeof fields)[number]
+          } => Boolean(entry),
+        ),
+    [filteredIndices, fields],
+  )
+
   return (
     <Flex flexDirection="column" gap={18}>
-      {filteredIndices.map((itemIndex, orderIndex) => {
-        const question = fields[itemIndex]
+      {visibleQuestions.map(({ itemIndex, orderIndex, questionField }) => {
         const isFixed = fixedIndices.has(itemIndex)
         return (
           <div
-            key={question.id}
+            key={questionField.id}
             onDragOver={handleDragOver(itemIndex)}
             onDrop={handleDrop(itemIndex)}
             css={{ width: '100%' }}
