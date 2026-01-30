@@ -42,7 +42,7 @@ const DashboardPageContent = () => {
           >
             <div css={gridStyle}>
               <ApplyStatement current={current} />
-              <ProgressStage progress={current.progress} />
+              <ProgressStage progress={current?.progress} />
             </div>
           </Section>
         </Flex>

@@ -15,6 +15,6 @@ export function getRecruitingStep(step: RecruitingStepType): number {
     case 'FINAL_RESULT_PUBLISHED':
       return 5
     default:
-      return -1
+      return 0
   }
 }

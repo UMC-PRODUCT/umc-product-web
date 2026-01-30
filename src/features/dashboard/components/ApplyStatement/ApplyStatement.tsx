@@ -29,9 +29,6 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
     current?.documentEvaluation.status
   const finalEvaluationStatus: FinalStatusType | undefined = current?.finalEvaluation.status
 
-  if (!documentEvaluationStatus || !finalEvaluationStatus) {
-    return null
-  }
   return (
     <Section
       variant="solid"
@@ -82,7 +79,9 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label}
+            {documentEvaluationStatus
+              ? DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label
+              : '미정'}
           </Badge>
         </Flex>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -92,7 +91,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {FINAL_STATUS_CONFIG[finalEvaluationStatus].label}
+            {finalEvaluationStatus ? FINAL_STATUS_CONFIG[finalEvaluationStatus].label : '미정'}
           </Badge>
         </Flex>
       </Flex>

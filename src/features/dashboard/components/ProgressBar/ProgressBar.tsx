@@ -3,7 +3,7 @@ import * as S from './ProgressBar.style'
 
 interface Step {
   label: string
-  step: RecruitingStepType
+  step: RecruitingStepType | null | undefined
   done: boolean
   active: boolean
 }
@@ -14,7 +14,6 @@ interface StepperProps {
 }
 
 const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
-  if (steps.length === 0) return null
   const progressWidth =
     steps.length > 1
       ? (Number(currentStepIndex) / (steps.length - 1)) * 100
@@ -26,14 +25,15 @@ const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
       <S.ProgressLineContainer>
         <S.ActiveLine $progressWidth={progressWidth} />
       </S.ProgressLineContainer>
-      {steps.map((step) => {
-        return (
-          <S.StepItem key={step.step}>
-            <S.Dot $isActive={step.active} />
-            <S.Label $isActive={step.active}>{step.label}</S.Label>
-          </S.StepItem>
-        )
-      })}
+      {steps.length > 0 &&
+        steps.map((step) => {
+          return (
+            <S.StepItem key={step.step}>
+              <S.Dot $isActive={step.active} />
+              <S.Label $isActive={step.active}>{step.label}</S.Label>
+            </S.StepItem>
+          )
+        })}
     </S.StepperWrapper>
   )
 }

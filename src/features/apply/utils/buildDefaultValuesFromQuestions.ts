@@ -5,9 +5,7 @@ import type { OptionAnswerValue, pageType, question } from '@/shared/types/form'
 import type {
   FileUploadAnswer,
   GetApplicationAnswerResponseDTO,
-  portfolioAnswer,
   preferredPartAnswer,
-  scheduleAnswer,
 } from '../domain/model'
 import { isOptionAnswerValue } from './optionAnswer'
 
