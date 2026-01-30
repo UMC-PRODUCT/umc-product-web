@@ -6,8 +6,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 import Loading from '@shared/ui/common/Loading/Loading'
 import TermModalLayout from '@shared/ui/modals/TermModalLayout/TermModalLayout'
 
-import type { TermsResponseDTO } from '@/shared/api/terms'
-
+import type { GetTermsResponseDTO } from '../../domain/types'
 import type { TermsAgreementKey } from '../../hooks/register'
 import { Term } from './Term'
 
@@ -22,7 +21,7 @@ type TermsSectionProps = {
   onToggleAll: () => void
   onToggle: (key: TermsAgreementKey) => void
   errors?: TermErrors
-  termsData?: Record<TermsAgreementKey, TermsResponseDTO>
+  termsData?: Record<TermsAgreementKey, GetTermsResponseDTO>
   isTermsLoading?: boolean
   termsError?: string
 }
@@ -56,8 +55,8 @@ export const TermsSection = ({
       const definition = TERM_DEFINITIONS[termKey]
       return {
         key: termKey,
-        title: payload?.result.title ?? definition.defaultTitle,
-        necessary: payload?.result.isMandatory ?? definition.necessary,
+        title: payload?.title ?? definition.defaultTitle,
+        necessary: payload?.isMandatory ?? definition.necessary,
       }
     })
   }, [termsData])
@@ -98,10 +97,8 @@ export const TermsSection = ({
 
       {openModal && (
         <TermModalLayout
-          title={termContent?.result.title ?? TERM_DEFINITIONS[openModal].defaultTitle}
-          content={
-            isLoadingTermContent ? undefined : (termContent?.result.content ?? MODAL_ERROR_MESSAGE)
-          }
+          title={termContent?.title ?? TERM_DEFINITIONS[openModal].defaultTitle}
+          content={isLoadingTermContent ? undefined : (termContent?.content ?? MODAL_ERROR_MESSAGE)}
           onClose={closeModal}
         >
           {loadingChildren}

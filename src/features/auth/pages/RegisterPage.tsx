@@ -50,6 +50,7 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   const serviceTerm = useTerms({ termsType: 'SERVICE' })
   const privacyTerm = useTerms({ termsType: 'PRIVACY' })
   const marketingTerm = useTerms({ termsType: 'MARKETING' })
+  const hasLoadedTerms = serviceTerm.isSuccess && privacyTerm.isSuccess && marketingTerm.isSuccess
 
   const {
     handleSendVerificationEmail,
@@ -67,11 +68,13 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     setError,
     clearErrors,
     onEmailSent: () => setIsEmailVerificationModalOpen(true),
-    terms: {
-      SERVICE: serviceTerm.data,
-      PRIVACY: privacyTerm.data,
-      MARKETING: marketingTerm.data,
-    },
+    terms: hasLoadedTerms
+      ? {
+          SERVICE: serviceTerm.data,
+          PRIVACY: privacyTerm.data,
+          MARKETING: marketingTerm.data,
+        }
+      : undefined,
   })
 
   useEffect(() => {
@@ -102,8 +105,6 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
 
     handleRegisterSubmit(formData, schoolId, termsAgreement)
   }
-
-  const hasLoadedTerms = serviceTerm.isSuccess && privacyTerm.isSuccess && marketingTerm.isSuccess
 
   const requiredTerms = useMemo(() => {
     if (!hasLoadedTerms) {
@@ -147,11 +148,13 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     termsAgreement,
     toggleTermAgreement,
     toggleAllTermsAgreement,
-    termsData: {
-      SERVICE: serviceTerm.data,
-      PRIVACY: privacyTerm.data,
-      MARKETING: marketingTerm.data,
-    },
+    termsData: hasLoadedTerms
+      ? {
+          SERVICE: serviceTerm.data.result,
+          PRIVACY: privacyTerm.data.result,
+          MARKETING: marketingTerm.data.result,
+        }
+      : undefined,
     isTermsLoading: serviceTerm.isFetching || privacyTerm.isFetching || marketingTerm.isFetching,
     termsError:
       serviceTerm.error?.message || privacyTerm.error?.message || marketingTerm.error?.message,

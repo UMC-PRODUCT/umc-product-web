@@ -22,7 +22,7 @@ const buildPartQuestions = (
 
 const buildPartGroups = (
   groups: Array<{ part: PartType; questions: Array<question> }>,
-  parts: Array<PartType>,
+  parts: ReadonlyArray<PartType>,
   useRankLabel: boolean,
 ) =>
   parts
