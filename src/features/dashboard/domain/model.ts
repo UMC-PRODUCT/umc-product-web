@@ -19,8 +19,8 @@ export interface ApplySummary {
 /** 대시보드 진행 상태 */
 export interface DashboardProgress {
   parts: Array<PartType | '미정'>
-  document: DocumentStatusType
-  final: FinalStatusType
+  document: DocumentStatusType | '미정'
+  final: FinalStatusType | '미정'
 }
 
 /** 대시보드 사용자 정보 */

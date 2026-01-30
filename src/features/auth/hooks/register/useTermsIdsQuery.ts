@@ -5,7 +5,7 @@ import type { TermsType } from '@/shared/types/umc'
 
 import { termsKeys } from '../../domain/queryKeys'
 
-export const useTermsIds = ({ termsType }: { termsType: TermsType }) => {
+export const useTerms = ({ termsType }: { termsType: TermsType }) => {
   return useCustomSuspenseQuery(
     termsKeys.detail(termsType).queryKey,
     termsKeys.detail(termsType).queryFn,
