@@ -7,7 +7,7 @@ import { recruiteKeys } from '@/features/school/domain/queryKey'
 import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
-import { Button } from '@/shared/ui/common/Button'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
@@ -97,13 +97,13 @@ const TempRecruitmentModal = ({ onClose }: TempRecruitmentModalProps) => {
                   }
                   errorFallback={(error, reset) => (
                     <S.MessageWrapper>
-                      <S.MessageTitle>
-                        임시저장된 모집을 불러오는 중 오류가 발생했습니다.
-                      </S.MessageTitle>
-                      <S.MessageDescription>
-                        {error.message || '잠시 후 다시 시도해 주세요.'}
-                      </S.MessageDescription>
-                      <Button label="다시 시도" tone="lime" onClick={reset} />
+                      <ErrorPage
+                        title="임시저장된 모집을 불러오는 중 오류가 발생했습니다."
+                        description={error.message || '잠시 후 다시 시도해 주세요.'}
+                        hint="문제가 계속되면 고객센터로 문의해 주세요."
+                        onRetry={reset}
+                        retryLabel="다시 불러오기"
+                      />
                     </S.MessageWrapper>
                   )}
                 >

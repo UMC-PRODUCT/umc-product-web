@@ -1,5 +1,3 @@
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
-
 import CreateRecruitingConfirm from '../modals/CreateRecruitingConferm'
 import RecruitingPreview from '../modals/RecruitingPreview'
 

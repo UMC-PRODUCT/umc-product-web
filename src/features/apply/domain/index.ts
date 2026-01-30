@@ -14,10 +14,12 @@ export {
 // 타입
 export type {
   ChoiceQuestion,
+  DocumentStatusType,
   DropdownQuestion,
   FileUploadAnswer,
   FileUploadQuestion,
   FileUploadStatus,
+  FinalStatusType,
   LongTextQuestion,
   MultipleChoiceQuestion,
   PartQuestion,
@@ -29,4 +31,3 @@ export type {
   TimeTableSlots,
   UploadedFile,
 } from './model'
-export type { DocumentStatusType, FinalStatusType } from './types'

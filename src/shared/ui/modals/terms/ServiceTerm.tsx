@@ -1,30 +1,44 @@
 import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useGetTerm } from '@/shared/hooks/useGetTerm'
-import { Button } from '@/shared/ui/common/Button'
-import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
+import Loading from '@/shared/ui/common/Loading/Loading'
+import TermModalLayout, { TermMarkdown } from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
+import * as S from '@/shared/ui/modals/TermModalLayout/TermModalLayout.style'
 
 type TermModalProps = {
   onClose: () => void
 }
 
-const ServiceTermContent = ({ onClose }: TermModalProps) => {
+const ServiceTermContent = () => {
   const { data } = useGetTerm({ termsType: 'SERVICE' })
-  return <TermModalLayout title={data.title} content={data.content} onClose={onClose} />
+  return <TermMarkdown content={data.content} />
 }
 
-const ServiceTerm = (props: TermModalProps) => (
-  <AsyncBoundary
-    fallback={<SuspenseFallback label="서비스 약관을 불러오는 중입니다." />}
-    errorFallback={(error, reset) => (
-      <SuspenseFallback label="서비스 약관을 불러오는 중 오류가 발생했습니다." gap={12}>
-        <span>{error.message || '잠시 후 다시 시도해 주세요.'}</span>
-        <Button label="다시 시도" tone="lime" onClick={reset} />
-      </SuspenseFallback>
-    )}
-  >
-    <ServiceTermContent {...props} />
-  </AsyncBoundary>
+const ServiceTerm = ({ onClose }: TermModalProps) => (
+  <TermModalLayout title="서비스 약관" onClose={onClose}>
+    <AsyncBoundary
+      fallback={
+        <S.StatusWrapper>
+          <Loading
+            size={32}
+            borderWidth={3}
+            spinnerColor="#92F204"
+            label="서비스 약관을 불러오는 중입니다."
+            labelColor="#d1d5db"
+          />
+        </S.StatusWrapper>
+      }
+      errorFallback={(error, reset) => (
+        <ErrorPage
+          title="서비스 약관을 불러오는 중 오류가 발생했습니다."
+          description={error.message || '잠시 후 다시 시도해 주세요.'}
+          onRetry={reset}
+        />
+      )}
+    >
+      <ServiceTermContent />
+    </AsyncBoundary>
+  </TermModalLayout>
 )
 
 export default ServiceTerm

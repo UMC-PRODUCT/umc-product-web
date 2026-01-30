@@ -21,7 +21,7 @@ type TermModalLayoutProps = {
   errorLabel?: string
 }
 
-const TermMarkdown = ({ content }: { content: string }) => {
+export const TermMarkdown = ({ content }: { content: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}

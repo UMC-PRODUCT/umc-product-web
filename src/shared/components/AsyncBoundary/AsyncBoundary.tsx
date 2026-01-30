@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import { Component, Suspense } from 'react'
 
-import { Button } from '@/shared/ui/common/Button'
-import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 
 type AsyncBoundaryProps = {
   children: ReactNode
@@ -43,10 +42,12 @@ class ErrorBoundary extends Component<
         return fallback(error, this.resetErrorBoundary)
       }
       return (
-        <SuspenseFallback label="데이터를 불러오는 중 오류가 발생했습니다." gap={12}>
-          <span>{error.message}</span>
-          <Button label="다시 시도" tone="lime" onClick={this.resetErrorBoundary} />
-        </SuspenseFallback>
+        <ErrorPage
+          title="데이터를 불러오는 중 오류가 발생했습니다."
+          description={error.message}
+          hint="필요하다면 로그를 확인하거나 고객센터에 문의해 주세요."
+          onRetry={this.resetErrorBoundary}
+        />
       )
     }
     return this.props.children

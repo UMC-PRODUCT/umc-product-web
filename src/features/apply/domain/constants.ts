@@ -1,6 +1,6 @@
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 
-import type { DocumentStatusType, FinalStatusType } from './types'
+import type { DocumentStatusType, FinalStatusType } from './model'
 
 const createStatusConfig = <T extends string>(
   values: Record<T, { label: string; color: string }>,
