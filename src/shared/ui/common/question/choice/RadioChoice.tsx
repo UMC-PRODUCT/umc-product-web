@@ -29,6 +29,16 @@ const RadioChoice = ({
 }) => {
   const isChecked = value === optionId // 체크 여부 판단
   const isEditable = mode === 'edit'
+  const isOtherInputEditable = isEditable && isOtherOption
+
+  const handleOtherInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!isOtherInputEditable) return
+    const text = event.target.value
+    onOtherInputChange?.(text)
+    if (!isChecked && text.trim().length > 0) {
+      onClick?.()
+    }
+  }
 
   return (
     <Flex
@@ -53,11 +63,9 @@ const RadioChoice = ({
           <S.Input
             isActive={isChecked}
             value={otherInputValue ?? ''}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              onOtherInputChange?.(event.target.value)
-            }
+            onChange={handleOtherInputChange}
             placeholder={placeholder}
-            disabled={mode !== 'edit'}
+            disabled={!isOtherInputEditable}
           />
         </S.RadioChoiceText>
       )}

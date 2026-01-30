@@ -4,7 +4,8 @@ import type {
   QuestionType,
 } from '@features/apply/domain/model'
 
-import type { OptionAnswerValue, QuestionMode, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
@@ -22,7 +23,7 @@ type ChoiceOption = {
 
 type PartOption = {
   optionId?: string
-  content: RecruitingPart
+  content: PartType
 }
 
 type QuestionOptions = Array<ChoiceOption | PartOption>
@@ -42,7 +43,7 @@ interface QuestionProps {
   preferredPartOptions: Array<{
     recruitmentPartId: number
     label: string
-    value: RecruitingPart
+    value: PartType
   }> | null
 }
 
@@ -62,8 +63,8 @@ export const Question = ({
 }: QuestionProps) => {
   const handleValueChange = (newValue: QuestionAnswerValue) => {
     onChange?.(questionId, newValue)
+    console.log('newValue', newValue)
   }
-  console.log(options)
   const renderQuestionInput = () => {
     switch (type) {
       case 'LONG_TEXT':
@@ -110,7 +111,7 @@ export const Question = ({
       case 'PREFERRED_PART':
         return (
           <PartChoice
-            value={value as Array<{ id: number; answer: RecruitingPart }> | undefined}
+            value={value as Array<{ id: number; answer: PartType }> | undefined}
             onChange={handleValueChange}
             preferredPartOptions={preferredPartOptions!}
             mode={mode}

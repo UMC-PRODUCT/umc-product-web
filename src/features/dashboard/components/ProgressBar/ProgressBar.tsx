@@ -1,15 +1,16 @@
+import type { RecruitingStepType } from '../../domain/types'
 import * as S from './ProgressBar.style'
 
 interface Step {
   label: string
-  step: string
+  step: RecruitingStepType
   done: boolean
   active: boolean
 }
 
 interface StepperProps {
   steps: Array<Step>
-  currentStepIndex: string
+  currentStepIndex: number
 }
 
 const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {

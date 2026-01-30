@@ -5,11 +5,13 @@ import { useParams } from '@tanstack/react-router'
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import { scrollToTop } from '@/shared/utils/scrollToTop'
 
 import ResumeContent from '../components/ResumeContent'
@@ -35,14 +37,14 @@ interface ResumeProps {
   onPageChange: (nextPage: number) => void
 }
 
-const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
+const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
-  const questionDataForForm = questionsData?.result
-  const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
+  const questionDataForForm = questionsData.result
+  const resumeForm = useResumeForm(questionDataForForm, answerData.result)
 
   const {
     control,
@@ -104,7 +106,7 @@ const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
 
     if (isValid) {
       handleSubmit((formValues: FormValues) => {
-        const submissionValues = getSubmissionValues(questionsData?.result.pages, formValues)
+        const submissionValues = getSubmissionValues(questionsData.result.pages, formValues)
         console.log('최종 제출 데이터:', submissionValues)
         setIsSubmitModalOpen(false)
         reset(submissionValues)
@@ -114,13 +116,6 @@ const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
       navigateToFirstErrorPage(errors)
     }
   }
-  if (!questionsData) {
-    return null
-  }
-  if (!questionDataForForm) {
-    return null
-  }
-
   return (
     <PageLayout>
       <Flex maxWidth="956px">
@@ -128,7 +123,7 @@ const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
       </Flex>
 
       <ResumeContent
-        questionData={questionDataForForm.pages}
+        pages={resolvedPages}
         formData={questionDataForForm}
         displayLastSavedTime={''}
         handleSave={handleSave}
@@ -157,5 +152,11 @@ const Resume = ({ currentPage, onPageChange }: ResumeProps) => {
     </PageLayout>
   )
 }
+
+const Resume = ({ currentPage, onPageChange }: ResumeProps) => (
+  <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
+    <ResumeContentPage currentPage={currentPage} onPageChange={onPageChange} />
+  </AsyncBoundary>
+)
 
 export default Resume

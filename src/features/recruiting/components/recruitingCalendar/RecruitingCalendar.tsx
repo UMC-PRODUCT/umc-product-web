@@ -9,7 +9,9 @@ import CalendarIcon from '@/shared/assets/icons/calendar.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import { getEventDateText, processEventsIntoSegments } from '@/shared/utils/calendar'
+import { transformRecruitingScheduleTypeKorean } from '@/shared/utils/transformKorean'
 
+import type { RECRUITING_SCHEDULE_TYPE } from '../../domain'
 import * as S from './RecruitingCalendar.style'
 
 import 'react-calendar/dist/Calendar.css'
@@ -18,7 +20,7 @@ type RecruitingCalendarProps = {
   events: {
     recruitmentId: string
     schedules: Array<{
-      type: string
+      type: RECRUITING_SCHEDULE_TYPE
       kind: string
       startDate: string
       endDate: string
@@ -105,7 +107,7 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
             if (!segment) return null
 
             const isHighlighted = isWithinRange(today, segment.originalStart, segment.originalEnd)
-
+            const titleKorean = transformRecruitingScheduleTypeKorean(segment.title)
             return (
               <S.EventBarContainer>
                 <S.EventBar
@@ -115,7 +117,7 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
                 >
                   {segment.isStart && (
                     <span className="event-title">
-                      {segment.title}
+                      {titleKorean}
                       {!isSameDay(segment.originalStart, segment.originalEnd) &&
                         ` (${dayjs(segment.originalStart).format('MM/DD')}~${dayjs(
                           segment.originalEnd,
@@ -140,7 +142,7 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
               <CalendarIcon />
             </div>
             <S.EventInfo>
-              <div className="title">{event.title}</div>
+              <div className="title">{transformRecruitingScheduleTypeKorean(event.title)}</div>
               <div className="period">
                 {getEventDateText(event.originalStart, event.originalEnd)}
               </div>

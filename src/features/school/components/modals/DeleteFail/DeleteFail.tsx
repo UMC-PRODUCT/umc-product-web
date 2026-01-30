@@ -22,7 +22,7 @@ const DeleteFail = ({ onClose, name }: { onClose: () => void; name: string }) =>
           marginTop: '40px',
         }}
       >
-        <Button type="button" label={'닫기'} tone="gray" onClick={onClose} typo="C3.Md"></Button>
+        <Button type="button" label={'닫기'} tone="gray" onClick={onClose} typo="C3.Md" />
       </Flex>
     </AlertModalLayout>
   )

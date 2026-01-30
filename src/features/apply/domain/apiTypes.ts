@@ -1,5 +1,6 @@
+import type { PartType } from '@/features/auth/domain'
+import type { RECRUITING_SCHEDULE_TYPE } from '@/features/recruiting/domain'
 import type { RecruitingForms } from '@/features/school/domain'
-import type { RecruitingPart } from '@/shared/types/form'
 
 import type { QuestionType } from './model'
 
@@ -25,7 +26,7 @@ export type GetApplicationAnswerResponseDTO = {
 export type GetRecruitmentSchedulesResponseDTO = {
   recruitmentId: string
   schedules: Array<{
-    type: string
+    type: RECRUITING_SCHEDULE_TYPE
     kind: string
     startDate: string
     endDate: string
@@ -49,7 +50,7 @@ export type GetMyApplicationStatusResponseDTO = {
   nickname: string
   name: string
   current: {
-    appliedParts: Array<RecruitingPart>
+    appliedParts: Array<PartType>
     documentEvaluation: Array<string>
     finalEvaluation: Array<string>
     progress: {
@@ -77,7 +78,7 @@ export type GetRecruitmentNotice = {
   recruitmentId: string
   title: string
   content: string
-  parts: Array<RecruitingPart>
+  parts: Array<PartType>
 }
 export type GetSpecificPartRecruiting = {
   recruitmentId: string
@@ -93,11 +94,11 @@ export type GetSpecificPartRecruiting = {
   description: string
   parts: Array<{
     recruitmentPartId: string
-    part: RecruitingPart
+    part: PartType
     status: string
   }>
   myApplication: {
-    status: string
+    status: 'DRAFT' | 'NONE' | 'SUBMITTED'
     draftFormResponseId: string
     applicationId: string
   }

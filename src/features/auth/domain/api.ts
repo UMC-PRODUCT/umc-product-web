@@ -1,9 +1,12 @@
 import { axiosInstance } from '@/api/axiosInstance'
 import { SKIP_AUTH_REDIRECT_HEADER } from '@/shared/constants/apiHeaders'
+import type { CommonResponseDTO } from '@/shared/types/api'
+import type { TermsType } from '@/shared/types/umc'
 
 import type {
   EmailVerificationRequestDTO,
   EmailVerificationResponseDTO,
+  GetTermsResponseDTO,
   MyInfoResponseDTO,
   RefreshRequestDTO,
   RefreshResponseDTO,
@@ -46,4 +49,15 @@ export async function verifyEmailCode(
 export async function getMyInfo(): Promise<MyInfoResponseDTO> {
   const { data } = await axiosInstance.get('/member/me')
   return data.result
+}
+
+export async function getTerm({
+  termsType,
+}: {
+  termsType: TermsType
+}): Promise<CommonResponseDTO<GetTermsResponseDTO>> {
+  const { data } = await axiosInstance.get(`/terms/type/${termsType}`, {
+    headers: SKIP_AUTH_REDIRECT_HEADER,
+  })
+  return data
 }

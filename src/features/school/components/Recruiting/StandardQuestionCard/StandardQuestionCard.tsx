@@ -1,4 +1,5 @@
 import type { ComponentProps, HTMLAttributes } from 'react'
+import { useEffect } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
@@ -50,6 +51,18 @@ const StandardQuestionCard = ({
     control,
     name: `${namePrefix}.question.questionText` as FieldPath<RecruitingForms>,
   })
+  const {
+    field: { value: questionOptionsValue, onChange: questionOptionsOnChange },
+  } = useController({
+    control,
+    name: `${namePrefix}.question.options` as FieldPath<RecruitingForms>,
+  })
+  useEffect(() => {
+    if (questionTypeField.value === 'RADIO' || questionTypeField.value === 'CHECKBOX') return
+    const currentOptions = questionOptionsValue
+    if (!Array.isArray(currentOptions) || currentOptions.length === 0) return
+    questionOptionsOnChange([])
+  }, [questionTypeField.value, questionOptionsOnChange, questionOptionsValue])
   const questionTextValue =
     typeof questionTextField.value === 'string' || typeof questionTextField.value === 'number'
       ? questionTextField.value

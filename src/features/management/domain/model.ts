@@ -3,6 +3,8 @@
  * 학교, 리크루팅 관리 관련 타입
  */
 
+import type { PartType } from '@/features/auth/domain'
+
 import type {
   EVALUATION_DOCUMENT_CONFIG,
   EVALUATION_FINAL_CONFIG,
@@ -70,3 +72,23 @@ export type ManageAccountTabName = ManageAccountTab['value']
 
 export type ManageSchoolTab = (typeof MANAGE_SCHOOL_TABS)[number]
 export type ManageSchoolTabName = ManageSchoolTab['value']
+
+export type Curriculum = {
+  id: string
+  part: PartType
+  title: string
+  workbooks: Array<Workbook>
+}
+
+export type Workbook = {
+  id: string
+  title: string
+  weekNo: string
+  description: string
+  workbookUrl: string
+  startDate: string
+  endDate: string
+  missionType: string
+  releasedAt: string
+  isReleased: boolean
+}

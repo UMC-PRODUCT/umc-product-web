@@ -12,6 +12,8 @@ interface CheckChoiceProps {
   onToggle: () => void
   mode: QuestionMode
   isOtherOption: boolean
+  otherInputValue?: string
+  onOtherInputChange?: (text: string) => void
 }
 
 export const CheckChoice = ({
@@ -20,13 +22,17 @@ export const CheckChoice = ({
   onToggle,
   mode,
   isOtherOption,
+  otherInputValue,
+  onOtherInputChange,
 }: CheckChoiceProps) => {
   const isEditable = mode === 'edit'
   const isOtherInputEnabled = isEditable && isOtherOption
 
   const handleOtherInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isEditable || !isOtherOption || isChecked) return
-    if (event.target.value.trim().length > 0) {
+    if (!isEditable || !isOtherOption) return
+    const text = event.target.value
+    onOtherInputChange?.(text)
+    if (!isChecked && text.trim().length > 0) {
       onToggle()
     }
   }
@@ -87,6 +93,7 @@ export const CheckChoice = ({
           기타:
           <Input
             isActive={isChecked}
+            value={otherInputValue ?? ''}
             disabled={!isOtherInputEnabled}
             aria-disabled={!isOtherInputEnabled}
             tabIndex={isOtherInputEnabled ? 0 : -1}

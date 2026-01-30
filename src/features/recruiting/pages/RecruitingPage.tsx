@@ -12,9 +12,10 @@ import RecruitingNotification from '../components/recruitingNotification/Recruit
 
 export const RecruitingPage = () => {
   const { data: activeRecruitmentId } = useGetActiveRecruitmentId()
-  const recruitmentId = activeRecruitmentId?.result.recruitmentId
-  const { data: noticeData } = useGetRecruitmentNotice(recruitmentId ?? '')
-  const { data: scheduleData } = useGetRecruitmentSchedules(recruitmentId ?? '')
+
+  const recruitmentId = activeRecruitmentId.result.recruitmentId
+  const { data: noticeData } = useGetRecruitmentNotice(recruitmentId)
+  const { data: scheduleData } = useGetRecruitmentSchedules(recruitmentId)
 
   if (!recruitmentId) return null
 
@@ -22,12 +23,12 @@ export const RecruitingPage = () => {
     <PageLayout>
       <Flex flexDirection="column" gap={112}>
         <RecruitingNotification
-          title={noticeData?.result.title ?? ''}
-          content={noticeData?.result.content ?? ''}
-          parts={noticeData?.result.parts ?? []}
+          title={noticeData.result.title}
+          content={noticeData.result.content}
+          parts={noticeData.result.parts}
         />
-        <RecruitingCalendar events={scheduleData?.result ?? { recruitmentId: '', schedules: [] }} />
-        <PartCurriculum curriculum={[]} />
+        <RecruitingCalendar events={scheduleData.result} />
+        <PartCurriculum />
       </Flex>
     </PageLayout>
   )

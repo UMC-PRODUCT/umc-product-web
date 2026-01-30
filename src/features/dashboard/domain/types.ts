@@ -1,0 +1,9 @@
+export type RecruitingStepType =
+  | 'BEFORE_APPLY'
+  | 'DOC_REVIEWING'
+  | 'DOC_RESULT_PUBLISHED'
+  | 'INTERVIEW_WAITING'
+  | 'FINAL_REVIEWING'
+  | 'FINAL_RESULT_PUBLISHED'
+
+export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'

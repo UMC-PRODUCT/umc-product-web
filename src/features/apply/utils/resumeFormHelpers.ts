@@ -10,6 +10,16 @@ import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
 
 type FormValues = Record<string, unknown>
 
+const getAllPageQuestions = (page: pageType) => {
+  const baseQuestions = Array.isArray(page.questions) ? page.questions : []
+  const partQuestions = Array.isArray(page.partQuestions)
+    ? page.partQuestions.flatMap((partGroup) =>
+        Array.isArray(partGroup.questions) ? partGroup.questions : [],
+      )
+    : []
+  return [...baseQuestions, ...partQuestions]
+}
+
 /**
  * 폼 에러 중 첫 번째 에러가 발생한 페이지 인덱스를 찾습니다.
  */
@@ -22,7 +32,9 @@ export function findFirstErrorPageIndex(
 
   const firstErrorFieldId = errorFieldIds[0]
   return pages.findIndex((page: pageType) =>
-    page.questions.some((question: question) => String(question.questionId) === firstErrorFieldId),
+    getAllPageQuestions(page).some(
+      (question: question) => String(question.questionId) === firstErrorFieldId,
+    ),
   )
 }
 
@@ -31,7 +43,7 @@ export function findFirstErrorPageIndex(
  */
 export function getAllQuestionFieldIds(pages: Array<pageType>): Array<string> {
   return pages.flatMap((page) =>
-    page.questions.map((question: question) => String(question.questionId)),
+    getAllPageQuestions(page).map((question: question) => String(question.questionId)),
   )
 }
 
@@ -39,8 +51,9 @@ export function getAllQuestionFieldIds(pages: Array<pageType>): Array<string> {
  * 특정 페이지에서 필수 질문 필드 ID 목록을 추출합니다.
  */
 export function getPageRequiredFieldIds(page: pageType | undefined): Array<string> {
-  if (!page?.questions) return []
-  return page.questions
+  if (!page) return []
+  const allQuestions = getAllPageQuestions(page)
+  return allQuestions
     .filter((question: question) => question.required)
     .map((question: question) => String(question.questionId))
 }
@@ -52,12 +65,13 @@ export function getSelectedPartsForSubmission(
   questionData: RecruitingForms,
   formValues: FormValues,
 ): Array<PartType> {
-  const partQuestionId = 3
-  const partQuestion = findPartQuestion(questionData, partQuestionId)
+  const partQuestion = findPartQuestion(questionData)
   if (!partQuestion) return []
 
+  const partQuestionId = partQuestion.questionId
   const order: Array<1 | 2> = [1, 2]
-  const requiredCount = Math.max(Number(partQuestion.maxSelectCount ?? 0), 1)
+  const maxSelectCountValue = Number(partQuestion.maxSelectCount ?? 0)
+  const requiredCount = Math.max(!Number.isNaN(maxSelectCountValue) ? maxSelectCountValue : 0, 1)
   const effectiveOrder = order.slice(0, requiredCount)
   const answerValue = formValues[String(partQuestionId)]
   return getSelectedPartsFromAnswer(answerValue, effectiveOrder)

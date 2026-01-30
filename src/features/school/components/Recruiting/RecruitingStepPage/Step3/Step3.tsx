@@ -2,12 +2,12 @@ import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
-import type { PartSmallType } from '@/features/auth/domain/model'
+import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { Option, RecruitingForms, RecruitingPart } from '@/shared/types/form'
+import type { Option, RecruitingForms } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Navigation from '@/shared/ui/common/Navigation/Navigation'
 import Section from '@/shared/ui/common/Section/Section'
@@ -23,10 +23,10 @@ interface Step3Props {
   control: Control<RecruitingForms>
   page: number
   setPage: (nextPage: number) => void
-  part: RecruitingPart | null
-  setPart: (nextPart: RecruitingPart | null) => void
-  partCompletion: Partial<Record<RecruitingPart, boolean>>
-  setPartCompletion: (next: Partial<Record<RecruitingPart, boolean>>) => void
+  part: PartType | null
+  setPart: (nextPart: PartType | null) => void
+  partCompletion: Partial<Record<PartType, boolean>>
+  setPartCompletion: (next: Partial<Record<PartType, boolean>>) => void
 }
 
 const Step3 = ({

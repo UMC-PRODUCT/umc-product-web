@@ -1,6 +1,7 @@
-import type { RecruitingForms, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { RecruitingForms } from '@/shared/types/form'
 
-export const isPartItemsValid = (items: RecruitingForms['items'], targetPart: RecruitingPart) => {
+export const isPartItemsValid = (items: RecruitingForms['items'], targetPart: PartType) => {
   const partItems = items.filter(
     (item) => item.target.kind === 'PART' && item.target.part === targetPart,
   )

@@ -2,6 +2,8 @@ import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from '
 
 import type { QuestionType } from '@features/apply/domain/model'
 
+import type { PartType } from './umc'
+
 export type Option<T> = { label: T; id: string | number }
 
 type RecruitingFormValues = Record<string, unknown>
@@ -25,7 +27,7 @@ export type question = {
   preferredPartOptions: Array<{
     recruitmentPartId: number
     label: string
-    value: RecruitingPart
+    value: PartType
   }>
 }
 
@@ -46,7 +48,8 @@ export type pageType = {
     }
   } | null
   partQuestions: Array<{
-    part: RecruitingPart
+    part: PartType
+    label?: string
     questions: Array<question>
   }>
 }
@@ -65,7 +68,7 @@ export interface ResumeFormSectionProps {
 }
 export interface RecruitingForms {
   title: string
-  recruitmentParts: Array<RecruitingPart>
+  recruitmentParts: Array<PartType>
   maxPreferredPartCount: number
   schedule: RecruitingSchedule
   noticeContent: string
@@ -89,8 +92,6 @@ export interface RecruitingQuestionPage {
   page: number
   questions: Array<RecruitingQuestion>
 }
-
-export type RecruitingPart = 'PLAN' | 'DESIGN' | 'WEB' | 'IOS' | 'ANDROID' | 'SPRINGBOOT' | 'NODEJS'
 
 export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED'
 
@@ -122,7 +123,7 @@ export type RecruitingItemQuestionType = Exclude<QuestionType, 'PART'> | 'PREFER
 export type RecruitingItemTarget = {
   kind: 'COMMON_PAGE' | 'PART'
   pageNo: number
-  part?: RecruitingPart
+  part?: PartType
 }
 
 export type RecruitingItemOption = {
@@ -147,7 +148,7 @@ export type RecruitingItem = {
 }
 
 export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>>
-export type PartQuestionBankPayload = Partial<Record<RecruitingPart, Array<RecruitingQuestion>>>
+export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>
 
 export type PartCompletion = '진행 중' | '모집 종료' | '모집 예정'
 

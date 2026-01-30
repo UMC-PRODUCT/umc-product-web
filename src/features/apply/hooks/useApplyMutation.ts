@@ -19,6 +19,7 @@ export function useApplyMutation() {
   function useResetDraftApplication() {
     return useCustomMutation((recruitmentId: string) => postClearDraftApplication(recruitmentId))
   }
+
   return {
     useFirstCreateDraft,
     useSubmitApplication,

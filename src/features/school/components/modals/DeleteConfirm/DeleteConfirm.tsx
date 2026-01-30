@@ -31,13 +31,7 @@ const DeleteConfirm = ({
           marginTop: '40px',
         }}
       >
-        <Button
-          type="button"
-          label={'취소하기'}
-          tone="gray"
-          onClick={onClose}
-          typo="C3.Md"
-        ></Button>
+        <Button type="button" label={'취소하기'} tone="gray" onClick={onClose} typo="C3.Md" />
         <Button
           type="button"
           label={'삭제하기'}
@@ -47,7 +41,7 @@ const DeleteConfirm = ({
             onClick()
             onClose()
           }}
-        ></Button>
+        />
       </Flex>
     </AlertModalLayout>
   )

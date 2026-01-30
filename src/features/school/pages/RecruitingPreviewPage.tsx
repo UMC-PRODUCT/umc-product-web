@@ -4,16 +4,18 @@ import { useNavigate } from '@tanstack/react-router'
 import ResumeContent from '@/features/apply/components/ResumeContent'
 import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
 import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => {
+const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
   const { data } = useGetApplicationFormData(recruitingId)
-  const questionData = data?.result
+  const questionData = data.result
 
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
     questionData,
@@ -22,20 +24,16 @@ const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => {
   )
 
   const totalPages = resolvedPages.length
-  const previewTitle = questionData?.recruitmentFormTitle || '지원서 미리보기'
+  const previewTitle = questionData.recruitmentFormTitle || '지원서 미리보기'
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)
   }
 
-  if (!questionData) {
-    return null
-  }
-
   return (
     <PageLayout>
       <Flex flexDirection="column" gap={32}>
-        <Flex justifyContent="space-between" alignItems="center" gap={16}>
+        <Flex justifyContent="space-between" alignItems="center" gap={16} maxWidth={956}>
           <PageTitle title={previewTitle} />
           <Button
             label="목록으로 돌아가기"
@@ -45,7 +43,7 @@ const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => {
           />
         </Flex>
         <ResumeContent
-          questionData={questionData.pages}
+          pages={resolvedPages}
           displayLastSavedTime={null}
           handleSave={() => {}}
           isEdit={false}
@@ -64,5 +62,11 @@ const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => {
     </PageLayout>
   )
 }
+
+const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
+  <AsyncBoundary fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}>
+    <RecruitingPreviewPageContent recruitingId={recruitingId} />
+  </AsyncBoundary>
+)
 
 export default RecruitingPreviewPage

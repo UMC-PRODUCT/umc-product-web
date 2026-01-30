@@ -38,3 +38,10 @@ export type MyInfoResponseDTO = CommonResponseDTO<{
   profileImageLink?: number
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
 }>
+
+export type GetTermsResponseDTO = {
+  id: string
+  title: string
+  content: string
+  isMandatory: boolean
+}

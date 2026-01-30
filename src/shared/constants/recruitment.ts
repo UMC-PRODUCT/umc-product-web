@@ -18,9 +18,18 @@ export const RECRUITMENT_INFO = {
 } as const
 
 export const formatRecruitmentPeriod = (start: string, end: string, separator = ' ~ '): string => {
-  return `${start}${separator}${end}`
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+  const editStart = `${startDate.getFullYear()}.${(startDate.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}.${startDate.getDate().toString().padStart(2, '0')}`
+  const editEnd = `${endDate.getFullYear()}.${(endDate.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}.${endDate.getDate().toString().padStart(2, '0')}`
+
+  return `${editStart}${separator}${editEnd}`
 }
 
-export const formatActivityPeriod = (start: string, end: string, duration: string): string => {
-  return `${start} ~ ${end} (${duration})`
+export const formatActivityPeriod = (start: string | null, end: string | null): string => {
+  return `${start} ~ ${end} (약 6개월)`
 }

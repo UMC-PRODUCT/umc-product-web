@@ -1,6 +1,8 @@
+import type { DocumentStatusType, FinalStatusType } from '@/features/apply/domain'
+import { DOCUMENT_STATUS_CONFIG, FINAL_STATUS_CONFIG } from '@/features/apply/domain'
+import type { PartType } from '@/features/auth/domain'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { PartType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -13,8 +15,8 @@ interface ApplyStatementProps {
   current:
     | {
         appliedParts: Array<PartType | '미정'>
-        documentEvaluation: { status: string }
-        finalEvaluation: { status: string }
+        documentEvaluation: { status: DocumentStatusType }
+        finalEvaluation: { status: FinalStatusType }
       }
     | null
     | undefined
@@ -23,8 +25,13 @@ interface ApplyStatementProps {
 const ApplyStatement = ({ current }: ApplyStatementProps) => {
   const appliedParts = current?.appliedParts ?? []
   const hasAppliedParts = appliedParts.length > 0
-  const documentEvaluationStatus = current ? current.documentEvaluation.status : '미정'
-  const finalEvaluationStatus = current ? current.finalEvaluation.status : '미정'
+  const documentEvaluationStatus: DocumentStatusType | undefined =
+    current?.documentEvaluation.status
+  const finalEvaluationStatus: FinalStatusType | undefined = current?.finalEvaluation.status
+
+  if (!documentEvaluationStatus || !finalEvaluationStatus) {
+    return null
+  }
   return (
     <Section
       variant="solid"
@@ -75,7 +82,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {documentEvaluationStatus}
+            {DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label}
           </Badge>
         </Flex>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -85,7 +92,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {finalEvaluationStatus}
+            {FINAL_STATUS_CONFIG[finalEvaluationStatus].label}
           </Badge>
         </Flex>
       </Flex>

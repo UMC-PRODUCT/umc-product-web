@@ -31,6 +31,13 @@ const ResumeFormSection = ({
   isEdit,
 }: ResumeFormSectionProps) => {
   const normalizedPages = useMemo(() => (Array.isArray(pages) ? pages : []), [pages])
+  const partQuestionGroups = useMemo(
+    () =>
+      normalizedPages.flatMap((page) =>
+        Array.isArray(page.partQuestions) ? page.partQuestions : [],
+      ),
+    [normalizedPages],
+  )
 
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -45,7 +52,15 @@ const ResumeFormSection = ({
 
   const partQuestionIds = useMemo(() => {
     return normalizedPages
-      .flatMap((page) => (Array.isArray(page.questions) ? page.questions : []))
+      .flatMap((page) => {
+        const baseQuestions = Array.isArray(page.questions) ? page.questions : []
+        const partQuestions = Array.isArray(page.partQuestions)
+          ? page.partQuestions.flatMap((partGroup) =>
+              Array.isArray(partGroup.questions) ? partGroup.questions : [],
+            )
+          : []
+        return [...baseQuestions, ...partQuestions]
+      })
       .map((question) => question.questionId)
   }, [normalizedPages])
 
@@ -56,13 +71,19 @@ const ResumeFormSection = ({
 
   const hasPartAnswers = useMemo(() => {
     if (partQuestionIds.length === 0) return false
-    return normalizedPages.some((page) =>
-      (Array.isArray(page.questions) ? page.questions : []).some((question) => {
+    return normalizedPages.some((page) => {
+      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
+      const pagePartQuestions = Array.isArray(page.partQuestions)
+        ? page.partQuestions.flatMap((partGroup) =>
+            Array.isArray(partGroup.questions) ? partGroup.questions : [],
+          )
+        : []
+      return [...pageQuestions, ...pagePartQuestions].some((question) => {
         const index = partQuestionIds.indexOf(question.questionId)
         const answerValue = partQuestionValues[index]
         return !isAnswerEmpty(question, answerValue)
-      }),
-    )
+      })
+    })
   }, [partQuestionValues, normalizedPages, partQuestionIds])
 
   const {
@@ -71,7 +92,7 @@ const ResumeFormSection = ({
     handleConfirmPartChange,
     handleCancelPartChange,
   } = usePartChangeGuard({
-    pages: normalizedPages[2]?.partQuestions ?? [],
+    pages: partQuestionGroups,
     setValue,
     clearErrors,
     hasPartAnswers,
@@ -83,9 +104,15 @@ const ResumeFormSection = ({
   const activePagePartQuestions = Array.isArray(activePage.partQuestions)
     ? activePage.partQuestions
     : []
-  const activePageQuestions = Array.isArray(activePage.questions) ? activePage.questions : []
+  const activePagePartQuestionIds = new Set(
+    activePagePartQuestions.flatMap((group) =>
+      Array.isArray(group.questions) ? group.questions.map((question) => question.questionId) : [],
+    ),
+  )
+  const activePageQuestions = (
+    Array.isArray(activePage.questions) ? activePage.questions : []
+  ).filter((question) => !activePagePartQuestionIds.has(question.questionId))
   const activeScheduleQuestion = activePage.scheduleQuestion ? activePage.scheduleQuestion : null
-  console.log('activeScheduleQuestion', activeScheduleQuestion)
   return (
     <form onSubmit={handleFormSubmit}>
       <Flex key={activePage.page} flexDirection="column" gap={24}>
@@ -95,7 +122,7 @@ const ResumeFormSection = ({
             flexDirection="column"
             gap={12}
           >
-            <PartDivider label={partQuestion.part} />
+            <PartDivider label={partQuestion.label ?? partQuestion.part} />
             {partQuestion.questions.map((question, idx) => (
               <Controller
                 key={question.questionId}
@@ -111,7 +138,7 @@ const ResumeFormSection = ({
                     type={question.type}
                     options={question.options}
                     value={field.value as QuestionAnswerValue}
-                    onChange={field.onChange}
+                    onChange={(_, newValue) => field.onChange(newValue)}
                     errorMessage={getFieldErrorMessage(question.questionId)}
                     mode={isEdit ? 'edit' : 'view'}
                     maxSelectCount={question.maxSelectCount}
@@ -138,7 +165,7 @@ const ResumeFormSection = ({
                 type={question.type}
                 options={question.options}
                 value={field.value as QuestionAnswerValue}
-                onChange={field.onChange}
+                onChange={(_, newValue) => field.onChange(newValue)}
                 preferredPartOptions={question.preferredPartOptions}
                 errorMessage={getFieldErrorMessage(question.questionId)}
                 mode={isEdit ? 'edit' : 'view'}

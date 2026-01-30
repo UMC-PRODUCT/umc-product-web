@@ -12,7 +12,7 @@ import * as S from './RecruitingList.style'
 const RecruitingList = () => {
   const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
   const { data } = useGetRecruitmentsList(tab)
-  const recruitments = data?.result.recruitments ?? []
+  const recruitments = data.result.recruitments
   return (
     <Flex gap={20} flexDirection="column">
       <PageTitle title="모집 목록" />

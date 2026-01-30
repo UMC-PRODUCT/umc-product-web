@@ -1,7 +1,8 @@
 import dayjs from 'dayjs'
 import { z } from 'zod/v3'
 
-import type { RecruitingForms, RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
+import type { RecruitingForms } from '@/shared/types/form'
 
 type StepValues = Pick<
   RecruitingForms,
@@ -20,7 +21,7 @@ const recruitmentPartEnum = z.enum([
   'ANDROID',
   'SPRINGBOOT',
   'NODEJS',
-] as [RecruitingPart, ...Array<RecruitingPart>])
+] as [PartType, ...Array<PartType>])
 
 export const step1Schema = z.object({
   title: z.string().trim().min(1, '모집 이름을 입력해 주세요.'),

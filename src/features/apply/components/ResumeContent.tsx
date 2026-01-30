@@ -9,7 +9,7 @@ import ResumeFormSection from '../pages/resume/ResumeFormSection'
 import * as S from './ResumeContent.style'
 
 interface ResumeContentProps {
-  questionData: Array<pageType>
+  pages: Array<pageType>
   formData: RecruitingForms
   displayLastSavedTime: string | null
   handleSave: () => void
@@ -26,7 +26,7 @@ interface ResumeContentProps {
 }
 
 const ResumeContent = ({
-  questionData,
+  pages,
   displayLastSavedTime,
   handleSave,
   control,
@@ -70,7 +70,7 @@ const ResumeContent = ({
 
       <S.BorderedSection>
         <ResumeFormSection
-          pages={questionData}
+          pages={pages}
           control={control}
           setValue={setValue}
           clearErrors={clearErrors}

@@ -76,7 +76,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             disabled={isButtonDisabled}
             isLoading={isButtonLoading}
             type="button"
-          ></Button>
+          />
         )}
       </S.InputWrapper>
     )

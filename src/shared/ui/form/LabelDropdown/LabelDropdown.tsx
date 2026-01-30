@@ -44,7 +44,7 @@ const LabelDropdown = <T,>({
             typo="B4.Md"
             responsiveTypo={{ tablet: 'C5.Md' }}
             errorMessage={error.errorMessage}
-          ></ErrorMessage>
+          />
         )}
       </S.SelectHeader>
       <Dropdown

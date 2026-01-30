@@ -1,9 +1,11 @@
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import ApplyResumeCard from '../components/ApplyResumeCard/ApplyResumeCard'
 import ApplyStatement from '../components/ApplyStatement/ApplyStatement'
@@ -11,12 +13,12 @@ import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
 import ProgressStage from '../components/ProgressStage/ProgressStage'
 import { useMyApplications } from '../hooks/useDashboardQueries'
 
-export const DashboardPage = () => {
+const DashboardPageContent = () => {
   const { data } = useMyApplications()
-  const dashboardData = data?.result
-  const current = dashboardData?.current
-  const applications = dashboardData?.applications ?? []
-  const displayName = dashboardData ? `${dashboardData.nickName}/${dashboardData.name}` : ''
+  const dashboardData = data.result
+  const current = dashboardData.current
+  const applications = dashboardData.applications
+  const displayName = `${dashboardData.nickName}/${dashboardData.name}`
   const sectionBorder = {
     border: `1px solid ${theme.colors.gray[700]}`,
     [media.down(theme.breakPoints.tablet)]: {
@@ -39,20 +41,20 @@ export const DashboardPage = () => {
             }}
           >
             <div css={gridStyle}>
-              <ApplyStatement current={current ?? null} />
-              <ProgressStage progress={current?.progress} />
+              <ApplyStatement current={current} />
+              <ProgressStage progress={current.progress} />
             </div>
           </Section>
         </Flex>
         <Flex flexDirection="column" gap={22}>
           <PageTitle title={`${displayName} 님의 지원서`} />
           <Section variant="outline" gap={16} css={sectionBorder}>
-            {applications.map(({ recruitmentTitle, applicationId, status, recruitmentId }) => (
+            {applications.map(({ recruitmentTitle, formResponseId, badge, recruitmentId }) => (
               <ApplyResumeCard
-                key={applicationId}
+                key={`${recruitmentId}-${formResponseId}`}
                 title={recruitmentTitle}
-                resumeId={applicationId}
-                state={status}
+                resumeId={formResponseId}
+                state={badge}
                 recruitmentId={recruitmentId}
               />
             ))}
@@ -65,3 +67,9 @@ export const DashboardPage = () => {
     </PageLayout>
   )
 }
+
+export const DashboardPage = () => (
+  <AsyncBoundary fallback={<SuspenseFallback label="지원 현황을 불러오는 중입니다." />}>
+    <DashboardPageContent />
+  </AsyncBoundary>
+)

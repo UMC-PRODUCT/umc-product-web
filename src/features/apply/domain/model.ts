@@ -6,7 +6,7 @@
 import type { PartType } from '@features/auth/domain'
 
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
-import type { OptionAnswerValue, RecruitingPart } from '@/shared/types/form'
+import type { OptionAnswerValue } from '@/shared/types/form'
 
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 
@@ -19,12 +19,6 @@ export type QuestionType = keyof typeof QUESTION_TYPE_CONFIG
 
 /** 파일 업로드 상태 */
 export type FileUploadStatus = (typeof FILE_UPLOAD_STATUS)[keyof typeof FILE_UPLOAD_STATUS]
-
-/** 서류 평가 상태 타입 (한글 레이블 - 기존 호환성) */
-export type DocumentStatusType = '미정' | '평가 중' | '서류 합격' | '불합격'
-
-/** 최종 평가 상태 타입 (한글 레이블 - 기존 호환성) */
-export type FinalStatusType = '미정' | '예정' | '평가 중' | '최종 합격' | '불합격'
 
 /** 업로드된 파일 */
 export interface UploadedFile {
@@ -108,7 +102,7 @@ export type QuestionAnswerValue =
   | string
   | Array<string>
   | OptionAnswerValue
-  | Array<{ id: number; answer: RecruitingPart }>
+  | Array<{ id: number; answer: PartType }>
   | TimeTableSlots
   | FileUploadAnswer
   | undefined
@@ -130,7 +124,7 @@ export interface QuestionList {
       schedule: RequiredScheduleWithDisabled
     }
     partQuestions: Array<{
-      part: RecruitingPart
+      part: PartType
       questions: Array<QuestionSummary>
     }>
   }>

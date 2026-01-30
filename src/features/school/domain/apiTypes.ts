@@ -1,5 +1,6 @@
+import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { RecruitingPart, RecruitingStatus } from '@/shared/types/form'
+import type { RecruitingStatus } from '@/shared/types/form'
 
 import type { ApplicationFormPayload, Phase, RecruitingDraft, RecruitingForms } from './types'
 
@@ -26,7 +27,7 @@ export type GetRecruitmentNoticesResponseDTO = {
   recruitmentId: number
   title: string
   content: string
-  parts: Array<RecruitingPart>
+  parts: Array<PartType>
 }
 
 export type GetTempSavedRecruitmentResponseDTO = RecruitingDraft
@@ -43,7 +44,7 @@ export type PatchTempSaveRecruitmentResponseDTO =
 
 export type PostFirstRecruitmentRequestDTO = {
   recruitmentName?: string
-  parts?: Array<RecruitingPart>
+  parts?: Array<PartType>
 }
 
 export type PostFirstRecruitmentResponseDTO = {

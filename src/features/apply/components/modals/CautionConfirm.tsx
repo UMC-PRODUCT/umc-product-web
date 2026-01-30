@@ -20,6 +20,7 @@ const CautionConfirm = ({
   const navigate = useNavigate()
   const { useResetDraftApplication } = useApplyMutation()
   const { mutate: resetDraft } = useResetDraftApplication()
+
   return (
     <AlertModalLayout
       mode={'warning'}

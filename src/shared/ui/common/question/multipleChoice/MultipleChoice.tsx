@@ -43,6 +43,23 @@ export const MultipleChoice = ({ options, value, onChange, mode }: MultipleChoic
     onChange?.(nextValue)
   }
 
+  const handleOtherTextChange = (optionId: string, text: string) => {
+    const hasText = text.trim().length > 0
+    const isCurrentlySelected = selectedOptions.includes(optionId)
+    const updatedSelection = hasText
+      ? isCurrentlySelected
+        ? selectedOptions
+        : [...selectedOptions, optionId]
+      : selectedOptions.filter((selected) => selected !== optionId)
+
+    const nextValue: OptionAnswerValue = {
+      selectedOptionIds: updatedSelection,
+      ...(hasText ? { otherText: text } : {}),
+    }
+
+    onChange?.(nextValue)
+  }
+
   return (
     <Flex flexDirection="column" gap={10}>
       {options.map((option, index) => {
@@ -58,6 +75,10 @@ export const MultipleChoice = ({ options, value, onChange, mode }: MultipleChoic
             onToggle={() => handleOptionToggle(optionId)}
             mode={mode}
             isOtherOption={isOtherOption}
+            otherInputValue={isOtherOption ? (value?.otherText ?? '') : undefined}
+            onOtherInputChange={
+              isOtherOption ? (text) => handleOtherTextChange(optionId, text) : undefined
+            }
           />
         )
       })}

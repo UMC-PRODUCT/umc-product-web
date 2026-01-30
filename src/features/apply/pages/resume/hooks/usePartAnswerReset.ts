@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { RecruitingPart } from '@/shared/types/form'
+import type { PartType } from '@/features/auth/domain'
 
 import type { QuestionType } from '../../../domain/model'
 
@@ -11,7 +11,7 @@ import type { QuestionType } from '../../../domain/model'
  */
 export function usePartAnswerReset(
   pages: Array<{
-    part: RecruitingPart
+    part: PartType
     questions: Array<{
       questionId: number
       type: QuestionType

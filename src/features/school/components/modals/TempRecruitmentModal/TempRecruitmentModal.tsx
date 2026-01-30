@@ -1,70 +1,21 @@
-import type { ReactNode } from 'react'
-import { Component, Suspense } from 'react'
-
 import Close from '@shared/assets/icons/close.svg?react'
 import { Modal } from '@shared/ui/common/Modal'
 
 import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentModal.style'
 import { getRecruitments } from '@/features/school/domain/api'
 import { recruiteKeys } from '@/features/school/domain/queryKey'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
-import Loading from '@/shared/ui/common/Loading/Loading'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import TempRecruitmentCard from '../../TempRecruitmentCard/TempRecruitmentCard'
 
 type TempRecruitmentModalProps = {
   onClose: () => void
 }
-
-type ModalErrorBoundaryProps = {
-  children: ReactNode
-  fallback: (error: Error, reset: () => void) => ReactNode
-}
-
-type ModalErrorBoundaryState = {
-  error?: Error
-}
-
-class ModalErrorBoundary extends Component<ModalErrorBoundaryProps, ModalErrorBoundaryState> {
-  state: ModalErrorBoundaryState = {}
-
-  static getDerivedStateFromError(error: Error) {
-    return { error }
-  }
-
-  componentDidCatch(error: Error) {
-    console.error(error)
-  }
-
-  resetErrorBoundary = () => {
-    this.setState({ error: undefined })
-  }
-
-  render() {
-    const { error } = this.state
-    if (error) {
-      return this.props.fallback(error, this.resetErrorBoundary)
-    }
-    return this.props.children
-  }
-}
-
-const AsyncBoundary = ({
-  children,
-  fallback,
-  errorFallback,
-}: {
-  children: ReactNode
-  fallback: ReactNode
-  errorFallback: (error: Error, reset: () => void) => ReactNode
-}) => (
-  <ModalErrorBoundary fallback={errorFallback}>
-    <Suspense fallback={fallback}>{children}</Suspense>
-  </ModalErrorBoundary>
-)
 
 const TempRecruitmentList = () => {
   const { data } = useCustomSuspenseQuery(
@@ -86,7 +37,7 @@ const TempRecruitmentList = () => {
           title={recruitment.recruitmentName}
           tempSavedTime={'2026.01.06'}
           editable={recruitment.editable}
-          recruitmentId={recruitment.recruitmentId}
+          recruitmentId={String(recruitment.recruitmentId)}
         />
       ))}
     </>
@@ -138,15 +89,10 @@ const TempRecruitmentModal = ({ onClose }: TempRecruitmentModalProps) => {
                 <AsyncBoundary
                   fallback={
                     <S.MessageWrapper>
-                      <Loading
-                        label="로딩 중…"
-                        labelPlacement="bottom"
-                        spinnerColor={theme.colors.lime}
-                        borderColor="rgba(255, 255, 255, 0.2)"
-                        size={40}
-                      />
-                      <S.MessageTitle>임시저장된 모집을 불러오는 중입니다.</S.MessageTitle>
-                      <S.MessageDescription>잠시만 기다려 주세요.</S.MessageDescription>
+                      <SuspenseFallback label="로딩 중…" gap={12}>
+                        <S.MessageTitle>임시저장된 모집을 불러오는 중입니다.</S.MessageTitle>
+                        <S.MessageDescription>잠시만 기다려 주세요.</S.MessageDescription>
+                      </SuspenseFallback>
                     </S.MessageWrapper>
                   }
                   errorFallback={(error, reset) => (

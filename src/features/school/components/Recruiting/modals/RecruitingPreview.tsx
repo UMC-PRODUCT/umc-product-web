@@ -22,7 +22,7 @@ const RecruitingPreview = ({
   recruitingId: string
 }) => {
   const { data } = useGetApplicationFormData(recruitingId)
-  const questionData = data?.result
+  const questionData = data.result
   const [currentPage, setCurrentPage] = useState(1)
 
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
@@ -36,9 +36,7 @@ const RecruitingPreview = ({
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)
   }
-  if (questionData == null) {
-    return null
-  }
+
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -80,7 +78,7 @@ const RecruitingPreview = ({
                 gap={22}
               >
                 <ResumeContent
-                  questionData={questionData.pages}
+                  pages={resolvedPages}
                   displayLastSavedTime={null}
                   handleSave={() => {}}
                   isEdit={false}

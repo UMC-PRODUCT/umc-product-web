@@ -1,9 +1,9 @@
 import type { QuestionType } from '@/features/apply/domain'
+import type { PartType } from '@/features/auth/domain'
 import type {
   pageType,
   RecruitingInterviewTimeTable,
   RecruitingItem,
-  RecruitingPart,
   RecruitingSchedule,
   RecruitingStatus,
 } from '@/shared/types/form'
@@ -25,7 +25,7 @@ export type InterviewTimeTableWithDisabled = RecruitingInterviewTimeTable & {
 
 export type RecruitingDraft = {
   title: string
-  recruitmentParts: Array<RecruitingPart>
+  recruitmentParts: Array<PartType>
   maxPreferredPartCount: number
   schedule?: RecruitingSchedule
   noticeContent: string

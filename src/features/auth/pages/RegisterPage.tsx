@@ -8,6 +8,8 @@ import { Button } from '@shared/ui/common/Button/Button'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 
 import type { TermsResponseDTO } from '@/shared/api/terms'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
@@ -24,7 +26,7 @@ type RegisterPageProps = {
   email?: string
 }
 
-export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProps) => {
+const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProps) => {
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)
   const {
     register,
@@ -170,6 +172,12 @@ export const RegisterPage = ({ oAuthVerificationToken, email }: RegisterPageProp
     </AuthSection>
   )
 }
+
+export const RegisterPage = (props: RegisterPageProps) => (
+  <AsyncBoundary fallback={<SuspenseFallback label="약관 정보를 불러오는 중입니다." />}>
+    <RegisterPageContent {...props} />
+  </AsyncBoundary>
+)
 
 const ResponsiveLogo = styled(Logo)`
   width: 264px;

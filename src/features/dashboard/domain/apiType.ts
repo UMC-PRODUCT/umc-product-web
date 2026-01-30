@@ -1,4 +1,7 @@
+import type { DocumentStatusType, FinalStatusType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
+
+import type { RecruitingStepType, UserApplicationBadgeType } from './types'
 
 export type GetMyApplicationResponseDTO = {
   nickName: string
@@ -6,20 +9,22 @@ export type GetMyApplicationResponseDTO = {
   current: {
     appliedParts: Array<PartType | '미정'>
     documentEvaluation: {
-      status: string
+      status: DocumentStatusType
     }
     finalEvaluation: {
-      status: string
+      status: FinalStatusType
     }
     progress: {
-      currentStep: string
+      currentStep: RecruitingStepType
       steps: Array<{
-        step: string
+        step: RecruitingStepType
         label: string
         done: boolean
         active: boolean
       }>
-      resultAnnounceAt: string
+      noticeType: string
+      noticeDate: string
+      nextRecruitmentMonth: string
     }
   }
   applications: Array<{
@@ -27,7 +32,7 @@ export type GetMyApplicationResponseDTO = {
     formResponseId: string
     applicationId: string
     recruitmentTitle: string
-    badge: string
+    badge: UserApplicationBadgeType
     status: string
     submittedAt: string
   }>
