@@ -36,7 +36,7 @@ export const useRegistrationWorkflow = ({
   const { mutate: verifyCodeMutate } = useVerifyCode()
   const { mutate: registerMutate } = useRegister()
 
-  const [emailVerificationId, setEmailVerificationId] = useState<number | null>(null)
+  const [emailVerificationId, setEmailVerificationId] = useState<string | null>(null)
   const [hasEmailBeenSent, setHasEmailBeenSent] = useState(false)
   const [isEmailVerified, setIsEmailVerified] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -75,8 +75,8 @@ export const useRegistrationWorkflow = ({
         { email },
         {
           onSuccess: (response) => {
-            if (response.result.emailVerificationId) {
-              setEmailVerificationId(Number(response.result.emailVerificationId))
+            if (response.emailVerificationId) {
+              setEmailVerificationId(response.emailVerificationId)
             }
             setHasEmailBeenSent(true)
             onEmailSent()
@@ -110,8 +110,8 @@ export const useRegistrationWorkflow = ({
         {
           onSuccess: (response) => {
             clearErrors('emailVerificationCode')
-            if (response.result.emailVerificationToken) {
-              setValue('emailVerificationToken', response.result.emailVerificationToken)
+            if (response.emailVerificationToken) {
+              setValue('emailVerificationToken', response.emailVerificationToken)
             }
             setIsEmailVerified(true)
           },

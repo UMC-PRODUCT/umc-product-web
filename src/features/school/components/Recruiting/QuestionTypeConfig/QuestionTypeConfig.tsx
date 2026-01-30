@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
-import { useFormContext, useWatch } from 'react-hook-form'
+import { useController, useWatch } from 'react-hook-form'
 
 import type { RecruitingForms, RecruitingItemQuestionType } from '@/shared/types/form'
 
@@ -17,13 +17,17 @@ const QuestionTypeConfig = ({ control, namePrefix, isLocked = false }: QuestionT
     control,
     name: `${namePrefix}.question.type` as FieldPath<RecruitingForms>,
   }) as RecruitingItemQuestionType | undefined
-  const { setValue } = useFormContext<RecruitingForms>()
   const optionsFieldPath = `${namePrefix}.question.options` as FieldPath<RecruitingForms>
+  const { field: optionsField } = useController({
+    control,
+    name: optionsFieldPath,
+  })
 
   useEffect(() => {
     if (!type || type === 'RADIO' || type === 'CHECKBOX') return
-    setValue(optionsFieldPath, [])
-  }, [optionsFieldPath, setValue, type])
+    if (Array.isArray(optionsField.value) && optionsField.value.length === 0) return
+    optionsField.onChange([])
+  }, [optionsField, type])
   if (type === 'PREFERRED_PART') {
     return null
   }

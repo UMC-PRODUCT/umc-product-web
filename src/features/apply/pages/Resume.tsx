@@ -23,13 +23,7 @@ import {
   useGetApplicationQuestions,
 } from '../hooks/useGetApplicationQuery'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
-import {
-  findFirstErrorPageIndex,
-  getAllQuestionFieldIds,
-  getPageRequiredFieldIds,
-  getSubmissionFormValues,
-  getSubmissionItems,
-} from '../utils'
+import { findFirstErrorPageIndex, getPageRequiredFieldIds, getSubmissionItems } from '../utils'
 import { useResumeForm } from './resume/useResumeForm'
 
 const AUTO_SAVE_INTERVAL_MS = 60_000
@@ -46,20 +40,19 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
-  const { usePatchApplication } = useApplyMutation()
+  const { usePatchApplication, useSubmitApplication } = useApplyMutation()
   const { mutate: patchApplication } = usePatchApplication()
+  const { mutate: submitApplication } = useSubmitApplication()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
   const resumeForm = useResumeForm(questionDataForForm, answerData.result)
 
   const {
     control,
-    handleSubmit,
     trigger,
     getValues,
     setValue,
     clearErrors,
-    reset,
     errors,
     isDirty,
     isFormIncomplete,
@@ -76,7 +69,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     const savedDate = new Date(raw)
     if (Number.isNaN(savedDate.getTime())) return null
     const formatter = new Intl.DateTimeFormat('ko-KR', {
-      timeZone: 'UTC',
+      timeZone: 'Asia/Seoul',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -145,27 +138,28 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     navigationBlocker.allowNextNavigationOnce()
     onPageChange(nextPage)
   }
-  const handleFinalSubmit = async () => {
-    const allFieldIds = getAllQuestionFieldIds(resolvedPages)
-    const isValid = await trigger(allFieldIds)
 
-    if (isValid) {
-      handleSubmit((formValues: FormValues) => {
-        const submissionItems = getSubmissionItems(
-          questionsData.result.pages,
-          formValues,
-          defaultValues,
-        )
-        const submissionValues = getSubmissionFormValues(questionsData.result.pages, formValues)
-        console.log('최종 제출 데이터:', submissionItems)
-        setIsSubmitModalOpen(false)
-        reset(submissionValues)
-      })()
-    } else {
-      setIsSubmitModalOpen(false)
-      navigateToFirstErrorPage(errors)
-    }
+  const onSubmit = () => {
+    handleSave()
+    submitApplication(
+      {
+        recruitmentId,
+        formResponseId: resumeId,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+          })
+          setIsSubmitModalOpen(false)
+        },
+        onError: () => {
+          navigateToFirstErrorPage(errors)
+        },
+      },
+    )
   }
+
   return (
     <PageLayout>
       <Flex maxWidth="956px">
@@ -191,7 +185,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {isSubmitModalOpen && (
         <SubmitConfirmModal
           onClose={closeSubmitModal}
-          onSubmit={handleFinalSubmit}
+          onSubmit={onSubmit}
           onAllowNavigate={navigationBlocker.allowNextNavigationOnce}
         />
       )}

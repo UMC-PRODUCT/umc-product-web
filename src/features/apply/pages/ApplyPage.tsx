@@ -5,6 +5,7 @@ import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { formatActivityPeriod, formatRecruitmentPeriod } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
@@ -58,7 +59,16 @@ const ApplyPageContent = () => {
 }
 
 export const ApplyPage = () => (
-  <AsyncBoundary fallback={<SuspenseFallback label="모집 정보를 불러오는 중입니다." />}>
+  <AsyncBoundary
+    fallback={<SuspenseFallback label="모집 정보를 불러오는 중입니다." />}
+    errorFallback={() => (
+      <PageLayout>
+        <Flex flexDirection="column" gap={112} css={{ color: theme.colors.gray[400] }}>
+          현재 진행 중인 모집이 없습니다.
+        </Flex>
+      </PageLayout>
+    )}
+  >
     <ApplyPageContent />
   </AsyncBoundary>
 )
