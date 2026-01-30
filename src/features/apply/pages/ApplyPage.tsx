@@ -21,13 +21,13 @@ const ApplyPageContent = () => {
   const { result } = specificPartRecruitingData
 
   const formattedRecruitmentPeriod = formatRecruitmentPeriod(
-    result.recruitmentPeriod.startsAt,
-    result.recruitmentPeriod.endsAt,
+    result.recruitmentPeriod?.startsAt,
+    result.recruitmentPeriod?.endsAt,
   )
 
   const formattedActivityPeriod = formatActivityPeriod(
-    result.activityPeriod.startsAt,
-    result.activityPeriod.endsAt,
+    result.activityPeriod?.startsAt,
+    result.activityPeriod?.endsAt,
   )
   const submitStatus = result.myApplication.status
 

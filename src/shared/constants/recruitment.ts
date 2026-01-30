@@ -17,7 +17,14 @@ export const RECRUITMENT_INFO = {
   },
 } as const
 
-export const formatRecruitmentPeriod = (start: string, end: string, separator = ' ~ '): string => {
+export const formatRecruitmentPeriod = (
+  start: string | undefined,
+  end: string | undefined,
+  separator = ' ~ ',
+): string => {
+  if (!start || !end) {
+    return ''
+  }
   const startDate = new Date(start)
   const endDate = new Date(end)
   const editStart = `${startDate.getFullYear()}.${(startDate.getMonth() + 1)
@@ -30,6 +37,12 @@ export const formatRecruitmentPeriod = (start: string, end: string, separator = 
   return `${editStart}${separator}${editEnd}`
 }
 
-export const formatActivityPeriod = (start: string | null, end: string | null): string => {
+export const formatActivityPeriod = (
+  start: string | undefined,
+  end: string | undefined,
+): string => {
+  if (!start || !end) {
+    return '추후 공지'
+  }
   return `${start} ~ ${end} (약 6개월)`
 }

@@ -269,11 +269,11 @@ export type GetSpecificPartRecruiting = {
   recruitmentPeriod: {
     startsAt: string
     endsAt: string
-  }
+  } | null
   activityPeriod: {
     startsAt: string
     endsAt: string
-  }
+  } | null
   description: string
   parts: Array<{
     recruitmentPartId: string
