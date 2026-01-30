@@ -130,6 +130,7 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
           fixedWeekCount={false}
           locale="ko"
           firstDay={0}
+          height="auto"
           headerToolbar={false}
           events={calendarEvents.map((event) => ({
             id: String(event.id),
@@ -173,33 +174,38 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
             // 요일 이름만 깔끔하게 반환 (일, 월, 화...)
             return args.text.replace('요일', '')
           }}
+          dayCellClassNames={({ date }) => {
+            const isSelected = dayjs(date).isSame(selectedDate, 'day')
+            return isSelected ? ['fc-selected-day'] : []
+          }}
         />
       </S.StyledCalendarWrapper>
 
       <Flex flexDirection="column" gap="12px">
-        {selectedEvents.map((event) => (
-          <S.EventItem
-            key={event.id}
-            $isHighlighted={dayjs(selectedDate).isBetween(
-              dayjs(event.startDate),
-              dayjs(event.endDate),
-              'day',
-              '[]',
-            )}
-          >
-            <div className="icon">
-              <CalendarIcon />
-            </div>
-            <S.EventInfo>
-              <div className="title">
-                {transformRecruitingScheduleTypeKorean(event.title as RECRUITING_SCHEDULE_TYPE)}
+        {selectedEvents.map((event) => {
+          const isTodayActive = dayjs(today).isBetween(
+            dayjs(event.startDate),
+            dayjs(event.endDate),
+            'day',
+            '[]',
+          )
+
+          return (
+            <S.EventItem key={event.id} $isTodayActive={isTodayActive}>
+              <div className="icon">
+                <CalendarIcon />
               </div>
-              <div className="period">
-                {getEventDateText(dayjs(event.startDate).toDate(), dayjs(event.endDate).toDate())}
-              </div>
-            </S.EventInfo>
-          </S.EventItem>
-        ))}
+              <S.EventInfo $isTodayActive={isTodayActive}>
+                <div className="title">
+                  {transformRecruitingScheduleTypeKorean(event.title as RECRUITING_SCHEDULE_TYPE)}
+                </div>
+                <div className="period">
+                  {getEventDateText(dayjs(event.startDate).toDate(), dayjs(event.endDate).toDate())}
+                </div>
+              </S.EventInfo>
+            </S.EventItem>
+          )
+        })}
       </Flex>
     </Flex>
   )

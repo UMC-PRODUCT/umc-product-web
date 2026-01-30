@@ -101,23 +101,36 @@ const StyledCalendarWrapper = styled.div`
     text-decoration: none;
   }
 
+  .fc-day-today {
+    background-color: ${theme.colors.black} !important;
+  }
+
   .fc-day-sun .fc-daygrid-day-number,
   .fc-day-sat .fc-daygrid-day-number {
     color: ${theme.colors.gray[400]};
   }
 
-  /* 오늘 날짜 표시 */
-  .fc-day-today {
-    background-color: transparent !important;
-    .fc-daygrid-day-number {
-      background: ${theme.colors.lime};
-      color: ${theme.colors.black};
-      border-radius: 50%;
-      width: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  /* 선택된 날짜 표시 */
+  .fc-daygrid-day.fc-selected-day .fc-daygrid-day-number {
+    background: ${theme.colors.white};
+    color: ${theme.colors.black};
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 오늘 날짜는 기본적으로 lime 텍스트 */
+  .fc-day-today .fc-daygrid-day-number {
+    color: ${theme.colors.lime};
+  }
+
+  /* 오늘 날짜가 선택된 경우 lime 원형 */
+  .fc-daygrid-day.fc-selected-day.fc-day-today .fc-daygrid-day-number {
+    background: ${theme.colors.lime};
+    color: ${theme.colors.black};
   }
 
   /* 이벤트 바(Event Bar) 컨테이너 스타일 */
@@ -173,11 +186,18 @@ const StyledCalendarWrapper = styled.div`
     .fc-daygrid-day-top {
       border-top: none;
       text-align: center;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
     }
     .fc-theme-standard td {
       border: 1px solid ${theme.colors.gray[600]};
       border-left: none;
       border-right: none;
+    }
+    .fc-daygrid-day-events {
+      margin-top: 4px;
+      margin-bottom: 0;
     }
   }
 `
@@ -212,7 +232,7 @@ const EventBar = styled.div<{ $isHighlighted: boolean }>`
     padding: 0;
   }
 `
-const EventItem = styled.div<{ $isHighlighted?: boolean }>`
+const EventItem = styled.div<{ $isHighlighted?: boolean; $isTodayActive?: boolean }>`
   display: none;
   flex-direction: row;
   align-items: center;
@@ -221,7 +241,7 @@ const EventItem = styled.div<{ $isHighlighted?: boolean }>`
   gap: 12px;
   padding: 16px 22px;
   background-color: ${theme.colors.gray[800]};
-  border: 1px solid ${theme.colors.gray[600]};
+  border: 1px solid ${theme.colors.gray[700]};
   ${media.down(theme.breakPoints.tablet)} {
     display: flex;
   }
@@ -231,7 +251,7 @@ const EventItem = styled.div<{ $isHighlighted?: boolean }>`
     display: flex;
     align-items: center;
     border-radius: 50%;
-    background-color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
+    background-color: ${(props) => (props.$isTodayActive ? theme.colors.lime : theme.colors.white)};
   }
 
   svg {
@@ -239,16 +259,16 @@ const EventItem = styled.div<{ $isHighlighted?: boolean }>`
   }
 `
 
-const EventInfo = styled.div`
+const EventInfo = styled.div<{ $isTodayActive?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
   .title {
     ${theme.typography.B3.Md}
-    color: ${theme.colors.white};
+    color: ${(props) => (props.$isTodayActive ? theme.colors.lime : theme.colors.white)};
   }
   .period {
-    ${theme.typography.B3.Md}
+    ${theme.typography.B5.Rg}
     color: ${theme.colors.gray[400]};
   }
 `
