@@ -5,5 +5,3 @@ export type RecruitingStepType =
   | 'INTERVIEW_WAITING'
   | 'FINAL_REVIEWING'
   | 'FINAL_RESULT_PUBLISHED'
-
-export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'

@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 
+import type { UserApplicationBadgeType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
@@ -7,7 +8,6 @@ import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { transformUserRecruitmentBadgeToKorean } from '@/shared/utils/transformKorean'
 
-import type { UserApplicationBadgeType } from '../../domain/types'
 import * as S from './ApplyResumeCard.style'
 
 interface ApplyResumeCardProps {

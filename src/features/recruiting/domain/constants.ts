@@ -14,11 +14,3 @@ export const PART_REQUIRED_SKILL: Record<PartType, string> = {
   SPRINGBOOT: 'Java 기초',
   NODEJS: 'JavaScript 기초',
 } as const
-
-export type RECRUITING_SCHEDULE_TYPE =
-  | 'APPLY_WINDOW'
-  | 'DOC_REVIEW_WINDOW'
-  | 'DOC_RESULT_AT'
-  | 'INTERVIEW_WINDOW'
-  | 'FINAL_REVIEW_WINDOW'
-  | 'FINAL_RESULT_AT'

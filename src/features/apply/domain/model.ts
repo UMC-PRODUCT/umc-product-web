@@ -1,9 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
-import type { RECRUITING_SCHEDULE_TYPE } from '@/features/recruiting/domain'
 import type { RecruitingForms } from '@/features/school/domain'
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
+import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
 import type { OptionAnswerValue } from '@/shared/types/form'
 
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'

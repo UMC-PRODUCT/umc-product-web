@@ -1,4 +1,4 @@
-import type { RECRUITING_SCHEDULE_TYPE } from '@/features/recruiting/domain'
+import type { RECRUITING_SCHEDULE_TYPE } from '../constants/umc'
 
 export type CalendarEvent = {
   id: number

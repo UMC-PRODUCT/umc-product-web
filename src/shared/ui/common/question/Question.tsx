@@ -63,7 +63,6 @@ export const Question = ({
 }: QuestionProps) => {
   const handleValueChange = (newValue: QuestionAnswerValue) => {
     onChange?.(questionId, newValue)
-    console.log('newValue', newValue)
   }
   const renderQuestionInput = () => {
     switch (type) {

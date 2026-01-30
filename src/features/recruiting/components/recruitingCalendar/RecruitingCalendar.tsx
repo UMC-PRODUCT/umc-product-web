@@ -9,13 +9,13 @@ import isBetween from 'dayjs/plugin/isBetween'
 
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import CalendarIcon from '@/shared/assets/icons/calendar.svg?react'
+import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { CalendarEvent } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
 import { getEventDateText } from '@/shared/utils/calendar'
 import { transformRecruitingScheduleTypeKorean } from '@/shared/utils/transformKorean'
 
-import type { RECRUITING_SCHEDULE_TYPE } from '../../domain'
 import * as S from './RecruitingCalendar.style'
 
 dayjs.extend(isBetween)

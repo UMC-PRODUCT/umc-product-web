@@ -1,7 +1,8 @@
 import type { DocumentStatusType, FinalStatusType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
+import type { UserApplicationBadgeType } from '@/shared/constants/umc'
 
-import type { RecruitingStepType, UserApplicationBadgeType } from './types'
+import type { RecruitingStepType } from './types'
 
 export type GetMyApplicationResponseDTO = {
   nickName: string
