@@ -4,7 +4,6 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
-import Loading from '@/shared/ui/common/Loading/Loading'
 
 type RecruitingStepActionsProps = {
   step: number
