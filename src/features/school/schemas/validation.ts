@@ -2,7 +2,28 @@ import dayjs from 'dayjs'
 import { z } from 'zod/v3'
 
 import type { PartType } from '@/features/auth/domain'
-import type { RecruitingForms } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingSchedule, RecruitingStatus } from '@/shared/types/form'
+
+type ScheduleValidationContext = {
+  initialSchedule: RecruitingSchedule | null
+  now: string
+  status: RecruitingStatus | null
+  forceLockInDraft: boolean
+}
+
+let scheduleValidationContext: ScheduleValidationContext = {
+  initialSchedule: null,
+  now: dayjs().toISOString(),
+  status: null,
+  forceLockInDraft: false,
+}
+
+export const setScheduleValidationContext = (next: Partial<ScheduleValidationContext>) => {
+  scheduleValidationContext = {
+    ...scheduleValidationContext,
+    ...next,
+  }
+}
 
 type StepValues = Pick<
   RecruitingForms,
@@ -79,6 +100,148 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     const values = (data as DateOrderValues).schedule
     if (!values) return
 
+    const now = dayjs(scheduleValidationContext.now)
+    const initial = scheduleValidationContext.initialSchedule
+    const draftLockEnabled = scheduleValidationContext.forceLockInDraft
+    const isDraft = scheduleValidationContext.status === 'DRAFT' && !draftLockEnabled
+
+    const blockPast = (
+      value: string | null | undefined,
+      prevValue: string | null | undefined,
+      path: Array<string>,
+      label: string,
+    ) => {
+      if (!value) return
+      // 이전 값과 동일하면 허용 (이미 지난 일정 수정 불가 정책과 충돌 방지)
+      if (prevValue && dayjs(value).isSame(dayjs(prevValue), 'day')) return
+      if (dayjs(value).isBefore(now, 'day')) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path,
+          message: `${label}은(는) 오늘(${now.format('YYYY-MM-DD')}) 이전으로 설정할 수 없어요.`,
+        })
+      }
+    }
+
+    if (!isDraft) {
+      // 과거 날짜 수정 불가 (동일 값은 허용)
+      blockPast(
+        values.applyStartAt,
+        initial?.applyStartAt,
+        ['schedule', 'applyStartAt'],
+        '서류 모집 시작일',
+      )
+      blockPast(
+        values.applyEndAt,
+        initial?.applyEndAt,
+        ['schedule', 'applyEndAt'],
+        '서류 모집 종료일',
+      )
+      blockPast(
+        values.docResultAt,
+        initial?.docResultAt,
+        ['schedule', 'docResultAt'],
+        '서류 결과 발표일',
+      )
+      blockPast(
+        values.interviewStartAt,
+        initial?.interviewStartAt,
+        ['schedule', 'interviewStartAt'],
+        '면접 평가 시작일',
+      )
+      blockPast(
+        values.interviewEndAt,
+        initial?.interviewEndAt,
+        ['schedule', 'interviewEndAt'],
+        '면접 평가 종료일',
+      )
+      blockPast(
+        values.finalResultAt,
+        initial?.finalResultAt,
+        ['schedule', 'finalResultAt'],
+        '최종 결과 발표일',
+      )
+    }
+
+    // 모집 시작 후 시작일 고정
+    if (!isDraft && initial?.applyStartAt && values.applyStartAt) {
+      const applyStarted = now.isAfter(dayjs(initial.applyStartAt), 'day')
+      const changed = !dayjs(values.applyStartAt).isSame(dayjs(initial.applyStartAt), 'day')
+      if (applyStarted && changed) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['schedule', 'applyStartAt'],
+          message: '이미 모집이 시작되어 시작일을 수정할 수 없어요.',
+        })
+      }
+    }
+
+    // 단계 종료 후 수정 불가
+    const lockIfEnded = (
+      ended: string | null | undefined,
+      newValue: string | null | undefined,
+      path: Array<string>,
+      label: string,
+    ) => {
+      if (!ended || !newValue) return
+      if (now.isAfter(dayjs(ended), 'day')) {
+        const changed = !dayjs(newValue).isSame(dayjs(ended), 'day')
+        if (changed) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path,
+            message: `${label}은(는) 이미 종료되어 수정할 수 없어요.`,
+          })
+        }
+      }
+    }
+
+    if (!isDraft) {
+      lockIfEnded(
+        initial?.applyEndAt,
+        values.applyEndAt,
+        ['schedule', 'applyEndAt'],
+        '서류 모집 기간',
+      )
+      lockIfEnded(
+        initial?.interviewEndAt,
+        values.interviewEndAt,
+        ['schedule', 'interviewEndAt'],
+        '면접 평가 기간',
+      )
+    }
+
+    // 모집 마감일 단축 불가
+    if (!isDraft && initial?.applyEndAt && values.applyEndAt) {
+      if (dayjs(values.applyEndAt).isBefore(dayjs(initial.applyEndAt), 'day')) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['schedule', 'applyEndAt'],
+          message: '모집 종료일을 기존보다 앞당길 수 없어요.',
+        })
+      }
+    }
+
+    // 면접 기간 단축 제한 (통보 후 앞당김 금지)
+    if (!isDraft && initial?.interviewStartAt && values.interviewStartAt) {
+      if (dayjs(values.interviewStartAt).isBefore(dayjs(initial.interviewStartAt), 'day')) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['schedule', 'interviewStartAt'],
+          message: '이미 안내된 면접 시작일을 앞당길 수 없어요.',
+        })
+      }
+    }
+    if (!isDraft && initial?.interviewEndAt && values.interviewEndAt) {
+      if (dayjs(values.interviewEndAt).isBefore(dayjs(initial.interviewEndAt), 'day')) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['schedule', 'interviewEndAt'],
+          message: '이미 안내된 면접 종료일을 앞당길 수 없어요.',
+        })
+      }
+    }
+
     if (
       values.applyStartAt &&
       values.applyEndAt &&
@@ -99,7 +262,7 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'docResultAt'],
-        message: '서류 모집 종료 이후로 선택해 주세요.',
+        message: '서류 모집 종료일과 같거나 이후로 선택해 주세요.',
       })
     }
 
@@ -142,14 +305,7 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
 
 export const step2Schema = withDateOrderRules(
   z.object({
-    schedule: baseScheduleSchema.partial({
-      applyStartAt: true,
-      applyEndAt: true,
-      docResultAt: true,
-      interviewStartAt: true,
-      interviewEndAt: true,
-      finalResultAt: true,
-    }),
+    schedule: baseScheduleSchema,
   }),
 )
 
@@ -166,13 +322,13 @@ const hasSlotsForAllDates = (
 export const getStepReady = (
   step: number,
   values: StepValues,
-  options?: { interviewDates?: Array<string> },
+  options?: { interviewDates?: Array<string>; skipInterviewSlotsValidation?: boolean },
 ) => {
   if (step === 1) return step1Schema.safeParse(values).success
   if (step === 2) {
     const isValid = step2Schema.safeParse(values).success
     if (!isValid) return false
-    if (options?.interviewDates) {
+    if (options?.interviewDates && !options.skipInterviewSlotsValidation) {
       return hasSlotsForAllDates(
         options.interviewDates,
         (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabledByDate,

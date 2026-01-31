@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Control } from 'react-hook-form'
 import { useFieldArray, useWatch } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
+import { useRouter } from '@tanstack/react-router'
 
 import { recruiteKeys } from '@/features/school/domain/queryKey'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
@@ -24,7 +24,12 @@ type QuestionListProps = {
 
 const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) => {
   const draggingId = useRef<number | null>(null)
-  const { recruitingId } = useParams({ from: '/(app)/school/recruiting/$recruitingId/' })
+  const router = useRouter()
+  const recruitingMatch = router.state.matches.find(
+    (m) => (m.params as Record<string, string>).recruitingId,
+  )
+  const recruitingId =
+    (recruitingMatch?.params as Record<string, string> | undefined)?.recruitingId ?? ''
 
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)

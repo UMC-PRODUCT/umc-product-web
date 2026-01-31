@@ -83,7 +83,7 @@ const Step5 = ({
           questionTitle="최종 결과 발표"
         />
       </PreviewSection>
-      <PreviewSection title="지원서 문항 작성" step={3} setStep={setStep}>
+      <PreviewSection title="지원서 문항 작성" step={3} setStep={setStep} showEdit={false}>
         {[1, 2].map((pageNumber) => {
           const pageMeta = PAGE_INFO.find((item) => item.page === pageNumber)
           const pageItems = commonItems.filter(

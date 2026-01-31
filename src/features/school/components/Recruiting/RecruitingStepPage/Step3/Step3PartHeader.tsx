@@ -16,6 +16,7 @@ type Step3PartHeaderProps = {
   onChangePart: (part: PartType) => void
   onChangeStatus: (isComplete: boolean) => void
   labelResolver: (part: PartType) => string
+  disabled?: boolean
 }
 
 const Step3PartHeader = ({
@@ -26,7 +27,10 @@ const Step3PartHeader = ({
   onChangePart,
   onChangeStatus,
   labelResolver,
+  disabled = false,
 }: Step3PartHeaderProps) => {
+  const isCompletionToggleDisabled = disabled
+
   return (
     <Section
       variant="solid"
@@ -76,8 +80,12 @@ const Step3PartHeader = ({
           typo="B4.Sb"
           tone={'gray'}
           variant={isSelectedPartComplete ? 'outline' : 'solid'}
-          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
-          onClick={() => onChangeStatus(false)}
+          css={{
+            padding: '4px 14px',
+            cursor: selectedPart && !isCompletionToggleDisabled ? 'pointer' : 'default',
+            opacity: isCompletionToggleDisabled ? 0.5 : 1,
+          }}
+          onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(false)}
         >
           작성 중
         </Badge>
@@ -85,8 +93,12 @@ const Step3PartHeader = ({
           typo="B4.Sb"
           tone={'gray'}
           variant={isSelectedPartComplete ? 'solid' : 'outline'}
-          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
-          onClick={() => onChangeStatus(true)}
+          css={{
+            padding: '4px 14px',
+            cursor: selectedPart && !isCompletionToggleDisabled ? 'pointer' : 'default',
+            opacity: isCompletionToggleDisabled ? 0.5 : 1,
+          }}
+          onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(true)}
         >
           작성 완료
         </Badge>

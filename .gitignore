@@ -5,7 +5,7 @@ dist-ssr
 *.local
 *.log
 *.tsbuildinfo
-.env*
+.env
 
 # Frameworks
 .nitro

@@ -27,6 +27,7 @@ interface Step3Props {
   setPart: (nextPart: PartType | null) => void
   partCompletion: Partial<Record<PartType, boolean>>
   setPartCompletion: (next: Partial<Record<PartType, boolean>>) => void
+  canEditQuestions: boolean
 }
 
 const Step3 = ({
@@ -37,6 +38,7 @@ const Step3 = ({
   setPart,
   partCompletion,
   setPartCompletion,
+  canEditQuestions,
 }: Step3Props) => {
   const recruitmentParts = useWatch({ control, name: 'recruitmentParts' })
   const items = useWatch({ control, name: 'items' })
@@ -110,6 +112,7 @@ const Step3 = ({
           onChangePart={setPart}
           onChangeStatus={handlePartStatusChange}
           labelResolver={mapApiPartToPartType}
+          disabled={!canEditQuestions}
         />
       )}
       <Step3QuestionList
@@ -117,6 +120,7 @@ const Step3 = ({
         control={control}
         selectedPart={selectedPart}
         isSelectedPartComplete={isSelectedPartComplete}
+        isLocked={!canEditQuestions}
       />
       <Flex justifyContent="center">
         <Navigation currentPage={page} totalPages={PAGE_LIST.length} onChangePage={setPage} />

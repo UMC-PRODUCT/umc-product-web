@@ -19,6 +19,10 @@ export const Trigger = styled.button<{ $open: boolean }>`
   background-color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 6px;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `
 
 export const Value = styled.span<{ $placeholder: boolean }>`

@@ -91,6 +91,9 @@ export function buildRecruitingInitialForm(
     interviewTimeTable: safeInterviewTimeTable,
   }
 
+  // 검증 컨텍스트에 초기 스케줄 주입 (프론트에서 잠금 규칙 판단용)
+  // NOTE: 순수 함수 성격을 유지하기 위해 여기서 직접 setScheduleValidationContext를 호출하지 않음
+
   return normalizeTempRecruitingForm({
     title: result.title,
     recruitmentParts: result.recruitmentParts,

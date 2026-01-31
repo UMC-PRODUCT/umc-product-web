@@ -3,6 +3,7 @@ import { useCustomMutation } from '@/shared/hooks/customQuery'
 import {
   deleteRecruitment,
   deleteSingleQuestion,
+  patchPublishedRecruitment,
   patchTempSavedRecruitQuestions,
   patchTempSaveRecruitment,
   postFirstRecruitment,
@@ -12,7 +13,8 @@ import type {
   PatchTempSavedRecruitQuestionsRequestDTO,
   PatchTempSaveRecruitmentRequestDTO,
   PostRecruitmentRequestPublishDTO,
-} from '../domain/apiTypes'
+  RecruitmentEditable,
+} from '../domain/model'
 
 export function useRecruitingMutation() {
   function usePostFirstRecruitment() {
@@ -42,6 +44,12 @@ export function useRecruitingMutation() {
       postRecruitmentPublish(recrutingId, requestBody),
     )
   }
+
+  function usePatchPublishedRecruitment(recruitmentId: string) {
+    return useCustomMutation((requestBody: RecruitmentEditable) =>
+      patchPublishedRecruitment({ recruitmentId, requestBody }),
+    )
+  }
   return {
     usePostFirstRecruitment,
     usePatchTempSaveRecruitment,
@@ -49,5 +57,6 @@ export function useRecruitingMutation() {
     useDeleteRecruitment,
     useDeleteSingleQuestion,
     usePostPublishRecruitment,
+    usePatchPublishedRecruitment,
   }
 }
