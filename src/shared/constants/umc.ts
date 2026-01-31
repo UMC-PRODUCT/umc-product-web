@@ -26,16 +26,6 @@ export const ACCOUNT_LEVEL: Array<{ id: number; label: AccountLevelType }> = ACC
   }),
 )
 
-// PART_ABILITY는 PART_CONFIG에서 유도
-export const PART_ABILITY: Record<PartType, Array<string>> = {
-  PLAN: [...PART_CONFIG.PLAN.abilities],
-  DESIGN: [...PART_CONFIG.DESIGN.abilities],
-  WEB: [...PART_CONFIG.WEB.abilities],
-  IOS: [...PART_CONFIG.IOS.abilities],
-  ANDROID: [...PART_CONFIG.ANDROID.abilities],
-  SPRINGBOOT: [...PART_CONFIG.SPRINGBOOT.abilities],
-  NODEJS: [...PART_CONFIG.NODEJS.abilities],
-}
 export type RECRUITING_SCHEDULE_TYPE =
   | 'APPLY_WINDOW'
   | 'DOC_REVIEW_WINDOW'

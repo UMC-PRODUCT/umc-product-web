@@ -54,15 +54,4 @@ export const RecruitingPreviewSkeletonContent = ({
   </S.ModalContentWrapper>
 )
 
-const RecruitingPreviewSkeleton = ({ title, onClose }: { title: string; onClose: () => void }) => (
-  <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
-    <Modal.Portal>
-      <Modal.Overlay />
-      <Modal.Content>
-        <RecruitingPreviewSkeletonContent title={title} onClose={onClose} />
-      </Modal.Content>
-    </Modal.Portal>
-  </Modal.Root>
-)
-
-export default RecruitingPreviewSkeleton
+// default skeleton modal wrapper is unused; keep only content export
