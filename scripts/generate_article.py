@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 load_dotenv()
 
 # 환경 변수 로드
-GH_TOKEN = os.getenv('GH_TOKEN')
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 REPO_NAME = os.getenv('REPO_NAME', "UMC-PRODUCT/umc-product-web")
 EMAIL_USER = os.getenv('EMAIL_USER')
@@ -22,7 +22,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 def get_today_work():
     try:
-        auth = Auth.Token(GH_TOKEN)
+        auth = Auth.Token(GITHUB_TOKEN)
         g = Github(auth=auth)
         repo = g.get_repo(REPO_NAME)
         kst = timezone(timedelta(hours=9))
