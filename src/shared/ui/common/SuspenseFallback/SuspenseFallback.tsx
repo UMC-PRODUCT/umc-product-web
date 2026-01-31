@@ -20,7 +20,7 @@ const SuspenseFallback = ({
     alignItems="center"
     justifyContent="center"
     flexDirection="column"
-    height="100vh"
+    height="100%"
     gap={gap}
     css={{
       padding: '60px 0',
