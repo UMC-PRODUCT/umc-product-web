@@ -13,7 +13,7 @@ load_dotenv()
 # 환경 변수 로드
 GH_TOKEN = os.getenv('GH_TOKEN')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-REPO_NAME = os.getenv('REPO_NAME', "2026-Capstone-Project/FrontEnd")
+REPO_NAME = os.getenv('REPO_NAME', "UMC-PRODUCT/umc-product-web")
 EMAIL_USER = os.getenv('EMAIL_USER')
 EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 RECEIVER_EMAIL = os.getenv('RECEIVER_EMAIL')
