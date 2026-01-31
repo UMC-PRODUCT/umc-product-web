@@ -89,7 +89,7 @@ export function buildDefaultValuesFromQuestions(
           answer: part,
         }))
       } else {
-        rawSelections = candidate.selections
+        rawSelections = candidate.preferredParts
       }
     }
 
