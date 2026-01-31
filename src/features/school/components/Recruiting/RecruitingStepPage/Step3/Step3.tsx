@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
-import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -45,7 +45,7 @@ const Step3 = ({
   const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
       recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
-        const label = mapApiPartToPartType(partValue)
+        const label = PART_TYPE_TO_SMALL_PART[partValue]
         acc.push({ label, id: partValue })
         return acc
       }, []),
@@ -111,7 +111,6 @@ const Step3 = ({
           partCompletion={partCompletion}
           onChangePart={setPart}
           onChangeStatus={handlePartStatusChange}
-          labelResolver={mapApiPartToPartType}
           disabled={!canEditQuestions}
         />
       )}

@@ -1,3 +1,4 @@
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
@@ -15,7 +16,6 @@ type Step3PartHeaderProps = {
   partCompletion: Partial<Record<PartType, boolean>>
   onChangePart: (part: PartType) => void
   onChangeStatus: (isComplete: boolean) => void
-  labelResolver: (part: PartType) => string
   disabled?: boolean
 }
 
@@ -26,7 +26,6 @@ const Step3PartHeader = ({
   partCompletion,
   onChangePart,
   onChangeStatus,
-  labelResolver,
   disabled = false,
 }: Step3PartHeaderProps) => {
   const isCompletionToggleDisabled = disabled
@@ -48,7 +47,7 @@ const Step3PartHeader = ({
         value={
           selectedPart
             ? {
-                label: labelResolver(selectedPart),
+                label: PART_TYPE_TO_SMALL_PART[selectedPart],
                 id: selectedPart,
               }
             : undefined

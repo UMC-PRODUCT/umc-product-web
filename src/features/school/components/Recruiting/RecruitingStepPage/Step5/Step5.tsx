@@ -2,10 +2,10 @@ import dayjs from 'dayjs'
 
 import { PAGE_INFO } from '@features/school/domain'
 
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import type { PartType } from '@/features/auth/domain'
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
-import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -22,7 +22,7 @@ const Step5 = ({
 }) => {
   const formatDateLabel = (value: string | null) => (value ? dayjs(value).format('YYYY.MM.DD') : '')
   const recruitingPartLabels = formData.recruitmentParts
-    .map((part) => mapApiPartToPartType(part))
+    .map((part) => PART_TYPE_TO_SMALL_PART[part])
     .filter((part): part is NonNullable<typeof part> => Boolean(part))
   const commonItems = formData.items
     .filter((item) => item.target.kind === 'COMMON_PAGE')
@@ -128,7 +128,7 @@ const Step5 = ({
                 }, {}),
               ).map((itemsForPart) => {
                 const partKey = itemsForPart[0]?.target.part ?? ''
-                const partLabel = partKey ? mapApiPartToPartType(partKey as never) : ''
+                const partLabel = partKey ? PART_TYPE_TO_SMALL_PART[partKey as never] : ''
                 return (
                   <Section
                     key={partKey}
