@@ -151,40 +151,32 @@ const buildPortfolioAnswer = (value: unknown): portfolioAnswer | null => {
   return { files, links }
 }
 
-const deduplicatePartSelections = (items: Array<{ id: string; answer: PartType }>) => {
-  const ordered = new Map<string, PartType>()
-  items.forEach((item) => {
-    ordered.set(item.id, item.answer)
-  })
-  return Array.from(ordered.entries()).map(([id, answer]) => ({ id, answer }))
-}
-
 const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null => {
   if (!Array.isArray(value)) return null
-  const normalized = value
+  const preferredParts = value
     .map((entry) => {
       if (!entry || typeof entry !== 'object') return null
-      const candidate = entry as {
-        id?: number
-        answer?: PartType
-        recruitmentPartId?: string
-      }
-      if (!candidate.answer) return null
-      const id =
-        candidate.recruitmentPartId ??
-        (typeof candidate.id === 'number' ? String(candidate.id) : undefined)
-      if (!id) return null
-      return { id, answer: candidate.answer }
+      const candidate = entry as { answer?: PartType }
+      return candidate.answer ?? null
     })
-    .filter((item): item is { id: string; answer: PartType } => Boolean(item))
+    .filter((part): part is PartType => Boolean(part))
 
-  const deduped = deduplicatePartSelections(normalized)
-  return deduped.length > 0 ? { selections: deduped } : null
+  const latest = preferredParts.at(-1)
+  return latest ? { preferredParts: [latest] } : null
 }
 
 const buildScheduleAnswer = (value: unknown): scheduleAnswer | null => {
   if (!isScheduleValuePresent(value)) return null
-  return { slots: value }
+
+  const slots = value as Record<string, Array<string>>
+  const selected = Object.entries(slots)
+    .map(([date, times]) => ({
+      date,
+      times: Array.isArray(times) ? times.filter((t): t is string => typeof t === 'string') : [],
+    }))
+    .filter((entry) => entry.times.length > 0)
+
+  return selected.length > 0 ? { selected } : null
 }
 
 const mapQuestionToAnswerItem = (question: question, value: unknown): AnswerItem | null => {
