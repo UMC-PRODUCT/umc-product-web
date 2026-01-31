@@ -7,6 +7,7 @@ import type { RecruitingForms } from '@/shared/types/form'
 type RecruitingContextValue = {
   form: UseFormReturn<RecruitingForms>
   values: RecruitingForms
+  initialSchedule: RecruitingForms['schedule'] | null
   step: number
   setStep: (nextStep: number) => void
   step3PageNumber: number

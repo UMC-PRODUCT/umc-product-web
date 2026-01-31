@@ -29,6 +29,7 @@ type LabelCalendarProps = {
   id?: string
   className?: string
   css?: Interpolation<Theme>
+  disabled?: boolean
 }
 
 const formatDate = (value: Date) => dayjs(value).format('YYYY.MM.DD')
@@ -47,6 +48,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
       id,
       className,
       css,
+      disabled = false,
     },
     ref,
   ) => {
@@ -79,6 +81,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
 
     const handleDateChange = useCallback(
       (nextValue: Date) => {
+        if (disabled) return
         if (!isValuePropProvided) {
           setInternalValue(nextValue)
         }
@@ -86,7 +89,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
         setIsOpen(false)
         onBlur?.()
       },
-      [isValuePropProvided, onBlur, onChange],
+      [disabled, isValuePropProvided, onBlur, onChange],
     )
 
     const displayValue = selectedValue ? formatDate(selectedValue) : placeholder
@@ -120,8 +123,10 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             css={css}
             $open={isOpen}
             onClick={() => {
+              if (disabled) return
               setIsOpen(!isOpen)
             }}
+            disabled={disabled}
           >
             <S.Value $placeholder={!selectedValue}>{displayValue}</S.Value>
             <CalendarIcon color={theme.colors.gray[400]} width={26} height={26} aria-hidden />

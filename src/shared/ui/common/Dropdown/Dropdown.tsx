@@ -15,6 +15,7 @@ type DropdownProps<T> = {
   value?: Option<T>
   defaultValue?: Option<T>
   onChange?: (option: Option<T>) => void
+  disabled?: boolean
   id?: string
   ariaLabelledby?: string
   css?: Interpolation<Theme>
@@ -30,6 +31,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     value,
     defaultValue,
     onChange,
+    disabled = false,
     id,
     ariaLabelledby,
     className,
@@ -59,6 +61,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
       value={isValuePropProvided ? controlledValue : undefined}
       defaultValue={!isValuePropProvided && defaultValue ? String(defaultValue.id) : undefined}
       onValueChange={handleValueChange}
+      disabled={disabled}
     >
       <S.StyledTrigger
         ref={ref}
@@ -66,6 +69,8 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         aria-labelledby={ariaLabelledby}
         className={className}
         css={css}
+        data-disabled={disabled || undefined}
+        disabled={disabled}
       >
         <SelectPrimitive.Value placeholder={placeholder} />
         <S.StyledIcon>

@@ -12,6 +12,7 @@ type Step3QuestionListProps = {
   control: Control<RecruitingForms>
   selectedPart: PartType | null
   isSelectedPartComplete: boolean
+  isLocked: boolean
 }
 
 const Step3QuestionList = ({
@@ -19,6 +20,7 @@ const Step3QuestionList = ({
   control,
   selectedPart,
   isSelectedPartComplete,
+  isLocked,
 }: Step3QuestionListProps) => {
   if (page === 1 || page === 2) {
     return (
@@ -26,6 +28,7 @@ const Step3QuestionList = ({
         key={`common-${page}`}
         control={control}
         target={{ kind: 'COMMON_PAGE', pageNo: page }}
+        isLocked={isLocked}
       />
     )
   }
@@ -35,7 +38,7 @@ const Step3QuestionList = ({
         key={`part-${selectedPart}`}
         control={control}
         target={{ kind: 'PART', part: selectedPart, pageNo: page }}
-        isLocked={isSelectedPartComplete}
+        isLocked={isLocked || isSelectedPartComplete}
       />
     )
   }

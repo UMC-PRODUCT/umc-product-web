@@ -22,6 +22,12 @@ export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   &[data-state='open'] {
     transform: translateY(1px);
   }
+
+  &[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+  }
 `
 
 export const StyledIcon = styled(SelectPrimitive.Icon)`

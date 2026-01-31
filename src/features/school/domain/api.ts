@@ -8,13 +8,14 @@ import type {
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
   GetTempSavedRecruitmentResponseDTO,
+  patchPublishedRecruitmentRequestDTO,
   PatchTempSavedRecruitQuestionsRequestDTO,
   PatchTempSavedRecruitQuestionsResponseDTO,
   PatchTempSaveRecruitmentRequestDTO,
   PatchTempSaveRecruitmentResponseDTO,
   PostFirstRecruitmentResponseDTO,
   PostRecruitmentRequestPublishDTO,
-} from './apiTypes'
+} from './model'
 
 export const postFirstRecruitment = async (): Promise<
   CommonResponseDTO<PostFirstRecruitmentResponseDTO>
@@ -98,6 +99,17 @@ export const deleteSingleQuestion = async ({
 }): Promise<CommonResponseDTO<DeleteSingleQuestionResponseDTO>> => {
   const { data } = await axiosInstance.delete(
     `/recruitments/${recruitmentId}/application-form/questions/${questionId}`,
+  )
+  return data
+}
+
+export const patchPublishedRecruitment = async ({
+  recruitmentId,
+  requestBody,
+}: patchPublishedRecruitmentRequestDTO) => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/published`,
+    requestBody,
   )
   return data
 }

@@ -1,18 +1,64 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
 
 import EmptyRecruiting from '../EmptyRecruiting/EmptyRecruiting'
 import RecruitingCard from '../RecruitingCard/RecruitingCard'
 import * as S from './RecruitingList.style'
 
-const RecruitingList = () => {
-  const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
+const RecruitingListLoading = () => (
+  <Flex
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="center"
+    maxHeight={530}
+    height={'fit-content'}
+    minHeight={400}
+    css={{ padding: '24px 0' }}
+  >
+    <Loading />
+  </Flex>
+)
+
+const RecruitingListBody = ({ tab }: { tab: 'ONGOING' | 'CLOSED' | 'SCHEDULED' }) => {
   const { data } = useGetRecruitmentsList(tab)
   const recruitments = data.result.recruitments
+  return (
+    <Flex
+      flexDirection="column"
+      gap={12}
+      maxHeight={530}
+      height={'fit-content'}
+      minHeight={400}
+      css={{ overflowY: 'auto' }}
+    >
+      {recruitments.length > 0 ? (
+        recruitments.map((recruitment) => (
+          <RecruitingCard
+            recruitmentId={recruitment.recruitmentId}
+            key={recruitment.recruitmentId}
+            title={recruitment.recruitmentName}
+            startDate={recruitment.startDate}
+            endDate={recruitment.endDate}
+            applicants={recruitment.applicantCount}
+            state={recruitment.phase}
+            editable={recruitment.editable}
+            listBadge={recruitment.listBadge}
+          />
+        ))
+      ) : (
+        <EmptyRecruiting tab={tab} />
+      )}
+    </Flex>
+  )
+}
+
+const RecruitingList = () => {
+  const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
   return (
     <Flex gap={20} flexDirection="column">
       <PageTitle title="모집 목록" />
@@ -28,31 +74,9 @@ const RecruitingList = () => {
             예정된 모집
           </S.Tab>
         </S.Header>
-        <Flex
-          flexDirection="column"
-          gap={12}
-          maxHeight={530}
-          height={'fit-content'}
-          minHeight={400}
-          css={{ overflowY: 'auto' }}
-        >
-          {recruitments.length > 0 ? (
-            recruitments.map((recruitment) => (
-              <RecruitingCard
-                recruitmentId={recruitment.recruitmentId}
-                key={recruitment.recruitmentId}
-                title={recruitment.recruitmentName}
-                startDate={recruitment.startDate}
-                endDate={recruitment.endDate}
-                applicants={recruitment.applicantCount}
-                state={recruitment.phase}
-                editable={recruitment.editable}
-              />
-            ))
-          ) : (
-            <EmptyRecruiting tab={tab} />
-          )}
-        </Flex>
+        <Suspense fallback={<RecruitingListLoading />}>
+          <RecruitingListBody tab={tab} />
+        </Suspense>
       </Section>
     </Flex>
   )

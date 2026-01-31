@@ -93,7 +93,7 @@ export interface RecruitingQuestionPage {
   questions: Array<RecruitingQuestion>
 }
 
-export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED'
+export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED' | 'PUBLISHED'
 
 export type range = {
   start: string

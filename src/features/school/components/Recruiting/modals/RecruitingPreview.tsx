@@ -12,7 +12,7 @@ import { Modal } from '@/shared/ui/common/Modal/Modal'
 import { useGetApplicationFormData } from '../../../hooks/useGetRecruitingData'
 import * as S from './RecruitingPreview.style'
 
-const RecruitingPreview = ({
+export const RecruitingPreviewContent = ({
   onClose,
   title,
   recruitingId,
@@ -38,76 +38,69 @@ const RecruitingPreview = ({
   }
 
   return (
-    <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
-      <Modal.Portal>
-        <Modal.Overlay />
-        <Modal.Content>
-          <S.ModalContentWrapper
-            css={{
-              backgroundColor: theme.colors.black,
-              boxShadow: '0 8px 20px 0 rgba(0, 0, 0, 0.70)',
+    <S.ModalContentWrapper
+      css={{
+        backgroundColor: theme.colors.black,
+        boxShadow: '0 8px 20px 0 rgba(0, 0, 0, 0.70)',
+      }}
+      flexDirection="column"
+      width={'fit-content'}
+    >
+      <Modal.Header>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          width="100%"
+          css={{
+            marginBottom: '33px',
+            [media.down(theme.breakPoints.mobile)]: { marginBottom: '10px' },
+          }}
+        >
+          <Modal.Title asChild>
+            <S.Title>{title}</S.Title>
+          </Modal.Title>
+          <Modal.Close asChild>
+            <S.ModalButton type="button" aria-label="모달 닫기" onClick={onClose}>
+              <Close color={theme.colors.gray[300]} width={30} />
+            </S.ModalButton>
+          </Modal.Close>
+        </Flex>
+      </Modal.Header>
+      <Modal.Body>
+        <S.ContentWrapper
+          flexDirection="column"
+          justifyContent="flex-start"
+          alignItems="center"
+          gap={22}
+        >
+          <ResumeContent
+            pages={resolvedPages}
+            displayLastSavedTime={null}
+            handleSave={() => {}}
+            isEdit={false}
+            control={control}
+            setValue={setValue}
+            clearErrors={clearErrors}
+            errors={errors}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isFormIncomplete={isFormIncomplete}
+            openSubmitModal={() => {}}
+            handlePageNavigation={handlePageNavigation}
+            formData={{
+              recruitmentid: 0,
+              formId: 0,
+              status: '',
+              recruitmentFormTitle: title,
+              noticeTitle: title,
+              noticeContent: questionData.noticeContent,
+              pages: [],
             }}
-            flexDirection="column"
-            width={'fit-content'}
-          >
-            <Modal.Header>
-              <Flex
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-                css={{
-                  marginBottom: '33px',
-                  [media.down(theme.breakPoints.mobile)]: { marginBottom: '10px' },
-                }}
-              >
-                <Modal.Title asChild>
-                  <S.Title>{title}</S.Title>
-                </Modal.Title>
-                <Modal.Close asChild>
-                  <S.ModalButton type="button" aria-label="모달 닫기">
-                    <Close color={theme.colors.gray[300]} width={30} />
-                  </S.ModalButton>
-                </Modal.Close>
-              </Flex>
-            </Modal.Header>
-            <Modal.Body>
-              <S.ContentWrapper
-                flexDirection="column"
-                justifyContent="flex-start"
-                alignItems="center"
-                gap={22}
-              >
-                <ResumeContent
-                  pages={resolvedPages}
-                  displayLastSavedTime={null}
-                  handleSave={() => {}}
-                  isEdit={false}
-                  control={control}
-                  setValue={setValue}
-                  clearErrors={clearErrors}
-                  errors={errors}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  isFormIncomplete={isFormIncomplete}
-                  openSubmitModal={() => {}}
-                  handlePageNavigation={handlePageNavigation}
-                  formData={{
-                    recruitmentid: 0,
-                    formId: 0,
-                    status: '',
-                    recruitmentFormTitle: title,
-                    noticeTitle: title,
-                    noticeContent: questionData.noticeContent,
-                    pages: [],
-                  }}
-                />
-              </S.ContentWrapper>
-            </Modal.Body>
-          </S.ModalContentWrapper>
-        </Modal.Content>
-      </Modal.Portal>
-    </Modal.Root>
+          />
+        </S.ContentWrapper>
+      </Modal.Body>
+    </S.ModalContentWrapper>
   )
 }
 
-export default RecruitingPreview
+// NOTE: Modal.Root은 외부(RecruitingModals)에서 감싸서 중복 오버레이가 생기지 않도록 합니다.
