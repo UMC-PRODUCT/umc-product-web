@@ -327,7 +327,7 @@ export type portfolioAnswer = {
 }
 
 export type preferredPartAnswer = {
-  prefferedParts: Array<PartType>
+  preferredParts: Array<PartType>
 }
 
 export type scheduleAnswer = {

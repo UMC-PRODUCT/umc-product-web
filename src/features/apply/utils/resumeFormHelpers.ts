@@ -162,7 +162,7 @@ const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null =>
     .filter((part): part is PartType => Boolean(part))
 
   const latest = preferredParts.at(-1)
-  return latest ? { prefferedParts: [latest] } : null
+  return latest ? { preferredParts: [latest] } : null
 }
 
 const buildScheduleAnswer = (value: unknown): scheduleAnswer | null => {
