@@ -57,7 +57,7 @@ def create_article(work_details):
     
     kst = timezone(timedelta(hours=9))
     today_str = datetime.now(kst).strftime('%Y년 %m월 %d일')
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    model = genai.GenerativeModel('gemini-flash-latest')
     
     prompt = f"""
     팀 "PRODUCT TEAM"의 시니어 개발자로서 오늘({today_str})의 개발 일지를 작성하라.
