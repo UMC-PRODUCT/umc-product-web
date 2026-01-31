@@ -7,7 +7,7 @@
  */
 
 import type { AccountLevelType, PartType } from '@features/auth/domain'
-import { ACCOUNT_LEVEL_LIST, PART_CONFIG, PART_LIST } from '@features/auth/domain'
+import { ACCOUNT_LEVEL_LIST, PART_LIST } from '@features/auth/domain'
 
 // 하위 호환성을 위한 re-export
 export const PART: Array<PartType> = [...PART_LIST]
