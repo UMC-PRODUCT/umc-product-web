@@ -141,6 +141,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
 
   const onSubmit = () => {
     handleSave()
+    const answers = getSubmissionItems(resolvedPages, getValues(), defaultValues)
     submitApplication(
       {
         recruitmentId,
