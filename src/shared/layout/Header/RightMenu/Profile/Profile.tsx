@@ -5,7 +5,7 @@ import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-import { memberKeys } from '@/features/auth/domain/queryKeys'
+import { memberKeys } from '@/shared/api/auth/queries'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
@@ -39,9 +39,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   }, [open])
 
   useEffect(() => {
-    setName(data?.name || '')
-    setNickname(data?.nickname || '')
-    setEmail(data?.email || '')
+    setName(data.name || '')
+    setNickname(data.nickname || '')
+    setEmail(data.email || '')
   }, [data, setName, setNickname, setEmail])
 
   const handleLogout = () => {
@@ -70,9 +70,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               css={{ overflow: 'hidden' }}
             >
               <S.NameText>
-                {data?.nickname}/{data?.name}
+                {data.nickname}/{data.name}
               </S.NameText>
-              <S.EmailText>{data?.email}</S.EmailText>
+              <S.EmailText>{data.email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex flexDirection="column" gap="12px">
@@ -80,13 +80,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 소속
               </Badge>
-              {data?.schoolName}
+              {data.schoolName}
             </S.InfoRow>
             <S.InfoRow gap="10px">
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 권한
               </Badge>
-              {data?.status}
+              {data.status}
             </S.InfoRow>
           </Flex>
           {children && <S.MobileOnly>{children}</S.MobileOnly>}
@@ -109,8 +109,8 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
       )}
       {isModalOpen.isOpen && isModalOpen.modalType === 'deleteAccount' && (
         <DeleteAccountModal
-          nickname={data?.nickname || ''}
-          name={data?.name || ''}
+          nickname={data.nickname || ''}
+          name={data.name || ''}
           onClose={() => setIsModalOpen({ modalType: '', isOpen: false })}
           onClick={() => {
             setIsModalOpen({ modalType: '', isOpen: false })

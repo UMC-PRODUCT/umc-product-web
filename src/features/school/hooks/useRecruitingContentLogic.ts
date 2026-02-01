@@ -14,15 +14,15 @@ import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 import { recruiteKeys } from '../domain/queryKey'
 import { useGetRecruitingData, useGetTempSavedApplicationData } from '../hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
-import {
-  buildPublishedSchedulePayload,
-  buildQuestionsPayload,
-  convertApplicationFormToItems,
-} from '../pages/Recruiting.utils'
+import { convertApplicationFormToItems } from '../utils/recruiting/applicationFormMapper'
 import {
   buildRecruitingInitialForm,
   buildSchedulePayload,
 } from '../utils/recruiting/buildInitialForm'
+import {
+  buildPublishedSchedulePayload,
+  buildQuestionsPayload,
+} from '../utils/recruiting/recruitingPayload'
 
 export type RecruitingProps = {
   recruitingId?: string
@@ -48,7 +48,7 @@ export const useRecruitingContentLogic = ({
   const [partCompletionMap, setPartCompletionMap] = useState<PartCompletionMap>(() => {
     const next: PartCompletionMap = {}
     values.recruitmentParts.forEach((part) => {
-      next[part] = true
+      next[part] = false
     })
     return next
   })
@@ -112,11 +112,23 @@ export const useRecruitingContentLogic = ({
     setPartCompletionMap((prev) => {
       const next: PartCompletionMap = {}
       values.recruitmentParts.forEach((part) => {
+        const defaultValue = isEditLocked ? true : false
+        next[part] = prev[part] ?? defaultValue
+      })
+      return next
+    })
+  }, [values.recruitmentParts, isEditLocked])
+
+  useEffect(() => {
+    if (!isEditLocked) return
+    setPartCompletionMap((prev) => {
+      const next: PartCompletionMap = {}
+      values.recruitmentParts.forEach((part) => {
         next[part] = prev[part] ?? true
       })
       return next
     })
-  }, [values.recruitmentParts])
+  }, [isEditLocked, values.recruitmentParts])
 
   useBeforeUnload(isDirty)
   const navigationBlocker = useUnsavedChangesBlocker(isDirty)

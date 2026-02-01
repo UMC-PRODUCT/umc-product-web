@@ -1,5 +1,5 @@
-import type { PartType } from '@/features/auth/domain'
 import type { QuestionMode } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import { Button } from '../../Button'
 import { Flex } from '../../Flex'

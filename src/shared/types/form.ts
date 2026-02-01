@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType } from '@features/apply/domain/model'
+import type { QuestionType } from '@/shared/types/apply'
 
 import type { PartType } from './umc'
 

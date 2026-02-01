@@ -1,11 +1,6 @@
-import type {
-  FileUploadAnswer,
-  QuestionAnswerValue,
-  QuestionType,
-} from '@features/apply/domain/model'
-
-import type { PartType } from '@/features/auth/domain'
+import type { FileUploadAnswer, QuestionAnswerValue, QuestionType } from '@/shared/types/apply'
 import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import { Choice } from './choice/Choice'
 import { FileUpload } from './fileUpload/FileUpload/FileUpload'
