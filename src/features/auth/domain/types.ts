@@ -34,8 +34,8 @@ export type MyInfoResponseDTO = {
   nickname?: string
   email?: string
   schoolId?: number
-  schoolName?: number
-  profileImageLink?: number
+  schoolName?: string
+  profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
 }
 

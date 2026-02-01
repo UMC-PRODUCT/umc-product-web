@@ -6,7 +6,7 @@ import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
 import { memberKeys } from '@/features/auth/domain/queryKeys'
-import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
 import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
@@ -25,7 +25,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     modalType: '',
     isOpen: false,
   })
-  const { data } = useCustomQuery(memberKeys.me().queryKey, memberKeys.me().queryFn)
+  const { data } = useCustomSuspenseQuery(memberKeys.me().queryKey, memberKeys.me().queryFn)
 
   useEffect(() => {
     if (!open) return
@@ -57,12 +57,18 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   return (
     <S.Container ref={menuRef}>
       <S.TriggerIcon onClick={() => setOpen(!open)} />
+
       {open && (
         <S.Modal>
           <S.CloseButton onClick={() => setOpen(false)} />
           <Flex gap="12px">
             <S.Avatar />
-            <Flex flexDirection="column" alignItems="flex-start" gap="4px">
+            <Flex
+              flexDirection="column"
+              alignItems="flex-start"
+              gap="4px"
+              css={{ overflow: 'hidden' }}
+            >
               <S.NameText>
                 {data?.nickname}/{data?.name}
               </S.NameText>
