@@ -73,10 +73,21 @@ const Step3 = ({
   // 완료 처리 전에 문항 유효성을 확인한다.
   const handlePartStatusChange = (isComplete: boolean) => {
     if (!selectedPart) return
-    if (isComplete && !isPartItemsValid(items, selectedPart)) return
+
+    if (!isComplete) {
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
+    if (!isPartItemsValid(items, selectedPart)) {
+      // 유효성 검증 실패 시에는 '작성 완료'로 넘어가지 않고 '작성 중' 상태를 유지한다.
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
     setPartCompletion({
       ...partCompletion,
-      [selectedPart]: isComplete,
+      [selectedPart]: true,
     })
   }
 

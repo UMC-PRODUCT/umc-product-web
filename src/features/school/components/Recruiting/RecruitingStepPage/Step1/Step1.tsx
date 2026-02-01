@@ -20,8 +20,7 @@ const Step1 = ({
   control: Control<RecruitingForms>
   status: RecruitingForms['status']
 }) => {
-  const draftLockEnabled = import.meta.env.VITE_FORCE_LOCK_IN_DRAFT === 'true'
-  const isLocked = status !== 'DRAFT' || draftLockEnabled
+  const isLocked = status !== 'DRAFT'
   return (
     <Flex flexDirection="column" gap={18}>
       <Section gap={29} variant="solid" flexDirection="column" alignItems="flex-start">

@@ -18,7 +18,6 @@ const RecruitingStepForm = () => {
     setPartCompletionByPart,
   } = useRecruitingContext()
   const { control, setValue, setError, clearErrors } = form
-  const draftLockEnabled = import.meta.env.VITE_FORCE_LOCK_IN_DRAFT === 'true'
   return (
     <>
       <RecruitingStep step={step} />
@@ -44,7 +43,7 @@ const RecruitingStepForm = () => {
             setPart={setStep3SelectedPart}
             partCompletion={partCompletionMap}
             setPartCompletion={setPartCompletionByPart}
-            canEditQuestions={values.status === 'DRAFT' && !draftLockEnabled}
+            canEditQuestions={values.status === 'DRAFT'}
           />
         )}
         {step === 4 && <Step4 control={control} />}
