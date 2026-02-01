@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
 import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
@@ -7,9 +6,6 @@ import * as S from '@/features/school/components/TempRecruitmentCard/TempRecruit
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
-
-import { recruiteKeys } from '../../domain/queryKey'
-import { useRecruitingMutation } from '../../hooks/useRecruitingMutation'
 
 const TempRecruitmentCard = ({
   title,
@@ -23,26 +19,11 @@ const TempRecruitmentCard = ({
   recruitmentId: string
 }) => {
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState({
     open: false,
     name: title,
   })
-  const { useDeleteRecruitment } = useRecruitingMutation()
-  const { mutate: deleteRecruitmentMutate } = useDeleteRecruitment(recruitmentId)
 
-  const handleDeleteRecruitment = () => {
-    deleteRecruitmentMutate(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
-        })
-      },
-      onError: (error) => {
-        console.error('Failed to delete recruitment:', error)
-      },
-    })
-  }
   return (
     <Section
       variant="both"
@@ -55,8 +36,8 @@ const TempRecruitmentCard = ({
       <S.InfoWrapper>
         <S.Title>{title}</S.Title>
         <S.LeftInfo padding={0}>
-          <Flex width={200} gap={4}>
-            <span className="label">임시저장 시각:</span>
+          <Flex width={'fit-content'} gap={4}>
+            <span className="label">임시저장 시각: </span>
             <span className="dateInfo">{tempSavedTime}</span>
           </Flex>
         </S.LeftInfo>
@@ -102,9 +83,9 @@ const TempRecruitmentCard = ({
       )}
       {isModalOpen.open && (
         <DeleteConfirm
+          recruitmentId={recruitmentId}
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
-          onClick={handleDeleteRecruitment}
         />
       )}
     </Section>

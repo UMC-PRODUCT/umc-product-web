@@ -35,7 +35,18 @@ const TempRecruitmentList = () => {
         <TempRecruitmentCard
           key={recruitment.recruitmentId}
           title={recruitment.recruitmentName}
-          tempSavedTime={'2026.01.06'}
+          tempSavedTime={
+            new Date(recruitment.updatedAt).getFullYear() +
+            '년 ' +
+            (new Date(recruitment.updatedAt).getMonth() + 1) +
+            '월 ' +
+            new Date(recruitment.updatedAt).getDate() +
+            '일 ' +
+            new Date(recruitment.updatedAt).getHours() +
+            '시 ' +
+            new Date(recruitment.updatedAt).getMinutes() +
+            '분'
+          }
           editable={recruitment.editable}
           recruitmentId={String(recruitment.recruitmentId)}
         />
