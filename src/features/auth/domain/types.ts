@@ -28,7 +28,7 @@ export type VerificationCodeRequestDTO = {
 }
 export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
 
-export type MyInfoResponseDTO = CommonResponseDTO<{
+export type MyInfoResponseDTO = {
   id?: number
   name?: string
   nickname?: string
@@ -37,7 +37,7 @@ export type MyInfoResponseDTO = CommonResponseDTO<{
   schoolName?: number
   profileImageLink?: number
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
-}>
+}
 
 export type GetTermsResponseDTO = {
   id: string

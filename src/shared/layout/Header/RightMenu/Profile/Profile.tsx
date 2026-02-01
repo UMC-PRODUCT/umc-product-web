@@ -39,9 +39,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   }, [open])
 
   useEffect(() => {
-    setName(data?.result.name || '')
-    setNickname(data?.result.nickname || '')
-    setEmail(data?.result.email || '')
+    setName(data?.name || '')
+    setNickname(data?.nickname || '')
+    setEmail(data?.email || '')
   }, [data, setName, setNickname, setEmail])
 
   const handleLogout = () => {
@@ -64,9 +64,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
             <S.Avatar />
             <Flex flexDirection="column" alignItems="flex-start" gap="4px">
               <S.NameText>
-                {data?.result.nickname}/{data?.result.name}
+                {data?.nickname}/{data?.name}
               </S.NameText>
-              <S.EmailText>{data?.result.email}</S.EmailText>
+              <S.EmailText>{data?.email}</S.EmailText>
             </Flex>
           </Flex>
           <Flex flexDirection="column" gap="12px">
@@ -74,13 +74,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 소속
               </Badge>
-              {data?.result.schoolName}
+              {data?.schoolName}
             </S.InfoRow>
             <S.InfoRow gap="10px">
               <Badge tone="gray" variant="solid" typo="H5.Md">
                 권한
               </Badge>
-              {data?.result.status}
+              {data?.status}
             </S.InfoRow>
           </Flex>
           {children && <S.MobileOnly>{children}</S.MobileOnly>}
@@ -103,8 +103,8 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
       )}
       {isModalOpen.isOpen && isModalOpen.modalType === 'deleteAccount' && (
         <DeleteAccountModal
-          nickname={data?.result.nickname || ''}
-          name={data?.result.name || ''}
+          nickname={data?.nickname || ''}
+          name={data?.name || ''}
           onClose={() => setIsModalOpen({ modalType: '', isOpen: false })}
           onClick={() => {
             setIsModalOpen({ modalType: '', isOpen: false })

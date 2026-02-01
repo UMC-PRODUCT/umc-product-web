@@ -70,9 +70,9 @@ const LoginRedirectPage = () => {
       try {
         const profile = await getMyInfo()
         if (cancelled) return
-        setEmail(profile.result.email ?? '')
-        setName(profile.result.name ?? '')
-        setNickname(profile.result.nickname ?? '')
+        setEmail(profile.email ?? '')
+        setName(profile.name ?? '')
+        setNickname(profile.nickname ?? '')
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
       }
