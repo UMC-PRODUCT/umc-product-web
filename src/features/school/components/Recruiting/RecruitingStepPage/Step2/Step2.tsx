@@ -46,17 +46,15 @@ const Step2 = ({
   // 일정 잠금 판단: 초기 스케줄 대비 변경 여부와 현재 시각 및 상태 기반
   const now = dayjs()
 
-  const draftLockEnabled = import.meta.env.VITE_FORCE_LOCK_IN_DRAFT === 'true'
-
   const canEdit = useMemo(() => {
-    if (status === 'DRAFT' && !draftLockEnabled) {
+    if (status === 'DRAFT') {
       return {
         applyStartAt: true,
         applyEndAt: true,
         docResultAt: true,
-        interviewStartAt: false,
-        interviewEndAt: false,
-        interviewTimeTable: false,
+        interviewStartAt: true,
+        interviewEndAt: true,
+        interviewTimeTable: true,
         finalResultAt: true,
       }
     }
@@ -72,7 +70,7 @@ const Step2 = ({
       interviewTimeTable: false,
       finalResultAt: true,
     }
-  }, [initialSchedule, now, status, draftLockEnabled])
+  }, [initialSchedule, now, status])
 
   const interviewDates = useMemo(() => {
     const { start, end } = interviewTimeTable.dateRange

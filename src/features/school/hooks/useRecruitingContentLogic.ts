@@ -31,8 +31,6 @@ export type RecruitingProps = {
   forceLockedMode?: boolean
 }
 
-const draftLockEnabled = import.meta.env.VITE_FORCE_LOCK_IN_DRAFT === 'true'
-
 export type RecruitmentPart = RecruitingForms['recruitmentParts'][number]
 export type PartCompletionMap = Partial<Record<RecruitmentPart, boolean>>
 
@@ -44,9 +42,19 @@ export const useRecruitingContentLogic = ({
 }: RecruitingProps) => {
   const navigate = useNavigate()
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
+  const { form, values, interviewDates } = useRecruitingForm()
   const [initialSchedule, setInitialSchedule] = useState<RecruitingSchedule | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const setPartCompletionByPart = useCallback((_: PartCompletionMap) => {}, [])
+  const [partCompletionMap, setPartCompletionMap] = useState<PartCompletionMap>(() => {
+    const next: PartCompletionMap = {}
+    values.recruitmentParts.forEach((part) => {
+      next[part] = true
+    })
+    return next
+  })
+  const setPartCompletionByPart = useCallback((next: PartCompletionMap) => {
+    setPartCompletionMap((prev) => ({ ...prev, ...next }))
+  }, [])
   const forceLockFromEnv = forceLockedMode ?? false
   const { data: recruitingData } = useGetRecruitingData(recruitingId!)
   const { data: applicationData } = useGetTempSavedApplicationData(recruitingId!)
@@ -68,9 +76,8 @@ export const useRecruitingContentLogic = ({
   const [modal, setModal] = useState({ modalName: '', isOpen: false })
   const [isBackConfirmOpen, setIsBackConfirmOpen] = useState(false)
 
-  const { form, values, interviewDates } = useRecruitingForm()
   const isEditLocked = useMemo(
-    () => forceLockFromEnv || values.status !== 'DRAFT' || draftLockEnabled,
+    () => forceLockFromEnv || values.status !== 'DRAFT',
     [forceLockFromEnv, values.status],
   )
 
@@ -88,7 +95,6 @@ export const useRecruitingContentLogic = ({
       initialSchedule: initialForm.schedule,
       now: dayjs().toISOString(),
       status: initialForm.status,
-      forceLockInDraft: draftLockEnabled,
     })
   }, [form, recruitingData.result])
 
@@ -102,12 +108,14 @@ export const useRecruitingContentLogic = ({
     )
   }, [form, applicationData.result])
 
-  const partCompletionMap = useMemo(() => {
-    const next: PartCompletionMap = {}
-    values.recruitmentParts.forEach((part) => {
-      next[part] = true
+  useEffect(() => {
+    setPartCompletionMap((prev) => {
+      const next: PartCompletionMap = {}
+      values.recruitmentParts.forEach((part) => {
+        next[part] = prev[part] ?? true
+      })
+      return next
     })
-    return next
   }, [values.recruitmentParts])
 
   useBeforeUnload(isDirty)

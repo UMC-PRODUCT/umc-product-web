@@ -13,8 +13,6 @@ import {
   ensureRequiredItems,
 } from '../utils/recruiting/requiredItems'
 
-const draftLockEnabled = import.meta.env.VITE_FORCE_LOCK_IN_DRAFT === 'true'
-
 const defaultValues: RecruitingForms = {
   title: '',
   recruitmentParts: [],
@@ -50,7 +48,7 @@ export const useRecruitingForm = () => {
 
   // 폼이 생성될 때 현재 시각 기반 정책 컨텍스트 설정
   useEffect(() => {
-    setScheduleValidationContext({ now: dayjs().toISOString(), forceLockInDraft: draftLockEnabled })
+    setScheduleValidationContext({ now: dayjs().toISOString() })
   }, [])
 
   const [title, recruitmentParts, maxPreferredPartCount, schedule, noticeContent, status, items] =
@@ -69,7 +67,7 @@ export const useRecruitingForm = () => {
 
   // 상태 변경 시 검증 컨텍스트에 반영 (DRAFT이면 잠금 규칙 비활성화)
   useEffect(() => {
-    setScheduleValidationContext({ status, forceLockInDraft: draftLockEnabled })
+    setScheduleValidationContext({ status })
   }, [status])
 
   const values = useMemo(
