@@ -94,7 +94,7 @@ const TempRecruitmentCard = ({
         <DeleteConfirm
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
-          onClick={() => {}}
+          recruitmentId={recruitmentId}
         />
       )}
     </Section>
