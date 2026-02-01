@@ -153,6 +153,7 @@ const buildPortfolioAnswer = (value: unknown): portfolioAnswer | null => {
 
 const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null => {
   if (!Array.isArray(value)) return null
+
   const preferredParts = value
     .map((entry) => {
       if (!entry || typeof entry !== 'object') return null
@@ -161,8 +162,8 @@ const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null =>
     })
     .filter((part): part is PartType => Boolean(part))
 
-  const latest = preferredParts.at(-1)
-  return latest ? { preferredParts: [latest] } : null
+  // 모든 지망을 순서대로 전달한다. (1지망, 2지망 ...)
+  return preferredParts.length > 0 ? { preferredParts } : null
 }
 
 const buildScheduleAnswer = (value: unknown): scheduleAnswer | null => {

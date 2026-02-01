@@ -1,4 +1,4 @@
-import type { TimeTableSlots } from '@features/apply/domain'
+import type { TimeTableSlots } from '@/shared/types/apply'
 
 export const timeToMinutes = (time: string) => {
   const [h, m] = time.split(':').map(Number)

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import type { TimeTableSlots } from '@features/apply/domain'
+import type { TimeTableSlots } from '@/shared/types/apply'
 
 import { buildDerivedSelected, indexToTime, isSameSelection } from './TimeTable.helpers'
 

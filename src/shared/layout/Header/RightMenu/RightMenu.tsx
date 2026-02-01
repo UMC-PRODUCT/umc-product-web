@@ -2,6 +2,8 @@ import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
 import ExternalLink from '@shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
 import Profile from '@shared/layout/Header/RightMenu/Profile/Profile'
 
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+
 import * as S from './RightMenu.style'
 
 type SocialLink = {
@@ -40,7 +42,9 @@ const RightMenu = ({
   return (
     <S.Container>
       <S.DesktopMenu>{Children}</S.DesktopMenu>
-      <Profile>{Children}</Profile>
+      <AsyncBoundary fallback={null}>
+        <Profile>{Children}</Profile>
+      </AsyncBoundary>
     </S.Container>
   )
 }

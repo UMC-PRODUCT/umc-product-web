@@ -5,7 +5,7 @@ import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
 import { Badge } from '@shared/ui/common/Badge/Badge'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-import { memberKeys } from '@/features/auth/domain/queryKeys'
+import { memberKeys } from '@/shared/api/auth/queries'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
