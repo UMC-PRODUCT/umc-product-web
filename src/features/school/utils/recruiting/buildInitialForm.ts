@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type {
   RecruitingForms,
@@ -30,15 +32,17 @@ const defaultRecruitingSchedule: RecruitingSchedule = {
   interviewTimeTable: defaultInterviewTimeTable,
 }
 
+const toDateOnly = (value: string | null) => (value ? dayjs(value).format('YYYY-MM-DD') : null)
+
 export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
 ): PatchTempSaveRecruitmentRequestDTO['schedule'] => ({
-  applyStartAt: schedule.applyStartAt,
-  applyEndAt: schedule.applyEndAt,
-  docResultAt: schedule.docResultAt,
-  interviewStartAt: schedule.interviewStartAt,
-  interviewEndAt: schedule.interviewEndAt,
-  finalResultAt: schedule.finalResultAt,
+  applyStartAt: toDateOnly(schedule.applyStartAt),
+  applyEndAt: toDateOnly(schedule.applyEndAt),
+  docResultAt: toDateOnly(schedule.docResultAt),
+  interviewStartAt: toDateOnly(schedule.interviewStartAt),
+  interviewEndAt: toDateOnly(schedule.interviewEndAt),
+  finalResultAt: toDateOnly(schedule.finalResultAt),
   interviewTimeTable: {
     dateRange: {
       start: schedule.interviewTimeTable.dateRange.start,
