@@ -28,16 +28,16 @@ export type VerificationCodeRequestDTO = {
 }
 export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
 
-export type MyInfoResponseDTO = CommonResponseDTO<{
+export type MyInfoResponseDTO = {
   id?: number
   name?: string
   nickname?: string
   email?: string
   schoolId?: number
-  schoolName?: number
-  profileImageLink?: number
+  schoolName?: string
+  profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
-}>
+}
 
 export type GetTermsResponseDTO = {
   id: string

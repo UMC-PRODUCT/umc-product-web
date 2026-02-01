@@ -8,6 +8,17 @@ import Flex from '@shared/ui/common/Flex/Flex'
 
 export const Container = styled.div({
   display: 'inline-block',
+  position: 'relative',
+  '& img': {
+    width: 46,
+    height: 46,
+    borderRadius: '100%',
+    objectFit: 'cover',
+    [media.down(theme.breakPoints.tablet)]: {
+      width: 40,
+      height: 40,
+    },
+  },
 })
 
 export const TriggerIcon = styled(Icon)({
@@ -21,17 +32,18 @@ export const TriggerIcon = styled(Icon)({
 
 export const Modal = styled.div({
   position: 'absolute',
-  top: 80,
-  right: 20,
+  top: 60,
+  right: 0,
   backgroundColor: theme.colors.gray[800],
   border: `1px solid ${theme.colors.gray[700]}`,
   borderRadius: 10,
   width: 232,
   padding: 16,
   gap: 20,
-  zIndex: 100,
+  zIndex: 10000000,
   display: 'flex',
   flexDirection: 'column',
+
   [media.down(theme.breakPoints.tablet)]: {
     width: 212,
     top: 50,
@@ -71,6 +83,10 @@ export const NameText = styled.span({
 export const EmailText = styled.span({
   color: theme.colors.gray[300],
   ...theme.typography.B4.Rg,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  maxWidth: '100%',
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B5.Rg,
   },
