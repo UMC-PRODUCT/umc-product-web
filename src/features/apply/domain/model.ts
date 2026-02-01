@@ -327,11 +327,14 @@ export type portfolioAnswer = {
 }
 
 export type preferredPartAnswer = {
-  selections: Array<{ id: string; answer: PartType }>
+  preferredParts: Array<PartType>
 }
 
 export type scheduleAnswer = {
-  slots: TimeTableSlots
+  selected: Array<{
+    date: string
+    times: Array<string>
+  }>
 }
 
 export type PatchApplicationAnswerRequestDTO = {

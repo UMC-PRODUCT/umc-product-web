@@ -1,11 +1,12 @@
 node_modules
 .DS_Store
+.env*
+!.env.example
 dist
 dist-ssr
 *.local
 *.log
 *.tsbuildinfo
-.env*
 
 # Frameworks
 .nitro

@@ -7,6 +7,7 @@ const RecruitingStepForm = () => {
   const {
     form,
     values,
+    initialSchedule,
     step,
     setStep,
     step3PageNumber,
@@ -22,13 +23,15 @@ const RecruitingStepForm = () => {
       <RecruitingStep step={step} />
       <CurrentStepInfo step={step} />
       <form css={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }} action="">
-        {step === 1 && <Step1 control={control} />}
+        {step === 1 && <Step1 control={control} status={values.status} />}
         {step === 2 && (
           <Step2
             control={control}
             setValue={setValue}
             setError={setError}
             clearErrors={clearErrors}
+            initialSchedule={initialSchedule}
+            status={values.status}
           />
         )}
         {step === 3 && (
@@ -40,6 +43,7 @@ const RecruitingStepForm = () => {
             setPart={setStep3SelectedPart}
             partCompletion={partCompletionMap}
             setPartCompletion={setPartCompletionByPart}
+            canEditQuestions={values.status === 'DRAFT'}
           />
         )}
         {step === 4 && <Step4 control={control} />}

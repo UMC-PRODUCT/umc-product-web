@@ -10,11 +10,13 @@ const PreviewSection = ({
   step,
   setStep,
   children,
+  showEdit = true,
 }: {
   title: string
   step: number
   setStep: (step: number) => void
   children: React.ReactNode
+  showEdit?: boolean
 }) => {
   return (
     <Section
@@ -25,9 +27,11 @@ const PreviewSection = ({
     >
       <Flex justifyContent="space-between">
         <S.Title>{title}</S.Title>
-        <Badge tone="lime" variant="outline" typo="B4.Md" onClick={() => setStep(step)}>
-          수정
-        </Badge>
+        {showEdit ? (
+          <Badge tone="lime" variant="outline" typo="B4.Md" onClick={() => setStep(step)}>
+            수정
+          </Badge>
+        ) : null}
       </Flex>
       {children}
     </Section>

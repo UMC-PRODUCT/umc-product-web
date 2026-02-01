@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType } from '@features/apply/domain/model'
+import type { QuestionType } from '@/shared/types/apply'
 
 import type { PartType } from './umc'
 
@@ -93,7 +93,7 @@ export interface RecruitingQuestionPage {
   questions: Array<RecruitingQuestion>
 }
 
-export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED'
+export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED' | 'PUBLISHED'
 
 export type range = {
   start: string

@@ -1,6 +1,5 @@
-import type { QuestionType } from '@features/apply/domain'
-
 import type { RECRUITING_SCHEDULE_TYPE, UserApplicationBadgeType } from '@/shared/constants/umc'
+import type { QuestionType } from '@/shared/types/apply'
 
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {

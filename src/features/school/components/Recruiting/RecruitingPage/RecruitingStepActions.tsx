@@ -13,6 +13,8 @@ type RecruitingStepActionsProps = {
   onTempSave: () => void
   onOpenPreview: () => void
   onOpenConfirm: () => void
+  isLocked?: boolean
+  isSubmitting?: boolean
 }
 
 const RecruitingStepActions = ({
@@ -23,6 +25,8 @@ const RecruitingStepActions = ({
   onTempSave,
   onOpenPreview,
   onOpenConfirm,
+  isLocked = false,
+  isSubmitting = false,
 }: RecruitingStepActionsProps) => {
   return (
     <Flex
@@ -61,7 +65,7 @@ const RecruitingStepActions = ({
               variant="solid"
               label="다음 단계 →"
               css={{ width: 118 }}
-              disabled={!canProceedStep}
+              disabled={!canProceedStep || isSubmitting}
               onClick={onNext}
             />
           </Flex>
@@ -75,17 +79,28 @@ const RecruitingStepActions = ({
               label="지원서 미리보기"
               css={{ width: 163 }}
               onClick={onOpenPreview}
+              disabled={isSubmitting}
               iconColor={theme.colors.black}
               Icon={Search}
             />
             <Button
               tone="lime"
               variant="solid"
-              label="모집 생성하기"
+              label={
+                isSubmitting
+                  ? isLocked
+                    ? '수정 중...'
+                    : '생성 중...'
+                  : isLocked
+                    ? '모집 수정하기'
+                    : '모집 생성하기'
+              }
               typo="B3.Sb"
               css={{ width: 149 }}
               Icon={Check}
+              isLoading={isSubmitting}
               onClick={onOpenConfirm}
+              disabled={isSubmitting}
             />
           </Flex>
         )}

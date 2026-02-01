@@ -13,7 +13,14 @@ import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import * as S from '../common'
 
-const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
+const Step1 = ({
+  control,
+  status,
+}: {
+  control: Control<RecruitingForms>
+  status: RecruitingForms['status']
+}) => {
+  const isLocked = status !== 'DRAFT'
   return (
     <Flex flexDirection="column" gap={18}>
       <Section gap={29} variant="solid" flexDirection="column" alignItems="flex-start">
@@ -34,6 +41,7 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
               label="모집 이름"
               placeholder="예: UMC 중앙대학교 9기 모집"
               css={{ maxWidth: 560 }}
+              disabled={isLocked}
               error={{
                 error: !!fieldState.error,
                 errorMessage: fieldState.error?.message || '',
@@ -76,7 +84,9 @@ const Step1 = ({ control }: { control: Control<RecruitingForms> }) => {
                       key={part}
                       isActive={isActive}
                       type="button"
+                      disabled={isLocked}
                       onClick={() => {
+                        if (isLocked) return
                         const next = isActive
                           ? selected.filter((item: string) => item !== partId)
                           : [...selected, partId]

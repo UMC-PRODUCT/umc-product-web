@@ -19,17 +19,14 @@ export const Trigger = styled.button<{ $open: boolean }>`
   background-color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 6px;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `
 
 export const Value = styled.span<{ $placeholder: boolean }>`
   color: ${({ $placeholder }) => ($placeholder ? theme.colors.gray[400] : theme.colors.white)};
-`
-
-export const IconBox = styled.span<{ $open: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 180ms ease;
 `
 
 export const CalendarPopover = styled.div<{ $open: boolean }>`
@@ -44,14 +41,6 @@ export const CalendarPopover = styled.div<{ $open: boolean }>`
     opacity 150ms ease,
     transform 150ms ease;
   z-index: 20;
-`
-
-export const CalendarBox = styled.div`
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid ${theme.colors.gray[600]};
-  background: ${theme.colors.black};
-  width: 400px;
 `
 
 export const SelectHeader = styled.div`

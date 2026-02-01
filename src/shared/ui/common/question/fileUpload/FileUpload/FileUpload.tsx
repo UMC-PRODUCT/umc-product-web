@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { FileUploadAnswer, FileUploadStatus, UploadedFile } from '@features/apply/domain/model'
-
 import Upload from '@/shared/assets/icons/upload.svg?react'
+import type { FileUploadAnswer, FileUploadStatus, UploadedFile } from '@/shared/types/apply'
 import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'

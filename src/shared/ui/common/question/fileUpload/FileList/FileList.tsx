@@ -1,5 +1,4 @@
-import type { UploadedFile } from '@features/apply/domain/model'
-
+import type { UploadedFile } from '@/shared/types/apply'
 import type { QuestionMode } from '@/shared/types/form'
 import { formatFileSize } from '@/shared/utils/formatFileSize'
 

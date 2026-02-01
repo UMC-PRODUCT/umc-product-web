@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
+import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
-import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -27,6 +27,7 @@ interface Step3Props {
   setPart: (nextPart: PartType | null) => void
   partCompletion: Partial<Record<PartType, boolean>>
   setPartCompletion: (next: Partial<Record<PartType, boolean>>) => void
+  canEditQuestions: boolean
 }
 
 const Step3 = ({
@@ -37,13 +38,14 @@ const Step3 = ({
   setPart,
   partCompletion,
   setPartCompletion,
+  canEditQuestions,
 }: Step3Props) => {
   const recruitmentParts = useWatch({ control, name: 'recruitmentParts' })
   const items = useWatch({ control, name: 'items' })
   const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
       recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
-        const label = mapApiPartToPartType(partValue)
+        const label = PART_TYPE_TO_SMALL_PART[partValue]
         acc.push({ label, id: partValue })
         return acc
       }, []),
@@ -71,10 +73,21 @@ const Step3 = ({
   // 완료 처리 전에 문항 유효성을 확인한다.
   const handlePartStatusChange = (isComplete: boolean) => {
     if (!selectedPart) return
-    if (isComplete && !isPartItemsValid(items, selectedPart)) return
+
+    if (!isComplete) {
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
+    if (!isPartItemsValid(items, selectedPart)) {
+      // 유효성 검증 실패 시에는 '작성 완료'로 넘어가지 않고 '작성 중' 상태를 유지한다.
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
     setPartCompletion({
       ...partCompletion,
-      [selectedPart]: isComplete,
+      [selectedPart]: true,
     })
   }
 
@@ -109,7 +122,7 @@ const Step3 = ({
           partCompletion={partCompletion}
           onChangePart={setPart}
           onChangeStatus={handlePartStatusChange}
-          labelResolver={mapApiPartToPartType}
+          disabled={!canEditQuestions}
         />
       )}
       <Step3QuestionList
@@ -117,6 +130,7 @@ const Step3 = ({
         control={control}
         selectedPart={selectedPart}
         isSelectedPartComplete={isSelectedPartComplete}
+        isLocked={!canEditQuestions}
       />
       <Flex justifyContent="center">
         <Navigation currentPage={page} totalPages={PAGE_LIST.length} onChangePage={setPage} />

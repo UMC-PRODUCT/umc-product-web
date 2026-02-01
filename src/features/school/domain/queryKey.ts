@@ -6,7 +6,7 @@ import {
   getTempSavedApplicationQuestions,
   getTempSavedRecruitment,
 } from './api'
-import type { GetRecruitmentsRequestDTO } from './apiTypes'
+import type { GetRecruitmentsRequestDTO } from './model'
 
 export const recruiteKeys = createQueryKeys('recruitment', {
   recruitments: (status: GetRecruitmentsRequestDTO) => ({

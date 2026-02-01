@@ -78,11 +78,20 @@ export function buildDefaultValuesFromQuestions(
   }
 
   const normalizePreferredPartValue = (value: unknown) => {
-    const rawSelections = Array.isArray(value)
-      ? value
-      : value && typeof value === 'object'
-        ? (value as preferredPartAnswer).selections
-        : undefined
+    let rawSelections: unknown
+    if (Array.isArray(value)) {
+      rawSelections = value
+    } else if (value && typeof value === 'object') {
+      const candidate = value as preferredPartAnswer & { preferredParts?: Array<PartType> }
+      if (Array.isArray(candidate.preferredParts)) {
+        rawSelections = candidate.preferredParts.map((part, index) => ({
+          id: index + 1,
+          answer: part,
+        }))
+      } else {
+        rawSelections = candidate.preferredParts
+      }
+    }
 
     if (!Array.isArray(rawSelections)) {
       return undefined
@@ -106,6 +115,21 @@ export function buildDefaultValuesFromQuestions(
 
   const normalizeScheduleValue = (value: unknown) => {
     if (!value || typeof value !== 'object') return undefined
+
+    // 신규 포맷: { selected: [{ date, times: [...] }]}
+    if ('selected' in value && Array.isArray((value as { selected?: unknown }).selected)) {
+      const selected = (value as { selected: Array<{ date?: string; times?: Array<unknown> }> })
+        .selected
+      const slots = selected.reduce<Record<string, Array<string>>>((acc, cur) => {
+        if (!cur.date || !Array.isArray(cur.times)) return acc
+        const times = cur.times.filter((t): t is string => typeof t === 'string')
+        if (times.length > 0) {
+          acc[cur.date] = times
+        }
+        return acc
+      }, {})
+      return slots
+    }
 
     const candidateSlots = 'slots' in value ? (value as { slots?: unknown }).slots : value
 

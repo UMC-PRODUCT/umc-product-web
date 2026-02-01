@@ -17,11 +17,6 @@ export const OptionField = styled.div`
   flex: 1;
 `
 
-export const OptionLabel = styled.span`
-  ${theme.typography.B4.Md}
-  color: ${theme.colors.gray[500]};
-`
-
 export const OptionInput = styled.input<{ $isOther?: boolean }>`
   ${theme.typography.B4.Md}
   color: ${(props) => (props.$isOther ? theme.colors.gray[400] : theme.colors.white)};

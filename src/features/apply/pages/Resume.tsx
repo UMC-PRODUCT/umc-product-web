@@ -95,7 +95,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { handleSave } = useAutoSave({
     getValues,
     onSave: (formValues) => {
-      const answers = getSubmissionItems(questionsData.result.pages, formValues, defaultValues)
+      const answers = getSubmissionItems(resolvedPages, formValues, defaultValues)
       patchApplication(
         { recruitmentId, formResponseId: resumeId, items: answers },
         {

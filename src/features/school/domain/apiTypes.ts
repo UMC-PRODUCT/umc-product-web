@@ -20,6 +20,7 @@ export type GetRecruitmentsResponseDTO = {
     phase: Phase
     phaseLabel: string
     editable: boolean
+    listBadge?: string
   }>
 }
 
@@ -57,3 +58,17 @@ export type GetApplicationFormResponseDTO = RecruitingForms
 export type PatchTempSavedRecruitQuestionsResponseDTO = RecruitingForms
 
 export type DeleteSingleQuestionResponseDTO = RecruitingForms
+
+export type patchPublishedRecruitmentRequestDTO = {
+  recruitmentId: string
+  requestBody: RecruitmentEditable
+}
+
+export type RecruitmentEditable = {
+  applyStartAt?: string
+  applyEndAt?: string
+  docResultAt?: string
+  interviewStartAt?: string
+  interviewEndAt?: string
+  finalResultAt?: string
+}

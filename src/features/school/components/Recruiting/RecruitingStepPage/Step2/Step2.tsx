@@ -9,7 +9,7 @@ import type {
 import { Controller, useWatch } from 'react-hook-form'
 import dayjs from 'dayjs'
 
-import type { RecruitingForms } from '@/shared/types/form'
+import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label'
@@ -24,11 +24,15 @@ const Step2 = ({
   setValue,
   setError,
   clearErrors,
+  initialSchedule,
+  status,
 }: {
   control: Control<RecruitingForms>
   setValue: UseFormSetValue<RecruitingForms>
   setError: UseFormSetError<RecruitingForms>
   clearErrors: UseFormClearErrors<RecruitingForms>
+  initialSchedule: RecruitingSchedule | null
+  status: RecruitingForms['status']
 }) => {
   const applyStartAt = useWatch({ control, name: 'schedule.applyStartAt' })
   const applyEndAt = useWatch({ control, name: 'schedule.applyEndAt' })
@@ -38,6 +42,35 @@ const Step2 = ({
   const finalResultAt = useWatch({ control, name: 'schedule.finalResultAt' })
   const interviewTimeTable = useWatch({ control, name: 'schedule.interviewTimeTable' })
   const lastErrorStateRef = useRef<Record<string, boolean>>({})
+
+  // 일정 잠금 판단: 초기 스케줄 대비 변경 여부와 현재 시각 및 상태 기반
+  const now = dayjs()
+
+  const canEdit = useMemo(() => {
+    if (status === 'DRAFT') {
+      return {
+        applyStartAt: true,
+        applyEndAt: true,
+        docResultAt: true,
+        interviewStartAt: true,
+        interviewEndAt: true,
+        interviewTimeTable: true,
+        finalResultAt: true,
+      }
+    }
+    const prev = initialSchedule
+    const applyStarted = prev?.applyStartAt ? now.isAfter(dayjs(prev.applyStartAt), 'day') : false
+    const applyEnded = prev?.applyEndAt ? now.isAfter(dayjs(prev.applyEndAt), 'day') : false
+    return {
+      applyStartAt: !applyStarted,
+      applyEndAt: !applyEnded,
+      docResultAt: true,
+      interviewStartAt: false,
+      interviewEndAt: false,
+      interviewTimeTable: false,
+      finalResultAt: true,
+    }
+  }, [initialSchedule, now, status])
 
   const interviewDates = useMemo(() => {
     const { start, end } = interviewTimeTable.dateRange
@@ -126,6 +159,38 @@ const Step2 = ({
     )
   }, [enabledSlots, interviewDates, updateErrorState])
 
+  // 필수 입력 즉시 에러 노출
+  const requireField = useCallback(
+    (field: FieldPath<RecruitingForms>, value: string | null | undefined, message: string) => {
+      updateErrorState(field, !value, message)
+    },
+    [updateErrorState],
+  )
+
+  useEffect(() => {
+    requireField('schedule.applyStartAt', applyStartAt, '서류 모집 시작일을 선택해 주세요.')
+  }, [applyStartAt, requireField])
+
+  useEffect(() => {
+    requireField('schedule.applyEndAt', applyEndAt, '서류 모집 종료일을 선택해 주세요.')
+  }, [applyEndAt, requireField])
+
+  useEffect(() => {
+    requireField('schedule.docResultAt', docResultAt, '서류 결과 발표일을 선택해 주세요.')
+  }, [docResultAt, requireField])
+
+  useEffect(() => {
+    requireField('schedule.interviewStartAt', interviewStartAt, '면접 평가 시작일을 선택해 주세요.')
+  }, [interviewStartAt, requireField])
+
+  useEffect(() => {
+    requireField('schedule.interviewEndAt', interviewEndAt, '면접 평가 종료일을 선택해 주세요.')
+  }, [interviewEndAt, requireField])
+
+  useEffect(() => {
+    requireField('schedule.finalResultAt', finalResultAt, '최종 결과 발표일을 선택해 주세요.')
+  }, [finalResultAt, requireField])
+
   useEffect(() => {
     if (!applyStartAt || !applyEndAt) return
     updateErrorState(
@@ -140,7 +205,7 @@ const Step2 = ({
     updateErrorState(
       'schedule.docResultAt',
       dayjs(docResultAt).isBefore(dayjs(applyEndAt)),
-      '서류 모집 종료 이후로 선택해 주세요.',
+      '서류 모집 종료일과 같거나 이후로 선택해 주세요.',
     )
   }, [applyEndAt, docResultAt, updateErrorState])
 
@@ -196,6 +261,7 @@ const Step2 = ({
                     error: !!fieldState.error,
                     errorMessage: fieldState.error?.message || '',
                   }}
+                  disabled={!canEdit.applyStartAt}
                 />
               )}
             />
@@ -215,6 +281,7 @@ const Step2 = ({
                     error: !!fieldState.error,
                     errorMessage: fieldState.error?.message || '',
                   }}
+                  disabled={!canEdit.applyEndAt}
                 />
               )}
             />
@@ -235,6 +302,7 @@ const Step2 = ({
                   error: !!fieldState.error,
                   errorMessage: fieldState.error?.message || '',
                 }}
+                disabled={!canEdit.docResultAt}
               />
             )}
           />
@@ -255,6 +323,7 @@ const Step2 = ({
                     error: !!fieldState.error,
                     errorMessage: fieldState.error?.message || '',
                   }}
+                  disabled={!canEdit.interviewStartAt}
                 />
               )}
             />
@@ -274,6 +343,7 @@ const Step2 = ({
                     error: !!fieldState.error,
                     errorMessage: fieldState.error?.message || '',
                   }}
+                  disabled={!canEdit.interviewEndAt}
                 />
               )}
             />
@@ -297,13 +367,14 @@ const Step2 = ({
                         return acc
                       }, {})}
                       onChange={(nextValue) => {
+                        if (!canEdit.interviewTimeTable) return
                         const nextEnabled = Object.entries(nextValue).map(([date, times]) => ({
                           date,
                           times,
                         }))
                         field.onChange(nextEnabled)
                       }}
-                      mode="edit"
+                      mode={canEdit.interviewTimeTable ? 'edit' : 'view'}
                       disabledSlots={[]}
                     />
                     {fieldState.error && (
@@ -334,6 +405,7 @@ const Step2 = ({
                   error: !!fieldState.error,
                   errorMessage: fieldState.error?.message || '',
                 }}
+                disabled={!canEdit.finalResultAt}
               />
             )}
           />

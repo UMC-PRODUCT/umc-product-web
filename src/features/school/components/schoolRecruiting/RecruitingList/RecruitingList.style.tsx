@@ -21,3 +21,5 @@ export const Tab = styled.div<{ isActive: boolean }>`
   color: ${(props) => (props.isActive ? theme.colors.lime : theme.colors.gray[400])};
   border-bottom: ${(props) => (props.isActive ? `2px solid ${theme.colors.lime}` : 'none')};
 `
+
+// Skeleton removed (spinner 사용)
