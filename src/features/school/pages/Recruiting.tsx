@@ -1,4 +1,4 @@
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import type { RecruitingProps } from '../hooks/useRecruitingContentLogic'

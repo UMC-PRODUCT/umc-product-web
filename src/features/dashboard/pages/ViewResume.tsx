@@ -7,10 +7,10 @@ import {
   useGetApplicationQuestions,
 } from '@/features/apply/hooks/useGetApplicationQuery'
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'

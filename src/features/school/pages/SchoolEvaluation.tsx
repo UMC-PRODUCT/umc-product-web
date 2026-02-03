@@ -7,7 +7,7 @@ import { Tab } from '@/shared/ui/common/Tab'
 
 import DocsEvaluation from '../components/SchoolEvaluation/DocsEvaluation'
 import FinalEvaluation from '../components/SchoolEvaluation/FinalEvaluation/FinalEvaluation'
-import InterviewEvaluation from '../components/SchoolEvaluation/InterviewEvaluation'
+import InterviewEvaluation from '../components/SchoolEvaluation/InterviewEvaluation/InterviewEvaluation'
 import { EVALUATION_TAB } from '../domain'
 
 interface SchoolEvaluationProps {

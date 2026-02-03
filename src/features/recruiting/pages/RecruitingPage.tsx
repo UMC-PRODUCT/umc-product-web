@@ -5,9 +5,9 @@ import {
 } from '@/features/apply/hooks/useGetApplicationQuery'
 import PartCurriculum from '@/features/recruiting/components/partCurriculum/PartCurriculum'
 import RecruitingCalendar from '@/features/recruiting/components/recruitingCalendar/RecruitingCalendar'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 

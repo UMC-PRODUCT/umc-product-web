@@ -2,7 +2,7 @@ import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
 import ExternalLink from '@shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
 import Profile from '@shared/layout/Header/RightMenu/Profile/Profile'
 
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 
 import * as S from './RightMenu.style'
 

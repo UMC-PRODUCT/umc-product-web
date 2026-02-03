@@ -1,11 +1,11 @@
 import AfterSubmit from '@/features/apply/components/AfterSubmit'
 import * as S from '@/features/apply/components/ApplyPage.style'
 import BeforeSubmit from '@/features/apply/components/BeforeSubmit'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { formatActivityPeriod, formatRecruitmentPeriod } from '@/shared/constants/recruitment'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 

@@ -8,8 +8,8 @@ import { theme } from '@shared/styles/theme'
 import { Button } from '@shared/ui/common/Button/Button'
 import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
 
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import AuthSection from '../components/AuthSection/AuthSection'
