@@ -9,9 +9,11 @@ import * as S from './ApplicationView.style'
 const ApplicationView = ({
   data,
   questions,
+  isModal = false,
 }: {
   data: GetApplicationAnswerResponseDTO
   questions: RecruitingForms
+  isModal?: boolean
 }) => {
   const answerMap = new Map(data.answers.map((answer) => [String(answer.questionId), answer]))
   const pageInfo = [
@@ -119,9 +121,11 @@ const ApplicationView = ({
       gap={'14px'}
       css={{ backgroundColor: `${theme.colors.gray[700]}` }}
     >
-      <S.Header>
-        <S.Title>닉네임/성이름 님의 지원서</S.Title>
-      </S.Header>
+      {!isModal && (
+        <S.Header>
+          <S.Title>닉네임/성이름 님의 지원서</S.Title>
+        </S.Header>
+      )}
 
       <S.PageList>
         {questions.pages.map((page) => (

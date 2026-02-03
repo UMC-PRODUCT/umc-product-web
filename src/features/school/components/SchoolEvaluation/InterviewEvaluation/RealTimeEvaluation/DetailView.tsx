@@ -11,6 +11,7 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import EvaluationStatus from '../../EvaluationStatus/EvalutationStatus'
 import FilterBar from '../../FilterBar/FilterBar'
+import ApplicationModal from '../../modal/ApplicationModal'
 import MyEvaluation from '../../MyEvaluation/MyEvaluation'
 import QuestionItem from './QuestionItem'
 import * as S from './RealTimeEvaluation.style'
@@ -25,6 +26,13 @@ const DetailView = ({
   }
   onBack: () => void
 }) => {
+  const [modalOpen, setModalOpen] = useState<{
+    isOpen: boolean
+    id: string
+  }>({
+    isOpen: false,
+    id: '',
+  })
   const [questionType, setQuestionType] = useState<
     'common' | 'firstChoice' | 'secondChoice' | 'additional'
   >('common')
@@ -66,6 +74,7 @@ const DetailView = ({
                 Icon={Search}
                 typo="B4.Sb"
                 css={{ padding: '5.5px 14px', width: '122px' }}
+                onClick={() => setModalOpen({ isOpen: true, id: selectedUser.id })}
               />
               <Button
                 tone="lime"
@@ -151,6 +160,17 @@ const DetailView = ({
           </S.SideColumn>
         </S.MainContent>
       </S.DetailWrapper>
+
+      {modalOpen.isOpen && (
+        <ApplicationModal
+          onClose={() =>
+            setModalOpen({
+              id: '',
+              isOpen: false,
+            })
+          }
+        />
+      )}
     </S.Container>
   )
 }
