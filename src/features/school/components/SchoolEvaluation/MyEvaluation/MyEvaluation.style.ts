@@ -8,7 +8,10 @@ export const FormContainer = styled.form`
   gap: 18px;
   width: 100%;
 `
-
+export const SubTitle = styled.div`
+  ${theme.typography.B4.Sb};
+  color: ${theme.colors.white};
+`
 export const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -113,4 +116,12 @@ export const SubmitButton = styled.button`
   &:hover {
     background-color: #9cdb3d;
   }
+`
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
 `

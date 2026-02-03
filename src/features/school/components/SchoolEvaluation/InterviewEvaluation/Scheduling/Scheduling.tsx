@@ -9,6 +9,7 @@ import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
+import FilterBar from '../../FilterBar/FilterBar'
 import ApplicantCard from './ApplicantCard'
 import * as S from './Scheduling.style'
 
@@ -48,32 +49,30 @@ const Scheduling = () => {
     <div
       style={{
         height: '600px',
-        backgroundColor: '#000',
-        padding: '20px',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
         width: '100%',
       }}
     >
-      <S.FilterBar variant="solid" padding={'12px 16px'}>
-        <div className="left">
-          <Dropdown
-            options={[{ label: '2026.01.20 (화)', id: 0 }]}
-            placeholder="면접 일자"
-            css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
-          />
-          <Dropdown
-            options={[{ label: '전체 파트', id: 0 }]}
-            placeholder="전체 파트"
-            css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
-          />
-          <S.SelectionInfo>전체 120명 중 32명 완료</S.SelectionInfo>
-        </div>
-        <div className="right">
-          <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
-        </div>
-      </S.FilterBar>
+      <FilterBar
+        leftChild={
+          <>
+            <Dropdown
+              options={[{ label: '2026.01.20 (화)', id: 0 }]}
+              placeholder="면접 일자"
+              css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
+            />
+            <Dropdown
+              options={[{ label: '전체 파트', id: 0 }]}
+              placeholder="전체 파트"
+              css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
+            />
+            <S.SelectionInfo>전체 120명 중 32명 완료</S.SelectionInfo>
+          </>
+        }
+        rightChild={<S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>}
+      />
 
       <S.MainLayout>
         {/* 좌측 시간대 리스트 */}
@@ -84,7 +83,7 @@ const Scheduling = () => {
               <S.TimeSlotItem key={slot.time} isActive={slot.selected}>
                 <span className="time">{slot.time}</span>
                 <S.CountBadge isCompleted={slot.completed}>
-                  {slot.count}명 가능 {slot.completed && '✓'}
+                  {slot.count}명 가능 {slot.completed && <S.Circle>✓</S.Circle>}
                 </S.CountBadge>
               </S.TimeSlotItem>
             ))}
@@ -98,7 +97,7 @@ const Scheduling = () => {
             padding={'12px 17px'}
             gap={20}
             height={320}
-            css={{ overflow: 'hidden' }}
+            css={{ overflow: 'hidden', borderRadius: '6px' }}
           >
             <S.ContentHeader>
               <S.SectionTitle>16:00 - 16:30 지원자 목록</S.SectionTitle>
@@ -111,7 +110,11 @@ const Scheduling = () => {
               />
             </S.ContentHeader>
 
-            <S.ApplicantList padding={'14px 16px'} height={320} css={{ overflowY: 'auto' }}>
+            <S.ApplicantList
+              padding={'14px 16px'}
+              height={320}
+              css={{ overflowY: 'auto', borderRadius: '6px' }}
+            >
               {APPLICANTS.default.map((app, i) => {
                 return (
                   <ApplicantCard
@@ -148,7 +151,7 @@ const Scheduling = () => {
             </S.ApplicantList>
           </Section>
 
-          <S.InterviewerSection variant="solid" padding={'12px 17px'}>
+          <S.InterviewerSection variant="solid" padding={'12px 17px'} css={{ borderRadius: '6px' }}>
             <S.ContentHeader>
               <S.SectionTitle>16:00 - 16:30 면접자</S.SectionTitle>
               <S.Notice>* 위 목록에서 드래그하고 드롭하여 배치하세요.</S.Notice>

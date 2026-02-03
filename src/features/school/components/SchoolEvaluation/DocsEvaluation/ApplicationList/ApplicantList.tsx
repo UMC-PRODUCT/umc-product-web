@@ -6,7 +6,7 @@ import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
-import * as S from '../shared.style'
+import * as S from './ApplicationList.style'
 // 임시 데이터 (실제 데이터로 교체 필요)
 const DUMMY_APPLICANTS = Array.from({ length: 11 }, (_, i) => ({
   id: `${i}`,

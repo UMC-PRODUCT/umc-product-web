@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import * as Shared from '@/shared/styles/shared'
 
+import InterviewQuestions from './InterviewQuestions/InterviewQuestions'
+import RealTimeEvaluation from './RealTimeEvaluation/RealTimeEvaluation'
 import Scheduling from './Scheduling/Scheduling'
 import * as S from './InterviewEvaluation.style'
 
@@ -50,8 +52,8 @@ const InterviewEvaluation = () => {
         <Shared.TabSubtitle>{TabInfo[interviewTab].subtitle}</Shared.TabSubtitle>
       </Shared.TabHeader>
       {interviewTab === 'scheduling' && <Scheduling />}
-      {interviewTab === 'questions' && <div>면접 질문지 생성 화면</div>}
-      {interviewTab === 'evaluations' && <div>실시간 면접 평가 화면</div>}
+      {interviewTab === 'questions' && <InterviewQuestions />}
+      {interviewTab === 'evaluations' && <RealTimeEvaluation />}
     </>
   )
 }

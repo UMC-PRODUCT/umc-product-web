@@ -6,7 +6,6 @@ import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import Label from '@/shared/ui/common/Label'
 import Section from '@/shared/ui/common/Section/Section'
 
-import * as Shared from '../shared.style'
 import * as S from './MyEvaluation.style'
 
 const MyEvaluation = ({ selectedUserId }: { selectedUserId: string | null }) => {
@@ -21,13 +20,13 @@ const MyEvaluation = ({ selectedUserId }: { selectedUserId: string | null }) => 
       gap={'18px'}
       css={{
         boxSizing: 'border-box',
-        backgroundColor: `${theme.colors.gray[800]}`,
+        backgroundColor: `${theme.colors.gray[700]}`,
         borderRadius: '12px',
       }}
     >
-      <Shared.Header>
-        <Shared.SubTitle>나의 평가</Shared.SubTitle>
-      </Shared.Header>
+      <S.Header>
+        <S.SubTitle>나의 평가</S.SubTitle>
+      </S.Header>
 
       <S.FormContainer>
         {/* 점수 섹션 - 입력 가능 */}

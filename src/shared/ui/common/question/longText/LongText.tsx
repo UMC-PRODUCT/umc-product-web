@@ -1,4 +1,5 @@
 import { forwardRef, useLayoutEffect, useRef } from 'react'
+import type { Interpolation, Theme } from '@emotion/react'
 
 import type { QuestionMode } from '@/shared/types/form'
 
@@ -10,10 +11,11 @@ interface TextQuestionProps {
   mode: QuestionMode
   placeholder: string
   minHeight?: number
+  css?: Interpolation<Theme>
 }
 
 export const LongText = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
-  ({ value, onChange, mode, placeholder, minHeight }, ref) => {
+  ({ value, onChange, mode, placeholder, minHeight, css }, ref) => {
     const isReadOnly = mode === 'view'
     const innerRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -42,7 +44,7 @@ export const LongText = forwardRef<HTMLTextAreaElement, TextQuestionProps>(
           }
         }}
         readOnly={isReadOnly}
-        css={{ minHeight: minHeight ?? 'fit-content' }}
+        css={[{ minHeight: minHeight ?? 'fit-content' }, css]}
       />
     )
   },

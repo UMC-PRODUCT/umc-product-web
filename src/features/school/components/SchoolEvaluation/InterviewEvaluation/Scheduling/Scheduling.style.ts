@@ -11,19 +11,6 @@ export const Container = styled.div`
   padding: 20px;
 `
 
-export const FilterBar = styled(Section)`
-  justify-content: space-between;
-  flex-direction: row;
-  align-items: center;
-  height: fit-content;
-  .left,
-  .right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-`
-
 export const MainLayout = styled.div`
   display: flex;
   gap: 20px;
@@ -37,6 +24,7 @@ export const Sidebar = styled(Section)`
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
+  border-radius: 6px;
 `
 
 export const SectionTitle = styled.h3`
@@ -75,10 +63,22 @@ export const CountBadge = styled.div<{ isCompleted?: boolean }>`
   width: 180px;
   text-align: center;
   border-radius: 6px;
+  align-items: center;
   ${theme.typography.B4.Md};
   border: 1px solid ${theme.colors.gray[700]};
 `
-
+export const Circle = styled.div`
+  margin-left: 6px;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  border-radius: 50%;
+  color: ${theme.colors.black};
+  background-color: ${theme.colors.lime};
+`
 /* 우측 컨텐츠 */
 export const Content = styled.div`
   flex: 1;

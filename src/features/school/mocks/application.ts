@@ -1,4 +1,8 @@
-import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
+import type {
+  FinalStatusType,
+  GetApplicationAnswerResponseDTO,
+} from '@/features/apply/domain/model'
+import type { PartType } from '@/features/auth/domain'
 
 export const answers: GetApplicationAnswerResponseDTO = {
   recruitmentId: '34',
@@ -154,3 +158,87 @@ export const answers: GetApplicationAnswerResponseDTO = {
     },
   ],
 }
+
+type RealTimeEvaluationType = {
+  time: string
+  applicants: Array<{
+    id: string
+    name: string
+    nickname: string
+    tags: Array<PartType>
+    status: FinalStatusType
+    score: number
+    time: string
+  }>
+}
+export const REALTIME_EVALUATION_MOCK: Array<RealTimeEvaluationType> = [
+  {
+    time: '16:00 - 17:00',
+    applicants: [
+      {
+        id: '1',
+        name: '홍길동',
+        nickname: '코드마스터',
+        tags: ['SPRINGBOOT', 'NODEJS'],
+        status: 'PASSED',
+        score: 92.0,
+        time: '16:00',
+      },
+      {
+        id: '2',
+        name: '김철수',
+        nickname: '프론트장인',
+        tags: ['WEB', 'SPRINGBOOT'],
+        status: 'EVALUATING',
+        score: 85.5,
+        time: '16:30',
+      },
+    ],
+  },
+  {
+    time: '17:00 - 18:00',
+    applicants: [
+      {
+        id: '3',
+        name: '이영희',
+        nickname: '기획천재',
+        tags: ['PLAN', 'DESIGN'],
+        status: 'PENDING',
+        score: 88.0,
+        time: '17:00',
+      },
+      {
+        id: '4',
+        name: '박보검',
+        nickname: '앱돌이',
+        tags: ['ANDROID', 'IOS'],
+        status: 'PENDING',
+        score: 90.0,
+        time: '17:30',
+      },
+    ],
+  },
+  {
+    time: '18:00 - 19:00',
+    applicants: [
+      {
+        id: '5',
+        name: '최자바',
+        nickname: '백엔드왕',
+        tags: ['SPRINGBOOT'],
+        status: 'SCHEDULED',
+        score: 79.0,
+        time: '18:00',
+      },
+      {
+        id: '6',
+        name: '조노드',
+        nickname: '서버술사',
+        tags: ['NODEJS', 'WEB'],
+        status: 'FAILED',
+        score: 65.0,
+        time: '18:30',
+      },
+    ],
+  },
+]

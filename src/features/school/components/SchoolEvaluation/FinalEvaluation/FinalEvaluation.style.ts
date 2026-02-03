@@ -13,18 +13,6 @@ export const Container = styled.div`
   color: ${theme.colors.white};
 `
 
-export const FilterBar = styled(Section)`
-  justify-content: space-between;
-  flex-direction: row;
-  align-items: center;
-  .left,
-  .right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-`
-
 export const SelectBox = styled(Dropdown)`
   background-color: ${theme.colors.gray[700]};
   width: 180px;
@@ -53,17 +41,25 @@ export const Notice = styled.span`
 
 export const TableContainer = styled(Section)`
   border-radius: 8px;
+  width: 100%;
   overflow: hidden;
+  padding: 0;
+`
+
+export const TableScroll = styled.div`
   max-height: 480px;
-  overflow-y: auto;
+  width: 100%;
+  overflow: auto;
+  padding: 12px 16px;
+  box-sizing: border-box;
 `
 
 export const Table = styled.table`
-  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
-
+  width: max-content;
+  min-width: 100%;
   th,
   td {
     text-align: left;
@@ -80,6 +76,10 @@ export const Table = styled.table`
   tr {
     height: 52px;
     max-height: 52px;
+  }
+
+  td {
+    white-space: nowrap;
   }
 
   .highlight {
@@ -122,6 +122,9 @@ export const CountBadge = styled.span`
 
 export const TableRowHeader = styled.thead`
   background-color: ${theme.colors.gray[600]};
+  th {
+    white-space: nowrap;
+  }
   th:first-of-type {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;

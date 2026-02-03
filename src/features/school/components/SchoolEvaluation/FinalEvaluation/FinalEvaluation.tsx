@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
+import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
 
 const FinalEvaluation = () => {
@@ -61,139 +62,150 @@ const FinalEvaluation = () => {
       </Shared.TabHeader>
       <S.Container>
         {/* 1. 상단 필터/컨트롤 바 */}
-        <S.FilterBar variant="solid" padding={'12px 16px'}>
-          <div className="left">
-            <Dropdown
-              options={[
-                {
-                  label: '전체 파트',
-                  id: 0,
-                },
-                { label: 'SpringBoot', id: 1 },
-                { label: 'Node.js', id: 2 },
-              ]}
-              placeholder="전체 파트"
-              css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
-            />
-            <S.SelectionInfo onClick={() => {}}>전체 92명 중 1명 선발</S.SelectionInfo>
-          </div>
-          <div className="right">
-            <S.SelectBox
-              value={sort}
-              options={[
-                {
-                  label: '점수 높은 순',
-                  id: 1,
-                },
-                {
-                  label: '점수 낮은 순',
-                  id: 2,
-                },
-                { label: '평가 완료 시각 순', id: 3 },
-              ]}
-              onChange={handleSortChange}
-            />
-            <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
-          </div>
-        </S.FilterBar>
+        <FilterBar
+          leftChild={
+            <>
+              <Dropdown
+                options={[
+                  {
+                    label: '전체 파트',
+                    id: 0,
+                  },
+                  { label: 'SpringBoot', id: 1 },
+                  { label: 'Node.js', id: 2 },
+                ]}
+                placeholder="전체 파트"
+                css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
+              />
+              <S.SelectionInfo onClick={() => {}}>전체 92명 중 1명 선발</S.SelectionInfo>
+            </>
+          }
+          rightChild={
+            <>
+              <S.SelectBox
+                value={sort}
+                options={[
+                  {
+                    label: '점수 높은 순',
+                    id: 1,
+                  },
+                  {
+                    label: '점수 낮은 순',
+                    id: 2,
+                  },
+                  { label: '평가 완료 시각 순', id: 3 },
+                ]}
+                onChange={handleSortChange}
+              />
+              <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
+            </>
+          }
+        />
 
         {/* 2. 메인 테이블 */}
-        <S.TableContainer variant="solid" padding={'12px 16px'}>
-          <S.Table>
-            <S.TableRowHeader>
-              <tr>
-                <th>
-                  <Checkbox
-                    checked={headerChecked}
-                    onCheckedChange={handleToggleAll}
-                    css={{
-                      backgroundColor: theme.colors.gray[600],
-                      borderColor: theme.colors.gray[400],
-                    }}
-                  />
-                </th>
-                <th>번호</th>
-                <th>닉네임/이름</th>
-                <th>지원 파트</th>
-                <th>서류 점수</th>
-                <th>면접 점수</th>
-                <th>최종 환산 점수</th>
-                <th>선발 결과</th>
-                <th>작업</th>
-              </tr>
-            </S.TableRowHeader>
-            <tbody>
-              {applicants.map((item) => (
-                <tr key={item.id}>
-                  <td>
+        <S.TableContainer variant="solid" padding={'0'}>
+          <S.TableScroll>
+            <S.Table>
+              <S.TableRowHeader>
+                <tr>
+                  <th>
                     <Checkbox
-                      checked={selectedIds.has(item.id)}
-                      onCheckedChange={handleToggleRow(item.id)}
-                      css={{ borderColor: theme.colors.gray[400] }}
+                      checked={headerChecked}
+                      onCheckedChange={handleToggleAll}
+                      css={{
+                        backgroundColor: theme.colors.gray[600],
+                        borderColor: theme.colors.gray[400],
+                      }}
                     />
-                  </td>
-                  <td>{item.id}</td>
-                  <td>
-                    <S.UserInfo>{item.name}</S.UserInfo>
-                  </td>
-                  <td>
-                    <S.TagGroup>
-                      {item.parts.map((p) => (
+                  </th>
+                  <th>번호</th>
+                  <th>닉네임/이름</th>
+                  <th>지원 파트</th>
+                  <th>서류 점수</th>
+                  <th>면접 점수</th>
+                  <th>최종 환산 점수</th>
+                  <th>선발 결과</th>
+                  <th>작업</th>
+                </tr>
+              </S.TableRowHeader>
+              <tbody>
+                {applicants.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <Checkbox
+                        checked={selectedIds.has(item.id)}
+                        onCheckedChange={handleToggleRow(item.id)}
+                        css={{ borderColor: theme.colors.gray[400] }}
+                      />
+                    </td>
+                    <td>{item.id}</td>
+                    <td>
+                      <S.UserInfo>{item.name}</S.UserInfo>
+                    </td>
+                    <td>
+                      <S.TagGroup>
+                        {item.parts.map((p) => (
+                          <Button
+                            key={`${item.id}-${p}`}
+                            variant="outline"
+                            tone="gray"
+                            label={p}
+                            typo="B4.Md"
+                            css={{
+                              width: 'fit-content',
+                              padding: '3.5px 9px',
+                              height: '28px',
+                              maxHeight: '28px',
+                              color: `${theme.colors.gray[300]}`,
+                            }}
+                          />
+                        ))}
+                      </S.TagGroup>
+                    </td>
+                    <td>{item.docScore}</td>
+                    <td>{item.interviewScore}</td>
+                    <td className="highlight">{item.finalScore}</td>
+                    <td css={{ color: `${theme.colors.gray[500]}` }}>
+                      {item.result === 'N/A' ? (
+                        item.result
+                      ) : (
                         <Button
-                          key={`${item.id}-${p}`}
                           variant="outline"
                           tone="gray"
-                          label={p}
+                          label={item.result}
                           typo="B4.Md"
                           css={{
-                            width: 'fit-content',
+                            width: '90px',
                             padding: '3.5px 9px',
                             height: '28px',
                             maxHeight: '28px',
                             color: `${theme.colors.gray[300]}`,
                           }}
                         />
-                      ))}
-                    </S.TagGroup>
-                  </td>
-                  <td>{item.docScore}</td>
-                  <td>{item.interviewScore}</td>
-                  <td className="highlight">{item.finalScore}</td>
-                  <td css={{ color: `${theme.colors.gray[500]}` }}>
-                    {item.result === 'N/A' ? (
-                      item.result
-                    ) : (
-                      <Button
-                        variant="outline"
-                        tone="gray"
-                        label={item.result}
-                        typo="B4.Md"
-                        css={{
-                          width: '90px',
-                          padding: '3.5px 9px',
-                          height: '28px',
-                          maxHeight: '28px',
-                          color: `${theme.colors.gray[300]}`,
-                        }}
-                      />
-                    )}
-                  </td>
-                  <td>
-                    {item.isPassed ? (
-                      <S.ActionButton
-                        variant="solid"
-                        tone="necessary"
-                        label="합격 취소"
-                        typo="B4.Sb"
-                      />
-                    ) : (
-                      <S.ActionButton variant="solid" tone="lime" label="합격 처리" typo="B4.Sb" />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </S.Table>
+                      )}
+                    </td>
+                    <td>
+                      {item.isPassed ? (
+                        <S.ActionButton
+                          variant="solid"
+                          tone="necessary"
+                          label="합격 취소"
+                          typo="B4.Sb"
+                        />
+                      ) : (
+                        <S.ActionButton
+                          variant="solid"
+                          tone="lime"
+                          label="합격 처리"
+                          typo="B4.Sb"
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </S.Table>
+          </S.TableScroll>
         </S.TableContainer>
 
         {/* 3. 하단 선택 관리 바 */}

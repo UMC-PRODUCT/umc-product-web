@@ -11,10 +11,10 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import EvaluationStatus from '../EvaluationStatus/EvalutationStatus'
+import MyEvaluation from '../MyEvaluation/MyEvaluation'
 import ApplicantList from './ApplicationList/ApplicantList'
 import ApplicationView from './ApplicationView/ApplicationView'
-import EvaluationStatus from './EvaluationStatus/EvalutationStatus'
-import MyEvaluation from './MyEvaluation/MyEvaluation'
 import * as S from './index.style'
 
 const DocsEvaluationContent = () => {

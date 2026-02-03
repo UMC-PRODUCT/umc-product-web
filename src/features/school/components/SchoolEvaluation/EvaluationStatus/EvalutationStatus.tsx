@@ -1,7 +1,7 @@
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
-import * as S from '../shared.style'
+import * as S from './EvaluationStatus.style'
 
 const MOCK = [
   { id: '1', score: '95', nickname: '닉네임1', name: '이름1', comment: '잘했어요' },

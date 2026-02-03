@@ -2,9 +2,9 @@ import { Suspense } from 'react'
 
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
-import CreateRecruitingConfirm from '../modals/CreateRecruitingConferm'
-import { RecruitingPreviewContent } from '../modals/RecruitingPreview'
-import { RecruitingPreviewSkeletonContent } from '../modals/RecruitingPreviewSkeleton'
+import CreateRecruitingConfirm from '../../modals/CreateRecruitingConfirm/CreateRecruitingConfirm'
+import { RecruitingPreviewContent } from '../../modals/RecruitingPreview/RecruitingPreview'
+import { RecruitingPreviewSkeletonContent } from '../../modals/RecruitingPreview/RecruitingPreviewSkeleton'
 
 type RecruitingModalsProps = {
   isOpen: boolean
