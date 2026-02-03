@@ -10,6 +10,7 @@ const MOCK = [
 ]
 
 const EvaluationStatus = ({ selectedUserId }: { selectedUserId: string | null }) => {
+  console.log(selectedUserId)
   return (
     <Section
       variant="both"

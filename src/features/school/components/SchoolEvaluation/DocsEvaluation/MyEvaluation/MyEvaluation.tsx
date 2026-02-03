@@ -9,6 +9,7 @@ import * as Shared from '../shared.style'
 import * as S from './MyEvaluation.style'
 
 const MyEvaluation = ({ selectedUserId }: { selectedUserId: string | null }) => {
+  console.log(selectedUserId)
   const [score, setScore] = useState('92')
   const [comment, setComment] = useState('프로젝트 경험이 우수함.')
 
