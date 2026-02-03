@@ -119,7 +119,7 @@ const ApplicationView = ({
       maxHeight={'100%'}
       padding={'10px 16px'}
       gap={'14px'}
-      css={{ backgroundColor: `${theme.colors.gray[700]}` }}
+      css={{ backgroundColor: `${theme.colors.gray[700]}`, flex: 1 }}
     >
       {!isModal && (
         <S.Header>

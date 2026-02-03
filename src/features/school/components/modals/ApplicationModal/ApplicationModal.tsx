@@ -23,6 +23,7 @@ const ApplicationModal = ({ onClose }: { onClose: () => void }) => {
             padding="24px"
             width="480px"
             maxWidth={'90vw'}
+            height={'100%'}
           >
             <Modal.Header>
               <Flex justifyContent="space-between" alignItems="center" width="100%">
