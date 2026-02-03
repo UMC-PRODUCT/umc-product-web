@@ -20,15 +20,15 @@ export function buildDefaultValuesFromQuestions(
   const defaultValues: ResumeFormValues = {}
   const answers = Array.isArray(answerData?.answers) ? answerData.answers : []
 
-  const findAnswerEntry = (questionId: number) =>
-    answers.find((entry) => entry.questionId === questionId)
+  const findAnswerEntry = (questionId: string) =>
+    answers.find((entry) => String(entry.questionId) === questionId)
 
   const normalizeOptionAnswerValue = (value: OptionAnswerValue): OptionAnswerValue => ({
     ...value,
     selectedOptionIds: value.selectedOptionIds.map(String),
   })
 
-  const getEntryValue = (questionId: number) => findAnswerEntry(questionId)?.value
+  const getEntryValue = (questionId: string) => findAnswerEntry(questionId)?.value
 
   const extractTextValue = (value: unknown) => {
     if (typeof value === 'string') return value
@@ -162,7 +162,7 @@ export function buildDefaultValuesFromQuestions(
   }
 
   const resolveDefaultValue = (currentQuestion: DefaultQuestion) => {
-    const entryValue = getEntryValue(currentQuestion.questionId)
+    const entryValue = getEntryValue(String(currentQuestion.questionId))
     if (entryValue === undefined) return undefined
     switch (currentQuestion.type) {
       case 'SHORT_TEXT':

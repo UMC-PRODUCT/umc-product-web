@@ -17,6 +17,7 @@ export function useFormCompleteness(
     const allQuestions = getAllQuestionsFromPages(resolvedPages)
 
     return allQuestions.some((question) => {
+      if (!question) return false
       const answerValue = currentFormValues[String(question.questionId)]
       return isQuestionAnswerEmpty(question, answerValue)
     })

@@ -31,10 +31,10 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
   const answerMap = useMemo(() => {
     const answers = Array.isArray(answerData.result.answers) ? answerData.result.answers : []
-    return answers.reduce<Map<number, QuestionAnswerValue>>((acc, entry) => {
+    return answers.reduce<Map<string, QuestionAnswerValue>>((acc, entry) => {
       acc.set(entry.questionId, entry.value as unknown as QuestionAnswerValue)
       return acc
-    }, new Map<number, QuestionAnswerValue>())
+    }, new Map<string, QuestionAnswerValue>())
   }, [answerData])
   const totalPages = 3
 
@@ -64,7 +64,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
       </S.BorderSection>
 
       <S.BorderSection>
-        {currentQuestions.map((question, idx) => (
+        {currentQuestions?.map((question, idx) => (
           <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
             <Question
               questionId={question.questionId}
@@ -76,7 +76,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
               maxSelectCount={question.maxSelectCount}
               preferredPartOptions={question.preferredPartOptions}
               mode="view"
-              value={answerMap.get(question.questionId)}
+              value={answerMap.get(String(question.questionId))}
             />
           </Flex>
         ))}
