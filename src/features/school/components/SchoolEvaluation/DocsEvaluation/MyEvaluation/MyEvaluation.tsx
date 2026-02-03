@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import Label from '@/shared/ui/common/Label'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -31,7 +32,10 @@ const MyEvaluation = ({ selectedUserId }: { selectedUserId: string | null }) => 
       <S.FormContainer>
         {/* 점수 섹션 - 입력 가능 */}
         <S.InputWrapper>
-          <Label label="점수" necessary={true} />
+          <S.ScoreHeader>
+            <Label label="점수" necessary={true} />
+            <ErrorMessage typo="C3.Md" errorMessage="0 이상 100 이하의 정수를 입력하세요." />
+          </S.ScoreHeader>
           <S.ScoreInputBox>
             <S.ScoreInput
               type="number"

@@ -1,17 +1,28 @@
 import { useState } from 'react'
 import { css } from '@emotion/react'
 
+// import { useGetApplicationAnswer } from '@/features/apply/hooks/useGetApplicationQuery'
+import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
+import { answers } from '@/features/school/mocks/application'
+import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import { media } from '@/shared/styles/media'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import ApplicantList from './ApplicationList/ApplicantList'
+import ApplicationView from './ApplicationView/ApplicationView'
 import EvaluationStatus from './EvaluationStatus/EvalutationStatus'
 import MyEvaluation from './MyEvaluation/MyEvaluation'
 import * as S from './index.style'
 
-const DocsEvaluation = () => {
+const DocsEvaluationContent = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  // const { data } = useGetApplicationAnswer()
+  const { data: questionData } = useGetApplicationFormData('34')
+  const data = answers
+
   return (
     <>
       <Shared.TabHeader alignItems="flex-start">
@@ -28,12 +39,7 @@ const DocsEvaluation = () => {
           css={{ overflowY: 'hidden', boxSizing: 'border-box' }}
         >
           <div css={RightSection}>
-            <Section
-              variant="both"
-              height={'100%'}
-              maxHeight={'100%'}
-              css={{ backgroundColor: `${theme.colors.gray[700]}` }}
-            />
+            <ApplicationView data={data} questions={questionData.result} />
             <div
               css={{
                 display: 'grid',
@@ -54,8 +60,6 @@ const DocsEvaluation = () => {
   )
 }
 
-export default DocsEvaluation
-
 const RightSection = css`
   display: grid;
   gap: 14px;
@@ -67,4 +71,17 @@ const RightSection = css`
   > * {
     min-height: 0;
   }
+  ${media.down(theme.breakPoints.desktop)} {
+    grid-template-columns: 1fr;
+  }
 `
+
+const DocsEvaluation = () => {
+  return (
+    <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
+      <DocsEvaluationContent />
+    </AsyncBoundary>
+  )
+}
+
+export default DocsEvaluation

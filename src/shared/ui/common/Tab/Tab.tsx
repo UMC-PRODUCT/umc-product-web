@@ -46,6 +46,7 @@ const Tab = <T extends string>({
               flexDirection: 'column',
               alignItems: 'flex-start',
               gap: 30,
+              height: 'fit-content',
               border: `1px solid ${theme.colors.gray[700]}`,
               borderRadius: '0 0 10px 10px',
               padding: '40px 46px',

@@ -8,6 +8,7 @@ export const SectionWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  height: fit-content;
 `
 
 export const StyledList = styled(TabsPrimitive.List)`

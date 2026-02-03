@@ -15,6 +15,11 @@ export const InputWrapper = styled.div`
   gap: 8px;
 `
 
+export const ScoreHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 export const FlexHeader = styled.div`
   display: flex;
   justify-content: space-between;
