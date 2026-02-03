@@ -22,7 +22,10 @@ const RecruitingStepForm = () => {
     <>
       <RecruitingStep step={step} />
       <CurrentStepInfo step={step} />
-      <form css={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }} action="">
+      <form
+        css={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}
+        method="POST"
+      >
         {step === 1 && <Step1 control={control} status={values.status} />}
         {step === 2 && (
           <Step2

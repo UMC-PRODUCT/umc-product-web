@@ -84,3 +84,9 @@ export const PHASE: Array<Phase> = [
   'FINAL_RESULT_PUBLISHED',
   'CLOSED',
 ] as const
+
+export const EVALUATION_TAB = [
+  { value: 'docs', label: '서류 전형' },
+  { value: 'interview', label: '면접 전형' },
+  { value: 'final', label: '최종 평가' },
+] as const

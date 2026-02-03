@@ -24,7 +24,8 @@ const InputWrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 100%;
-  height: 50px;
+  height: 40px;
+  max-height: 40px;
   ${media.down(theme.breakPoints.mobile)} {
     gap: 8px;
   }
@@ -35,7 +36,7 @@ const InputWrapper = styled.div`
 
 const IconBox = styled.span`
   position: absolute;
-  right: 16px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;

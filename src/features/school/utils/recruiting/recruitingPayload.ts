@@ -5,7 +5,7 @@ import type { RecruitmentEditable } from '@/features/school/domain/apiTypes'
 import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shared/types/form'
 
 const toDateOnly = (value: string | null | undefined) =>
-  value ? dayjs(value).format('YYYY-MM-DD') : null
+  value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
 
 export const buildPublishedSchedulePayload = (
   schedule: RecruitingForms['schedule'],

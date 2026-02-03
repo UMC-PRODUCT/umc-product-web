@@ -172,7 +172,7 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   return (
     <AuthSection size="lg">
       <ResponsiveLogo />
-      <form onSubmit={handleSubmit(handleFormSubmit)} css={{ width: '100%' }}>
+      <form onSubmit={handleSubmit(handleFormSubmit)} css={{ width: '100%' }} method="POST">
         <RegisterFormFields {...registerFieldsConfig} />
         {registrationError && (
           <ErrorMessage

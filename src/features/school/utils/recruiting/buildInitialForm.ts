@@ -32,8 +32,11 @@ const defaultRecruitingSchedule: RecruitingSchedule = {
   interviewTimeTable: defaultInterviewTimeTable,
 }
 
-const toDateOnly = (value: string | null) => (value ? dayjs(value).format('YYYY-MM-DD') : null)
-
+const toDateOnly = (value: string | null) =>
+  value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
+// TODO: 추후 API 수정시 삭제
+const toDateLast = (value: string | null) =>
+  value ? dayjs(value).format('YYYY-MM-DDT23:59:59+09:00') : null
 export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
 ): PatchTempSaveRecruitmentRequestDTO['schedule'] => ({
@@ -41,7 +44,7 @@ export const buildSchedulePayload = (
   applyEndAt: toDateOnly(schedule.applyEndAt),
   docResultAt: toDateOnly(schedule.docResultAt),
   interviewStartAt: toDateOnly(schedule.interviewStartAt),
-  interviewEndAt: toDateOnly(schedule.interviewEndAt),
+  interviewEndAt: toDateLast(schedule.interviewEndAt),
   finalResultAt: toDateOnly(schedule.finalResultAt),
   interviewTimeTable: {
     dateRange: {

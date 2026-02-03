@@ -129,7 +129,7 @@ const ResumeFormSection = ({
   ).filter((question) => !activePagePartQuestionIds.has(question.questionId))
   const activeScheduleQuestion = activePage.scheduleQuestion ? activePage.scheduleQuestion : null
   return (
-    <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit} method="POST">
       <Flex key={activePage.page} flexDirection="column" gap={24}>
         {activePagePartQuestions.map((partQuestion, index) => (
           <Flex
