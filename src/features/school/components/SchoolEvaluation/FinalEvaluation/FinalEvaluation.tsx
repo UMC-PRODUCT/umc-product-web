@@ -7,14 +7,26 @@ import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
+import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
+import { SetPassPartModal } from '../../modals/SetPassPartModal/SetPassPartModal'
+import SetPassSuccessModal from '../../modals/SetPassSuccessModal/SetPassSuccessModal'
 import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
+import FinalEvaluationRow from './FinalEvaluationRow'
 
 const FinalEvaluation = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [sort, setSort] = useState<Option<string>>({
     label: '점수 높은 순',
     id: 1,
+  })
+
+  const [modalOpen, setModalOpen] = useState<{
+    open: boolean
+    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | null
+  }>({
+    open: false,
+    modalName: null,
   })
   const handleSortChange = (option: Option<unknown>) => {
     setSort(option as Option<string>)
@@ -130,78 +142,13 @@ const FinalEvaluation = () => {
               </S.TableRowHeader>
               <tbody>
                 {applicants.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <Checkbox
-                        checked={selectedIds.has(item.id)}
-                        onCheckedChange={handleToggleRow(item.id)}
-                        css={{ borderColor: theme.colors.gray[400] }}
-                      />
-                    </td>
-                    <td>{item.id}</td>
-                    <td>
-                      <S.UserInfo>{item.name}</S.UserInfo>
-                    </td>
-                    <td>
-                      <S.TagGroup>
-                        {item.parts.map((p) => (
-                          <Button
-                            key={`${item.id}-${p}`}
-                            variant="outline"
-                            tone="gray"
-                            label={p}
-                            typo="B4.Md"
-                            css={{
-                              width: 'fit-content',
-                              padding: '3.5px 9px',
-                              height: '28px',
-                              maxHeight: '28px',
-                              color: `${theme.colors.gray[300]}`,
-                            }}
-                          />
-                        ))}
-                      </S.TagGroup>
-                    </td>
-                    <td>{item.docScore}</td>
-                    <td>{item.interviewScore}</td>
-                    <td className="highlight">{item.finalScore}</td>
-                    <td css={{ color: `${theme.colors.gray[500]}` }}>
-                      {item.result === 'N/A' ? (
-                        item.result
-                      ) : (
-                        <Button
-                          variant="outline"
-                          tone="gray"
-                          label={item.result}
-                          typo="B4.Md"
-                          css={{
-                            width: '90px',
-                            padding: '3.5px 9px',
-                            height: '28px',
-                            maxHeight: '28px',
-                            color: `${theme.colors.gray[300]}`,
-                          }}
-                        />
-                      )}
-                    </td>
-                    <td>
-                      {item.isPassed ? (
-                        <S.ActionButton
-                          variant="solid"
-                          tone="necessary"
-                          label="합격 취소"
-                          typo="B4.Sb"
-                        />
-                      ) : (
-                        <S.ActionButton
-                          variant="solid"
-                          tone="lime"
-                          label="합격 처리"
-                          typo="B4.Sb"
-                        />
-                      )}
-                    </td>
-                  </tr>
+                  <FinalEvaluationRow
+                    key={item.id}
+                    item={item}
+                    checked={selectedIds.has(item.id)}
+                    onToggle={handleToggleRow(item.id)}
+                    setOpenModal={setModalOpen}
+                  />
                 ))}
               </tbody>
             </S.Table>
@@ -232,6 +179,15 @@ const FinalEvaluation = () => {
           </div>
         </S.BottomBar>
       </S.Container>
+      {modalOpen.open && modalOpen.modalName === 'setPassPart' && (
+        <SetPassPartModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+      {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
+        <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+      {modalOpen.open && modalOpen.modalName === 'setFail' && (
+        <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
     </>
   )
 }

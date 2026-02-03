@@ -9,7 +9,7 @@ export const RadioChoiceInput = styled.input<{
   appearance: none;
   -webkit-appearance: none;
   margin: 0;
-  width: 18px; /* 시안과 비슷하게 크기 조정 */
+  width: 18px;
   height: 18px;
   border: 2px solid ${theme.colors.gray[500]};
   border-radius: 50%;
@@ -20,7 +20,6 @@ export const RadioChoiceInput = styled.input<{
   justify-content: center;
   transition: all 0.2s ease;
 
-  /* 핵심 수정 부분: props로 전달된 isChecked에 따라 스타일 적용 */
   ${({ $isChecked }) =>
     $isChecked &&
     `

@@ -9,9 +9,10 @@ import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
+import AdditionalQuestionModal from '../../../modals/AdditionalQuestionModal/AdditionalQuestionModal'
+import ApplicationModal from '../../../modals/ApplicationModal/ApplicationModal'
 import EvaluationStatus from '../../EvaluationStatus/EvalutationStatus'
 import FilterBar from '../../FilterBar/FilterBar'
-import ApplicationModal from '../../modal/ApplicationModal'
 import MyEvaluation from '../../MyEvaluation/MyEvaluation'
 import QuestionItem from './QuestionItem'
 import * as S from './RealTimeEvaluation.style'
@@ -29,17 +30,15 @@ const DetailView = ({
   const [modalOpen, setModalOpen] = useState<{
     isOpen: boolean
     id: string
+    modalName: 'application' | 'additionalQuestion' | null
   }>({
     isOpen: false,
     id: '',
+    modalName: null,
   })
   const [questionType, setQuestionType] = useState<
     'common' | 'firstChoice' | 'secondChoice' | 'additional'
   >('common')
-
-  const handleAddQuestion = () => {
-    // 문항 추가 로직 구현
-  }
 
   const onStartEdit = () => {
     // 저장 로직 구현
@@ -74,7 +73,9 @@ const DetailView = ({
                 Icon={Search}
                 typo="B4.Sb"
                 css={{ padding: '5.5px 14px', width: '122px' }}
-                onClick={() => setModalOpen({ isOpen: true, id: selectedUser.id })}
+                onClick={() =>
+                  setModalOpen({ isOpen: true, id: selectedUser.id, modalName: 'application' })
+                }
               />
               <Button
                 tone="lime"
@@ -144,7 +145,13 @@ const DetailView = ({
                     cursor: 'pointer',
                     borderColor: '#4e4e4e',
                   }}
-                  onClick={handleAddQuestion}
+                  onClick={() =>
+                    setModalOpen({
+                      isOpen: true,
+                      id: selectedUser.id,
+                      modalName: 'additionalQuestion',
+                    })
+                  }
                 >
                   <Plus />
                   문항 추가하기
@@ -161,12 +168,24 @@ const DetailView = ({
         </S.MainContent>
       </S.DetailWrapper>
 
-      {modalOpen.isOpen && (
+      {modalOpen.isOpen && modalOpen.modalName === 'application' && (
         <ApplicationModal
           onClose={() =>
             setModalOpen({
               id: '',
               isOpen: false,
+              modalName: null,
+            })
+          }
+        />
+      )}
+      {modalOpen.isOpen && modalOpen.modalName === 'additionalQuestion' && (
+        <AdditionalQuestionModal
+          onClose={() =>
+            setModalOpen({
+              id: '',
+              isOpen: false,
+              modalName: null,
             })
           }
         />

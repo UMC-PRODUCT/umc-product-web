@@ -6,7 +6,7 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 
-import ApplicationView from '../DocsEvaluation/ApplicationView/ApplicationView'
+import ApplicationView from '../../SchoolEvaluation/DocsEvaluation/ApplicationView/ApplicationView'
 import * as S from './ApplicationModal.style'
 
 const ApplicationModal = ({ onClose }: { onClose: () => void }) => {
