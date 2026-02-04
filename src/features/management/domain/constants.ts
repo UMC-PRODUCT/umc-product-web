@@ -33,7 +33,6 @@ export const EVALUATION_FINAL_CONFIG = {
 
 export const MANAGE_SCHOOL_TABS = [
   { value: 'add', label: '신규 학교 추가' },
-  { value: 'delete', label: '학교 삭제' },
   { value: 'edit', label: '학교 정보 수정' },
 ] as const
 

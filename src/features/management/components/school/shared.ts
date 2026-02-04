@@ -29,6 +29,7 @@ export const TabSubtitle = styled.span`
 export const Form = styled.form`
   width: 100%;
   gap: 32px;
+  height: 440px;
   display: flex;
   flex-direction: column;
 `
@@ -67,19 +68,55 @@ export const InputRow = styled(Flex)`
   }
 `
 
+export const FileWrapper = styled(Flex)`
+  width: 100%;
+  cursor: pointer;
+  border: 2px dashed ${theme.colors.gray[600]};
+  border-radius: 6px;
+  height: 100px;
+  background-color: ${theme.colors.black};
+  color: ${theme.colors.gray[500]};
+  ${theme.typography.B4.Rg}
+  .main-text {
+    display: inline;
+    color: ${theme.colors.lime};
+  }
+  .mobile-text {
+    display: none;
+  }
+  input {
+    display: none;
+  }
+
+  .file-notification {
+    ${theme.typography.C5.Rg}
+  }
+  span {
+    ${media.down(theme.breakPoints.tablet)} {
+      ${theme.typography.C5.Rg}
+    }
+  }
+
+  &:hover {
+    background-color: ${theme.colors.gray[700]};
+  }
+`
+
 export const TextAreaWrapper = styled(Flex)`
   flex-direction: column;
+  gap: 2px;
 `
 
 export const SubmitButtonWrapper = styled(Flex)`
   width: 120px;
   height: 41px;
   align-self: flex-end;
+  margin-top: auto;
 `
 
 export const TextArea = styled.textarea`
   width: 100%;
-  height: 200px;
+  height: 48px;
   background-color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;
@@ -136,5 +173,49 @@ export const Td = styled.td`
   button:not([role='checkbox']) {
     width: 57px;
     height: 28px;
+  }
+`
+
+export const SchoolProfile = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+`
+export const SchoolProfileInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  ${media.down(theme.breakPoints.tablet)} {
+    align-items: center;
+  }
+  h3 {
+    ${theme.typography.B2.Md};
+    color: ${theme.colors.white};
+    margin: 0;
+  }
+  p {
+    ${theme.typography.C4.Rg};
+    color: ${theme.colors.gray[400]};
+    margin: 0;
+  }
+  button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 65px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: #2a3a2a;
+    border: none;
+    color: ${theme.colors.lime};
+    padding: 4px 10px;
+    ${theme.typography.C3.Md}
+    div {
+      width: 6px;
+      margin-left: 4px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: ${theme.colors.lime};
+    }
   }
 `
