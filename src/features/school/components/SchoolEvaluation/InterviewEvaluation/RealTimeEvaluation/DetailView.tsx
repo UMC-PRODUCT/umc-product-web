@@ -11,7 +11,7 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import AdditionalQuestionModal from '../../../modals/AdditionalQuestionModal/AdditionalQuestionModal'
 import ApplicationModal from '../../../modals/ApplicationModal/ApplicationModal'
-import EvaluationStatus from '../../EvaluationStatus/EvalutationStatus'
+import EvaluationStatus from '../../EvaluationStatus/EvaluationStatus'
 import FilterBar from '../../FilterBar/FilterBar'
 import MyEvaluation from '../../MyEvaluation/MyEvaluation'
 import QuestionItem from './QuestionItem'

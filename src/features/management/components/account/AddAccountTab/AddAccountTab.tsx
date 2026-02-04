@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { UNI_LIST_MOCK } from '@features/auth/mocks/universities'
 
+import * as Shared from '@shared/styles/shared'
 import { Button } from '@shared/ui/common/Button/Button'
 import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
 
@@ -12,7 +13,6 @@ import type { Option } from '@/shared/types/form'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
-import * as Shared from '../../../../../shared/styles/shared'
 import type { AccountRegisterForm } from '../../../schemas/management'
 import { accountRegisterSchema } from '../../../schemas/management'
 import AccountInviteConfirm from '../../modals/AccountInviteConfirm/AccountInviteConfirm'

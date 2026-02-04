@@ -10,8 +10,7 @@ const SetPassSuccessModal = ({ onClose }: { onClose: () => void }) => {
       mode={'success'}
       onClose={onClose}
       title="합격 처리 완료"
-      content="선택된 3명의 지원자를 합격 처리 완료했습니다.
-'합격 취소' 버튼을 클릭하면 합격 처리를 취소할 수 있습니다."
+      content={`선택된 3명의 지원자를 합격 처리 완료했습니다.\n'합격 취소' 버튼을 클릭하면 합격 처리를 취소할 수 있습니다.`}
     >
       <Flex
         height="32px"

@@ -14,8 +14,7 @@ const PassCancleCautionModal = ({ onClose }: { onClose: () => void }) => {
       mode={'warning'}
       onClose={onClose}
       title="주의"
-      content="닉넴/성이름 님의 최종 환산 점수는 93.0점입니다.
-닉넴/성이름 님의 합격을 취소하시겠습니까?"
+      content={`닉넴/성이름 님의 최종 환산 점수는 93.0점입니다.\n닉넴/성이름 님의 합격을 취소하시겠습니까?`}
     >
       <Flex
         height="32px"

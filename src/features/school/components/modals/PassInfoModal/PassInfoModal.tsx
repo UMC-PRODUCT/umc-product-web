@@ -14,8 +14,7 @@ const PassInfoModal = ({ onClose }: { onClose: () => void }) => {
       mode={'disabled'}
       onClose={onClose}
       title="안내"
-      content="선택된 지원자 3명 중 1명은 이미 합격 처리되어 있습니다.
-합격자 1명을 제외한 나머지 2명을 합격 처리 하시겠습니까?"
+      content={`선택된 지원자 3명 중 1명은 이미 합격 처리되어 있습니다.\n합격자 1명을 제외한 나머지 2명을 합격 처리 하시겠습니까?`}
     >
       <Flex
         height="32px"

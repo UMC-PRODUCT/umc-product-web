@@ -115,7 +115,7 @@ const Scheduling = () => {
               height={320}
               css={{ overflowY: 'auto', borderRadius: '6px' }}
             >
-              {APPLICANTS.default.map((app, i) => {
+              {availableApplicants.map((app, i) => {
                 return (
                   <ApplicantCard
                     key={app.id}
@@ -132,7 +132,7 @@ const Scheduling = () => {
                 )
               })}
               <S.Divider />
-              {APPLICANTS.assigned.map((app, i) => {
+              {assignedApplicants.map((app, i) => {
                 return (
                   <ApplicantCard
                     key={app.id}

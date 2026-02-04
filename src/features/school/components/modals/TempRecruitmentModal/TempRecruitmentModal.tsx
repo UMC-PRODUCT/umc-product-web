@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 import Close from '@shared/assets/icons/close.svg?react'
 import { Modal } from '@shared/ui/common/Modal'
 
@@ -17,6 +19,9 @@ type TempRecruitmentModalProps = {
   onClose: () => void
 }
 
+const formatTempSavedTime = (value: string | number | Date) =>
+  dayjs(value).format('YYYY년 M월 D일 H시 m분')
+
 const TempRecruitmentList = () => {
   const { data } = useCustomSuspenseQuery(
     recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
@@ -35,18 +40,7 @@ const TempRecruitmentList = () => {
         <TempRecruitmentCard
           key={recruitment.recruitmentId}
           title={recruitment.recruitmentName}
-          tempSavedTime={
-            new Date(recruitment.updatedAt).getFullYear() +
-            '년 ' +
-            (new Date(recruitment.updatedAt).getMonth() + 1) +
-            '월 ' +
-            new Date(recruitment.updatedAt).getDate() +
-            '일 ' +
-            new Date(recruitment.updatedAt).getHours() +
-            '시 ' +
-            new Date(recruitment.updatedAt).getMinutes() +
-            '분'
-          }
+          tempSavedTime={formatTempSavedTime(recruitment.updatedAt)}
           editable={recruitment.editable}
           recruitmentId={String(recruitment.recruitmentId)}
         />

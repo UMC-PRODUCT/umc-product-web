@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import * as Shared from '@shared/styles/shared'
+
 import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
 import { EDIT_ACCOUNT_MOCKS } from '@/features/management/mocks/editAccount'
 import type { AccountEditForm } from '@/features/management/schemas/management'
@@ -12,7 +14,6 @@ import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 import { transformStateKorean } from '@/shared/utils/transformKorean'
 
-import * as Shared from '../../../../../shared/styles/shared'
 import AccountActivate from '../../modals/AccountActivate/AccountActivate'
 import AccountEditConfirm from '../../modals/AccountEditConfirm/AccountEditConfirm'
 import AccountInviteConfirm from '../../modals/AccountInviteConfirm/AccountInviteConfirm'

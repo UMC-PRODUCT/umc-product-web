@@ -134,7 +134,7 @@ export const buildTimeLabels = ({
   return labels
 }
 
-export const minibuildTimeLabels = ({
+export const miniBuildTimeLabels = ({
   visualStartMin,
   visualEndMin,
 }: {

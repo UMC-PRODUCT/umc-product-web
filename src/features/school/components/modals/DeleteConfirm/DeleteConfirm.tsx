@@ -25,7 +25,7 @@ const DeleteConfirm = ({
     deleteRecruitmentMutate(undefined, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['recruitments'],
+          queryKey: ['recruitment'],
         })
         onClose()
       },

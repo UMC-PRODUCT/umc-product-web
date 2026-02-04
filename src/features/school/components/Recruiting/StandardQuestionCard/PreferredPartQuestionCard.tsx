@@ -65,7 +65,7 @@ const PreferredPartQuestionCard = ({
   return (
     <Section variant="solid" gap={22} {...containerProps}>
       <S.Header>
-        <GrabButton index={index} {...dragHandleProps} />
+        <GrabButton index={index} dragHandleProps={dragHandleProps} />
         {canDelete ? (
           <Button
             tone="necessary"

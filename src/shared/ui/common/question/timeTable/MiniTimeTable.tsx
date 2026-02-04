@@ -10,7 +10,7 @@ import {
   buildDisabledIndexMap,
   formatDateLabel,
   getDayLabel,
-  minibuildTimeLabels,
+  miniBuildTimeLabels,
 } from './TimeTable.helpers'
 import { useTimeTableSelection } from './useTimeTableSelection'
 
@@ -66,7 +66,7 @@ const TimeTableComponent = (
 
   // 시간 라벨: 무조건 1시간 단위로만 생성
   const timeLabels = useMemo(
-    () => minibuildTimeLabels({ visualStartMin, visualEndMin }),
+    () => miniBuildTimeLabels({ visualStartMin, visualEndMin }),
     [visualStartMin, visualEndMin],
   )
   const { selectedIndices, handleMouseDown, handleMouseEnter, handleStopDrag } =
