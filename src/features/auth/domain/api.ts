@@ -23,6 +23,22 @@ export async function register(requestBody: RegisterRequestDTO): Promise<Registe
   return data.result
 }
 
+export const fetchTerm = async ({
+  termsType,
+}: {
+  termsType: TermsType
+}): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/terms/type/${termsType}`, {
+    headers: SKIP_AUTH_REDIRECT_HEADER,
+  })
+  return data
+}
+
+export const fetchMyInfo = async (): Promise<MyInfoResponseDTO> => {
+  const { data } = await axiosInstance.get('/member/me')
+  return data.result
+}
+
 export async function refresh(requestBody: RefreshRequestDTO): Promise<RefreshResponseDTO> {
   const { data } = await axiosInstance.post('/auth/token/renew', requestBody, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
