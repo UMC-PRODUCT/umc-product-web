@@ -16,6 +16,7 @@ export function useFormValidationRegistration(
 ) {
   useEffect(() => {
     resolvedPages.forEach((page) => {
+      if (!page.questions) return
       page.questions.forEach((question) => {
         const validationRules = createValidationRules(question)
         register(String(question.questionId), validationRules)

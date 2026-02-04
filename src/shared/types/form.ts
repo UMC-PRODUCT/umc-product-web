@@ -33,7 +33,7 @@ export type question = {
 
 export type pageType = {
   page: number
-  questions: Array<question>
+  questions: Array<question> | null
   scheduleQuestion: {
     questionId: number
     type: QuestionType
@@ -51,7 +51,7 @@ export type pageType = {
     part: PartType
     label?: string
     questions: Array<question>
-  }>
+  }> | null
 }
 export interface ResumeFormSectionProps {
   pages: Array<pageType>

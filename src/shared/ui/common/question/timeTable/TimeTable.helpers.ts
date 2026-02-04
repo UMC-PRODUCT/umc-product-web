@@ -134,6 +134,28 @@ export const buildTimeLabels = ({
   return labels
 }
 
+export const miniBuildTimeLabels = ({
+  visualStartMin,
+  visualEndMin,
+}: {
+  visualStartMin: number
+  visualEndMin: number
+}) => {
+  const labels = []
+  for (let min = visualStartMin; min <= visualEndMin; min += 60) {
+    const h = Math.floor(min / 60)
+    const ampm = h >= 12 ? '오후' : '오전'
+    const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h
+    const i = (min - visualStartMin) / 30
+
+    labels.push({
+      text: `${ampm} ${displayH}시`,
+      top: i * 15 + 53,
+    })
+  }
+  return labels
+}
+
 const parseDateParts = (dateStr: string) => {
   const delimiter = dateStr.includes('-') ? '-' : '/'
   const parts = dateStr.split(delimiter).map(Number)

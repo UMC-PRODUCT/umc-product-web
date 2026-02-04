@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import * as Shared from '@shared/styles/shared'
+
 import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
 import { EDIT_ACCOUNT_MOCKS } from '@/features/management/mocks/editAccount'
 import type { AccountEditForm } from '@/features/management/schemas/management'
@@ -16,7 +18,6 @@ import AccountActivate from '../../modals/AccountActivate/AccountActivate'
 import AccountEditConfirm from '../../modals/AccountEditConfirm/AccountEditConfirm'
 import AccountInviteConfirm from '../../modals/AccountInviteConfirm/AccountInviteConfirm'
 import AccountSuspended from '../../modals/AccountSuspended/AccountSuspended'
-import * as Shared from '../shared'
 import * as S from './EditModeView.style'
 import useEditAccountForm from './useEditAccountForm'
 import useEmailVerification from './useEmailVerification'

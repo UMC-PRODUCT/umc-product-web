@@ -6,6 +6,7 @@ export function findPartQuestion(
   sourceQuestionId?: number,
 ): question | undefined {
   for (const page of questionData.pages) {
+    if (!page.questions) continue
     for (const question of page.questions) {
       if (
         question.type === 'PREFERRED_PART' &&

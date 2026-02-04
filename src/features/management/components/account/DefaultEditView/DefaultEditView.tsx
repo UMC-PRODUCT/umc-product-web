@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import * as S from '@/features/management/components/account/shared'
 import ManagementTable from '@/features/management/components/common/ManagementTable'
 import DeleteConfirm from '@/features/management/components/modals/DeleteConfirm/DeleteConfirm'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
@@ -10,6 +9,7 @@ import {
   ROLE_MOCK,
   STATUS_MOCK,
 } from '@/features/management/mocks/managementMocks'
+import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'

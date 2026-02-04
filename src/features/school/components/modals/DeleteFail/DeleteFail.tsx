@@ -4,8 +4,7 @@ import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const DeleteFail = ({ onClose, name }: { onClose: () => void; name: string }) => {
-  const content = `‘${name}’의 지원자가 존재합니다.
-지원자가 존재하는 모집은 삭제할 수 없습니다.`
+  const content = `‘${name}’의 지원자가 존재합니다.\n지원자가 존재하는 모집은 삭제할 수 없습니다.`
   return (
     <AlertModalLayout
       mode={'disabled'}

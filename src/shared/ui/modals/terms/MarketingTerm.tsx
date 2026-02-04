@@ -1,5 +1,5 @@
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useGetTerm } from '@/shared/hooks/useGetTerm'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'

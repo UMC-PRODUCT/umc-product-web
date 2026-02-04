@@ -188,15 +188,7 @@ export type GetApplicationAnswerResponseDTO = {
   status: string // TODO: enum 으로 변경
   lastSavedAt: string
   submittedAt: string | null
-  answers: Array<{
-    questionId: number
-    value: {
-      addtionalProp1: {}
-      addtionalProp2: {}
-      addtionalProp3: {}
-    }
-    answeredAsType: QuestionType
-  }>
+  answers: Array<AnswerItem>
 }
 /** 일정 조회 응답 */
 export type GetRecruitmentSchedulesResponseDTO = {
@@ -288,7 +280,7 @@ export type GetSpecificPartRecruiting = {
 }
 export type AnswerItem = {
   questionId: string
-  answeredType: QuestionType
+  answeredAsType: QuestionType
   value:
     | shortTextAnswer
     | longTextAnswer

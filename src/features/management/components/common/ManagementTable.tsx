@@ -4,7 +4,8 @@ import type { ButtonStyleType } from '@shared/types/style'
 import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
 import Flex from '@shared/ui/common/Flex/Flex'
 
-import Navigation from '../../../../shared/ui/common/Navigation/Navigation'
+import Navigation from '@/shared/ui/common/Navigation/Navigation'
+
 import * as S from './ManagementTable.style'
 
 export type ManagementRow = {

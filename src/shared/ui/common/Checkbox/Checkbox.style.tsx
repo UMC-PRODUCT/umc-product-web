@@ -46,4 +46,9 @@ export const StyledIndicator = styled(CheckboxPrimitive.Indicator)`
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  ${StyledRoot}[data-state='checked'] & {
+    opacity: 1;
+  }
 `

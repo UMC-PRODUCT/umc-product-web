@@ -1,5 +1,5 @@
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import { useGetTerm } from '@/shared/hooks/useGetTerm'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import TermModalLayout, { TermMarkdown } from '@/shared/ui/modals/TermModalLayout/TermModalLayout'

@@ -1,6 +1,11 @@
+import dayjs from 'dayjs'
+
 import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type { RecruitmentEditable } from '@/features/school/domain/apiTypes'
 import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shared/types/form'
+
+const toDateOnly = (value: string | null | undefined) =>
+  value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
 
 export const buildPublishedSchedulePayload = (
   schedule: RecruitingForms['schedule'],
@@ -8,9 +13,10 @@ export const buildPublishedSchedulePayload = (
 ) => {
   const result: Partial<RecruitmentEditable> = {}
   const pushIfChanged = (key: keyof RecruitmentEditable, value: string | null | undefined) => {
-    const prev = initial?.[key as keyof RecruitingSchedule] as string | null | undefined
-    if (value && value !== prev) {
-      result[key] = value
+    const formatted = toDateOnly(value)
+    const prev = toDateOnly(initial?.[key as keyof RecruitingSchedule] as string | null | undefined)
+    if (formatted && formatted !== prev) {
+      result[key] = formatted
     }
   }
   pushIfChanged('applyStartAt', schedule.applyStartAt)

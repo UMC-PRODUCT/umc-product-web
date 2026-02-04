@@ -10,6 +10,7 @@ export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 40px;
   gap: 12px;
   cursor: pointer;
   background-color: ${theme.colors.black};
@@ -48,7 +49,7 @@ export const StyledContent = styled(SelectPrimitive.Content)`
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   max-height: 238px;
-  z-index: 20;
+  z-index: 2000;
   width: var(--radix-select-trigger-width);
 `
 

@@ -111,7 +111,7 @@ const RecruitingCard = ({
         <DeleteConfirm
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
-          onClick={() => {}}
+          recruitmentId={recruitmentId}
         />
       )}
       {isModalOpen.open && isModalOpen.modalName === 'deleteFail' && (

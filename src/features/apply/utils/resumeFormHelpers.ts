@@ -184,32 +184,32 @@ const mapQuestionToAnswerItem = (question: question, value: unknown): AnswerItem
   if (value === undefined || isQuestionAnswerEmpty(question, value)) return null
 
   const questionId = String(question.questionId)
-  const answeredType = question.type
+  const answeredAsType = question.type
   switch (question.type) {
     case 'SHORT_TEXT': {
       const answer = buildShortTextAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     case 'LONG_TEXT': {
       const answer = buildLongTextAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     case 'RADIO':
     case 'DROPDOWN': {
       const answer = buildRadioAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     case 'CHECKBOX': {
       const answer = buildCheckboxAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     case 'PORTFOLIO': {
       const answer = buildPortfolioAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     case 'PREFERRED_PART': {
       const answer = buildPreferredPartAnswer(value)
-      return answer ? { questionId, answeredType, value: answer } : null
+      return answer ? { questionId, answeredAsType, value: answer } : null
     }
     default:
       return null
@@ -223,7 +223,7 @@ const mapScheduleQuestionToAnswerItem = (
   const questionId = String(scheduleQuestion.questionId)
   if (!isScheduleValuePresent(value)) return null
   const answer = buildScheduleAnswer(value)
-  return answer ? { questionId, answeredType: scheduleQuestion.type, value: answer } : null
+  return answer ? { questionId, answeredAsType: scheduleQuestion.type, value: answer } : null
 }
 
 /**
@@ -275,7 +275,9 @@ export function getSubmissionFormValues(
     : (questionData as unknown as Array<pageType>)
 
   const baseQuestionIds = pagesData.flatMap((page) =>
-    page.questions.map((question: question) => String(question.questionId)),
+    (Array.isArray(page.questions) ? page.questions : []).map((question: question) =>
+      String(question.questionId),
+    ),
   )
 
   const scheduleQuestionIds = pagesData
@@ -283,9 +285,11 @@ export function getSubmissionFormValues(
     .map((page) => String(page.scheduleQuestion!.questionId))
 
   const partQuestionIds = pagesData.flatMap((page) =>
-    page.partQuestions.flatMap((partGroup: { questions: Array<question> }) =>
-      partGroup.questions.map((question: question) => String(question.questionId)),
-    ),
+    Array.isArray(page.partQuestions)
+      ? page.partQuestions.flatMap((partGroup: { questions: Array<question> }) =>
+          partGroup.questions.map((question: question) => String(question.questionId)),
+        )
+      : [],
   )
 
   const allowedIds = new Set([...baseQuestionIds, ...scheduleQuestionIds, ...partQuestionIds])

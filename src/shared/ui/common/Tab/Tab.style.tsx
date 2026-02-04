@@ -6,9 +6,9 @@ import { theme } from '@shared/styles/theme'
 
 export const SectionWrapper = styled.div`
   width: 100%;
-  max-width: 1170px;
   display: flex;
   flex-direction: column;
+  height: fit-content;
 `
 
 export const StyledList = styled(TabsPrimitive.List)`
@@ -36,23 +36,5 @@ export const StyledTrigger = styled(TabsPrimitive.Trigger)`
 
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.B5.Sb};
-  }
-`
-
-export const Content = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 30px;
-  border: 1px solid ${theme.colors.gray[700]};
-  border-radius: 0 0 10px 10px;
-  padding: 40px 46px;
-
-  ${media.down(theme.breakPoints.desktop)} {
-    padding: 20px 20px;
-  }
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 12px 12px;
   }
 `

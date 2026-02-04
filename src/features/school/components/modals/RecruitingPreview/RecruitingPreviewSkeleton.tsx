@@ -53,5 +53,3 @@ export const RecruitingPreviewSkeletonContent = ({
     </Modal.Body>
   </S.ModalContentWrapper>
 )
-
-// default skeleton modal wrapper is unused; keep only content export
