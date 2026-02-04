@@ -8,6 +8,7 @@ import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
 import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
+import PassInfoModal from '../../modals/PassInfoModal/PassInfoModal'
 import { SetPassPartModal } from '../../modals/SetPassPartModal/SetPassPartModal'
 import SetPassSuccessModal from '../../modals/SetPassSuccessModal/SetPassSuccessModal'
 import FilterBar from '../FilterBar/FilterBar'
@@ -23,7 +24,7 @@ const FinalEvaluation = () => {
 
   const [modalOpen, setModalOpen] = useState<{
     open: boolean
-    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | null
+    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null
   }>({
     open: false,
     modalName: null,
@@ -175,6 +176,7 @@ const FinalEvaluation = () => {
               variant="solid"
               typo="B4.Sb"
               css={{ width: '144px', height: '30px' }}
+              onClick={() => selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })}
             />
           </div>
         </S.BottomBar>
@@ -187,6 +189,9 @@ const FinalEvaluation = () => {
       )}
       {modalOpen.open && modalOpen.modalName === 'setFail' && (
         <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+      {modalOpen.open && modalOpen.modalName === 'inform' && (
+        <PassInfoModal onClose={() => setModalOpen({ open: false, modalName: null })} />
       )}
     </>
   )

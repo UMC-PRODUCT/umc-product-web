@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { css } from '@emotion/react'
 
+import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
+
 // import { useGetApplicationAnswer } from '@/features/apply/hooks/useGetApplicationQuery'
 import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
 import { answers } from '@/features/school/mocks/application'
@@ -11,6 +13,7 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import { DocsPassModal } from '../../modals/DocsPassModal/DocsPassModal'
 import EvaluationStatus from '../EvaluationStatus/EvaluationStatus'
 import MyEvaluation from '../MyEvaluation/MyEvaluation'
 import ApplicantList from './ApplicationList/ApplicantList'
@@ -19,15 +22,22 @@ import * as S from './index.style'
 
 const DocsEvaluationContent = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [modal, setModal] = useState(false)
   // const { data } = useGetApplicationAnswer()
   const { data: questionData } = useGetApplicationFormData('34')
   const data = answers
 
   return (
     <>
-      <Shared.TabHeader alignItems="flex-start">
-        <Shared.TabTitle>지원서 평가</Shared.TabTitle>
-        <Shared.TabSubtitle>지원자들의 지원 서류를 평가합니다.</Shared.TabSubtitle>
+      <Shared.TabHeader flexDirection="row" justifyContent="space-between" alignItems="center">
+        <Shared.TabHeader alignItems="flex-start">
+          <Shared.TabTitle>지원서 평가</Shared.TabTitle>
+          <Shared.TabSubtitle>지원자들의 지원 서류를 평가합니다.</Shared.TabSubtitle>
+        </Shared.TabHeader>
+        <S.Button onClick={() => setModal(true)}>
+          <span>서류 합격 처리</span>
+          <ArrowUp width={22} height={22} color={theme.colors.white} />
+        </S.Button>
       </Shared.TabHeader>
       <S.Wrapper>
         <ApplicantList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
@@ -56,6 +66,7 @@ const DocsEvaluationContent = () => {
           </div>
         </Section>
       </S.Wrapper>
+      {modal && <DocsPassModal onClose={() => setModal(false)} />}
     </>
   )
 }

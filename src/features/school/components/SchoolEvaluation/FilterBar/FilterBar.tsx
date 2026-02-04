@@ -24,10 +24,13 @@ const FilterBarWrapper = styled(Section)`
   align-items: center;
   border-radius: 6px;
   height: fit-content;
+  gap: 10px;
   .left,
   .right {
     display: flex;
     align-items: center;
     gap: 12px;
+    white-space: nowrap;
   }
+  overflow-x: scroll;
 `

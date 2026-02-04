@@ -16,3 +16,26 @@ export const Wrapper = styled.div`
     height: fit-content;
   }
 `
+export const Button = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  height: 36px;
+  width: fit-content;
+  min-width: 150px;
+  white-space: nowrap;
+  background-color: ${theme.colors.gray[600]};
+  border: 1px solid ${theme.colors.gray[500]};
+  border-radius: 4px;
+  align-items: center;
+  cursor: pointer;
+  ${theme.typography.C2.Md};
+  color: ${theme.colors.white};
+
+  svg {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+  }
+`
