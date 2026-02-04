@@ -17,6 +17,7 @@ const Header = ({
     label: string
     link: string
   }>
+
   nav?: {
     label: string
     link: string

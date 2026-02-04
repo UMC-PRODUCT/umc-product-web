@@ -39,6 +39,13 @@ export const fetchMyInfo = async (): Promise<MyInfoResponseDTO> => {
   return data.result
 }
 
+export const getSchoolLink = async (
+  schoolId: string,
+): Promise<CommonResponseDTO<GetSchoolLinkResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/admin/schools/link/${schoolId}`)
+  return data.result
+}
+
 export async function refresh(requestBody: RefreshRequestDTO): Promise<RefreshResponseDTO> {
   const { data } = await axiosInstance.post('/auth/token/renew', requestBody, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
@@ -77,12 +84,6 @@ export async function getTerm({
   const { data } = await axiosInstance.get(`/terms/type/${termsType}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
   })
-  return data
-}
-export const getSchoolLink = async (
-  schoolId: string,
-): Promise<CommonResponseDTO<GetSchoolLinkResponseDTO>> => {
-  const { data } = await axiosInstance.get(`/admin/schools/link/${schoolId}`)
   return data
 }
 

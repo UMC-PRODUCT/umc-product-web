@@ -15,17 +15,6 @@ export const authKeys = createQueryKeys('auth', {
   }),
 })
 
-export const schoolKeys = createQueryKeys('school', {
-  schoolLink: (schoolId: string) => ({
-    queryKey: [schoolId, 'link'],
-    queryFn: () => getSchoolLink(schoolId),
-  }),
-  gisu: () => ({
-    queryKey: ['gisu'],
-    queryFn: () => getGisuList(),
-  }),
-})
-
 export const termsKeys = createQueryKeys('terms', {
   detail: (termsType: TermsType) => ({
     queryKey: ['terms', termsType, 'detail'],
@@ -37,5 +26,16 @@ export const memberKeys = createQueryKeys('member', {
   me: () => ({
     queryKey: ['member', 'me'],
     queryFn: () => fetchMyInfo(),
+  }),
+})
+
+export const schoolKeys = createQueryKeys('school', {
+  schoolLink: (schoolId: string) => ({
+    queryKey: [schoolId, 'link'],
+    queryFn: () => getSchoolLink(schoolId),
+  }),
+  gisu: () => ({
+    queryKey: ['gisu'],
+    queryFn: () => getGisuList(),
   }),
 })
