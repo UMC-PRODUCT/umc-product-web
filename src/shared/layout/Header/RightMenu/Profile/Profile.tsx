@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import { clearTokens } from '@/api/tokenManager'
 import { authKeys } from '@/features/auth/domain/queryKeys'
+import { schoolKeys } from '@/shared/api/auth/queries'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
@@ -17,7 +18,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { setName, setNickname, setEmail } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setGisu, setSchoolId } = useUserProfileStore()
   const [isModalOpen, setIsModalOpen] = useState<{
     modalType: 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
@@ -26,7 +27,16 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     isOpen: false,
   })
   const { data } = useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
-
+  // TODO: 추후 ACTIVE 기수 조회하는 API가 생기면 수정 필요
+  const { data: gisu } = useCustomSuspenseQuery(
+    schoolKeys.gisu().queryKey,
+    schoolKeys.gisu().queryFn,
+    {
+      staleTime: 1000 * 60 * 60 * 24,
+      gcTime: 1000 * 60 * 60 * 24 * 7,
+    },
+  )
+  const gisuId = gisu.result.gisuList[0]?.gisuId || ''
   useEffect(() => {
     if (!open) return
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,7 +52,9 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     setName(data.name || '')
     setNickname(data.nickname || '')
     setEmail(data.email || '')
-  }, [data, setName, setNickname, setEmail])
+    setGisu(gisuId)
+    setSchoolId(data.schoolId ? data.schoolId.toString() : '')
+  }, [data, gisuId, setName, setNickname, setEmail, setGisu, setSchoolId])
 
   const handleLogout = () => {
     setName('')

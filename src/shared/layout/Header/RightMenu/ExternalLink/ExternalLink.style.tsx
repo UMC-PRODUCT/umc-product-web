@@ -27,6 +27,9 @@ export const ChildLinks = styled(Flex)({
       height: '22px',
     },
   },
+  span: {
+    color: theme.colors.gray[400],
+  },
 })
 
 export const MenuItemWrapper = styled.div({

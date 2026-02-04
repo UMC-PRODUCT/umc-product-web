@@ -6,9 +6,9 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import * as S from './RightMenu.style'
 
 type SocialLink = {
-  label: string
-  link: string
-  icon: 'kakao' | 'instagram' | 'youtube'
+  kakaoLink?: string
+  instagramLink?: string
+  youtubeLink?: string
 }
 
 const RightMenu = ({
@@ -19,7 +19,7 @@ const RightMenu = ({
     label: string
     link: string
   }
-  social?: Array<SocialLink>
+  social?: SocialLink
 }) => {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
@@ -34,7 +34,7 @@ const RightMenu = ({
           </S.NavAnchor>
         ))}
 
-      <ExternalLink subLinks={social || []} />
+      <ExternalLink subLinks={social || {}} />
     </S.MenuWrapper>
   )
 

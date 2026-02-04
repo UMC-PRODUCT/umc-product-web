@@ -3,28 +3,35 @@ import { useNavigate } from '@tanstack/react-router'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 
+import { schoolKeys } from '@/shared/api/auth/queries'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+
 import * as S from './Header.style'
 
 const Header = ({
   leftChildren,
-  social,
   nav,
 }: {
   leftChildren?: Array<{
     label: string
     link: string
   }>
-  social?: Array<{
-    label: string
-    link: string
-    icon: 'kakao' | 'instagram' | 'youtube'
-  }>
+
   nav?: {
     label: string
     link: string
   }
 }) => {
   const navigate = useNavigate()
+  const { schoolId } = useUserProfileStore()
+  const { data: schoolLinkData } = useCustomQuery(
+    schoolKeys.schoolLink(schoolId).queryKey,
+    schoolKeys.schoolLink(schoolId).queryFn,
+    {
+      enabled: !!schoolId,
+    },
+  )
   return (
     <header css={{ minWidth: '100vw', maxWidth: '100vw' }}>
       <S.Nav aria-label="Main Navigation">
@@ -43,7 +50,7 @@ const Header = ({
           <LeftMenu>{leftChildren}</LeftMenu>
         </S.LeftWrapper>
         <S.RightWrapper>
-          <RightMenu social={social} nav={nav} />
+          <RightMenu social={schoolLinkData?.result} nav={nav} />
         </S.RightWrapper>
       </S.Nav>
     </header>
