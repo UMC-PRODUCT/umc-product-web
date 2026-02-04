@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { realUploadFile } from '@/shared/api/file/api'
 import Upload from '@/shared/assets/icons/upload.svg?react'
+import { useFile } from '@/shared/hooks/useFile'
 import type { FileUploadAnswer, FileUploadStatus, UploadedFile } from '@/shared/types/apply'
 import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -16,10 +18,9 @@ interface FileUploadProps {
   mode: QuestionMode
 }
 
-const UPLOAD_PROGRESS_INTERVAL_MS = 300
-const UPLOAD_PROGRESS_INCREMENT_MAX = 20
-const UPLOAD_ERROR_PROBABILITY = 0.1
 const MAX_PROGRESS = 100
+const DEFAULT_CATEGORY = 'PORTFOLIO'
+const DEFAULT_CONTENT_TYPE = 'application/octet-stream'
 
 function generateFileId(): string {
   return `file-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
@@ -45,6 +46,10 @@ export const FileUpload = ({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDraggingOver, setIsDraggingOver] = useState(false)
   const filesRef = useRef<Array<UploadedFile>>(value.files)
+  const { useUploadFile, useDeleteFile, useConfirmUpload } = useFile()
+  const uploadFileMutation = useUploadFile()
+  const deleteFileMutation = useDeleteFile()
+  const confirmUploadMutation = useConfirmUpload()
   const files = value.files
   const currentLinks = value.links
 
@@ -65,25 +70,32 @@ export const FileUpload = ({
     )
   }
 
-  /**
-   * 파일 업로드 시뮬레이션
-   * TODO: API 연동 시 실제 업로드 로직으로 대체
-   */
-  const simulateUpload = (fileId: string, _file: File): void => {
-    let currentProgress = 0
+  const uploadSingleFile = async (fileInfo: UploadedFile) => {
+    const contentType = fileInfo.file.type || DEFAULT_CONTENT_TYPE
+    updateFileStatus(fileInfo.id, 'loading', 0)
+    try {
+      const prepare = await uploadFileMutation.mutateAsync({
+        fileName: fileInfo.name,
+        contentType,
+        fileSize: fileInfo.size,
+        category: DEFAULT_CATEGORY,
+      })
 
-    const uploadInterval = setInterval(() => {
-      currentProgress += Math.random() * UPLOAD_PROGRESS_INCREMENT_MAX
+      await realUploadFile(prepare.result.uploadUrl, fileInfo.file, contentType, (progress) => {
+        updateFileStatus(fileInfo.id, 'loading', progress)
+      })
 
-      if (currentProgress >= MAX_PROGRESS) {
-        clearInterval(uploadInterval)
-        const isUploadError = Math.random() < UPLOAD_ERROR_PROBABILITY
-        const finalStatus: FileUploadStatus = isUploadError ? 'error' : 'success'
-        updateFileStatus(fileId, finalStatus, MAX_PROGRESS)
-      } else {
-        updateFileStatus(fileId, 'loading', Math.floor(currentProgress))
-      }
-    }, UPLOAD_PROGRESS_INTERVAL_MS)
+      await confirmUploadMutation.mutateAsync(prepare.result.fileId)
+      updateFiles((previousFiles) =>
+        previousFiles.map((file) =>
+          file.id === fileInfo.id
+            ? { ...file, id: prepare.result.fileId, status: 'success', progress: MAX_PROGRESS }
+            : file,
+        ),
+      )
+    } catch (error) {
+      updateFileStatus(fileInfo.id, 'error', 0)
+    }
   }
 
   const processFiles = (fileList: FileList | null): void => {
@@ -91,11 +103,11 @@ export const FileUpload = ({
 
     const newFileInfoList = Array.from(fileList).map(createFileInfo)
 
-    newFileInfoList.forEach((fileInfo) => {
-      simulateUpload(fileInfo.id, fileInfo.file)
-    })
-
     updateFiles((previousFiles) => [...previousFiles, ...newFileInfoList])
+
+    newFileInfoList.forEach((fileInfo) => {
+      void uploadSingleFile(fileInfo)
+    })
   }
 
   const handleFileInputChange = (fileList: FileList | null) => {
@@ -132,12 +144,18 @@ export const FileUpload = ({
 
   const handleRetryUpload = (fileId: string, fileObject?: File) => {
     if (!fileObject) return
+    const currentFile = filesRef.current.find((file) => file.id === fileId)
+    if (!currentFile) return
     updateFileStatus(fileId, 'loading', 0)
-    simulateUpload(fileId, fileObject)
+    void uploadSingleFile({ ...currentFile, file: fileObject })
   }
 
   const handleRemoveFile = (fileId: string) => {
+    const targetFile = filesRef.current.find((file) => file.id === fileId)
     updateFiles((previousFiles) => previousFiles.filter((file) => file.id !== fileId))
+    if (targetFile?.status === 'success') {
+      void deleteFileMutation.mutateAsync(fileId)
+    }
   }
 
   const handleLinksChange = (updatedLinks: Array<string>) => {
