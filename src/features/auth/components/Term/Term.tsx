@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react'
 import { forwardRef } from 'react'
 
-import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
-import Flex from '@shared/ui/common/Flex/Flex'
+import { Checkbox } from '@/shared/ui/common/Checkbox/Checkbox'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './Term.style'
 

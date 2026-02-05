@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 
-import { theme } from '@shared/styles/theme'
+import { theme } from '@/shared/styles/theme'
 
 export const TermTitle = styled.span`
   color: ${theme.colors.lime};

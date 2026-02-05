@@ -15,7 +15,7 @@ interface SchoolEvaluationProps {
   onTabChange: (next: (typeof EVALUATION_TAB)[number]['value']) => void
 }
 
-const SchoolEvaluation = ({ activeTab, onTabChange }: SchoolEvaluationProps) => {
+export const SchoolEvaluation = ({ activeTab, onTabChange }: SchoolEvaluationProps) => {
   return (
     <Flex justifyContent="center">
       <PageLayout>
@@ -33,7 +33,6 @@ const SchoolEvaluation = ({ activeTab, onTabChange }: SchoolEvaluationProps) => 
     </Flex>
   )
 }
-export default SchoolEvaluation
 
 const PageLayout = styled.div`
   flex-direction: column;

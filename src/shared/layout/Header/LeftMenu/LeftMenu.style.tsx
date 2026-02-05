@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { Link as RouterLink } from '@tanstack/react-router'
 
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 
 export const Container = styled.nav({
   flex: 1,

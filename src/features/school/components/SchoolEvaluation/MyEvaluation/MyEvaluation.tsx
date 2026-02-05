@@ -8,8 +8,8 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import * as S from './MyEvaluation.style'
 
-const MyEvaluation = ({ selectedUserId }: { selectedUserId: string | null }) => {
-  console.log(selectedUserId)
+const MyEvaluation = ({ selectedUserId: _selectedUserId }: { selectedUserId: string | null }) => {
+  // TODO: selectedUserId를 사용하여 해당 유저에 대한 나의 평가 조회/저장
   const [score, setScore] = useState('92')
   const [comment, setComment] = useState('프로젝트 경험이 우수함.')
 

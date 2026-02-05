@@ -1,9 +1,8 @@
 import type { DragEvent } from 'react'
 import { useState } from 'react'
 
-import Search from '@shared/assets/icons/search.svg?react'
-
 import { APPLICANTS, TIME_SLOTS } from '@/features/school/mocks/scheduling'
+import Search from '@/shared/assets/icons/search.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'

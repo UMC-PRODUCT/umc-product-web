@@ -2,12 +2,11 @@ import type { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-import Close from '@shared/assets/icons/close.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Loading from '@shared/ui/common/Loading/Loading'
-import { Modal } from '@shared/ui/common/Modal'
-
+import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
+import { Modal } from '@/shared/ui/common/Modal'
 import * as S from '@/shared/ui/modals/TermModalLayout/TermModalLayout.style'
 
 type TermModalLayoutProps = {

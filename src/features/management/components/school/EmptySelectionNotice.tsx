@@ -1,5 +1,4 @@
-import { theme } from '@shared/styles/theme'
-
+import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
 export const EmptySelectionNotice = ({ variant = 'solid' }: { variant?: 'solid' | 'outline' }) => {

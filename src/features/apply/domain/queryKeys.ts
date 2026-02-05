@@ -10,7 +10,7 @@ import {
   getSpecificPartRecruiting,
 } from './api'
 
-export const userRecruitement = createQueryKeys('user', {
+export const applyKeys = createQueryKeys('user', {
   getActiveRecruitmentId: () => ({
     queryKey: ['recruitment', 'active'],
     queryFn: () => getActiveRecruitmentId(),

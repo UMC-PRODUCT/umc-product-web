@@ -8,7 +8,7 @@ import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
-import GrabButton from '@/shared/ui/common/GrapButton/GrabButton'
+import GrabButton from '@/shared/ui/common/GrabButton/GrabButton'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 

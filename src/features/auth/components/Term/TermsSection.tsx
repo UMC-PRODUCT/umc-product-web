@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 
-import { theme } from '@shared/styles/theme'
-import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Loading from '@shared/ui/common/Loading/Loading'
-import TermModalLayout from '@shared/ui/modals/TermModalLayout/TermModalLayout'
+import { theme } from '@/shared/styles/theme'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
+import TermModalLayout from '@/shared/ui/modals/TermModalLayout/TermModalLayout'
 
 import type { GetTermsResponseDTO } from '../../domain/types'
 import type { TermsAgreementKey } from '../../hooks/register'

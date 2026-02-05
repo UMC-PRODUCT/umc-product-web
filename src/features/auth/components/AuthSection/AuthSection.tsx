@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 
 const Section = styled.section<{ $size: 'md' | 'lg' }>`
   display: flex;

@@ -2,20 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import type { FieldValues } from 'react-hook-form'
 
 import type { UseAutoSaveOptions, UseAutoSaveReturn } from '@/shared/types/autoSave'
+import { formatDateTimeKorean } from '@/shared/utils'
 
 // 기본 자동 저장 주기(1분).
 const DEFAULT_AUTO_SAVE_INTERVAL_MS = 60_000
-
-// 저장 시간을 표시용 문자열로 변환.
-function formatDateTimeKorean(date: Date): string {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-
-  return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
-}
 
 export function useAutoSave<TFormValues extends FieldValues>({
   getValues,
@@ -30,14 +20,12 @@ export function useAutoSave<TFormValues extends FieldValues>({
     if (!enabled) return
 
     const formValues = getValues()
-    console.log('[AutoSave] 저장 데이터:', formValues)
     onSave?.(formValues)
 
     const currentDateTime = new Date()
     const formattedDateTime = formatDateTimeKorean(currentDateTime)
 
     setLastSavedTime(formattedDateTime)
-    console.log(`[AutoSave] ${formattedDateTime} 저장 완료`)
   }, [getValues, onSave, enabled])
 
   useEffect(() => {

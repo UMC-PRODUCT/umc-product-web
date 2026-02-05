@@ -11,7 +11,7 @@ import { setScheduleValidationContext } from '@/features/school/schemas/validati
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 
-import { recruiteKeys } from '../domain/queryKey'
+import { schoolKeys } from '../domain/queryKeys'
 import { useGetRecruitingData, useGetTempSavedApplicationData } from '../hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
 import { convertApplicationFormToItems } from '../utils/recruiting/applicationFormMapper'
@@ -236,7 +236,7 @@ export const useRecruitingContentLogic = ({
 
   const openPreview = () => {
     queryClient.invalidateQueries({
-      queryKey: recruiteKeys.getApplicationForm(recruitingId!).queryKey,
+      queryKey: schoolKeys.getApplicationForm(recruitingId!).queryKey,
     })
     setModal({ isOpen: true, modalName: 'recruitingPreview' })
   }

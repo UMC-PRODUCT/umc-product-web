@@ -1,7 +1,7 @@
 import type { DragEvent } from 'react'
 
 import { Button } from '@/shared/ui/common/Button'
-import GrabButton from '@/shared/ui/common/GrapButton/GrabButton'
+import GrabButton from '@/shared/ui/common/GrabButton/GrabButton'
 
 import * as S from './QuestionCard.style'
 

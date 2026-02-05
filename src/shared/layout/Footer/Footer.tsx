@@ -1,9 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 
-import Logo from '@shared/assets/umc_gray.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
-
+import Logo from '@/shared/assets/umc_gray.svg?react'
 import { FOOTER_INFO } from '@/shared/constants/umc'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './Footer.style'
 

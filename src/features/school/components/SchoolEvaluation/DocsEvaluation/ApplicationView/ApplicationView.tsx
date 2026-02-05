@@ -1,7 +1,7 @@
 import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
 import type { RecruitingForms } from '@/features/school/domain'
 import { theme } from '@/shared/styles/theme'
-import { MiniTimeTable } from '@/shared/ui/common/question/timeTable/MiniTimeTable'
+import { MiniTimeTable } from '@/shared/ui/common/Question/TimeTable/MiniTimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 
 import * as S from './ApplicationView.style'

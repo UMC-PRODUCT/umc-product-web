@@ -104,8 +104,7 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
         name: findAccountName(targetId),
         count,
         onConfirm: () => {
-          // TODO: 선택된 계정 삭제 API 연동
-          console.log('delete target', targetId ?? Array.from(selectedIds))
+          // TODO: 선택된 계정 삭제 API 연동 (targetId ?? Array.from(selectedIds))
         },
       })
     },

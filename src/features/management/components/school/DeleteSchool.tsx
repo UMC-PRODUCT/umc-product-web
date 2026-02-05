@@ -1,15 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import SearchIcon from '@shared/assets/icons/search.svg?react'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import { Button } from '@shared/ui/common/Button/Button'
-import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
-import Flex from '@shared/ui/common/Flex/Flex'
-import { TextField } from '@shared/ui/form/LabelTextField/TextField'
-
+import SearchIcon from '@/shared/assets/icons/search.svg?react'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import { Button } from '@/shared/ui/common/Button/Button'
+import { Dropdown } from '@/shared/ui/common/Dropdown/Dropdown'
+import Flex from '@/shared/ui/common/Flex/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 import { DELETE_SCHOOL_TABLE_HEADER_LABEL } from '../../domain/constants'
 import { AFFILIATED_MOCK, UNI_DELETE_MOCK } from '../../mocks/managementMocks'
@@ -92,9 +91,7 @@ const DeleteSchool = () => {
         schoolName: findSchoolNameById(targetSchoolId),
         selectedCount: deleteCount,
         onConfirm: () => {
-          const idsToDelete = targetSchoolId ?? Array.from(selectedSchoolIds)
-          // TODO: 학교 삭제 API 연동
-          console.log('삭제 대상 학교 ID:', idsToDelete)
+          // TODO: 학교 삭제 API 연동 (targetSchoolId ?? Array.from(selectedSchoolIds))
           closeDeleteModal()
         },
       })

@@ -8,7 +8,7 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 import type { GetTermsResponseDTO } from '../domain/types'
 import type { RegisterForm } from '../schemas/register'
 import { useAuth } from './register/useAuthMutations'
-import type { TermsAgreementKey } from './register/useTermsAgreementState'
+import type { TermsAgreementKey } from './register/useTermsAgreement'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 

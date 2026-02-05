@@ -1,4 +1,4 @@
-import Header from '@shared/layout/Header/Header'
+import Header from '@/shared/layout/Header/Header'
 
 const left = [
   {

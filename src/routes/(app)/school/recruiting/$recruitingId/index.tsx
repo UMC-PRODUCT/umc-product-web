@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import Recruiting from '@/features/school/pages/Recruiting'
+import { Recruiting } from '@/features/school/pages/Recruiting'
 
 type RecruitingSearch = {
   source?: 'temp'

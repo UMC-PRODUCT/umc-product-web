@@ -63,10 +63,8 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
   )
 }
 
-const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
+export const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
   <AsyncBoundary fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}>
     <RecruitingPreviewPageContent recruitingId={recruitingId} />
   </AsyncBoundary>
 )
-
-export default RecruitingPreviewPage

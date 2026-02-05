@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import * as Shared from '@shared/styles/shared'
-
 import { UNI_LIST_MOCK } from '@/features/auth/mocks/universities'
 import { EDIT_ACCOUNT_MOCKS } from '@/features/management/mocks/editAccount'
 import type { AccountEditForm } from '@/features/management/schemas/management'
 import useAccountLevelOptions from '@/shared/hooks/useAccountLevelOptions'
+import * as Shared from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
 import type { AccountLevelType, AccountStateType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
@@ -54,8 +53,8 @@ const EditModeView = () => {
   const { emailVerificationButtonLabel, handleSendVerificationEmail, isEmailVerified } =
     useEmailVerification(watch('email'), () => setInviteConfirmModal(true))
 
-  const onSubmit = (data: AccountEditForm) => {
-    console.log(data)
+  const onSubmit = (_data: AccountEditForm) => {
+    // TODO: 계정 수정 API 연동
     setEditConfirmModal(true)
   }
 

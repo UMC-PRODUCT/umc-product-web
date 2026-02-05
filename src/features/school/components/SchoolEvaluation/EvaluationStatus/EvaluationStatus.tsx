@@ -9,8 +9,12 @@ const MOCK = [
   { id: '3', score: '92', nickname: '닉네임3', name: '이름3', comment: '좋아요' },
 ]
 
-const EvaluationStatus = ({ selectedUserId }: { selectedUserId: string | null }) => {
-  console.log(selectedUserId)
+const EvaluationStatus = ({
+  selectedUserId: _selectedUserId,
+}: {
+  selectedUserId: string | null
+}) => {
+  // TODO: selectedUserId를 사용하여 해당 유저의 평가 현황 조회
   return (
     <Section
       variant="both"

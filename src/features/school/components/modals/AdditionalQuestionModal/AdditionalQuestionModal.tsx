@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-import Close from '@shared/assets/icons/close.svg?react'
-
+import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'

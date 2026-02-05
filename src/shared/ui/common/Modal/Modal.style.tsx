@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 
-import { theme } from '@shared/styles/theme'
+import { theme } from '@/shared/styles/theme'
 
 export const StyledOverlay = styled(DialogPrimitive.Overlay)`
   position: fixed;

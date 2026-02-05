@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 
-import { theme } from '@shared/styles/theme'
-import type { BadgeTone, BadgeVariant } from '@shared/types/component'
-import type { TypoToken } from '@shared/types/typo'
+import { theme } from '@/shared/styles/theme'
+import type { BadgeTone, BadgeVariant } from '@/shared/types/component'
+import type { TypoToken } from '@/shared/types/typo'
 
 /**
  * Tone별 스타일 정의

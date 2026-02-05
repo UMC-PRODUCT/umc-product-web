@@ -1,6 +1,16 @@
 /**
  * Apply 도메인 공개 API
+ *
+ * @example
+ * import { applyKeys } from '@features/apply/domain'
+ * import type { QuestionType, UploadedFile } from '@features/apply/domain'
  */
+
+// API
+export * from './api'
+
+// Query Keys
+export { applyKeys } from './queryKeys'
 
 // 상수
 export {

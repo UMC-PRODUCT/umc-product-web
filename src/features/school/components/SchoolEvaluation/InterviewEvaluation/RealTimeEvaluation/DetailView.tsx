@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import Search from '@shared/assets/icons/search.svg?react'
-
 import { INTERVIEW_QUESTIONS } from '@/features/school/mocks/interviewQuestions'
 import Plus from '@/shared/assets/icons/plus.svg?react'
+import Search from '@/shared/assets/icons/search.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
@@ -44,8 +43,7 @@ const DetailView = ({
     // 저장 로직 구현
   }
 
-  const handleRemoveQuestion = (id: string) => {
-    console.log(id)
+  const handleRemoveQuestion = (_id: string) => {
     // 취소 로직 구현
   }
 

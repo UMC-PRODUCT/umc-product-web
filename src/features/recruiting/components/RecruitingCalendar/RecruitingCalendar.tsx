@@ -13,8 +13,7 @@ import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import type { CalendarEvent } from '@/shared/types/calendar'
 import { Flex } from '@/shared/ui/common/Flex'
-import { getEventDateText } from '@/shared/utils/calendar'
-import { transformRecruitingScheduleTypeKorean } from '@/shared/utils/transformKorean'
+import { formatDateRange, transformRecruitingScheduleTypeKorean } from '@/shared/utils'
 
 import * as S from './RecruitingCalendar.style'
 
@@ -200,7 +199,7 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
                   {transformRecruitingScheduleTypeKorean(event.title as RECRUITING_SCHEDULE_TYPE)}
                 </div>
                 <div className="period">
-                  {getEventDateText(dayjs(event.startDate).toDate(), dayjs(event.endDate).toDate())}
+                  {formatDateRange(dayjs(event.startDate).toDate(), dayjs(event.endDate).toDate())}
                 </div>
               </S.EventInfo>
             </S.EventItem>

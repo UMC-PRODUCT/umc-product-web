@@ -1,6 +1,5 @@
-import Tab from '@shared/ui/common/Tab/Tab'
-
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+import Tab from '@/shared/ui/common/Tab/Tab'
 
 import AddAccount from '../components/account/AddAccountTab/AddAccountTab'
 import EditAccount from '../components/account/EditAccountTab/EditAccountTab'

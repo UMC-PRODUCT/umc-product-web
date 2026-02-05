@@ -1,11 +1,11 @@
 import type { KeyboardEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import Arrow from '@shared/assets/icons/arrow.svg?react'
-import InstagramIcon from '@shared/assets/social/instagram.svg?react'
-import KakaoIcon from '@shared/assets/social/kakao-talk.svg?react'
-import YoutubeIcon from '@shared/assets/social/youtube.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
+import Arrow from '@/shared/assets/icons/arrow.svg?react'
+import InstagramIcon from '@/shared/assets/social/instagram.svg?react'
+import KakaoIcon from '@/shared/assets/social/kakao-talk.svg?react'
+import YoutubeIcon from '@/shared/assets/social/youtube.svg?react'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './ExternalLink.style'
 

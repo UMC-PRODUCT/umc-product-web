@@ -13,7 +13,7 @@ import Section from '@/shared/ui/common/Section/Section'
 
 import type { RecruitingContentLogic } from '../hooks/useRecruitingContentLogic'
 
-const RecruitingContentView = ({
+export const RecruitingContentView = ({
   scrollTopRef,
   recruitingTitle,
   handleBackClick,
@@ -107,5 +107,3 @@ const RecruitingContentView = ({
     </PageLayout>
   )
 }
-
-export default RecruitingContentView

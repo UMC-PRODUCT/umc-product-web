@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import LabelDropdown from '@shared/ui/form/LabelDropdown/LabelDropdown'
-
 import { useSchoolPaginator } from '@/features/auth/hooks/register/useSchoolPaginator'
-import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelectionState'
+import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
+import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
 import * as S from './SchoolSelect.style'
 

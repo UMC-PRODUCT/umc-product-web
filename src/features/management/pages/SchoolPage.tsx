@@ -1,6 +1,5 @@
-import Tab from '@shared/ui/common/Tab/Tab'
-
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
+import Tab from '@/shared/ui/common/Tab/Tab'
 
 import AddSchool from '../components/school/AddSchool'
 import DeleteSchool from '../components/school/DeleteSchool'

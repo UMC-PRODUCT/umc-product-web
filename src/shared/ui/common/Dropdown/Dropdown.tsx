@@ -3,8 +3,7 @@ import { forwardRef } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
-import Arrow from '@shared/assets/icons/arrow.svg?react'
-
+import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import type { Option } from '@/shared/types/form'
 
 import * as S from './Dropdown.style'

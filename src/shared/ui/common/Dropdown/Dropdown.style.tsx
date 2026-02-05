@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
-import { inputShell } from '@shared/styles/formStyles'
-import { theme } from '@shared/styles/theme'
+import { inputShell } from '@/shared/styles/formStyles'
+import { theme } from '@/shared/styles/theme'
 
 export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   ${inputShell};

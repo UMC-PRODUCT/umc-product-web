@@ -12,7 +12,7 @@ import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
-import { Question } from '@/shared/ui/common/question/Question'
+import { Question } from '@/shared/ui/common/Question/Question'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
@@ -91,10 +91,8 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   )
 }
 
-const ViewResume = ({ currentPage, onPageChange }: ViewResumeProps) => (
+export const ViewResume = ({ currentPage, onPageChange }: ViewResumeProps) => (
   <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
     <ViewResumeContent currentPage={currentPage} onPageChange={onPageChange} />
   </AsyncBoundary>
 )
-
-export default ViewResume

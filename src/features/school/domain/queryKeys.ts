@@ -8,7 +8,7 @@ import {
 } from './api'
 import type { GetRecruitmentsRequestDTO } from './model'
 
-export const recruiteKeys = createQueryKeys('recruitment', {
+export const schoolKeys = createQueryKeys('recruitment', {
   recruitments: (status: GetRecruitmentsRequestDTO) => ({
     queryKey: [status],
     queryFn: () => getRecruitments(status),

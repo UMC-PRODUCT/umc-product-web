@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './IntroBanner.style'
 

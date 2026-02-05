@@ -1,7 +1,7 @@
 import type { RecruitingForms } from '@/features/school/domain'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { pageType, ResumeFormSectionProps } from '@/shared/types/form'
+import type { FormPage, ResumeFormSectionProps } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -9,7 +9,7 @@ import ResumeFormSection from '../pages/resume/ResumeFormSection'
 import * as S from './ResumeContent.style'
 
 interface ResumeContentProps {
-  pages: Array<pageType>
+  pages: Array<FormPage>
   formData: RecruitingForms
   displayLastSavedTime: string | null
   handleSave: () => void

@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 
 import type { SchoolSearchPage } from '@/features/auth/domain/school'
 import { searchSchools } from '@/features/auth/domain/school'
-import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelectionState'
+import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
 
 const DEFAULT_PAGE_SIZE = 20
 

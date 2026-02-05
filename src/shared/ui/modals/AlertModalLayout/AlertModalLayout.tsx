@@ -1,10 +1,9 @@
-import Close from '@shared/assets/icons/close.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Instruction from '@shared/ui/common/Instruction/Instruction'
-import { Modal } from '@shared/ui/common/Modal'
-import * as S from '@shared/ui/modals/AlertModalLayout/AlertModalLayout.style'
-
+import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Instruction from '@/shared/ui/common/Instruction/Instruction'
+import { Modal } from '@/shared/ui/common/Modal'
+import * as S from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout.style'
 
 type AlertModalLayoutProps = {
   onClose: () => void

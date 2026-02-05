@@ -2,8 +2,8 @@ export const useLocalStorage = (key: string) => {
   const setItem = (value: unknown) => {
     try {
       window.localStorage.setItem(key, JSON.stringify(value))
-    } catch (e) {
-      console.log(e)
+    } catch {
+      // localStorage 접근 오류 무시
     }
   }
 
@@ -11,16 +11,16 @@ export const useLocalStorage = (key: string) => {
     try {
       const item = window.localStorage.getItem(key)
       return item ? JSON.parse(item) : null
-    } catch (e) {
-      console.log(e)
+    } catch {
+      return null
     }
   }
 
   const removeItem = () => {
     try {
       window.localStorage.removeItem(key)
-    } catch (e) {
-      console.log(e)
+    } catch {
+      // localStorage 접근 오류 무시
     }
   }
 
