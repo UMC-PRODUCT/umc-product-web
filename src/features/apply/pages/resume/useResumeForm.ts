@@ -1,7 +1,7 @@
 import type { useForm } from 'react-hook-form'
 
 import type { RecruitingForms } from '@/features/school/domain'
-import type { pageType } from '@/shared/types/form'
+import type { FormPage } from '@/shared/types/form'
 
 import type { GetApplicationAnswerResponseDTO } from '../../domain/model'
 import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
@@ -23,7 +23,7 @@ export interface UseResumeFormReturn {
   errors: ReturnType<typeof useForm<ResumeFormValues>>['formState']['errors']
   isDirty: boolean
   isFormIncomplete: boolean
-  resolvedPages: Array<pageType>
+  resolvedPages: Array<FormPage>
   defaultValues: ResumeFormValues
 }
 
