@@ -130,6 +130,9 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+          })
           setIsSubmitModalOpen(false)
         },
         onError: () => {
