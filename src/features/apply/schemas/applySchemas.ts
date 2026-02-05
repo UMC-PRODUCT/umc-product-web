@@ -1,8 +1,8 @@
-import type { question } from '@/shared/types/form'
+import type { FormQuestion } from '@/shared/types/form'
 
 const REQUIRED_FIELD_MESSAGE = '응답 필수 항목입니다.'
 
-export const createPartValidation = (question: question) => (value: unknown) => {
+export const createPartValidation = (question: FormQuestion) => (value: unknown) => {
   if (question.type !== 'PREFERRED_PART') return true
   const selections = Array.isArray(value) ? value : []
   const first = selections.find((item) => item?.id === 1)?.answer
@@ -22,7 +22,7 @@ export const createPartValidation = (question: question) => (value: unknown) => 
   return true
 }
 
-export const createValidationRules = (question: question) => ({
+export const createValidationRules = (question: FormQuestion) => ({
   required:
     question.type === 'PREFERRED_PART' ? false : question.required ? REQUIRED_FIELD_MESSAGE : false,
   ...(question.type === 'PREFERRED_PART'
