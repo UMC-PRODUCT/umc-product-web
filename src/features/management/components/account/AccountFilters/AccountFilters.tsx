@@ -1,12 +1,11 @@
-import Search from '@shared/assets/icons/search.svg?react'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import { Button } from '@shared/ui/common/Button/Button'
-import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
-import Flex from '@shared/ui/common/Flex/Flex'
-import { TextField } from '@shared/ui/form/LabelTextField/TextField'
-
+import Search from '@/shared/assets/icons/search.svg?react'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import { Button } from '@/shared/ui/common/Button/Button'
+import { Dropdown } from '@/shared/ui/common/Dropdown/Dropdown'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 type AccountFiltersProps<TAffiliated, TRole, TStatus> = {
   searchTerm: string

@@ -29,7 +29,6 @@ const Step3PartHeader = ({
   disabled = false,
 }: Step3PartHeaderProps) => {
   const isCompletionToggleDisabled = disabled
-  console.log(isCompletionToggleDisabled)
   return (
     <Section
       variant="solid"

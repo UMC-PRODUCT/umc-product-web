@@ -1,7 +1,6 @@
-import Close from '@shared/assets/icons/close.svg?react'
-
 import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
 import { answers } from '@/features/school/mocks/application'
+import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal'

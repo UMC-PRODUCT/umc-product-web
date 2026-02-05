@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 
-import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
+import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import SchoolSelect from '../components/SchoolSelect/SchoolSelect'
 import { TermsSection } from '../components/Term/TermsSection'

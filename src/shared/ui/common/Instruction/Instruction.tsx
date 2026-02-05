@@ -1,6 +1,6 @@
-import { theme } from '@shared/styles/theme'
-import type { TypoToken } from '@shared/types/typo'
-import { resolveTypo } from '@shared/utils/resolveTypo'
+import { theme } from '@/shared/styles/theme'
+import type { TypoToken } from '@/shared/types/typo'
+import { resolveTypo } from '@/shared/utils/resolveTypo'
 
 import * as S from './Instruction.style'
 

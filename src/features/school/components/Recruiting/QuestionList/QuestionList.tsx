@@ -5,7 +5,7 @@ import { useFieldArray, useWatch } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 
-import { recruiteKeys } from '@/features/school/domain/queryKey'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import { theme } from '@/shared/styles/theme'
@@ -40,7 +40,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const { useDeleteSingleQuestion } = useRecruitingMutation()
   const { mutate: deleteSingleQuestionMutate } = useDeleteSingleQuestion(recruitingId)
   const queryClient = useQueryClient()
-  const applicationQuery = recruiteKeys.getTempSavedApplication(recruitingId)
+  const applicationQuery = schoolKeys.getTempSavedApplication(recruitingId)
   const { fields, append, remove, move, update } = useFieldArray({
     control,
     name: 'items' as never,

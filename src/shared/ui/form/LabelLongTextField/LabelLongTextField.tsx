@@ -4,7 +4,7 @@ import { Field } from '@/shared/styles/formStyles'
 
 import ErrorMessage from '../../common/ErrorMessage/ErrorMessage'
 import Label from '../../common/Label'
-import { LongText } from '../../common/question/longText/LongText'
+import { LongText } from '../../common/Question/LongText/LongText'
 import * as S from './LabelLongTextField.style'
 
 const LabelLongTextField = ({

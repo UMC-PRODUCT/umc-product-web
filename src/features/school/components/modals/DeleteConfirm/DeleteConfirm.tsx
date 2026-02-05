@@ -1,11 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query'
 
-import FillNotice from '@shared/assets/icons/notice_fill.svg?react'
-import { Button } from '@shared/ui/common/Button/Button'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
-
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import FillNotice from '@/shared/assets/icons/notice_fill.svg?react'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const DeleteConfirm = ({
   onClose,
@@ -21,7 +20,6 @@ const DeleteConfirm = ({
   const { mutate: deleteRecruitmentMutate } = useDeleteRecruitment(recruitmentId)
 
   const handleDeleteRecruitment = () => {
-    console.log('Deleting recruitment with ID:', recruitmentId)
     deleteRecruitmentMutate(undefined, {
       onSuccess: () => {
         queryClient.invalidateQueries({

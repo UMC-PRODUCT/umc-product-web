@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
-import { Badge } from '@shared/ui/common/Badge/Badge'
-import Flex from '@shared/ui/common/Flex/Flex'
-
-import { memberKeys } from '@/shared/api/auth/queries'
+import { clearTokens } from '@/api/tokenManager'
+import { authKeys } from '@/features/auth/domain/queryKeys'
+import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import { Badge } from '@/shared/ui/common/Badge/Badge'
+import Flex from '@/shared/ui/common/Flex/Flex'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
 import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
 
@@ -25,7 +25,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     modalType: '',
     isOpen: false,
   })
-  const { data } = useCustomSuspenseQuery(memberKeys.me().queryKey, memberKeys.me().queryFn)
+  const { data } = useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
 
   useEffect(() => {
     if (!open) return
@@ -48,12 +48,12 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
     setName('')
     setNickname('')
     setEmail('')
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+    clearTokens()
     navigate({
       to: '/auth/login',
     })
   }
+
   return (
     <S.Container ref={menuRef}>
       <S.TriggerIcon onClick={() => setOpen(!open)} />

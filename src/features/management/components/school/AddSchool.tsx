@@ -2,11 +2,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@shared/ui/common/Button/Button'
-import Label from '@shared/ui/common/Label/Label'
-import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
-
+import { Button } from '@/shared/ui/common/Button/Button'
+import Label from '@/shared/ui/common/Label/Label'
 import Section from '@/shared/ui/common/Section/Section'
+import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import type { SchoolRegisterForm } from '../../schemas/management'
 import { schoolRegisterSchema } from '../../schemas/management'

@@ -4,7 +4,7 @@ import { theme } from '@/shared/styles/theme'
 import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 
-import * as S from '../choice/shared'
+import * as S from './shared'
 
 const RadioChoice = ({
   content,

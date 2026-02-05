@@ -1,8 +1,7 @@
 import { forwardRef } from 'react'
 
-import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@shared/types/component'
-import type { TypoToken } from '@shared/types/typo'
-
+import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@/shared/types/component'
+import type { TypoToken } from '@/shared/types/typo'
 import Loading from '@/shared/ui/common/Loading/Loading'
 
 import { StyledButton } from './Button.style'

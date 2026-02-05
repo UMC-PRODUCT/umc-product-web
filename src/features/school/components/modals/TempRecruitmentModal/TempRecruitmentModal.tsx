@@ -1,17 +1,15 @@
-import dayjs from 'dayjs'
-
-import Close from '@shared/assets/icons/close.svg?react'
-import { Modal } from '@shared/ui/common/Modal'
-
 import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentModal.style'
 import { getRecruitments } from '@/features/school/domain/api'
-import { recruiteKeys } from '@/features/school/domain/queryKey'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import Close from '@/shared/assets/icons/close.svg?react'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Flex } from '@/shared/ui/common/Flex'
+import { Modal } from '@/shared/ui/common/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { formatTempSavedTime } from '@/shared/utils'
 
 import TempRecruitmentCard from '../../TempRecruitmentCard/TempRecruitmentCard'
 
@@ -19,12 +17,9 @@ type TempRecruitmentModalProps = {
   onClose: () => void
 }
 
-const formatTempSavedTime = (value: string | number | Date) =>
-  dayjs(value).format('YYYY년 M월 D일 H시 m분')
-
 const TempRecruitmentList = () => {
   const { data } = useCustomSuspenseQuery(
-    recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
+    schoolKeys.recruitments({ status: 'DRAFT' }).queryKey,
     () => getRecruitments({ status: 'DRAFT' }),
   )
 

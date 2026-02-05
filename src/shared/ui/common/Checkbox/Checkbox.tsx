@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import type * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 
-import CheckIcon from '@shared/assets/icons/check.svg?react'
+import CheckIcon from '@/shared/assets/icons/check.svg?react'
 
 import * as S from './Checkbox.style'
 

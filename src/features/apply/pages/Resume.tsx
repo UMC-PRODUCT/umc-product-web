@@ -13,10 +13,10 @@ import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import { scrollToTop } from '@/shared/utils/scrollToTop'
+import { formatDateTimeKorean, scrollToTop } from '@/shared/utils'
 
 import ResumeContent from '../components/ResumeContent'
-import { userRecruitement } from '../domain/queryKey'
+import { applyKeys } from '../domain/queryKeys'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
   useGetApplicationAnswer,
@@ -68,25 +68,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     if (!raw) return null
     const savedDate = new Date(raw)
     if (Number.isNaN(savedDate.getTime())) return null
-    const formatter = new Intl.DateTimeFormat('ko-KR', {
-      timeZone: 'Asia/Seoul',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    })
-    const parts = formatter.formatToParts(savedDate)
-    const getPart = (type: Intl.DateTimeFormatPart['type']) =>
-      parts.find((part) => part.type === type)?.value ?? ''
-    const year = getPart('year')
-    const month = getPart('month')
-    const day = getPart('day')
-    const hour = getPart('hour')
-    const minute = getPart('minute')
-    if (!year || !month || !day || !hour || !minute) return null
-    return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`
+    return formatDateTimeKorean(savedDate)
   })()
   const queryClient = useQueryClient()
   useBeforeUnload(isDirty)
@@ -101,7 +83,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+              queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
             })
           },
         },
@@ -149,7 +131,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
           })
           setIsSubmitModalOpen(false)
         },
@@ -197,10 +179,8 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   )
 }
 
-const Resume = ({ currentPage, onPageChange }: ResumeProps) => (
+export const Resume = ({ currentPage, onPageChange }: ResumeProps) => (
   <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
     <ResumeContentPage currentPage={currentPage} onPageChange={onPageChange} />
   </AsyncBoundary>
 )
-
-export default Resume

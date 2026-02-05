@@ -1,7 +1,7 @@
-import Warning from '@shared/assets/icons/caution.svg?react'
-import { Button } from '@shared/ui/common/Button/Button'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
+import Warning from '@/shared/assets/icons/caution.svg?react'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const AccountActivate = ({
   onClose,

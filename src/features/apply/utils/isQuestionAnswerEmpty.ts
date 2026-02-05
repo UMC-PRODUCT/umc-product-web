@@ -5,7 +5,9 @@ import { isOptionAnswerValue } from './optionAnswer'
 type SharedQuestionOptions = Omit<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'> &
   Partial<Pick<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'>>
 
-export type ResumeQuestion = FormQuestion | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
+export type ResumeQuestion =
+  | FormQuestion
+  | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
 
 const isQuestionRequired = (question: ResumeQuestion): boolean =>
   'necessary' in question ? question.required : 'required' in question ? question.required : false

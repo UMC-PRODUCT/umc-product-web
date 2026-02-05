@@ -39,7 +39,7 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     }
   }, [])
 
-const LoginRedirectPage = () => {
+export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
@@ -113,5 +113,3 @@ const LoginRedirectPage = () => {
     </Flex>
   )
 }
-
-export default LoginRedirectPage

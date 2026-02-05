@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 
 export const SectionWrapper = styled.div`
   width: 100%;

@@ -1,11 +1,10 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Label from '@shared/ui/common/Label/Label'
-import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
-
 import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Label from '@/shared/ui/common/Label/Label'
+import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import type { SchoolRegisterForm } from '../../schemas/management'
 import * as S from './shared'

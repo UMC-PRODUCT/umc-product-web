@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 export const TabHeader = styled(Flex)`
   flex-direction: column;

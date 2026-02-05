@@ -8,7 +8,7 @@ export type Option<T> = { label: T; id: string | number }
 
 type RecruitingFormValues = Record<string, unknown>
 
-export type option = {
+export type FormOption = {
   optionId: string
   content: string
   isOther?: boolean
@@ -17,12 +17,12 @@ export type OptionAnswerValue = {
   selectedOptionIds: Array<string>
   otherText?: string
 }
-export type question = {
+export type FormQuestion = {
   questionId: number
   type: QuestionType
   questionText: string
   required: boolean
-  options: Array<option>
+  options: Array<FormOption>
   maxSelectCount: string | null
   preferredPartOptions: Array<{
     recruitmentPartId: number
@@ -31,17 +31,17 @@ export type question = {
   }>
 }
 
-export type pageType = {
+export type FormPage = {
   page: number
-  questions: Array<question> | null
+  questions: Array<FormQuestion> | null
   scheduleQuestion: {
     questionId: number
     type: QuestionType
     questionText: string
     required: boolean
     schedule: {
-      dateRange: range
-      timeRange: range
+      dateRange: DateRange
+      timeRange: DateRange
       slotMinutes: string
       enabledByDate: Array<{ date: string; times: Array<string> }>
       disabledByDate: Array<{ date: string; times: Array<string> }>
@@ -50,11 +50,11 @@ export type pageType = {
   partQuestions: Array<{
     part: PartType
     label?: string
-    questions: Array<question>
+    questions: Array<FormQuestion>
   }> | null
 }
 export interface ResumeFormSectionProps {
-  pages: Array<pageType>
+  pages: Array<FormPage>
   control: Control<RecruitingFormValues>
   setValue: UseFormSetValue<RecruitingFormValues>
   clearErrors: UseFormClearErrors<RecruitingFormValues>
@@ -95,7 +95,7 @@ export interface RecruitingQuestionPage {
 
 export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED' | 'PUBLISHED'
 
-export type range = {
+export type DateRange = {
   start: string
   end: string
 }
@@ -111,8 +111,8 @@ export type RecruitingSchedule = {
 }
 
 export type RecruitingInterviewTimeTable = {
-  dateRange: range
-  timeRange: range
+  dateRange: DateRange
+  timeRange: DateRange
   slotMinutes: string
   enabledByDate: Array<{ date: string; times: Array<string> }>
   disabledByDate: Array<{ date: string; times: Array<string> }>

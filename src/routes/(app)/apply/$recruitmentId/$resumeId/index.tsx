@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import Resume from '@/features/apply/pages/Resume'
+import { Resume } from '@/features/apply/pages/Resume'
 
 type ResumeSearch = {
   page: number

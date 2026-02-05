@@ -2,13 +2,12 @@ import { forwardRef, useCallback, useEffect, useId, useRef, useState } from 'rea
 import type { Interpolation, Theme } from '@emotion/react'
 import dayjs from 'dayjs'
 
-import CalendarIcon from '@shared/assets/icons/calendar2.svg?react'
-import { Field } from '@shared/styles/formStyles'
-import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
-import Label from '@shared/ui/common/Label/Label'
-
+import CalendarIcon from '@/shared/assets/icons/calendar2.svg?react'
+import { Field } from '@/shared/styles/formStyles'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+import Label from '@/shared/ui/common/Label/Label'
 
 import Section from '../../common/Section/Section'
 import * as S from './LabelCalendar.style'

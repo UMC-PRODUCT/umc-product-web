@@ -1,11 +1,10 @@
-import Close from '@shared/assets/icons/close.svg?react'
-import AppleIcon from '@shared/assets/social/apple.svg?react'
-import GoogleIcon from '@shared/assets/social/google.svg?react'
-import KakaoIcon from '@shared/assets/social/kakao.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
-import { Modal } from '@shared/ui/common/Modal'
-
+import Close from '@/shared/assets/icons/close.svg?react'
+import AppleIcon from '@/shared/assets/social/apple.svg?react'
+import GoogleIcon from '@/shared/assets/social/google.svg?react'
+import KakaoIcon from '@/shared/assets/social/kakao.svg?react'
 import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import { Modal } from '@/shared/ui/common/Modal'
 import * as S from '@/shared/ui/modals/AccountModal/AccountModal.style'
 
 import { Button } from '../../common/Button'

@@ -1,8 +1,8 @@
 import { forwardRef, useId } from 'react'
 
-import { Field } from '@shared/styles/formStyles'
-import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
-import Label from '@shared/ui/common/Label/Label'
+import { Field } from '@/shared/styles/formStyles'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+import Label from '@/shared/ui/common/Label/Label'
 
 import * as S from './LabelTextField.style'
 import type { TextFieldProps } from './TextField'

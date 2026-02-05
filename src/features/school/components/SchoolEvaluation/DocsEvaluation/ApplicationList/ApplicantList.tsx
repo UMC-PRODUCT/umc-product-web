@@ -1,6 +1,5 @@
-import CheckIcon from '@shared/assets/icons/check.svg?react'
-import Search from '@shared/assets/icons/search.svg?react'
-
+import CheckIcon from '@/shared/assets/icons/check.svg?react'
+import Search from '@/shared/assets/icons/search.svg?react'
 import { theme } from '@/shared/styles/theme'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'

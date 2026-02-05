@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/api/axiosInstance'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
-import type { GetMyApplicationResponseDTO } from './apiType'
+import type { GetMyApplicationResponseDTO } from './types'
 
 export const getMyApplications = async (): Promise<
   CommonResponseDTO<GetMyApplicationResponseDTO>

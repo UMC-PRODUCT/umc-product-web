@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 
-import { theme } from '@shared/styles/theme'
+import { theme } from '@/shared/styles/theme'
 
 const divStyle = css({
   marginTop: '76px',

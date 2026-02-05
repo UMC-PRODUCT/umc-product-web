@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { UseFormRegister } from 'react-hook-form'
 
-import type { FormPage } from '@/shared/types/form'
+import type { FormPage, FormQuestion } from '@/shared/types/form'
 
 import { createValidationRules } from '../../../schemas/applySchemas'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
@@ -17,7 +17,7 @@ export function useFormValidationRegistration(
   useEffect(() => {
     resolvedPages.forEach((page) => {
       if (!page.questions) return
-      page.questions.forEach((question) => {
+      page.questions.forEach((question: FormQuestion) => {
         const validationRules = createValidationRules(question)
         register(String(question.questionId), validationRules)
       })

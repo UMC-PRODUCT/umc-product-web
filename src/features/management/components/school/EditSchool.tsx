@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@shared/ui/common/Button/Button'
-import { Dropdown } from '@shared/ui/common/Dropdown/Dropdown'
-
 import type { Option } from '@/shared/types/form'
+import { Button } from '@/shared/ui/common/Button/Button'
+import { Dropdown } from '@/shared/ui/common/Dropdown/Dropdown'
 
 import { UNI_LIST_MOCK } from '../../mocks/universities'
 import type { SchoolRegisterForm } from '../../schemas/management'
@@ -46,12 +45,12 @@ const EditSchool = () => {
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
+    // TODO: 학교 정보 수정 API 연동
     setModal({
       isOpen: true,
       schoolName: data.schoolName,
       link: `/management/school/edit?school=${data.schoolName}`,
     })
-    console.log(data)
   }
 
   const closeModal = () => {

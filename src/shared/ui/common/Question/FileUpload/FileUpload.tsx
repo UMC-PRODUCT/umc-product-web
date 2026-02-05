@@ -6,8 +6,8 @@ import type { QuestionMode } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
-import FileList from '../FileList/FileList'
-import LinkSection from '../LinkSection/LinkSection'
+import FileList from './FileList/FileList'
+import LinkSection from './LinkSection/LinkSection'
 import * as S from './FileUpload.style'
 
 interface FileUploadProps {

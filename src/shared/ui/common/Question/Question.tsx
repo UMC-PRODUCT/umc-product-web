@@ -2,12 +2,12 @@ import type { FileUploadAnswer, QuestionAnswerValue, QuestionType } from '@/shar
 import type { OptionAnswerValue, QuestionMode } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/part'
 
-import { Choice } from './choice/Choice'
-import { FileUpload } from './fileUpload/FileUpload/FileUpload'
-import { LongText } from './longText/LongText'
-import { MultipleChoice } from './multipleChoice/MultipleChoice'
-import PartChoice from './partChoice/PartChoice'
-import { Text } from './text/Text'
+import { Choice } from './Choice/Choice'
+import { FileUpload } from './FileUpload/FileUpload'
+import { LongText } from './LongText/LongText'
+import { MultipleChoice } from './MultipleChoice/MultipleChoice'
+import PartChoice from './PartChoice/PartChoice'
+import { Text } from './Text/Text'
 import QuestionLayout from './QuestionLayout'
 
 type ChoiceOption = {

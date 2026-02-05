@@ -1,12 +1,11 @@
-import Caution from '@shared/assets/icons/caution.svg?react'
-
+import Caution from '@/shared/assets/icons/caution.svg?react'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const PassCancleCautionModal = ({ onClose }: { onClose: () => void }) => {
   const handleCancelPass = () => {
-    console.log('합격 취소 처리 로직 실행')
+    // TODO: 합격 취소 API 연동
   }
   return (
     <AlertModalLayout

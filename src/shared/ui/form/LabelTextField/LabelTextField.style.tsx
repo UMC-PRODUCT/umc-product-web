@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 
-import { inputShell } from '@shared/styles/formStyles'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
+import { inputShell } from '@/shared/styles/formStyles'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 
 const Input = styled.input`
   ${inputShell};

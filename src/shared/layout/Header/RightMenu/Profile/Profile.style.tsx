@@ -1,10 +1,10 @@
 import styled from '@emotion/styled'
 
-import Close from '@shared/assets/icons/close.svg?react'
-import Icon from '@shared/assets/icons/profile.svg?react'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
+import Close from '@/shared/assets/icons/close.svg?react'
+import Icon from '@/shared/assets/icons/profile.svg?react'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 export const Container = styled.div({
   display: 'inline-block',

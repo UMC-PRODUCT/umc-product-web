@@ -13,7 +13,7 @@ import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label'
-import { TimeTable } from '@/shared/ui/common/question/timeTable/TimeTable'
+import { TimeTable } from '@/shared/ui/common/Question/TimeTable/TimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelCalendar from '@/shared/ui/form/LabelCalendar/LabelCalendar'
 

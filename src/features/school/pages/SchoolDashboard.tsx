@@ -8,7 +8,7 @@ import EvaluationStatus from '../components/SchoolDashboard/EvaluationStatus/Eva
 import { ProgressSteps } from '../components/SchoolDashboard/ProgressSteps/ProgressSteps'
 import ScheduleSummary from '../components/SchoolDashboard/ScheduleSummary/ScheduleSummary'
 
-const SchoolDashboard = () => {
+export const SchoolDashboard = () => {
   return (
     <PageLayout>
       <Flex
@@ -28,4 +28,3 @@ const SchoolDashboard = () => {
     </PageLayout>
   )
 }
-export default SchoolDashboard

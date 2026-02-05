@@ -1,9 +1,8 @@
 import { UNI_DELETE_MOCK } from '@features/management/mocks/managementMocks'
 
-import { Badge } from '@shared/ui/common/Badge/Badge'
-import { Button } from '@shared/ui/common/Button/Button'
-import { Checkbox } from '@shared/ui/common/Checkbox/Checkbox'
-
+import { Badge } from '@/shared/ui/common/Badge/Badge'
+import { Button } from '@/shared/ui/common/Button/Button'
+import { Checkbox } from '@/shared/ui/common/Checkbox/Checkbox'
 import { transformStateKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './shared'

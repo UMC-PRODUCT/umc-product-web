@@ -1,9 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
 
-import Notice from '@shared/assets/icons/notice.svg?react'
-import { Button } from '@shared/ui/common/Button/Button'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
+import Notice from '@/shared/assets/icons/notice.svg?react'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const AlreadyExistAccount = ({ onClose }: { onClose: () => void }) => {
   const navigate = useNavigate({ from: '/auth/login' })

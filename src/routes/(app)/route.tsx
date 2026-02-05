@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router'
 
-import Footer from '@shared/layout/Footer/Footer'
-import ChallengerHeader from '@shared/layout/Header/ChallengerHeader'
-import SchoolHeader from '@shared/layout/Header/SchoolHeader'
-import SuperHeader from '@shared/layout/Header/SuperHeader'
-import Flex from '@shared/ui/common/Flex/Flex'
+import Footer from '@/shared/layout/Footer/Footer'
+import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
+import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
+import SuperHeader from '@/shared/layout/Header/SuperHeader'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 type HeaderType = 'challenger' | 'management' | 'school'
 

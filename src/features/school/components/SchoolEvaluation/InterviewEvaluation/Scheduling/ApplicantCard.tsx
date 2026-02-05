@@ -1,8 +1,7 @@
 import type { DragEvent } from 'react'
 
-import Close from '@shared/assets/icons/close.svg?react'
-import Drag from '@shared/assets/icons/drag.svg?react'
-
+import Close from '@/shared/assets/icons/close.svg?react'
+import Drag from '@/shared/assets/icons/drag.svg?react'
 import { theme } from '@/shared/styles/theme'
 
 import * as S from './ApplicantCard.style'

@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { css } from '@emotion/react'
 
-import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
-
 // import { useGetApplicationAnswer } from '@/features/apply/hooks/useGetApplicationQuery'
 import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
 import { answers } from '@/features/school/mocks/application'
+import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { media } from '@/shared/styles/media'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
