@@ -1,7 +1,7 @@
 import type { PartType } from '@features/auth/domain'
 
 import type { RecruitingForms } from '@/features/school/domain'
-import type { pageType, question } from '@/shared/types/form'
+import type { FormPage, FormQuestion } from '@/shared/types/form'
 
 import { DEFAULT_RECRUITING_PARTS, PART_TYPE_TO_SMALL_PART } from '../domain/constants'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
@@ -11,17 +11,17 @@ import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
 const PART_ORDER: Array<1 | 2> = [1, 2]
 
 const buildPartQuestions = (
-  groups: Array<{ part: PartType; questions: Array<question> }>,
+  groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
   part: PartType,
 ) =>
   groups
     .filter((group) => group.part === part)
     .flatMap((group) =>
-      Array.isArray(group.questions) ? group.questions : (group.questions as Array<question>),
+      Array.isArray(group.questions) ? group.questions : (group.questions as Array<FormQuestion>),
     )
 
 const buildPartGroups = (
-  groups: Array<{ part: PartType; questions: Array<question> }>,
+  groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
   parts: ReadonlyArray<PartType>,
   useRankLabel: boolean,
 ) =>
@@ -39,7 +39,7 @@ const buildPartGroups = (
     .filter((group) => group.questions.length > 0)
 
 const flattenPartGroups = (
-  groups: Array<{ part: PartType; label: string; questions: Array<question> }>,
+  groups: Array<{ part: PartType; label: string; questions: Array<FormQuestion> }>,
 ) =>
   groups.flatMap((group) =>
     group.questions.map((question) => ({
@@ -48,12 +48,12 @@ const flattenPartGroups = (
     })),
   )
 
-const hasPartQuestions = (page: pageType) =>
+const hasPartQuestions = (page: FormPage) =>
   Array.isArray(page.partQuestions) && page.partQuestions.length > 0
 
 const applyPartGroupsToPage = (
-  page: pageType,
-  groups: Array<{ part: PartType; label: string; questions: Array<question> }>,
+  page: FormPage,
+  groups: Array<{ part: PartType; label: string; questions: Array<FormQuestion> }>,
 ) =>
   hasPartQuestions(page)
     ? {
@@ -63,7 +63,7 @@ const applyPartGroupsToPage = (
       }
     : page
 
-const addPageNumbers = (pageList: Array<pageType>) =>
+const addPageNumbers = (pageList: Array<FormPage>) =>
   pageList.map((page, index) => ({ ...page, page: index + 1 }))
 
 export function resolvePagesWithSlots(
