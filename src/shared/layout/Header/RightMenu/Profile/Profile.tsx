@@ -4,7 +4,6 @@ import { useNavigate } from '@tanstack/react-router'
 import { clearTokens } from '@/api/tokenManager'
 import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
-
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { Badge } from '@/shared/ui/common/Badge/Badge'

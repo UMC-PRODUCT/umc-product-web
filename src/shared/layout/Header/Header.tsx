@@ -1,10 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
 
-import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
-import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
-
 import { schoolKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
+import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
+import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 
 import * as S from './Header.style'
