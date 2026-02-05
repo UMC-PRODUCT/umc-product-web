@@ -1,6 +1,6 @@
 import type { PartType } from '@/features/auth/domain'
 import type { RecruitingForms } from '@/features/school/domain'
-import type { OptionAnswerValue, pageType, question } from '@/shared/types/form'
+import type { FormPage, FormQuestion, OptionAnswerValue } from '@/shared/types/form'
 
 import type {
   FileUploadAnswer,
@@ -11,7 +11,7 @@ import { isOptionAnswerValue } from './optionAnswer'
 
 export type ResumeFormValues = Record<string, unknown>
 
-type DefaultQuestion = question | NonNullable<pageType['scheduleQuestion']>
+type DefaultQuestion = FormQuestion | NonNullable<FormPage['scheduleQuestion']>
 
 export function buildDefaultValuesFromQuestions(
   questionData: RecruitingForms,
