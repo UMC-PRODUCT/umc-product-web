@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import ManagementTable from '@/features/management/components/common/ManagementTable'
 import DeleteConfirm from '@/features/management/components/modals/DeleteConfirm/DeleteConfirm'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
@@ -11,12 +10,16 @@ import {
 } from '@/features/management/mocks/managementMocks'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
+import { Badge } from '@/shared/ui/common/Badge/Badge'
 import { Button } from '@/shared/ui/common/Button'
+import { Checkbox } from '@/shared/ui/common/Checkbox/Checkbox'
+import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import Table from '@/shared/ui/common/Table/Table'
 import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
 
 import { AccountFilters } from '../AccountFilters/AccountFilters'
-import { AccountTableRows } from '../AccountTableRows/AccountTableRows'
+import * as RowStyles from '../AccountTableRows/AccountTableRows.style'
 
 type AffiliatedOption = Option<string>
 type RoleOption = Option<string>
@@ -28,7 +31,7 @@ type DeleteModalState = {
   count: number
   onConfirm: () => void
 }
-const totalAmounts = 10
+const PAGE_SIZE = 5
 
 const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolean) => void }) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -36,13 +39,20 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
   const [role, setRole] = useState<RoleOption | undefined>()
   const [status, setStatus] = useState<StatusOption | undefined>()
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [activeRowId, setActiveRowId] = useState<number | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
     const parsed = Number(pageParam)
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
   }, [])
   const [page, setPage] = useState(initialPage)
-  const totalPages = 12
+  const totalAmounts = ACCOUNT_DELETE_MOCK.length
+  const totalPages = Math.max(1, Math.ceil(totalAmounts / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageItems = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE
+    return ACCOUNT_DELETE_MOCK.slice(start, start + PAGE_SIZE)
+  }, [currentPage])
 
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
     isOpen: false,
@@ -116,9 +126,10 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
   }
 
   const handlePageChange = (nextPage: number) => {
-    setPage(nextPage)
+    const safePage = Math.max(1, Math.min(nextPage, totalPages))
+    setPage(safePage)
     const url = new URL(window.location.href)
-    url.searchParams.set('page', String(nextPage))
+    url.searchParams.set('page', String(safePage))
     window.history.replaceState(null, '', url.toString())
   }
 
@@ -134,10 +145,16 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
     })
   }
 
-  const toggleAll = () => {
+  const toggleAll = (checked: boolean | 'indeterminate') => {
     setSelectedIds((prev) => {
-      if (prev.size === ACCOUNT_DELETE_MOCK.length) return new Set()
-      return new Set(ACCOUNT_DELETE_MOCK.map((item) => item.id))
+      const pageIds = pageItems.map((item) => item.id)
+      const next = new Set(prev)
+      if (checked === true) {
+        pageIds.forEach((id) => next.add(id))
+        return next
+      }
+      pageIds.forEach((id) => next.delete(id))
+      return next
     })
   }
 
@@ -175,24 +192,72 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
           statusOptions={statusOptions}
         />
       </Section>
-      <ManagementTable
-        isAllChecked={selectedIds.size === 6}
-        onToggleAll={toggleAll}
-        totalAmounts={totalAmounts}
-        headerLabels={DELETE_ACCOUNT_TABLE_HEADER_LABEL}
-        currentPage={page}
-        totalPages={totalPages}
-        onChangePage={handlePageChange}
-        type="account"
-        buttonChildren={buttonChildren}
-      >
-        <AccountTableRows
-          setIsEditMode={setIsEditMode}
-          selectedIds={selectedIds}
-          toggleRow={toggleRow}
-          onDelete={(id) => openDeleteConfirm(id)}
+      <Section variant="solid" maxHeight={540} gap={0} padding="12px 16px">
+        <Table
+          isAllChecked={pageItems.length > 0 && pageItems.every((item) => selectedIds.has(item.id))}
+          onToggleAll={toggleAll}
+          totalAmounts={totalAmounts}
+          headerLabels={DELETE_ACCOUNT_TABLE_HEADER_LABEL}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onChangePage={handlePageChange}
+          type="account"
+          buttonChildren={buttonChildren}
+          rows={pageItems}
+          getRowId={(row) => row.id}
+          activeRowId={activeRowId}
+          onRowClick={(id) => setActiveRowId(id)}
+          renderRow={(item) => (
+            <>
+              <RowStyles.Td>
+                <Checkbox
+                  onCheckedChange={() => toggleRow(item.id)}
+                  checked={selectedIds.has(item.id)}
+                />
+              </RowStyles.Td>
+              <RowStyles.Td>{item.name}</RowStyles.Td>
+              <RowStyles.Td>{item.email}</RowStyles.Td>
+              <RowStyles.Td>{item.school}</RowStyles.Td>
+              <RowStyles.Td>{item.branch}</RowStyles.Td>
+              <RowStyles.Td>
+                <Badge tone="gray" variant="solid" typo="B4.Sb">
+                  {transformRoleKorean(item.role)}
+                </Badge>
+              </RowStyles.Td>
+              <RowStyles.Td>
+                <Badge
+                  tone={
+                    item.status === 'ACTIVE' ? 'lime' : item.status === 'PENDING' ? 'white' : 'gray'
+                  }
+                  variant="outline"
+                  typo="B4.Md"
+                >
+                  {transformStateKorean(item.status)}
+                </Badge>
+              </RowStyles.Td>
+              <RowStyles.Td>
+                <Flex gap="10px">
+                  <Button
+                    key={`edit-${item.id}`}
+                    label="수정"
+                    tone="caution"
+                    onClick={() => setIsEditMode(true)}
+                    typo="C2.Md"
+                  />
+                  <Button
+                    key={`delete-${item.id}`}
+                    label="삭제"
+                    tone="necessary"
+                    onClick={() => openDeleteConfirm(item.id)}
+                    typo="C2.Md"
+                  />
+                </Flex>
+              </RowStyles.Td>
+            </>
+          )}
         />
-      </ManagementTable>
+      </Section>
+
       {deleteModal.isOpen && (
         <DeleteConfirm
           onClose={closeDeleteModal}

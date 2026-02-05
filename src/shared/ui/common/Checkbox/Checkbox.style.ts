@@ -22,9 +22,9 @@ export const Title = styled.span`
 export const StyledRoot = styled(CheckboxPrimitive.Root)`
   width: 20px;
   height: 20px;
-  border: 1px solid ${theme.colors.gray[600]};
+  border: 1px solid ${theme.colors.gray[400]};
   border-radius: 4px;
-  background: ${theme.colors.gray[800]};
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;

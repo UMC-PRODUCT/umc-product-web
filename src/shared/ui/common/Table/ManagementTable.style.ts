@@ -13,15 +13,49 @@ const Table = styled.table`
   min-width: 800px;
   border-collapse: collapse;
   margin-bottom: 20px;
-  border-radius: 6px;
+  border-radius: 4px;
+
+  tbody tr {
+    position: relative;
+  }
+
+  tbody tr[data-active='true']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid ${theme.colors.lime};
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  tbody tr td {
+    position: relative;
+    z-index: 1;
+  }
+
+  thead {
+    border-radius: 4px;
+  }
 `
 
 const Th = styled.th`
   padding: 16px;
   text-align: left;
   border-bottom: 1px solid ${theme.colors.gray[700]};
+  background-color: ${theme.colors.gray[600]};
   color: ${theme.colors.white};
   ${theme.typography.B3.Sb};
+  white-space: nowrap;
+  input {
+    background-color: ${theme.colors.gray[600]};
+  }
+  &:first-of-type {
+    border-bottom-left-radius: 4px;
+  }
+  &:last-of-type {
+    border-bottom-right-radius: 4px;
+  }
 `
 
 const Td = styled.td`
@@ -29,10 +63,7 @@ const Td = styled.td`
   border-bottom: 1px solid ${theme.colors.gray[700]};
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
-  button {
-    width: 57px;
-    height: 28px;
-  }
+  white-space: nowrap;
 `
 
 const Footer = styled.div`
