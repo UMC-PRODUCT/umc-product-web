@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 
-import { schoolKeys } from '@/shared/api/auth/queries'
+import { schoolKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 

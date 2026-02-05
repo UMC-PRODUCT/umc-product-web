@@ -6,6 +6,8 @@ import type { TermsType } from '@/shared/types/umc'
 import type {
   EmailVerificationRequestDTO,
   EmailVerificationResponseDTO,
+  GetGisuListResponseDTO,
+  GetSchoolLinkResponseDTO,
   GetTermsResponseDTO,
   MyInfoResponseDTO,
   RefreshRequestDTO,
@@ -59,5 +61,16 @@ export async function getTerm({
   const { data } = await axiosInstance.get(`/terms/type/${termsType}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
   })
+  return data
+}
+export const getSchoolLink = async (
+  schoolId: string,
+): Promise<CommonResponseDTO<GetSchoolLinkResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/admin/schools/link/${schoolId}`)
+  return data
+}
+
+export const getGisuList = async (): Promise<CommonResponseDTO<GetGisuListResponseDTO>> => {
+  const { data } = await axiosInstance.get('/admin/gisu')
   return data
 }
