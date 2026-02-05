@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import type { ScheduleSummary as ScheduleSummaryType } from '@/features/school/domain'
 import { INTERVIEW_MOCKS } from '@/features/school/mocks/interview'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -8,7 +9,7 @@ import Section from '@/shared/ui/common/Section/Section'
 import InterviewInfo from './InterviewInfo/InterviewInfo'
 import * as S from './ScheduleSummary.style'
 
-const ScheduleSummary = () => {
+const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummaryType }) => {
   const gridRef = useRef<HTMLDivElement | null>(null)
   const [showBlur, setShowBlur] = useState(true)
 
@@ -44,10 +45,10 @@ const ScheduleSummary = () => {
       <Section variant="outline" padding={16}>
         <S.GridSection>
           <Section variant="solid" alignItems="flex-start" gap={20}>
-            <S.ScheduleTitle>10기 모집</S.ScheduleTitle>
+            <S.ScheduleTitle>{scheduleSummary.phaseTitle}</S.ScheduleTitle>
             <Flex gap={9} flexDirection="column" alignItems="flex-start">
-              <S.ScheduleCount>D-7</S.ScheduleCount>
-              <S.ScheduleInfo>2025.12.02 ~ 2025.12.06</S.ScheduleInfo>
+              <S.ScheduleCount>{scheduleSummary.dDay}</S.ScheduleCount>
+              <S.ScheduleInfo>{`${scheduleSummary.dateRange.start} ~ ${scheduleSummary.dateRange.end}`}</S.ScheduleInfo>
             </Flex>
           </Section>
           <Section variant="solid" alignItems="flex-start" gap={18} css={{ position: 'relative' }}>

@@ -1,6 +1,7 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import {
+  getDashboardSummary,
   getRecruitments,
   getSavedApplicationQuestions,
   getTempSavedApplicationQuestions,
@@ -24,5 +25,9 @@ export const schoolKeys = createQueryKeys('recruitment', {
   getTempSavedApplication: (recruitingId: string) => ({
     queryKey: ['tempSaved', recruitingId],
     queryFn: () => getTempSavedApplicationQuestions(recruitingId),
+  }),
+  getRecruitmentDashboard: (recruitingId: string) => ({
+    queryKey: ['dashboard', recruitingId],
+    queryFn: () => getDashboardSummary(recruitingId),
   }),
 })
