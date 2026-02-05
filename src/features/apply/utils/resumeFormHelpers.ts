@@ -3,7 +3,7 @@ import type { FieldErrors } from 'react-hook-form'
 import type { PartType } from '@features/auth/domain'
 
 import type { RecruitingForms } from '@/features/school/domain'
-import type { pageType, question } from '@/shared/types/form'
+import type { FormPage, FormQuestion } from '@/shared/types/form'
 
 import type {
   AnswerItem,
@@ -22,9 +22,9 @@ import { isQuestionAnswerEmpty } from './isQuestionAnswerEmpty'
 import { isOptionAnswerValue } from './optionAnswer'
 
 type FormValues = Record<string, unknown>
-type ScheduleQuestion = NonNullable<pageType['scheduleQuestion']>
+type ScheduleQuestion = NonNullable<FormPage['scheduleQuestion']>
 
-const getAllPageQuestions = (page: pageType) => {
+const getAllPageQuestions = (page: FormPage) => {
   const baseQuestions = Array.isArray(page.questions) ? page.questions : []
   const partQuestions = Array.isArray(page.partQuestions)
     ? page.partQuestions.flatMap((partGroup) =>
@@ -39,15 +39,15 @@ const getAllPageQuestions = (page: pageType) => {
  */
 export function findFirstErrorPageIndex(
   formErrors: FieldErrors<FormValues>,
-  pages: Array<pageType>,
+  pages: Array<FormPage>,
 ): number {
   const errorFieldIds = Object.keys(formErrors)
   if (errorFieldIds.length === 0) return -1
 
   const firstErrorFieldId = errorFieldIds[0]
-  return pages.findIndex((page: pageType) =>
+  return pages.findIndex((page: FormPage) =>
     getAllPageQuestions(page).some(
-      (question: question) => String(question.questionId) === firstErrorFieldId,
+      (question: FormQuestion) => String(question.questionId) === firstErrorFieldId,
     ),
   )
 }
@@ -55,21 +55,21 @@ export function findFirstErrorPageIndex(
 /**
  * 모든 페이지에서 질문 필드 ID 목록을 추출합니다.
  */
-export function getAllQuestionFieldIds(pages: Array<pageType>): Array<string> {
+export function getAllQuestionFieldIds(pages: Array<FormPage>): Array<string> {
   return pages.flatMap((page) =>
-    getAllPageQuestions(page).map((question: question) => String(question.questionId)),
+    getAllPageQuestions(page).map((question: FormQuestion) => String(question.questionId)),
   )
 }
 
 /**
  * 특정 페이지에서 필수 질문 필드 ID 목록을 추출합니다.
  */
-export function getPageRequiredFieldIds(page: pageType | undefined): Array<string> {
+export function getPageRequiredFieldIds(page: FormPage | undefined): Array<string> {
   if (!page) return []
   const allQuestions = getAllPageQuestions(page)
   return allQuestions
-    .filter((question: question) => question.required)
-    .map((question: question) => String(question.questionId))
+    .filter((question: FormQuestion) => question.required)
+    .map((question: FormQuestion) => String(question.questionId))
 }
 
 /**
@@ -180,7 +180,7 @@ const buildScheduleAnswer = (value: unknown): scheduleAnswer | null => {
   return selected.length > 0 ? { selected } : null
 }
 
-const mapQuestionToAnswerItem = (question: question, value: unknown): AnswerItem | null => {
+const mapQuestionToAnswerItem = (question: FormQuestion, value: unknown): AnswerItem | null => {
   if (value === undefined || isQuestionAnswerEmpty(question, value)) return null
 
   const questionId = String(question.questionId)
@@ -230,7 +230,7 @@ const mapScheduleQuestionToAnswerItem = (
  * 제출 가능한 항목으로 변환합니다.
  */
 export function getSubmissionItems(
-  pages: Array<pageType> | undefined,
+  pages: Array<FormPage> | undefined,
   formValues: FormValues,
   fallbackValues?: FormValues,
 ): Array<AnswerItem> {
@@ -267,15 +267,15 @@ export function getSubmissionItems(
  * 제출 가능한 값들만 필터링하여 반환합니다.
  */
 export function getSubmissionFormValues(
-  questionData: Array<pageType> | undefined,
+  questionData: Array<FormPage> | undefined,
   formValues: FormValues,
 ): FormValues {
   const pagesData = Array.isArray(questionData)
     ? questionData
-    : (questionData as unknown as Array<pageType>)
+    : (questionData as unknown as Array<FormPage>)
 
   const baseQuestionIds = pagesData.flatMap((page) =>
-    (Array.isArray(page.questions) ? page.questions : []).map((question: question) =>
+    (Array.isArray(page.questions) ? page.questions : []).map((question: FormQuestion) =>
       String(question.questionId),
     ),
   )
@@ -286,8 +286,8 @@ export function getSubmissionFormValues(
 
   const partQuestionIds = pagesData.flatMap((page) =>
     Array.isArray(page.partQuestions)
-      ? page.partQuestions.flatMap((partGroup: { questions: Array<question> }) =>
-          partGroup.questions.map((question: question) => String(question.questionId)),
+      ? page.partQuestions.flatMap((partGroup: { questions: Array<FormQuestion> }) =>
+          partGroup.questions.map((question: FormQuestion) => String(question.questionId)),
         )
       : [],
   )
