@@ -1,7 +1,7 @@
 import type { QuestionType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
 import type {
-  pageType,
+  FormPage,
   RecruitingInterviewTimeTable,
   RecruitingItem,
   RecruitingSchedule,
@@ -68,7 +68,7 @@ export type RecruitingForms = {
   recruitmentFormTitle: string
   noticeTitle: string
   noticeContent: string
-  pages: Array<pageType>
+  pages: Array<FormPage>
 }
 
 export type Phase =
