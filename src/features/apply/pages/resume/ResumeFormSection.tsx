@@ -5,7 +5,7 @@ import { Controller, useWatch } from 'react-hook-form'
 import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { question, ResumeFormSectionProps } from '@/shared/types/form'
+import type { FormQuestion, ResumeFormSectionProps } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Question } from '@/shared/ui/common/question/Question'
@@ -101,7 +101,7 @@ const ResumeFormSection = ({
   })
 
   const handleFieldValueChange = (
-    question: question,
+    question: FormQuestion,
     field: ControllerRenderProps<Record<string, unknown>, string>,
     newValue: QuestionAnswerValue,
   ) => {
