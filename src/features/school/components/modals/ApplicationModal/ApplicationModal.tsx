@@ -2,15 +2,22 @@ import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruit
 import { answers } from '@/features/school/mocks/application'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import ApplicationView from '../../SchoolEvaluation/DocsEvaluation/ApplicationView/ApplicationView'
 import * as S from './ApplicationModal.style'
 
-const ApplicationModal = ({ onClose }: { onClose: () => void }) => {
+const ApplicationModalContent = () => {
   const { data: questionData } = useGetApplicationFormData('34')
   const data = answers
+  return <ApplicationView data={data} questions={questionData.result} isModal={true} />
+}
+
+const ApplicationModal = ({ onClose }: { onClose: () => void }) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -39,7 +46,18 @@ const ApplicationModal = ({ onClose }: { onClose: () => void }) => {
               </Flex>
             </Modal.Header>
             <S.ApplicationViewWrapper>
-              <ApplicationView data={data} questions={questionData.result} isModal={true} />
+              <AsyncBoundary
+                fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}
+                errorFallback={(error, reset) => (
+                  <ErrorPage
+                    title="지원서를 불러오는 중 오류가 발생했습니다."
+                    description={error.message || '잠시 후 다시 시도해 주세요.'}
+                    onRetry={reset}
+                  />
+                )}
+              >
+                <ApplicationModalContent />
+              </AsyncBoundary>
             </S.ApplicationViewWrapper>
           </S.ModalContentWrapper>
         </Modal.Content>
