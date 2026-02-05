@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { UseFormRegister } from 'react-hook-form'
 
-import type { pageType } from '@/shared/types/form'
+import type { FormPage } from '@/shared/types/form'
 
 import { createValidationRules } from '../../../schemas/applySchemas'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
@@ -11,7 +11,7 @@ import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQues
  * - 페이지 변경 시 검증 규칙 자동 등록
  */
 export function useFormValidationRegistration(
-  resolvedPages: Array<pageType>,
+  resolvedPages: Array<FormPage>,
   register: UseFormRegister<ResumeFormValues>,
 ) {
   useEffect(() => {
