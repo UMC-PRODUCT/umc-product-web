@@ -1,11 +1,11 @@
-import type { question, RecruitingSchedule } from '@/shared/types/form'
+import type { FormQuestion, RecruitingSchedule } from '@/shared/types/form'
 
 import { isOptionAnswerValue } from './optionAnswer'
 
-type SharedQuestionOptions = Omit<question, 'maxSelectCount' | 'preferredPartOptions'> &
-  Partial<Pick<question, 'maxSelectCount' | 'preferredPartOptions'>>
+type SharedQuestionOptions = Omit<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'> &
+  Partial<Pick<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'>>
 
-export type ResumeQuestion = question | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
+export type ResumeQuestion = FormQuestion | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
 
 const isQuestionRequired = (question: ResumeQuestion): boolean =>
   'necessary' in question ? question.required : 'required' in question ? question.required : false
