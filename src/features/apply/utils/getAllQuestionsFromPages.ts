@@ -1,5 +1,5 @@
-import type { pageType } from '@/shared/types/form'
+import type { FormPage } from '@/shared/types/form'
 
-export function getAllQuestionsFromPages(pages: Array<pageType>) {
+export function getAllQuestionsFromPages(pages: Array<FormPage>) {
   return pages.flatMap((page) => page.questions)
 }
