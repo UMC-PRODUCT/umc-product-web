@@ -3,7 +3,7 @@ import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
 import type { RecruitingForms } from '@/features/school/domain'
-import type { pageType } from '@/shared/types/form'
+import type { FormPage } from '@/shared/types/form'
 
 import { resolvePagesWithSlots } from '../../../utils'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
@@ -26,7 +26,7 @@ export function useFormValuesWatch(
 
   const currentFormValues = watchedFormValues as ResumeFormValues
 
-  const resolvedPages: Array<pageType> = useMemo(
+  const resolvedPages: Array<FormPage> = useMemo(
     () => resolvePagesWithSlots(questionData, currentFormValues, options),
     [questionData, currentFormValues, options],
   )
