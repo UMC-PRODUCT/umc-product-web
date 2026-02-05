@@ -45,7 +45,10 @@ export const buildDisabledIndexMap = ({
 
   const disabledByDate = disabledSlots.reduce<Record<string, Array<string>>>((acc, slot) => {
     const { date, times } = slot
-    acc[date].push(...times)
+    if (!date || !Array.isArray(times)) return acc
+    const normalizedTimes = times.filter((time): time is string => typeof time === 'string')
+    if (normalizedTimes.length === 0) return acc
+    acc[date] = (acc[date] ?? []).concat(normalizedTimes)
     return acc
   }, {})
 

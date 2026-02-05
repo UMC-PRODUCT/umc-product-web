@@ -26,11 +26,12 @@ const ProgressBar = ({ steps, currentStepIndex }: StepperProps) => {
         <S.ActiveLine $progressWidth={progressWidth} />
       </S.ProgressLineContainer>
       {steps.length > 0 &&
-        steps.map((step) => {
+        steps.map((step, index) => {
+          const isActive = step.active || step.done || index <= currentStepIndex
           return (
             <S.StepItem key={step.step}>
-              <S.Dot $isActive={step.active} />
-              <S.Label $isActive={step.active}>{step.label}</S.Label>
+              <S.Dot $isActive={isActive} />
+              <S.Label $isActive={isActive}>{step.label}</S.Label>
             </S.StepItem>
           )
         })}

@@ -1,3 +1,4 @@
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import type { QuestionMode } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/part'
 
@@ -74,7 +75,7 @@ const PartChoice = ({
                     variant="outline"
                     tone={selectedOption === option.value ? 'lime' : 'gray'}
                     key={`${String(option.recruitmentPartId)}-${targetId}`}
-                    label={option.label}
+                    label={PART_TYPE_TO_SMALL_PART[option.value]}
                     type="button"
                     onClick={
                       mode === 'edit'

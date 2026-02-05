@@ -11,6 +11,39 @@ export function useGetApplicationQuestions(recruitmentId: string) {
   return useCustomSuspenseQuery(
     applyKeys.getApplicationForm(recruitmentId).queryKey,
     applyKeys.getApplicationForm(recruitmentId).queryFn,
+    {
+      select: (data) => {
+        const pages = Array.isArray(data.result.pages) ? data.result.pages : []
+        const normalizedPages = pages.map((page) => {
+          if (!page.scheduleQuestion) return page
+          const schedule = page.scheduleQuestion.schedule
+          const legacyDisabled = (schedule as { disabled?: typeof schedule.disabledByDate })
+            .disabled
+          const disabledByDate = Array.isArray(legacyDisabled)
+            ? legacyDisabled
+            : schedule.disabledByDate
+
+          return {
+            ...page,
+            scheduleQuestion: {
+              ...page.scheduleQuestion,
+              schedule: {
+                ...schedule,
+                disabledByDate,
+              },
+            },
+          }
+        })
+
+        return {
+          ...data,
+          result: {
+            ...data.result,
+            pages: normalizedPages,
+          },
+        }
+      },
+    },
   )
 }
 

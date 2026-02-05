@@ -89,8 +89,11 @@ export const transformRecruitingScheduleTypeKorean = (input: RECRUITING_SCHEDULE
 // TODO: enum 체크 필요
 export const transformNextRecruitmentMonthKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
-    APPLY_DEADLINE: '지원 마감일: ',
-    RECRUITMENT_NOTICE: '모집 공고일: ',
+    APPLY_DEADLINE: '지원 마감 예정일: ',
+    DOC_RESULT_ANNOUNCE: '서류 합불 발표 예정일: ',
+    FINAL_RESULT_ANNOUNCE: '최종 합불 발표 예정일: ',
+    NEXT_RECRUITMENT_EXPECTED: '다음 모집 예정일: ',
+    CHALLENDGER_NOTICE_IN_APP: '합격을 축하드립니다. UMC 앱에서 확인하세요!',
   }
 
   return mapping[input] || input

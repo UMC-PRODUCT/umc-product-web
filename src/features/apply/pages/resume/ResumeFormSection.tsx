@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { ControllerRenderProps } from 'react-hook-form'
 import { Controller, useWatch } from 'react-hook-form'
+import dayjs from 'dayjs'
 
 import PartDivider from '@/features/apply/components/PartDivider'
 import { media } from '@/shared/styles/media'
@@ -17,6 +18,63 @@ import CautionPartChange from '../../components/modals/CautionPartChange'
 import type { QuestionAnswerValue } from '../../domain/model'
 import { isAnswerEmpty } from './ResumeFormSection.helpers'
 import { usePartChangeGuard } from './usePartChangeGuard'
+
+const buildDisabledSlotsFromSchedule = (
+  schedule: NonNullable<ResumeFormSectionProps['pages'][number]['scheduleQuestion']>['schedule'],
+) => {
+  const disabledByDate = Array.isArray(schedule.disabledByDate) ? schedule.disabledByDate : []
+  const enabledByDate = Array.isArray(schedule.enabledByDate) ? schedule.enabledByDate : []
+
+  if (enabledByDate.length === 0) return disabledByDate
+
+  const enabledMap = enabledByDate.reduce<Record<string, Set<string>>>((acc, slot) => {
+    if (!slot.date || !Array.isArray(slot.times)) return acc
+    acc[slot.date] = new Set(slot.times.filter((time): time is string => typeof time === 'string'))
+    return acc
+  }, {})
+
+  const startDate = dayjs(schedule.dateRange.start).startOf('day')
+  const endDate = dayjs(schedule.dateRange.end).startOf('day')
+  if (!startDate.isValid() || !endDate.isValid() || endDate.isBefore(startDate, 'day')) {
+    return disabledByDate
+  }
+
+  const startTime = dayjs(`2000-01-01T${schedule.timeRange.start}`)
+  const endTime = dayjs(`2000-01-01T${schedule.timeRange.end}`)
+  if (!startTime.isValid() || !endTime.isValid() || !endTime.isAfter(startTime)) {
+    return disabledByDate
+  }
+
+  const allTimes: Array<string> = []
+  let cursor = startTime
+  while (cursor.isBefore(endTime)) {
+    allTimes.push(cursor.format('HH:mm'))
+    cursor = cursor.add(30, 'minute')
+  }
+
+  const disabledMap = disabledByDate.reduce<Record<string, Set<string>>>((acc, slot) => {
+    if (!slot.date || !Array.isArray(slot.times)) return acc
+    acc[slot.date] = new Set(slot.times.filter((time): time is string => typeof time === 'string'))
+    return acc
+  }, {})
+
+  const derived: Array<{ date: string; times: Array<string> }> = []
+  let dateCursor = startDate
+  while (!dateCursor.isAfter(endDate, 'day')) {
+    const date = dateCursor.format('YYYY-MM-DD')
+    const enabledTimes = enabledMap[date] ?? new Set<string>()
+    const explicitDisabled = disabledMap[date] ?? new Set<string>()
+    const disabledTimes = allTimes.filter(
+      (time) => !enabledTimes.has(time) || explicitDisabled.has(time),
+    )
+    if (disabledTimes.length > 0) {
+      derived.push({ date, times: disabledTimes })
+    }
+    dateCursor = dateCursor.add(1, 'day')
+  }
+
+  return derived
+}
 
 const ResumeFormSection = ({
   pages,
@@ -128,6 +186,10 @@ const ResumeFormSection = ({
     Array.isArray(activePage.questions) ? activePage.questions : []
   ).filter((question) => !activePagePartQuestionIds.has(question.questionId))
   const activeScheduleQuestion = activePage.scheduleQuestion ? activePage.scheduleQuestion : null
+  const scheduleDisabledSlots = useMemo(() => {
+    if (!activeScheduleQuestion) return []
+    return buildDisabledSlotsFromSchedule(activeScheduleQuestion.schedule)
+  }, [activeScheduleQuestion])
   return (
     <form onSubmit={handleFormSubmit} method="POST">
       <Flex key={activePage.page} flexDirection="column" gap={24}>
@@ -202,7 +264,7 @@ const ResumeFormSection = ({
                   dateRange={activeScheduleQuestion.schedule.dateRange}
                   timeRange={activeScheduleQuestion.schedule.timeRange}
                   value={field.value as Record<string, Array<string>>}
-                  disabledSlots={activeScheduleQuestion.schedule.disabledByDate}
+                  disabledSlots={scheduleDisabledSlots}
                   onChange={field.onChange}
                   mode={isEdit ? 'edit' : 'view'}
                 />
