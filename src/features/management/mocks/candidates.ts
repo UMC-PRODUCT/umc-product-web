@@ -1,6 +1,6 @@
 import type { PartType } from '@/features/auth/domain'
 
-export const CANDIDATE: Array<{
+export type CandidateType = {
   id: number
   nickname: string
   name: string
@@ -13,7 +13,9 @@ export const CANDIDATE: Array<{
     status: '합격' | '불합격' | '대기'
     part: PartType
   }
-}> = [
+}
+
+export const CANDIDATE: Array<CandidateType> = [
   {
     id: 1,
     nickname: 'happycoder',

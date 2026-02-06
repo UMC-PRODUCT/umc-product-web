@@ -28,19 +28,8 @@ interface SchoolSearchResponse {
   result: SchoolSearchPage
 }
 
-export const searchSchools = async (
-  { keyword, page = 0, size = 20 }: SchoolSearchParams,
-  config?: AxiosRequestConfig,
-) => {
-  const response = await axiosInstance.get<SchoolSearchResponse>('/admin/schools', {
-    ...config,
-    params: {
-      page,
-      size,
-      keyword,
-      ...config?.params,
-    },
-  })
+export const searchSchools = async () => {
+  const response = await axiosInstance.get<SchoolSearchResponse>('/schools/all')
 
   return response.data.result
 }

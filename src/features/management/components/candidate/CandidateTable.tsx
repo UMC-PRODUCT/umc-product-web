@@ -8,10 +8,10 @@ import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
-import type { Candidate } from '../../mocks/candidates'
+import type { CandidateType } from '../../mocks/candidates'
 
 type CandidateTableProps = {
-  items: Array<Candidate>
+  items: Array<CandidateType>
   totalPages?: number
   currentPage?: number
   onChangePage?: (page: number) => void
@@ -38,11 +38,11 @@ export const CandidateTable = ({
     <Section variant="solid" padding="12px 16px" height="500px">
       <Table
         showFooter={true}
-        showCheckbox={false}
-        enablePagination={Boolean(totalPages && totalPages > 1 && onChangePage)}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onChangePage={onChangePage}
+        page={{
+          currentPage: currentPage ?? 1,
+          totalPages: totalPages ?? 1,
+          onChangePage: onChangePage,
+        }}
         headerLabels={[
           '번호',
           '닉네임/이름',
@@ -53,8 +53,6 @@ export const CandidateTable = ({
           '면접 평가',
           '최종 결과',
         ]}
-        totalAmounts={items.length}
-        type="school"
         rows={items}
         getRowId={(item) => item.id}
         renderRow={(item) => (

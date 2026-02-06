@@ -132,11 +132,10 @@ const FinalEvaluation = () => {
               '선발 결과',
               '작업',
             ]}
-            isAllChecked={headerChecked}
-            onToggleAll={handleToggleAll}
-            totalAmounts={applicants.length}
-            type="school"
-            enablePagination={false}
+            checkbox={{
+              isAllChecked: headerChecked,
+              onToggleAll: handleToggleAll,
+            }}
             showFooter={false}
             rows={applicants}
             getRowId={(row) => row.id}

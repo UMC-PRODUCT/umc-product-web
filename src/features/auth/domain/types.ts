@@ -13,7 +13,7 @@ export type RegisterRequestDTO = {
     isAgreed?: boolean
   }>
 }
-export type RefreshResponseDTO = CommonResponseDTO<{ accessToken?: string }>
+export type RefreshResponseDTO = CommonResponseDTO<{ accessToken: string; refreshToken: string }>
 export type RefreshRequestDTO = {
   refreshToken?: string
 }
