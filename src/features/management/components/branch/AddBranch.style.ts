@@ -1,13 +1,20 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
-// 스타일 컴포넌트 (스크린샷 디자인 참고)
+
 export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
+  ${media.down(theme.breakPoints.desktop)} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  ${media.down(theme.breakPoints.mobile)} {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `
 
 export const AddCard = styled.div`
@@ -72,10 +79,14 @@ export const SchoolTag = styled.span`
   background-color: ${theme.colors.gray[700]};
   border: 1px solid ${theme.colors.gray[600]};
   color: ${theme.colors.gray[400]};
-  padding: 6px 4px;
+  padding: 6px 10px;
   border-radius: 4px;
   font-size: 12px;
+  white-space: nowrap;
   text-align: center;
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 6px 6px;
+  }
 `
 
 export const SchoolCountText = styled.span`

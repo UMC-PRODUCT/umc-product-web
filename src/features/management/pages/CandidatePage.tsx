@@ -1,5 +1,3 @@
-import { useNavigate } from '@tanstack/react-router'
-
 import Search from '@shared/assets/icons/search.svg?react'
 
 import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
@@ -39,7 +37,6 @@ type CandidatePageProps = {
   filterOptions?: CandidateFilterOptions
 }
 export const CandidatePage = ({ filterOptions = defaultFilterOptions }: CandidatePageProps) => {
-  const navigate = useNavigate()
   return (
     <PageLayout
       title="지원자 관리"
@@ -89,7 +86,6 @@ export const CandidatePage = ({ filterOptions = defaultFilterOptions }: Candidat
         onChangePage={(page) => {
           console.log(page)
         }}
-        onViewResume={() => navigate({ to: '/' })}
       />
     </PageLayout>
   )

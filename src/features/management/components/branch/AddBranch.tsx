@@ -6,18 +6,19 @@ import { Flex } from '@/shared/ui/common/Flex'
 
 import { MOCK_BRANCHES } from '../../mocks/branch'
 import AddBranchModal from '../modals/AddBranchModal/AddBranchModal'
+import DeleteBranchConfirm from '../modals/DeleteBranchConfirm/DeleteBranchConfirm'
 import * as S from './AddBranch.style'
-// Mock 데이터 구성
 
 const AddBranch = () => {
-  // 모달 오픈 상태 관리
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState<{
+    isOpen: boolean
+    modalName: 'create' | 'delete' | null
+  }>({
+    isOpen: false,
+    modalName: null,
+  })
 
-  const handleOpenModal = () => setIsModalOpen(true)
-  const handleDeleteBranch = (id: number) => {
-    // 삭제 로직 (필요 시 구현)
-    console.log(`${id}번 지부 삭제`)
-  }
+  const handleCreate = () => setIsModalOpen({ isOpen: true, modalName: 'create' })
 
   return (
     <Flex flexDirection="column" gap="24px">
@@ -41,7 +42,7 @@ const AddBranch = () => {
       {/* 그리드 레이아웃 */}
       <S.GridContainer>
         {/* 1. 지부 생성 버튼 카드 */}
-        <S.AddCard onClick={handleOpenModal}>
+        <S.AddCard onClick={handleCreate}>
           <S.PlusIcon>+</S.PlusIcon>
           <S.AddText>지부 생성</S.AddText>
         </S.AddCard>
@@ -57,7 +58,9 @@ const AddBranch = () => {
           >
             <S.CardHeader>
               <S.BranchName>{branch.name}</S.BranchName>
-              <S.CloseButton onClick={() => handleDeleteBranch(branch.id)}>✕</S.CloseButton>
+              <S.CloseButton onClick={() => setIsModalOpen({ isOpen: true, modalName: 'delete' })}>
+                ✕
+              </S.CloseButton>
             </S.CardHeader>
             <S.SchoolTagContainer>
               {branch.schools.map((school, idx) => (
@@ -68,7 +71,15 @@ const AddBranch = () => {
           </S.BranchCard>
         ))}
       </S.GridContainer>
-      {isModalOpen && <AddBranchModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen.isOpen && isModalOpen.modalName === 'create' && (
+        <AddBranchModal onClose={() => setIsModalOpen({ isOpen: false, modalName: null })} />
+      )}
+      {isModalOpen.isOpen && isModalOpen.modalName === 'delete' && (
+        <DeleteBranchConfirm
+          branchId="1"
+          onClose={() => setIsModalOpen({ isOpen: false, modalName: null })}
+        />
+      )}
     </Flex>
   )
 }

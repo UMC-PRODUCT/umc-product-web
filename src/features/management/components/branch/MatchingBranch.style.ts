@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
-import Section from '@/shared/ui/common/Section/Section'
 
 export const Container = styled.div`
   display: flex;
