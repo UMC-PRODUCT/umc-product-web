@@ -2,7 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
-import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'

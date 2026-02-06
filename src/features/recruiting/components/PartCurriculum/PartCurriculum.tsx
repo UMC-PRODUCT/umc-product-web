@@ -3,7 +3,8 @@ import { Suspense, useState } from 'react'
 
 import { PART_REQUIRED_SKILL } from '@features/recruiting/domain'
 
-import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartType } from '@/features/auth/domain'
 import { useGetCurriculums } from '@/features/management/hooks/getManagementQueries'
 import Check from '@/shared/assets/icons/check.svg?react'

@@ -42,7 +42,7 @@ export const fetchMyInfo = async (): Promise<MyInfoResponseDTO> => {
 export const getSchoolLink = async (
   schoolId: string,
 ): Promise<CommonResponseDTO<GetSchoolLinkResponseDTO>> => {
-  const { data } = await axiosInstance.get(`/admin/schools/link/${schoolId}`)
+  const { data } = await axiosInstance.get(`/schools/link/${schoolId}`)
   return data.result
 }
 
@@ -88,6 +88,6 @@ export async function getTerm({
 }
 
 export const getGisuList = async (): Promise<CommonResponseDTO<GetGisuListResponseDTO>> => {
-  const { data } = await axiosInstance.get('/admin/gisu')
+  const { data } = await axiosInstance.get('/gisu/all')
   return data
 }

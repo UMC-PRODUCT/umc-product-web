@@ -2,7 +2,8 @@ import dayjs from 'dayjs'
 
 import { PAGE_INFO } from '@features/school/domain'
 
-import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartType } from '@/features/auth/domain'
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'

@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { clearTokens } from '@/api/tokenManager'
 import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
-import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge/Badge'
@@ -34,15 +34,16 @@ const ProfileMenu = ({
   })
   const { data } = useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
   // TODO: 추후 ACTIVE 기수 조회하는 API가 생기면 수정 필요
-  const { data: gisu } = useCustomSuspenseQuery(
+  const { data: gisuList = [] } = useCustomQuery(
     schoolKeys.gisu().queryKey,
     schoolKeys.gisu().queryFn,
     {
+      select: (response) => response.result.gisuList,
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
     },
   )
-  const gisuId = gisu.result.gisuList[0]?.gisuId || ''
+  const gisuId = gisuList[0]?.gisuId || ''
   useEffect(() => {
     setName(data.name || '')
     setNickname(data.nickname || '')

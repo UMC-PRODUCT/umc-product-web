@@ -1,4 +1,5 @@
-import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
