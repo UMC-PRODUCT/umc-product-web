@@ -16,10 +16,10 @@ import { Checkbox } from '@/shared/ui/common/Checkbox/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
+import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
 
 import { AccountFilters } from '../AccountFilters/AccountFilters'
-import * as RowStyles from '../AccountTableRows/AccountTableRows.style'
 
 type AffiliatedOption = Option<string>
 type RoleOption = Option<string>
@@ -194,14 +194,21 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
       </Section>
       <Section variant="solid" maxHeight={540} gap={0} padding="12px 16px">
         <Table
-          isAllChecked={pageItems.length > 0 && pageItems.every((item) => selectedIds.has(item.id))}
-          onToggleAll={toggleAll}
-          totalAmounts={totalAmounts}
+          checkbox={{
+            isAllChecked:
+              pageItems.length > 0 && pageItems.every((item) => selectedIds.has(item.id)),
+            onToggleAll: toggleAll,
+          }}
+          page={{
+            currentPage: currentPage,
+            totalPages: totalPages,
+            onChangePage: handlePageChange,
+          }}
+          count={{
+            totalAmounts: totalAmounts,
+            label: '계정',
+          }}
           headerLabels={DELETE_ACCOUNT_TABLE_HEADER_LABEL}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onChangePage={handlePageChange}
-          type="account"
           buttonChildren={buttonChildren}
           rows={pageItems}
           getRowId={(row) => row.id}
@@ -209,22 +216,22 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
           onRowClick={(id) => setActiveRowId(id)}
           renderRow={(item) => (
             <>
-              <RowStyles.Td>
+              <TableStyles.Td>
                 <Checkbox
                   onCheckedChange={() => toggleRow(item.id)}
                   checked={selectedIds.has(item.id)}
                 />
-              </RowStyles.Td>
-              <RowStyles.Td>{item.name}</RowStyles.Td>
-              <RowStyles.Td>{item.email}</RowStyles.Td>
-              <RowStyles.Td>{item.school}</RowStyles.Td>
-              <RowStyles.Td>{item.branch}</RowStyles.Td>
-              <RowStyles.Td>
+              </TableStyles.Td>
+              <TableStyles.Td>{item.name}</TableStyles.Td>
+              <TableStyles.Td>{item.email}</TableStyles.Td>
+              <TableStyles.Td>{item.school}</TableStyles.Td>
+              <TableStyles.Td>{item.branch}</TableStyles.Td>
+              <TableStyles.Td>
                 <Badge tone="gray" variant="solid" typo="B4.Sb">
                   {transformRoleKorean(item.role)}
                 </Badge>
-              </RowStyles.Td>
-              <RowStyles.Td>
+              </TableStyles.Td>
+              <TableStyles.Td>
                 <Badge
                   tone={
                     item.status === 'ACTIVE' ? 'lime' : item.status === 'PENDING' ? 'white' : 'gray'
@@ -234,8 +241,8 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
                 >
                   {transformStateKorean(item.status)}
                 </Badge>
-              </RowStyles.Td>
-              <RowStyles.Td>
+              </TableStyles.Td>
+              <TableStyles.Td>
                 <Flex gap="10px">
                   <Button
                     key={`edit-${item.id}`}
@@ -243,6 +250,7 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
                     tone="caution"
                     onClick={() => setIsEditMode(true)}
                     typo="C2.Md"
+                    css={{ height: '28px', width: '57px' }}
                   />
                   <Button
                     key={`delete-${item.id}`}
@@ -250,9 +258,10 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
                     tone="necessary"
                     onClick={() => openDeleteConfirm(item.id)}
                     typo="C2.Md"
+                    css={{ height: '28px', width: '57px' }}
                   />
                 </Flex>
-              </RowStyles.Td>
+              </TableStyles.Td>
             </>
           )}
         />

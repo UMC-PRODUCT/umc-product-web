@@ -24,37 +24,38 @@ export type ManagementFooterButton = {
 
 type TableProps<T, TId extends string | number = string | number> = {
   headerLabels: Array<string>
-  isAllChecked: boolean | 'indeterminate'
-  onToggleAll: (checked: boolean | 'indeterminate') => void
+  checkbox?: {
+    isAllChecked: boolean | 'indeterminate'
+    onToggleAll: (checked: boolean | 'indeterminate') => void
+  }
   children?: React.ReactNode
-  type: 'school' | 'account'
   buttonChildren?: React.ReactNode
-  currentPage?: number
-  totalPages?: number
-  onChangePage?: (page: number) => void
-  enablePagination?: boolean
+
   showFooter?: boolean
-  totalAmounts: number
   rows?: Array<T>
   renderRow?: (row: T) => React.ReactNode
   getRowId?: (row: T) => TId
   activeRowId?: TId | null
   onRowClick?: (id: TId) => void
+  count?: {
+    totalAmounts: number
+    label: string
+  }
+  page?: {
+    currentPage: number
+    totalPages: number
+    onChangePage?: (page: number) => void
+  }
 }
 
 const Table = <T, TId extends string | number = string | number>({
   headerLabels,
   children,
-  isAllChecked,
-  onToggleAll,
-  type,
+  checkbox,
   buttonChildren,
-  currentPage,
-  totalPages,
-  onChangePage,
-  enablePagination = true,
+  page,
   showFooter = true,
-  totalAmounts,
+  count,
   rows,
   renderRow,
   getRowId,
@@ -75,9 +76,14 @@ const Table = <T, TId extends string | number = string | number>({
           <S.Table>
             <thead>
               <tr>
-                <S.Th>
-                  <Checkbox onCheckedChange={onToggleAll} checked={isAllChecked} />
-                </S.Th>
+                {checkbox && (
+                  <S.Th>
+                    <Checkbox
+                      onCheckedChange={checkbox.onToggleAll}
+                      checked={checkbox.isAllChecked}
+                    />
+                  </S.Th>
+                )}
                 {headerLabels.map((label) => (
                   <S.Th key={label}>{label}</S.Th>
                 ))}
@@ -103,14 +109,16 @@ const Table = <T, TId extends string | number = string | number>({
         </S.TableWrapper>
         {showFooter && (
           <S.Footer>
-            <span css={{ color: theme.colors.gray[300], ...typography.C4.Rg }}>
-              총 {totalAmounts}개 {type === 'account' ? '계정' : '학교'}
-            </span>
-            {enablePagination && totalPages && totalPages > 1 && onChangePage && (
+            {count && (
+              <span css={{ color: theme.colors.gray[300], ...typography.C4.Rg }}>
+                총 {count.totalAmounts}개 {count.label}
+              </span>
+            )}
+            {page && page.totalPages > 1 && page.onChangePage && (
               <Navigation
-                currentPage={currentPage ?? 1}
-                totalPages={totalPages}
-                onChangePage={onChangePage}
+                currentPage={page.currentPage}
+                totalPages={page.totalPages}
+                onChangePage={page.onChangePage}
               />
             )}
           </S.Footer>

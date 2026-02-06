@@ -11,6 +11,7 @@ import * as S from './LabelTextField.style'
 export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   type: 'email' | 'password' | 'text'
   Icon?: SvgIconComponent
+  IconPlaced?: 'left' | 'right'
   error?: {
     error: boolean
     errorMessage: string
@@ -27,7 +28,17 @@ export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
-    { type, placeholder, error, Icon, button, autoComplete, css: wrapperCss, ...inputProps },
+    {
+      type,
+      placeholder,
+      error,
+      Icon,
+      IconPlaced = 'right',
+      button,
+      autoComplete,
+      css: wrapperCss,
+      ...inputProps
+    },
     ref,
   ) => {
     const { onChange, value, ...restInputProps } = inputProps
@@ -58,14 +69,10 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           type={type}
           placeholder={placeholder}
           ref={ref}
+          IconPlaced={IconPlaced}
           {...restInputProps}
           {...controlledProps}
         />
-        {Icon && (
-          <S.IconBox>
-            <Icon width={24} height={24} color={theme.colors.gray[400]} aria-hidden />
-          </S.IconBox>
-        )}
         {button && (
           <Button
             label={button.buttonMessage}
@@ -78,6 +85,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             isLoading={isButtonLoading}
             type="button"
           />
+        )}
+        {Icon && (
+          <S.IconBox iconPlaced={IconPlaced}>
+            <Icon width={24} height={24} color={theme.colors.gray[400]} aria-hidden />
+          </S.IconBox>
         )}
       </S.InputWrapper>
     )

@@ -4,9 +4,10 @@ import { inputShell } from '@/shared/styles/formStyles'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
-const Input = styled.input`
+const Input = styled.input<{ IconPlaced?: 'left' | 'right' }>`
   ${inputShell};
-  padding: 10px 10px 10px 20px;
+  padding: ${(props) =>
+    props.IconPlaced === 'left' ? '10px 10px 10px 35px' : '10px 10px 10px 20px'};
   ::placeholder {
     color: ${theme.colors.gray[400]};
   }
@@ -34,9 +35,10 @@ const InputWrapper = styled.div`
   }
 `
 
-const IconBox = styled.span`
+const IconBox = styled.span<{ iconPlaced?: 'left' | 'right' }>`
   position: absolute;
-  right: 8px;
+  right: ${(props) => props.iconPlaced === 'right' && '8px'};
+  left: ${(props) => props.iconPlaced === 'left' && '8px'};
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;

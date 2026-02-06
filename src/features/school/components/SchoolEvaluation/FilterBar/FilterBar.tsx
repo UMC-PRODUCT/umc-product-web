@@ -5,12 +5,14 @@ import Section from '@/shared/ui/common/Section/Section'
 const FilterBar = ({
   rightChild,
   leftChild,
+  gap = '12px',
 }: {
   rightChild?: React.ReactNode
   leftChild?: React.ReactNode
+  gap?: string | number
 }) => {
   return (
-    <FilterBarWrapper variant="solid" padding={'12px 22px'}>
+    <FilterBarWrapper gap={gap} variant="solid" padding={'12px 22px'}>
       <div className="left">{leftChild}</div>
       <div className="right">{rightChild}</div>
     </FilterBarWrapper>
@@ -24,12 +26,11 @@ const FilterBarWrapper = styled(Section)`
   align-items: center;
   border-radius: 6px;
   height: fit-content;
-  gap: 10px;
   .left,
   .right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: ${(props) => props.gap};
     white-space: nowrap;
   }
   overflow-x: scroll;
