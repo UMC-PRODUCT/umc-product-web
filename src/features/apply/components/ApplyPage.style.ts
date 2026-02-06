@@ -78,7 +78,7 @@ export const PartButtonWrapper = styled(Flex)`
 
 export const SubmitTitle = styled.div`
   color: ${theme.colors.white};
-  ${theme.typography.H1.Sb}
+  ${theme.typography.H2.Sb}
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.H3.Sb}
   }
