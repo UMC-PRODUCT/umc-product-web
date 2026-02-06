@@ -9,20 +9,14 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './ExternalLink.style'
 
-const socialIconMap = {
-  kakao: KakaoIcon,
-  instagram: InstagramIcon,
-  youtube: YoutubeIcon,
-} as const
-
 const ExternalLink = ({
   subLinks,
 }: {
-  subLinks: Array<{
-    label: string
-    link: string
-    icon: 'kakao' | 'instagram' | 'youtube'
-  }>
+  subLinks: {
+    kakaoLink?: string
+    instagramLink?: string
+    youtubeLink?: string
+  }
 }) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -50,6 +44,8 @@ const ExternalLink = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
+  const hasAnyLink = Boolean(subLinks.kakaoLink || subLinks.instagramLink || subLinks.youtubeLink)
+
   return (
     <>
       <S.MenuItemWrapper ref={cardRef}>
@@ -66,20 +62,34 @@ const ExternalLink = ({
             css={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </S.MenuItem>
-        {subLinks.length > 0 && isOpen && (
+        {isOpen && (
           <S.SubMenu>
             <S.ChildLinks flexDirection="column" alignItems="flex-start">
-              {subLinks.map((sub) => {
-                const SocialIcon = socialIconMap[sub.icon]
-                return (
-                  <a key={sub.label} href={sub.link} target="_blank" rel="noreferrer noopener">
-                    <Flex flexDirection="row" gap="6px" alignItems="center">
-                      <SocialIcon width={24} height={24} aria-hidden="true" />
-                      {sub.label}
-                    </Flex>
-                  </a>
-                )
-              })}
+              {!hasAnyLink && <span>연결된 외부 링크가 없습니다.</span>}
+              {subLinks.kakaoLink && (
+                <a href={subLinks.kakaoLink} target="_blank" rel="noreferrer noopener">
+                  <Flex flexDirection="row" gap="6px" alignItems="center">
+                    <KakaoIcon width={24} height={24} aria-hidden="true" />
+                    카카오톡 채널
+                  </Flex>
+                </a>
+              )}
+              {subLinks.instagramLink && (
+                <a href={subLinks.instagramLink} target="_blank" rel="noreferrer noopener">
+                  <Flex flexDirection="row" gap="6px" alignItems="center">
+                    <InstagramIcon width={24} height={24} aria-hidden="true" />
+                    인스타그램
+                  </Flex>
+                </a>
+              )}
+              {subLinks.youtubeLink && (
+                <a href={subLinks.youtubeLink} target="_blank" rel="noreferrer noopener">
+                  <Flex flexDirection="row" gap="6px" alignItems="center">
+                    <YoutubeIcon width={24} height={24} aria-hidden="true" />
+                    유튜브
+                  </Flex>
+                </a>
+              )}
             </S.ChildLinks>
           </S.SubMenu>
         )}

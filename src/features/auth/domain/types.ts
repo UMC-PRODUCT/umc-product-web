@@ -45,3 +45,19 @@ export type GetTermsResponseDTO = {
   content: string
   isMandatory: boolean
 }
+
+export type GetSchoolLinkResponseDTO = {
+  kakaoLink?: string
+  instagramLink?: string
+  youtubeLink?: string
+}
+
+export type GetGisuListResponseDTO = {
+  gisuList: Array<{
+    gisuId: string
+    generation: string
+    startsAt: string
+    endsAt: string
+    isActive: boolean
+  }>
+}

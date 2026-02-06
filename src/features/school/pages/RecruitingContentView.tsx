@@ -44,6 +44,7 @@ export const RecruitingContentView = ({
   isBackConfirmOpen,
   handleBackStay,
   handleBackLeave,
+  navigationBlocker,
 }: RecruitingContentLogic) => {
   return (
     <PageLayout>
@@ -104,6 +105,9 @@ export const RecruitingContentView = ({
         recruitingId={recruitingId}
       />
       {isBackConfirmOpen && <LeaveConfirmModal onClose={handleBackStay} onMove={handleBackLeave} />}
+      {navigationBlocker.isOpen && (
+        <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
+      )}
     </PageLayout>
   )
 }

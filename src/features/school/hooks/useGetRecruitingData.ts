@@ -27,3 +27,8 @@ export const useGetApplicationAnswer = (recruitmentId: string, formId: string) =
   const { queryKey, queryFn } = applyKeys.getApplicationAnswer(recruitmentId, formId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
+
+export const useGetRecruitmentDashboard = (recruitingId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getRecruitmentDashboard(recruitingId)
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}

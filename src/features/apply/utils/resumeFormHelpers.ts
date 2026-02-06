@@ -166,10 +166,52 @@ const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null =>
   return preferredParts.length > 0 ? { preferredParts } : null
 }
 
-const buildScheduleAnswer = (value: unknown): scheduleAnswer | null => {
+const filterScheduleValue = (
+  value: TimeTableSlots,
+  schedule: ScheduleQuestion['schedule'],
+): TimeTableSlots => {
+  const disabledMap = schedule.disabledByDate.reduce<Partial<Record<string, Set<string>>>>(
+    (acc, slot) => {
+      if (!slot.date || !Array.isArray(slot.times)) return acc
+      acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
+      return acc
+    },
+    {},
+  )
+  const enabledMap = schedule.enabledByDate.reduce<Partial<Record<string, Set<string>>>>(
+    (acc, slot) => {
+      if (!slot.date || !Array.isArray(slot.times)) return acc
+      acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
+      return acc
+    },
+    {},
+  )
+  const hasEnabled = Object.keys(enabledMap).length > 0
+
+  return Object.entries(value).reduce<TimeTableSlots>((acc, [date, times]) => {
+    const safeTimes = Array.isArray(times)
+      ? times.filter((t): t is string => typeof t === 'string')
+      : []
+    if (safeTimes.length === 0) return acc
+    const enabledSet = enabledMap[date]
+    const disabledSet = disabledMap[date]
+    const filtered = safeTimes.filter((time) => {
+      if (hasEnabled && (!enabledSet || !enabledSet.has(time))) return false
+      if (disabledSet && disabledSet.has(time)) return false
+      return true
+    })
+    if (filtered.length > 0) acc[date] = filtered
+    return acc
+  }, {})
+}
+
+const buildScheduleAnswer = (
+  value: unknown,
+  schedule: ScheduleQuestion['schedule'],
+): scheduleAnswer | null => {
   if (!isScheduleValuePresent(value)) return null
 
-  const slots = value as Record<string, Array<string>>
+  const slots = filterScheduleValue(value, schedule)
   const selected = Object.entries(slots)
     .map(([date, times]) => ({
       date,
@@ -222,7 +264,7 @@ const mapScheduleQuestionToAnswerItem = (
 ): AnswerItem | null => {
   const questionId = String(scheduleQuestion.questionId)
   if (!isScheduleValuePresent(value)) return null
-  const answer = buildScheduleAnswer(value)
+  const answer = buildScheduleAnswer(value, scheduleQuestion.schedule)
   return answer ? { questionId, answeredAsType: scheduleQuestion.type, value: answer } : null
 }
 

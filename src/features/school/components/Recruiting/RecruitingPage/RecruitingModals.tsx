@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
 import CreateRecruitingConfirm from '../../modals/CreateRecruitingConfirm/CreateRecruitingConfirm'
@@ -32,17 +32,24 @@ const RecruitingModals = ({
           <Modal.Portal>
             <Modal.Overlay />
             <Modal.Content>
-              <Suspense
+              <AsyncBoundary
                 fallback={
                   <RecruitingPreviewSkeletonContent title={title} onClose={onClosePreview} />
                 }
+                errorFallback={(error, reset) => (
+                  <ErrorPage
+                    title="지원서 미리보기를 불러오는 중 오류가 발생했습니다."
+                    description={error.message || '잠시 후 다시 시도해 주세요.'}
+                    onRetry={reset}
+                  />
+                )}
               >
                 <RecruitingPreviewContent
                   recruitingId={recruitingId}
                   title={title}
                   onClose={onClosePreview}
                 />
-              </Suspense>
+              </AsyncBoundary>
             </Modal.Content>
           </Modal.Portal>
         </Modal.Root>

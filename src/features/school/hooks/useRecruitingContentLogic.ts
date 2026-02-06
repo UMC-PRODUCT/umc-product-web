@@ -332,6 +332,7 @@ export const useRecruitingContentLogic = ({
     handleBackClick,
     handleBackStay,
     handleBackLeave,
+    navigationBlocker,
     recruitingId: recruitingId!,
     scrollTopRef,
   }

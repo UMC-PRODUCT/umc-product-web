@@ -44,6 +44,18 @@ const StyledCalendarWrapper = styled.div`
     background: transparent !important;
   }
 
+  /* 요일 헤더 sticky 동작 해제 */
+  .fc-scrollgrid-section-header,
+  .fc-col-header,
+  .fc-scrollgrid-section-header td,
+  .fc-scrollgrid-section-header th,
+  .fc-scrollgrid-section-header .fc-scrollgrid-sync-table,
+  .fc-scrollgrid-section-header .fc-scrollgrid-sync-inner {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+  }
+
   .fc-theme-standard td {
     border: 1px solid ${theme.colors.gray[600]};
   }

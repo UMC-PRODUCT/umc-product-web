@@ -7,6 +7,10 @@ type UserProfileState = {
   setName: (name: string) => void
   setNickname: (nickname: string) => void
   setEmail: (email: string) => void
+  gisu: string
+  setGisu: (gisu: string) => void
+  schoolId: string
+  setSchoolId: (schoolId: string) => void
 }
 
 export const useUserProfileStore = create<UserProfileState>((set) => ({
@@ -16,4 +20,8 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   setName: (name) => set({ name }),
   setNickname: (nickname) => set({ nickname }),
   setEmail: (email) => set({ email }),
+  gisu: '',
+  setGisu: (gisu) => set({ gisu }),
+  schoolId: '',
+  setSchoolId: (schoolId) => set({ schoolId }),
 }))

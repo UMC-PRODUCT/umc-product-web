@@ -1,7 +1,9 @@
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 
 import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
@@ -74,9 +76,18 @@ const RecruitingList = () => {
             예정된 모집
           </S.Tab>
         </S.Header>
-        <Suspense fallback={<RecruitingListLoading />}>
+        <AsyncBoundary
+          fallback={<RecruitingListLoading />}
+          errorFallback={(error, reset) => (
+            <ErrorPage
+              title="모집 목록을 불러오는 중 오류가 발생했습니다."
+              description={error.message || '잠시 후 다시 시도해 주세요.'}
+              onRetry={reset}
+            />
+          )}
+        >
           <RecruitingListBody tab={tab} />
-        </Suspense>
+        </AsyncBoundary>
       </Section>
     </Flex>
   )

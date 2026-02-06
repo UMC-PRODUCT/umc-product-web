@@ -4,6 +4,7 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 import type {
   DeleteSingleQuestionResponseDTO,
   GetApplicationFormResponseDTO,
+  GetDashboardResponseDTO,
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
@@ -111,5 +112,12 @@ export const patchPublishedRecruitment = async ({
     `/recruitments/${recruitmentId}/published`,
     requestBody,
   )
+  return data
+}
+
+export const getDashboardSummary = async (
+  recruitmentId: string,
+): Promise<CommonResponseDTO<GetDashboardResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/recruitments/${recruitmentId}/dashboard`)
   return data
 }

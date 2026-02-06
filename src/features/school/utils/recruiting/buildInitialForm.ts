@@ -41,11 +41,11 @@ export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
 ): PatchTempSaveRecruitmentRequestDTO['schedule'] => ({
   applyStartAt: toDateOnly(schedule.applyStartAt),
-  applyEndAt: toDateOnly(schedule.applyEndAt),
+  applyEndAt: toDateLast(schedule.applyEndAt),
   docResultAt: toDateOnly(schedule.docResultAt),
   interviewStartAt: toDateOnly(schedule.interviewStartAt),
   interviewEndAt: toDateLast(schedule.interviewEndAt),
-  finalResultAt: toDateOnly(schedule.finalResultAt),
+  finalResultAt: toDateLast(schedule.finalResultAt),
   interviewTimeTable: {
     dateRange: {
       start: schedule.interviewTimeTable.dateRange.start,

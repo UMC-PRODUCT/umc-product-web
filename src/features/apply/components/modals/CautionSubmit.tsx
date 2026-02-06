@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
 import Caution from '@/shared/assets/icons/caution.svg?react'
@@ -14,6 +15,7 @@ const CautionSubmit = ({
   onSubmit: () => void
   onAllowNavigate?: () => void
 }) => {
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   return (
     <AlertModalLayout
@@ -43,6 +45,9 @@ const CautionSubmit = ({
         <Button
           onClick={() => {
             onSubmit()
+            queryClient.invalidateQueries({
+              queryKey: ['recruitment'],
+            })
             onClose()
             onAllowNavigate?.()
             navigate({

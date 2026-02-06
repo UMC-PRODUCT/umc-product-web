@@ -50,13 +50,6 @@ export interface InterviewSchedule {
   interviewerCount: number
 }
 
-/** 일정 요약 */
-export interface ScheduleSummary {
-  currentStep: string
-  nextStep: string
-  deadline: string
-}
-
 export type GetRecruitmentsRequestDTO = {
   status: RecruitingStatus
 }
@@ -118,6 +111,14 @@ export type patchPublishedRecruitmentRequestDTO = {
   requestBody: RecruitmentEditable
 }
 
+export type GetDashboardResponseDTO = {
+  recruitmentId: string
+  scheduleSummary: ScheduleSummary
+  progress: Progress
+  applicationStatus: ApplicationStatus
+  evaluationStatus: EvaluationStatus
+}
+
 export type RecruitmentEditable = {
   applyStartAt?: string
   applyEndAt?: string
@@ -125,4 +126,55 @@ export type RecruitmentEditable = {
   interviewStartAt?: string
   interviewEndAt?: string
   finalResultAt?: string
+}
+
+export type ScheduleSummary = {
+  phaseTitle: string
+  dDay: string
+  dateRange: {
+    start: string
+    end: string
+  }
+  todayInterview: {
+    interviewTime: string
+    nickname: string
+    name: string
+    message: string
+  }
+}
+
+export type Progress = {
+  currentStep: string
+  steps: Array<{
+    step: string
+    label: string
+    done: boolean
+    active: boolean
+  }>
+  resultAnnounceAt: string
+}
+
+export type ApplicationStatus = {
+  totalApplicants: string
+  partCounts: Array<{
+    part: PartType
+    count: string
+  }>
+}
+export type EvaluationStatus = {
+  documentEvaluation: {
+    progressRate: string
+    completed: string
+    total: string
+  }
+  interviewEvaluation: {
+    progressRate: string
+    completed: string
+    total: string
+  }
+  partStatuses: Array<{
+    part: PartType
+    documentStatusText: string
+    interviewStatusText: string
+  }>
 }

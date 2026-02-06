@@ -1,14 +1,20 @@
+import { useGetActiveRecruitmentId } from '@/features/apply/hooks/useGetApplicationQuery'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import ApplyStatus from '../components/SchoolDashboard/ApplyStatus/ApplyStatus'
-import EvaluationStatus from '../components/SchoolDashboard/EvaluationStatus/EvaluationStatus'
-import { ProgressSteps } from '../components/SchoolDashboard/ProgressSteps/ProgressSteps'
-import ScheduleSummary from '../components/SchoolDashboard/ScheduleSummary/ScheduleSummary'
+import ApplyStatus from '../components/schoolDashboard/ApplyStatus/ApplyStatus'
+import EvaluationStatus from '../components/schoolDashboard/EvaluationStatus/EvaluationStatus'
+import { ProgressSteps } from '../components/schoolDashboard/ProgressSteps/ProgressSteps'
+import ScheduleSummary from '../components/schoolDashboard/ScheduleSummary/ScheduleSummary'
+import { useGetRecruitmentDashboard } from '../hooks/useGetRecruitingData'
 
-export const SchoolDashboard = () => {
+export const SchoolDashboardContent = () => {
+  const { data } = useGetActiveRecruitmentId()
+  const { data: dashboardData } = useGetRecruitmentDashboard(data.result.recruitmentId)
   return (
     <PageLayout>
       <Flex
@@ -20,11 +26,28 @@ export const SchoolDashboard = () => {
           },
         }}
       >
-        <ScheduleSummary />
+        <ScheduleSummary scheduleSummary={dashboardData.result.scheduleSummary} />
         <ProgressSteps />
         <ApplyStatus />
         <EvaluationStatus />
       </Flex>
     </PageLayout>
+  )
+}
+
+export const SchoolDashboard = () => {
+  return (
+    <AsyncBoundary
+      fallback={<SuspenseFallback />}
+      errorFallback={() => (
+        <PageLayout>
+          <Flex flexDirection="column" gap={112} css={{ color: theme.colors.gray[400] }}>
+            현재 진행 중인 모집이 없습니다.
+          </Flex>
+        </PageLayout>
+      )}
+    >
+      <SchoolDashboardContent />
+    </AsyncBoundary>
   )
 }
