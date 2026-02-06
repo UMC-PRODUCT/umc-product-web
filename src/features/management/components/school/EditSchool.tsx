@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import Arrow from '@shared/assets/icons/arrow.svg?react'
 import Search from '@shared/assets/icons/search.svg?react'
 
 import { Flex } from '@/shared/ui/common/Flex'
@@ -8,12 +9,13 @@ import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 import { UNI_LIST_MOCK } from '../../mocks/universities'
+import EditSchoolModal from '../modals/EditSchoolModal/EditSchoolModal'
 import SchoolStateButton from './SchoolStateButton'
 import * as S from './shared'
 
 const EditSchool = () => {
   const [page, setPage] = useState(1)
-
+  const [open, setOpen] = useState(false)
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -54,11 +56,19 @@ const EditSchool = () => {
             </TableStyles.Td>
             <TableStyles.Td>{row.info}</TableStyles.Td>
             <TableStyles.Td>
-              <SchoolStateButton isActive={row.status === '활성'} label={row.status} />
+              <Flex justifyContent="space-between" alignItems="center">
+                <SchoolStateButton isActive={row.status === '활성'} label={row.status} />
+                <Arrow
+                  width={20}
+                  css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }}
+                  onClick={() => setOpen(true)}
+                />
+              </Flex>
             </TableStyles.Td>
           </>
         )}
       />
+      {open && <EditSchoolModal onClose={() => setOpen(false)} />}
     </>
   )
 }
