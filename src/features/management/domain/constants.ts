@@ -36,8 +36,20 @@ export const MANAGE_SCHOOL_TABS = [
   { value: 'edit', label: '학교 정보 수정' },
 ] as const
 
+export const MANAGE_SYSTEM_TABS = [
+  { value: 'landing', label: '렌딩 페이지 관리' },
+  {
+    value: 'curriculum',
+    label: '커리큘럼 관리',
+  },
+  { value: 'term', label: '약관 관리' },
+  { value: 'data', label: '데이터 변경 이력 조회' },
+]
+
 export const MANAGE_SCHOOL_TAB_VALUES = MANAGE_SCHOOL_TABS.map((tab) => tab.value)
 
 export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록일', '상태', '작업']
 
 export const DELETE_ACCOUNT_TABLE_HEADER_LABEL = ['이름', '닉네임', '학교', '기수', '파트', '권한']
+
+export const MANAGE_SYSTEM_TAB_VALUES = MANAGE_SYSTEM_TABS.map((tab) => tab.value)
