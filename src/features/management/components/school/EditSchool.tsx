@@ -1,120 +1,64 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 
-import type { Option } from '@/shared/types/form'
-import { Button } from '@/shared/ui/common/Button/Button'
-import { Dropdown } from '@/shared/ui/common/Dropdown/Dropdown'
+import Search from '@shared/assets/icons/search.svg?react'
+
+import { Flex } from '@/shared/ui/common/Flex'
+import Table from '@/shared/ui/common/Table/Table'
+import * as TableStyles from '@/shared/ui/common/Table/Table.style'
+import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 import { UNI_LIST_MOCK } from '../../mocks/universities'
-import type { SchoolRegisterForm } from '../../schemas/management'
-import { schoolRegisterSchema } from '../../schemas/management'
-import RegisterConfirm from '../modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
-import { EmptySelectionNotice } from './EmptySelectionNotice'
-import { SchoolFormFields } from './SchoolFormFields'
+import SchoolStateButton from './SchoolStateButton'
 import * as S from './shared'
 
-type SchoolOption = Option<string>
-
-type ModalState = {
-  isOpen: boolean
-  schoolName: string
-  link: string
-}
-
-const REGISTERED_AT = '2026.01.15'
-
-const formatDateToYMD = (date: Date) =>
-  `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
-
 const EditSchool = () => {
-  const [modal, setModal] = useState<ModalState>({
-    isOpen: false,
-    schoolName: '',
-    link: '',
-  })
-  const [school, setSchool] = useState<SchoolOption | undefined>(undefined)
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { isValid, errors },
-  } = useForm<SchoolRegisterForm>({
-    mode: 'onChange',
-    resolver: zodResolver(schoolRegisterSchema),
-  })
-
-  const onSubmit = (data: SchoolRegisterForm) => {
-    // TODO: 학교 정보 수정 API 연동
-    setModal({
-      isOpen: true,
-      schoolName: data.schoolName,
-      link: `/management/school/edit?school=${data.schoolName}`,
-    })
-  }
-
-  const closeModal = () => {
-    setModal((prev) => ({ ...prev, isOpen: false }))
-  }
-
-  const handleSelectSchool = ({ id, label }: SchoolOption) => {
-    setSchool({ id, label })
-    setValue('schoolName', label, {
-      shouldValidate: true,
-      shouldDirty: true,
-    })
-  }
-
-  const updatedAt = formatDateToYMD(new Date())
+  const [page, setPage] = useState(1)
 
   return (
     <>
       <S.TabHeader alignItems="flex-start">
         <S.TabTitle>학교 정보 수정</S.TabTitle>
-        <S.TabSubtitle>수정할 학교를 선택하고 정보를 업데이트하세요.</S.TabSubtitle>
+        <S.TabSubtitle>기존 등록된 학교의 정보를 수정할 수 있습니다.</S.TabSubtitle>
       </S.TabHeader>
-      <S.FormCard>
-        <S.DropdownWrapper alignItems="flex-start">
-          <Dropdown
-            options={UNI_LIST_MOCK}
-            onChange={handleSelectSchool}
-            placeholder="학교를 선택하세요."
-            value={school}
-          />
-        </S.DropdownWrapper>
-        {school ? (
-          <SchoolFormFields
-            register={register}
-            errors={errors}
-            registeredAt={REGISTERED_AT}
-            updatedAt={updatedAt}
-          />
-        ) : (
-          <EmptySelectionNotice variant="outline" />
+      <Flex width={300}>
+        <TextField
+          type="text"
+          placeholder="학교명으로 검색"
+          autoComplete="none"
+          Icon={Search}
+          IconPlaced="left"
+        />
+      </Flex>
+      <Table
+        headerLabels={['학교명', '비고', '상태']}
+        showFooter={true}
+        page={{
+          currentPage: page,
+          totalPages: 10,
+          onChangePage: setPage,
+        }}
+        rows={UNI_LIST_MOCK}
+        getRowId={(row) => row.id}
+        renderRow={(row) => (
+          <>
+            <TableStyles.Td>
+              <Flex alignItems="center" gap="12px">
+                {/* TODO: 추후 학교 로고 이미지로 변경 */}
+                <img
+                  src="https://avatars.githubusercontent.com/u/111187984?v=4"
+                  alt="학교 로고"
+                  css={{ width: '50px', height: '50px', borderRadius: '50%' }}
+                />
+                {row.label}
+              </Flex>
+            </TableStyles.Td>
+            <TableStyles.Td>{row.info}</TableStyles.Td>
+            <TableStyles.Td>
+              <SchoolStateButton isActive={row.status === '활성'} label={row.status} />
+            </TableStyles.Td>
+          </>
         )}
-        <S.SubmitButtonWrapper width="250px" height="41px" gap="20px">
-          <Button
-            type="submit"
-            disabled={!isValid || !school}
-            tone={!school ? 'darkGray' : 'gray'}
-            label="초기화"
-            onClick={handleSubmit(onSubmit)}
-            typo="C2.Md"
-          />
-          <Button
-            type="submit"
-            disabled={!isValid || !school}
-            tone={!school ? 'darkGray' : 'lime'}
-            label="수정 완료"
-            onClick={handleSubmit(onSubmit)}
-            typo="C2.Md"
-          />
-        </S.SubmitButtonWrapper>
-      </S.FormCard>
-
-      {modal.isOpen && (
-        <RegisterConfirm onClose={closeModal} schoolName={modal.schoolName} link={modal.link} />
-      )}
+      />
     </>
   )
 }

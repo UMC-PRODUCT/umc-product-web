@@ -7,7 +7,7 @@ import { theme } from '@/shared/styles/theme'
 const Input = styled.input<{ IconPlaced?: 'left' | 'right' }>`
   ${inputShell};
   padding: ${(props) =>
-    props.IconPlaced === 'left' ? '10px 10px 10px 35px' : '10px 10px 10px 20px'};
+    props.IconPlaced === 'left' ? '10px 10px 10px 45px' : '10px 10px 10px 20px'};
   ::placeholder {
     color: ${theme.colors.gray[400]};
   }
@@ -38,7 +38,7 @@ const InputWrapper = styled.div`
 const IconBox = styled.span<{ iconPlaced?: 'left' | 'right' }>`
   position: absolute;
   right: ${(props) => props.iconPlaced === 'right' && '8px'};
-  left: ${(props) => props.iconPlaced === 'left' && '8px'};
+  left: ${(props) => props.iconPlaced === 'left' && '15px'};
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;
