@@ -46,6 +46,11 @@ export const MANAGE_SYSTEM_TABS = [
   { value: 'data', label: '데이터 변경 이력 조회' },
 ]
 
+export const MANAGE_BRANCH_TABS = [
+  { value: 'add', label: '지부 생성' },
+  { value: 'match', label: '지부 매칭' },
+]
+
 export const MANAGE_SCHOOL_TAB_VALUES = MANAGE_SCHOOL_TABS.map((tab) => tab.value)
 
 export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록일', '상태', '작업']
@@ -53,3 +58,5 @@ export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록�
 export const DELETE_ACCOUNT_TABLE_HEADER_LABEL = ['이름', '닉네임', '학교', '기수', '파트', '권한']
 
 export const MANAGE_SYSTEM_TAB_VALUES = MANAGE_SYSTEM_TABS.map((tab) => tab.value)
+
+export const MANAGE_BRANCH_TAB_VALUES = MANAGE_BRANCH_TABS.map((tab) => tab.value)
