@@ -41,6 +41,7 @@ const EditSchool = () => {
         }}
         rows={UNI_LIST_MOCK}
         getRowId={(row) => row.id}
+        onRowClick={() => setOpen(true)}
         renderRow={(row) => (
           <>
             <TableStyles.Td>
@@ -58,11 +59,7 @@ const EditSchool = () => {
             <TableStyles.Td>
               <Flex justifyContent="space-between" alignItems="center">
                 <SchoolStateButton isActive={row.status === '활성'} label={row.status} />
-                <Arrow
-                  width={20}
-                  css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }}
-                  onClick={() => setOpen(true)}
-                />
+                <Arrow width={20} css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }} />
               </Flex>
             </TableStyles.Td>
           </>

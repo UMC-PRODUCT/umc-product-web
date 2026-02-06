@@ -100,6 +100,7 @@ const Table = <T, TId extends string | number = string | number>({
                         key={String(id)}
                         data-active={activeRowId === id}
                         onClick={() => onRowClick?.(id)}
+                        css={{ cursor: onRowClick ? 'pointer' : 'default' }}
                       >
                         {renderRow(row)}
                       </tr>
