@@ -24,7 +24,7 @@ const ProfileMenu = ({
   children?: React.ReactNode
 }) => {
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setGisu, setSchoolId } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setGisu, setSchoolId, setLevel } = useUserProfileStore()
   const [isModalOpen, setIsModalOpen] = useState<{
     modalType: 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
@@ -50,12 +50,14 @@ const ProfileMenu = ({
     setEmail(data.email || '')
     setGisu(gisuId)
     setSchoolId(data.schoolId ? data.schoolId.toString() : '')
-  }, [data, gisuId, setName, setNickname, setEmail, setGisu, setSchoolId])
+    setLevel(data.level)
+  }, [data, gisuId, setName, setNickname, setEmail, setGisu, setSchoolId, setLevel])
 
   const handleLogout = () => {
     setName('')
     setNickname('')
     setEmail('')
+    setLevel(undefined)
     clearTokens()
     navigate({
       to: '/auth/login',

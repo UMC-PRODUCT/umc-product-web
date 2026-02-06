@@ -1,4 +1,5 @@
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { AccountLevelType } from '@/shared/types/umc'
 
 export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
 export type RegisterRequestDTO = {
@@ -37,6 +38,7 @@ export type MyInfoResponseDTO = {
   schoolName?: string
   profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
+  level?: AccountLevelType
 }
 
 export type GetTermsResponseDTO = {

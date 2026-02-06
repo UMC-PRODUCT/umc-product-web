@@ -21,6 +21,20 @@ export const STATUS_MOCK: Array<Option<AccountStateType | '-- 전체 상태 --'>
   { label: 'INACTIVE', id: 2 },
 ]
 
+export const GENERATIONS_MOCK: Array<Option<string | '-- 전체 기수 --'>> = [
+  { label: '-- 전체 기수 --', id: 0 },
+  { label: '1기', id: 1 },
+  { label: '2기', id: 2 },
+  { label: '3기', id: 3 },
+  { label: '4기', id: 4 },
+  { label: '5기', id: 5 },
+  { label: '6기', id: 6 },
+  { label: '7기', id: 7 },
+  { label: '8기', id: 8 },
+  { label: '9기', id: 9 },
+  { label: '10기', id: 10 },
+]
+
 export const UNI_DELETE_MOCK: Array<{
   id: number
   name: string

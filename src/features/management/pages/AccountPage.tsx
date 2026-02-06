@@ -1,6 +1,6 @@
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 
-import EditAccount from '../components/account/EditAccountTab/EditAccountTab'
+import EditAccount from '../components/account/EditAccount/EditAccount'
 
 export const AccountPage = () => {
   return (

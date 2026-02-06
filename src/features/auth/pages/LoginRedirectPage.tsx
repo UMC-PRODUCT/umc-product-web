@@ -43,7 +43,7 @@ export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setLevel } = useUserProfileStore()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
   const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
   useEffect(() => {
@@ -73,6 +73,7 @@ export const LoginRedirectPage = () => {
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')
         setNickname(profile.nickname ?? '')
+        setLevel(profile.level)
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
       }
@@ -83,7 +84,7 @@ export const LoginRedirectPage = () => {
     return () => {
       cancelled = true
     }
-  }, [accessToken, setEmail, setName, setNickname])
+  }, [accessToken, setEmail, setName, setNickname, setLevel])
 
   useEffect(() => {
     if (!accessToken) return

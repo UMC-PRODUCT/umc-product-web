@@ -1,19 +1,22 @@
-import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import Footer from '@/shared/layout/Footer/Footer'
 import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
 import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
 import SuperHeader from '@/shared/layout/Header/SuperHeader'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import type { AccountLevelType } from '@/shared/types/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'
 
 type HeaderType = 'challenger' | 'management' | 'school'
 
 /**
- * 현재 경로에 맞는 헤더 타입을 결정
+ * 권한에 맞는 헤더 타입을 결정
  */
-function getHeaderType(pathname: string): HeaderType {
-  if (pathname.startsWith('/management')) return 'management'
-  if (pathname.startsWith('/school')) return 'school'
+function getHeaderType(level?: AccountLevelType): HeaderType {
+  if (level === 'USER') return 'challenger'
+  if (level === 'ADMIN') return 'management'
+  if (level === 'MANAGER') return 'school'
   return 'challenger'
 }
 
@@ -32,11 +35,9 @@ const HEADER_COMPONENTS: Record<HeaderType, React.ComponentType> = {
  * - 공통 Footer 렌더링
  */
 const RouteComponent = () => {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  })
+  const { level } = useUserProfileStore()
 
-  const headerType = getHeaderType(pathname)
+  const headerType = getHeaderType(level)
   const HeaderComponent = HEADER_COMPONENTS[headerType]
 
   return (

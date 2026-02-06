@@ -1,43 +1,44 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import Arrow from '@shared/assets/icons/arrow.svg?react'
 
-import DeleteConfirm from '@/features/management/components/modals/DeleteConfirm/DeleteConfirm'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
   ACCOUNT_DELETE_MOCK,
   AFFILIATED_MOCK,
+  GENERATIONS_MOCK,
   ROLE_MOCK,
   STATUS_MOCK,
 } from '@/features/management/mocks/managementMocks'
+import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
+import Search from '@/shared/assets/icons/search.svg?react'
+import useFilterOptions from '@/shared/hooks/useFilterOptions'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
+import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
 
-import { AccountFilters } from '../AccountFilters/AccountFilters'
+import AccountDetail from '../../modals/AccountDetail/AccountDetail'
 
 type AffiliatedOption = Option<string>
+type GenerationOption = Option<string>
 type RoleOption = Option<string>
 type StatusOption = Option<string>
 
-type DeleteModalState = {
-  isOpen: boolean
-  name: string
-  count: number
-  onConfirm: () => void
-}
 const PAGE_SIZE = 5
 
-const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolean) => void }) => {
+const EditAccount = () => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const [affiliated, setAffiliated] = useState<AffiliatedOption | undefined>()
+  const [generation, setGeneration] = useState<GenerationOption | undefined>()
   const [role, setRole] = useState<RoleOption | undefined>()
   const [status, setStatus] = useState<StatusOption | undefined>()
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [activeRowId, setActiveRowId] = useState<number | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
@@ -53,76 +54,27 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
     return ACCOUNT_DELETE_MOCK.slice(start, start + PAGE_SIZE)
   }, [currentPage])
 
-  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
-    isOpen: false,
-    name: '',
-    count: 0,
-    onConfirm: () => {},
+  const { options: affiliatedOptions } = useFilterOptions({
+    label: '지부',
+    options: AFFILIATED_MOCK,
   })
 
-  const affiliatedOptions = useMemo<Array<AffiliatedOption>>(
-    () => [
-      { label: '-- 전체 지부 --', id: 0 },
-      ...AFFILIATED_MOCK.filter((option) => option.id !== 0),
-    ],
-    [],
-  )
+  const { options: roleOptions } = useFilterOptions({
+    label: '역할',
+    options: ROLE_MOCK,
+    mapLabel: transformRoleKorean,
+  })
 
-  const roleOptions = useMemo<Array<RoleOption>>(
-    () => [
-      { label: '-- 전체 역할 --', id: 0 },
-      ...ROLE_MOCK.filter((option) => option.id !== 0).map((option) => ({
-        ...option,
-        label: transformRoleKorean(option.label),
-      })),
-    ],
-    [],
-  )
+  const { options: statusOptions } = useFilterOptions({
+    label: '상태',
+    options: STATUS_MOCK,
+    mapLabel: transformStateKorean,
+  })
 
-  const statusOptions = useMemo<Array<StatusOption>>(
-    () => [
-      { label: '-- 전체 상태 --', id: 0 },
-      ...STATUS_MOCK.filter((option) => option.id !== 0).map((option) => ({
-        ...option,
-        label: transformStateKorean(option.label),
-      })),
-    ],
-    [],
-  )
-
-  const findAccountName = useCallback(
-    (targetId?: number) => {
-      const selectedId =
-        targetId ?? (selectedIds.size ? Math.min(...Array.from(selectedIds)) : undefined)
-
-      if (selectedId === undefined) return '계정 이름'
-
-      const matched = ACCOUNT_DELETE_MOCK.find((account) => account.id === selectedId)
-      return matched?.name ?? '계정 이름'
-    },
-    [selectedIds],
-  )
-
-  const openDeleteConfirm = useCallback(
-    (targetId?: number) => {
-      const count = targetId ? 1 : selectedIds.size
-      if (count === 0) return
-
-      setDeleteModal({
-        isOpen: true,
-        name: findAccountName(targetId),
-        count,
-        onConfirm: () => {
-          // TODO: 선택된 계정 삭제 API 연동 (targetId ?? Array.from(selectedIds))
-        },
-      })
-    },
-    [findAccountName, selectedIds],
-  )
-
-  const closeDeleteModal = () => {
-    setDeleteModal((prev) => ({ ...prev, isOpen: false }))
-  }
+  const { options: generationOptions } = useFilterOptions({
+    label: '기수',
+    options: GENERATIONS_MOCK,
+  })
 
   const handlePageChange = (nextPage: number) => {
     const safePage = Math.max(1, Math.min(nextPage, totalPages))
@@ -134,19 +86,47 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
 
   return (
     <S.AccountContent alignItems="flex-start">
-      <AccountFilters
-        searchTerm={searchTerm}
-        onChangeSearch={setSearchTerm}
-        affiliated={affiliated}
-        onSelectAffiliated={(option) => setAffiliated(option.id === 0 ? undefined : option)}
-        affiliatedOptions={affiliatedOptions}
-        role={role}
-        onSelectRole={(option) => setRole(option.id === 0 ? undefined : option)}
-        roleOptions={roleOptions}
-        status={status}
-        onSelectStatus={(option) => setStatus(option.id === 0 ? undefined : option)}
-        statusOptions={statusOptions}
+      <FilterBar
+        leftChild={
+          <>
+            <TextField
+              type="text"
+              autoComplete="off"
+              placeholder="이름, 이메일, 학교로 검색"
+              Icon={Search}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              css={{ width: '252px' }}
+            />
+            <Dropdown
+              options={generationOptions}
+              placeholder="전체 기수"
+              value={generation}
+              onChange={(option) => setGeneration(option.id === 0 ? undefined : option)}
+            />
+            <Dropdown
+              options={affiliatedOptions}
+              placeholder="전체 지부"
+              value={affiliated}
+              onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
+            />
+            <Dropdown
+              options={roleOptions}
+              placeholder="전체 학교"
+              value={role}
+              onChange={(option) => setRole(option.id === 0 ? undefined : option)}
+            />
+            <Dropdown
+              options={statusOptions}
+              placeholder="전체 파트"
+              value={status}
+              onChange={(option) => setStatus(option.id === 0 ? undefined : option)}
+            />
+            총 247명
+          </>
+        }
       />
+
       <Section variant="solid" maxHeight={540} gap={0} padding="12px 16px">
         <Table
           page={{
@@ -181,7 +161,7 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
                 <Flex gap={10} justifyContent="space-between">
                   {item.role}
                   <Arrow
-                    onClick={() => setIsEditMode(true)}
+                    onClick={() => setOpenModal(true)}
                     width={20}
                     role="button"
                     css={{ transform: 'rotate(-90deg)', cursor: 'pointer' }}
@@ -192,18 +172,9 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
           )}
         />
       </Section>
-
-      {deleteModal.isOpen && (
-        <DeleteConfirm
-          onClose={closeDeleteModal}
-          name={deleteModal.name}
-          type="account"
-          count={deleteModal.count}
-          onClick={deleteModal.onConfirm}
-        />
-      )}
+      {openModal && <AccountDetail onClose={() => setOpenModal(false)} />}
     </S.AccountContent>
   )
 }
 
-export default DefaultEditView
+export default EditAccount
