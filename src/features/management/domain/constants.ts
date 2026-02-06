@@ -36,24 +36,8 @@ export const MANAGE_SCHOOL_TABS = [
   { value: 'edit', label: '학교 정보 수정' },
 ] as const
 
-export const MANAGE_ACCOUNT_TABS = [
-  { value: 'add', label: '계정 생성' },
-  { value: 'edit', label: '계정 수정 및 삭제' },
-  { value: 'level', label: '권한 레벨 변경' },
-] as const
-
 export const MANAGE_SCHOOL_TAB_VALUES = MANAGE_SCHOOL_TABS.map((tab) => tab.value)
-
-export const MANAGE_ACCOUNT_TAB_VALUES = MANAGE_ACCOUNT_TABS.map((tab) => tab.value)
 
 export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록일', '상태', '작업']
 
-export const DELETE_ACCOUNT_TABLE_HEADER_LABEL = [
-  '이름',
-  '이메일',
-  '학교',
-  '지부',
-  '권한',
-  '상태',
-  '작업',
-]
+export const DELETE_ACCOUNT_TABLE_HEADER_LABEL = ['이름', '닉네임', '학교', '기수', '파트', '권한']

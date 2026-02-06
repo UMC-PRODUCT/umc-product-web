@@ -4,10 +4,11 @@ import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Flex from '@/shared/ui/common/Flex/Flex'
 
-export const TabHeader = styled(Flex)`
+export const AccountContent = styled(Flex)`
   flex-direction: column;
   gap: 3px;
   align-items: flex-start;
+  gap: 16px;
 `
 
 export const TabTitle = styled.div`
@@ -25,4 +26,9 @@ export const TabSubtitle = styled.span`
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.C5.Rg};
   }
+`
+export const TabHeader = styled(Flex)`
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
 `

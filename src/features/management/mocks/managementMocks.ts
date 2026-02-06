@@ -1,3 +1,4 @@
+import type { PartType } from '@/features/auth/domain'
 import type { Option } from '@/shared/types/form'
 import type { AccountLevelType, AccountStateType, SchoolStateType } from '@/shared/types/umc'
 
@@ -67,64 +68,46 @@ export const UNI_DELETE_MOCK: Array<{
 export const ACCOUNT_DELETE_MOCK: Array<{
   id: number
   name: string
-  email: string
+  nickname: string
   school: string
-  branch: string
+  generation: string
+  part: PartType
   role: AccountLevelType
-  status: AccountStateType
 }> = [
   {
     id: 1,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '서울대학교',
-    branch: 'Ain 지부',
+    generation: '27기',
+    part: 'WEB',
     role: 'ADMIN',
-    status: 'ACTIVE',
   },
   {
     id: 2,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '연세대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'PENDING',
+    generation: '27기',
+    part: 'DESIGN',
+    role: 'MANAGER',
   },
   {
     id: 3,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '고려대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'INACTIVE',
+    generation: '26기',
+    part: 'NODEJS',
+    role: 'USER',
   },
   {
     id: 4,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '한양대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
-  },
-  {
-    id: 5,
-    name: '성이름',
-    email: 'email1234@gmail.com',
-    school: '성균관대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
-  },
-  {
-    id: 6,
-    name: '성이름',
-    email: 'email1234@gmail.com',
-    school: '성균관대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
+    generation: '25기',
+    part: 'IOS',
+    role: 'CHALLENGER',
   },
 ]

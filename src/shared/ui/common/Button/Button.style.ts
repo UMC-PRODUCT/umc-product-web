@@ -53,7 +53,7 @@ const toneStyles = {
       border: 'none',
     },
     outline: {
-      background: theme.colors.gray[600],
+      background: 'transparent',
       color: theme.colors.lime,
       border: `1px solid ${theme.colors.lime}`,
     },

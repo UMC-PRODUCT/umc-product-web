@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import Arrow from '@shared/assets/icons/arrow.svg?react'
+
 import DeleteConfirm from '@/features/management/components/modals/DeleteConfirm/DeleteConfirm'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
@@ -10,9 +12,6 @@ import {
 } from '@/features/management/mocks/managementMocks'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
-import { Badge } from '@/shared/ui/common/Badge/Badge'
-import { Button } from '@/shared/ui/common/Button'
-import { Checkbox } from '@/shared/ui/common/Checkbox/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
@@ -133,83 +132,31 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
     window.history.replaceState(null, '', url.toString())
   }
 
-  const toggleRow = (id: number) => {
-    setSelectedIds((prev: Set<number>) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }
-
-  const toggleAll = (checked: boolean | 'indeterminate') => {
-    setSelectedIds((prev) => {
-      const pageIds = pageItems.map((item) => item.id)
-      const next = new Set(prev)
-      if (checked === true) {
-        pageIds.forEach((id) => next.add(id))
-        return next
-      }
-      pageIds.forEach((id) => next.delete(id))
-      return next
-    })
-  }
-
-  const buttonChildren = (
-    <>
-      <Button label="선택 취소" tone="gray" onClick={() => setSelectedIds(new Set())} />
-      <Button label="선택한 계정 삭제" tone="necessary" onClick={() => openDeleteConfirm()} />
-    </>
-  )
-
   return (
-    <S.TabHeader alignItems="flex-start">
-      <S.TabTitle>계정 수정 및 삭제</S.TabTitle>
-      <S.TabSubtitle>
-        계정을 수정하거나 삭제할 수 있습니다. 삭제 시 복구가 불가능합니다.
-      </S.TabSubtitle>
-      <Section
-        variant="solid"
-        flexDirection="row"
-        padding="12px 14px"
-        margin="30px 0 16px 0"
-        gap="12px"
-      >
-        <AccountFilters
-          searchTerm={searchTerm}
-          onChangeSearch={setSearchTerm}
-          affiliated={affiliated}
-          onSelectAffiliated={(option) => setAffiliated(option.id === 0 ? undefined : option)}
-          affiliatedOptions={affiliatedOptions}
-          role={role}
-          onSelectRole={(option) => setRole(option.id === 0 ? undefined : option)}
-          roleOptions={roleOptions}
-          status={status}
-          onSelectStatus={(option) => setStatus(option.id === 0 ? undefined : option)}
-          statusOptions={statusOptions}
-        />
-      </Section>
+    <S.AccountContent alignItems="flex-start">
+      <AccountFilters
+        searchTerm={searchTerm}
+        onChangeSearch={setSearchTerm}
+        affiliated={affiliated}
+        onSelectAffiliated={(option) => setAffiliated(option.id === 0 ? undefined : option)}
+        affiliatedOptions={affiliatedOptions}
+        role={role}
+        onSelectRole={(option) => setRole(option.id === 0 ? undefined : option)}
+        roleOptions={roleOptions}
+        status={status}
+        onSelectStatus={(option) => setStatus(option.id === 0 ? undefined : option)}
+        statusOptions={statusOptions}
+      />
       <Section variant="solid" maxHeight={540} gap={0} padding="12px 16px">
         <Table
-          checkbox={{
-            isAllChecked:
-              pageItems.length > 0 && pageItems.every((item) => selectedIds.has(item.id)),
-            onToggleAll: toggleAll,
-          }}
           page={{
             currentPage: currentPage,
-            totalPages: totalPages,
+            totalPages: 100,
             onChangePage: handlePageChange,
           }}
-          count={{
-            totalAmounts: totalAmounts,
-            label: '계정',
-          }}
+          showFooter={true}
+          label="챌린저를 클릭하면 상세 정보 및 권한을 수정할 수 있습니다."
           headerLabels={DELETE_ACCOUNT_TABLE_HEADER_LABEL}
-          buttonChildren={buttonChildren}
           rows={pageItems}
           getRowId={(row) => row.id}
           activeRowId={activeRowId}
@@ -217,48 +164,27 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
           renderRow={(item) => (
             <>
               <TableStyles.Td>
-                <Checkbox
-                  onCheckedChange={() => toggleRow(item.id)}
-                  checked={selectedIds.has(item.id)}
-                />
-              </TableStyles.Td>
-              <TableStyles.Td>{item.name}</TableStyles.Td>
-              <TableStyles.Td>{item.email}</TableStyles.Td>
-              <TableStyles.Td>{item.school}</TableStyles.Td>
-              <TableStyles.Td>{item.branch}</TableStyles.Td>
-              <TableStyles.Td>
-                <Badge tone="gray" variant="solid" typo="B4.Sb">
-                  {transformRoleKorean(item.role)}
-                </Badge>
-              </TableStyles.Td>
-              <TableStyles.Td>
-                <Badge
-                  tone={
-                    item.status === 'ACTIVE' ? 'lime' : item.status === 'PENDING' ? 'white' : 'gray'
-                  }
-                  variant="outline"
-                  typo="B4.Md"
-                >
-                  {transformStateKorean(item.status)}
-                </Badge>
-              </TableStyles.Td>
-              <TableStyles.Td>
-                <Flex gap="10px">
-                  <Button
-                    key={`edit-${item.id}`}
-                    label="수정"
-                    tone="caution"
-                    onClick={() => setIsEditMode(true)}
-                    typo="C2.Md"
-                    css={{ height: '28px', width: '57px' }}
+                <Flex gap={20}>
+                  <img
+                    src="/src/shared/assets/icons/profile.svg"
+                    alt={`${item.name} 프로필 이미지`}
+                    css={{ width: 32, height: 32, borderRadius: '50%' }}
                   />
-                  <Button
-                    key={`delete-${item.id}`}
-                    label="삭제"
-                    tone="necessary"
-                    onClick={() => openDeleteConfirm(item.id)}
-                    typo="C2.Md"
-                    css={{ height: '28px', width: '57px' }}
+                  {item.name}
+                </Flex>
+              </TableStyles.Td>
+              <TableStyles.Td>{item.nickname}</TableStyles.Td>
+              <TableStyles.Td>{item.school}</TableStyles.Td>
+              <TableStyles.Td>{item.generation}</TableStyles.Td>
+              <TableStyles.Td>{item.part}</TableStyles.Td>
+              <TableStyles.Td>
+                <Flex gap={10} justifyContent="space-between">
+                  {item.role}
+                  <Arrow
+                    onClick={() => setIsEditMode(true)}
+                    width={20}
+                    role="button"
+                    css={{ transform: 'rotate(-90deg)', cursor: 'pointer' }}
                   />
                 </Flex>
               </TableStyles.Td>
@@ -276,7 +202,7 @@ const DefaultEditView = ({ setIsEditMode }: { setIsEditMode: (isEditMode: boolea
           onClick={deleteModal.onConfirm}
         />
       )}
-    </S.TabHeader>
+    </S.AccountContent>
   )
 }
 

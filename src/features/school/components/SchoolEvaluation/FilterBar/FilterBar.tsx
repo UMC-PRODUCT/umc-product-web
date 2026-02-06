@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
 const FilterBar = ({
@@ -26,6 +27,7 @@ const FilterBarWrapper = styled(Section)`
   align-items: center;
   border-radius: 6px;
   height: fit-content;
+  color: ${theme.colors.gray[400]};
   .left,
   .right {
     display: flex;

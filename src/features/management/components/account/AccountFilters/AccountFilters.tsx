@@ -1,10 +1,7 @@
+import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
 import Search from '@/shared/assets/icons/search.svg?react'
-import { media } from '@/shared/styles/media'
-import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
-import { Button } from '@/shared/ui/common/Button/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown/Dropdown'
-import Flex from '@/shared/ui/common/Flex/Flex'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 type AccountFiltersProps<TAffiliated, TRole, TStatus> = {
@@ -35,81 +32,45 @@ export const AccountFilters = <TAffiliated, TRole, TStatus>({
   statusOptions,
 }: AccountFiltersProps<TAffiliated, TRole, TStatus>) => {
   return (
-    <Flex gap="12px" css={{ flexWrap: 'wrap' }}>
-      <Flex
-        css={{
-          maxWidth: '320px',
-          [media.down(theme.breakPoints.desktop)]: {
-            maxWidth: '100%',
-          },
-        }}
-      >
-        <TextField
-          type="text"
-          autoComplete="off"
-          placeholder="이름, 이메일, 학교로 검색"
-          Icon={Search}
-          value={searchTerm}
-          onChange={(e) => onChangeSearch(e.target.value)}
-        />
-      </Flex>
-      <Flex
-        css={{
-          maxWidth: '212px',
-          [media.down(theme.breakPoints.desktop)]: {
-            maxWidth: '100%',
-          },
-        }}
-      >
-        <Dropdown
-          options={affiliatedOptions}
-          placeholder="전체 지부"
-          value={affiliated}
-          onChange={onSelectAffiliated}
-        />
-      </Flex>
-      <Flex
-        css={{
-          maxWidth: '188px',
-          [media.down(theme.breakPoints.desktop)]: {
-            maxWidth: '100%',
-          },
-        }}
-      >
-        <Dropdown
-          options={roleOptions}
-          placeholder="전체 권한"
-          value={role}
-          onChange={onSelectRole}
-        />
-      </Flex>
-      <Flex
-        css={{
-          maxWidth: '188px',
-
-          [media.down(theme.breakPoints.desktop)]: {
-            maxWidth: '100%',
-          },
-        }}
-      >
-        <Dropdown
-          options={statusOptions}
-          placeholder="전체 상태"
-          value={status}
-          onChange={onSelectStatus}
-        />
-      </Flex>
-      <Flex
-        css={{
-          maxWidth: '76px',
-          height: '40px',
-          [media.down(theme.breakPoints.desktop)]: {
-            maxWidth: '100%',
-          },
-        }}
-      >
-        <Button label="조회" tone="lime" onClick={() => {}} />
-      </Flex>
-    </Flex>
+    <FilterBar
+      leftChild={
+        <>
+          <TextField
+            type="text"
+            autoComplete="off"
+            placeholder="이름, 이메일, 학교로 검색"
+            Icon={Search}
+            value={searchTerm}
+            onChange={(e) => onChangeSearch(e.target.value)}
+            css={{ width: '252px' }}
+          />
+          <Dropdown
+            options={affiliatedOptions}
+            placeholder="전체 기수"
+            value={affiliated}
+            onChange={onSelectAffiliated}
+          />
+          <Dropdown
+            options={affiliatedOptions}
+            placeholder="전체 지부"
+            value={affiliated}
+            onChange={onSelectAffiliated}
+          />
+          <Dropdown
+            options={roleOptions}
+            placeholder="전체 학교"
+            value={role}
+            onChange={onSelectRole}
+          />
+          <Dropdown
+            options={statusOptions}
+            placeholder="전체 파트"
+            value={status}
+            onChange={onSelectStatus}
+          />
+          총 247명
+        </>
+      }
+    />
   )
 }

@@ -52,9 +52,11 @@ const Th = styled.th`
   }
   &:first-of-type {
     border-bottom-left-radius: 4px;
+    padding: 16px 16px 16px 24px;
   }
   &:last-of-type {
     border-bottom-right-radius: 4px;
+    padding: 16px 24px 16px 16px;
   }
 `
 
@@ -64,6 +66,12 @@ const Td = styled.td`
   ${theme.typography.B3.Rg};
   color: ${theme.colors.white};
   white-space: nowrap;
+  &:first-of-type {
+    padding: 16px 16px 16px 24px;
+  }
+  &:last-of-type {
+    padding: 16px 24px 16px 16px;
+  }
 `
 
 const Footer = styled.div`
@@ -74,6 +82,8 @@ const Footer = styled.div`
   margin-top: 20px;
   color: ${theme.colors.gray[300]};
   width: 100%;
+  height: fit-content;
+  min-height: 30px;
   span {
     position: absolute;
     left: 22px;

@@ -46,6 +46,7 @@ type TableProps<T, TId extends string | number = string | number> = {
     totalPages: number
     onChangePage?: (page: number) => void
   }
+  label?: string
 }
 
 const Table = <T, TId extends string | number = string | number>({
@@ -57,6 +58,7 @@ const Table = <T, TId extends string | number = string | number>({
   showFooter = true,
   count,
   rows,
+  label,
   renderRow,
   getRowId,
   activeRowId,
@@ -84,8 +86,8 @@ const Table = <T, TId extends string | number = string | number>({
                     />
                   </S.Th>
                 )}
-                {headerLabels.map((label) => (
-                  <S.Th key={label}>{label}</S.Th>
+                {headerLabels.map((headerLabel) => (
+                  <S.Th key={headerLabel}>{headerLabel}</S.Th>
                 ))}
               </tr>
             </thead>
@@ -109,6 +111,9 @@ const Table = <T, TId extends string | number = string | number>({
         </S.TableWrapper>
         {showFooter && (
           <S.Footer>
+            {label && (
+              <span css={{ color: `${theme.colors.gray[400]}`, ...typography.C5.Rg }}>{label}</span>
+            )}
             {count && (
               <span css={{ color: theme.colors.gray[300], ...typography.C4.Rg }}>
                 총 {count.totalAmounts}개 {count.label}
