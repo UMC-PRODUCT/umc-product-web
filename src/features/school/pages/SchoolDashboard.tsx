@@ -6,10 +6,10 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import ApplyStatus from '../components/SchoolDashboard/ApplyStatus/ApplyStatus'
-import EvaluationStatus from '../components/SchoolDashboard/EvaluationStatus/EvaluationStatus'
-import { ProgressSteps } from '../components/SchoolDashboard/ProgressSteps/ProgressSteps'
-import ScheduleSummary from '../components/SchoolDashboard/ScheduleSummary/ScheduleSummary'
+import ApplyStatus from '../components/schoolDashboard/ApplyStatus/ApplyStatus'
+import EvaluationStatus from '../components/schoolDashboard/EvaluationStatus/EvaluationStatus'
+import { ProgressSteps } from '../components/schoolDashboard/ProgressSteps/ProgressSteps'
+import ScheduleSummary from '../components/schoolDashboard/ScheduleSummary/ScheduleSummary'
 import { useGetRecruitmentDashboard } from '../hooks/useGetRecruitingData'
 
 export const SchoolDashboardContent = () => {
