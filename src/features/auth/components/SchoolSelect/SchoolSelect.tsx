@@ -16,19 +16,12 @@ type SchoolSelectProps = {
 }
 
 const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
-  const { options, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useSchoolPaginator()
+  const { options, isFetching } = useSchoolPaginator()
 
   const selectedValue = useMemo(
     () => (value.id ? { id: value.id, label: value.label } : undefined),
     [value],
   )
-
-  const handleScrollEnd = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
 
   return (
     <S.Wrapper>
@@ -42,7 +35,6 @@ const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
           errorMessage: error?.errorMessage ?? '',
         }}
         onChange={onChange}
-        onScrollEnd={handleScrollEnd}
       />
     </S.Wrapper>
   )

@@ -1,5 +1,3 @@
-import type { AxiosRequestConfig } from 'axios'
-
 import { axiosInstance } from '@/api/axiosInstance'
 
 export interface SchoolSearchParams {
