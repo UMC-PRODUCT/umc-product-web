@@ -5,7 +5,7 @@ import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
 import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
 import SuperHeader from '@/shared/layout/Header/SuperHeader'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
-import type { AccountLevelType } from '@/shared/types/umc'
+import type { RoleType } from '@/shared/types/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'
 
 type HeaderType = 'challenger' | 'management' | 'school'
@@ -13,10 +13,16 @@ type HeaderType = 'challenger' | 'management' | 'school'
 /**
  * 권한에 맞는 헤더 타입을 결정
  */
-function getHeaderType(level?: AccountLevelType): HeaderType {
-  if (level === 'USER') return 'challenger'
-  if (level === 'ADMIN') return 'management'
-  if (level === 'MANAGER') return 'school'
+function getHeaderType(roleType?: RoleType): HeaderType {
+  if (
+    roleType === 'SCHOOL_ETC_ADMIN' ||
+    roleType === 'SCHOOL_PART_LEADER' ||
+    roleType === 'SCHOOL_PRESIDENT' ||
+    roleType === 'SCHOOL_VICE_PRESIDENT'
+  )
+    return 'school'
+  if (roleType === 'SUPER_ADMIN') return 'management'
+
   return 'challenger'
 }
 
@@ -35,9 +41,9 @@ const HEADER_COMPONENTS: Record<HeaderType, React.ComponentType> = {
  * - 공통 Footer 렌더링
  */
 const RouteComponent = () => {
-  const { level } = useUserProfileStore()
-
-  const headerType = getHeaderType(level)
+  const { role, gisu } = useUserProfileStore()
+  const activeRole = role?.gisuId === gisu ? role : null
+  const headerType = getHeaderType(activeRole?.roleType)
   const HeaderComponent = HEADER_COMPONENTS[headerType]
 
   return (

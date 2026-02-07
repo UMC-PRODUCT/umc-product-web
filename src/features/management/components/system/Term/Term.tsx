@@ -6,14 +6,16 @@ import Service from '@shared/assets/icons/service_icon.svg?react'
 
 import { useTerms } from '@/features/auth/hooks/register/useTerms'
 import { TabSubtitle, TabTitle } from '@/shared/styles/shared'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import EditTerm from '../../modals/ManageTerm/EditTerm'
 import ViewTerm from '../../modals/ManageTerm/ViewTerm'
 import * as S from './Term.style'
 
-const Term = () => {
+const TermContent = () => {
   const { data: serviceData } = useTerms({ termsType: 'SERVICE' })
   const { data: privacyData } = useTerms({ termsType: 'PRIVACY' })
   const { data: marketingData } = useTerms({ termsType: 'MARKETING' })
@@ -138,6 +140,17 @@ const Term = () => {
         <EditTerm termId={modalOpen.termId} onClose={closeModal} />
       )}
     </Flex>
+  )
+}
+
+const Term = () => {
+  return (
+    <AsyncBoundary
+      fallback={<SuspenseFallback label="약관 정보를 불러오는 중입니다." />}
+      errorFallback={() => <div>약관 정보를 불러오는 중 오류가 발생했습니다.</div>}
+    >
+      <TermContent />
+    </AsyncBoundary>
   )
 }
 export default Term

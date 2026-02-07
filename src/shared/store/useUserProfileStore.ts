@@ -1,13 +1,12 @@
 import { create } from 'zustand'
 
 import type { PartType } from '@/features/auth/domain'
-import type { AccountLevelType, OrganizationType, RoleType } from '@/shared/types/umc'
+import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 type UserProfileState = {
   name: string
   nickname: string
   email: string
-  level?: AccountLevelType
   role: {
     id: string
     challengerId: string
@@ -16,7 +15,6 @@ type UserProfileState = {
     responsiblePart: PartType | null
     gisuId: string
   } | null
-  setLevel: (level: AccountLevelType | undefined) => void
   setName: (name: string) => void
   setNickname: (nickname: string) => void
   setEmail: (email: string) => void
@@ -40,7 +38,6 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   name: '',
   nickname: '',
   email: '',
-  level: 'ADMIN', // TODO: 추후 수정
   role: {
     id: '',
     challengerId: '',
@@ -52,7 +49,6 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   setName: (name) => set({ name }),
   setNickname: (nickname) => set({ nickname }),
   setEmail: (email) => set({ email }),
-  setLevel: (level) => set({ level }),
   gisu: '',
   setGisu: (gisu) => set({ gisu }),
   schoolId: '',
