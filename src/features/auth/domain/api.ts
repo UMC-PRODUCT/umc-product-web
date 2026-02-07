@@ -91,3 +91,12 @@ export const getGisuList = async (): Promise<CommonResponseDTO<GetGisuListRespon
   const { data } = await axiosInstance.get('/gisu/all')
   return data
 }
+
+export const getTermById = async (
+  termId: string,
+): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/terms/${termId}`, {
+    headers: SKIP_AUTH_REDIRECT_HEADER,
+  })
+  return data
+}

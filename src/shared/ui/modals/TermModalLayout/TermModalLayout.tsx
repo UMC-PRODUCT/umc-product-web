@@ -27,6 +27,7 @@ export const TermMarkdown = ({ content }: { content: string }) => {
       components={{
         h1: ({ node: _node, ...props }) => <S.Heading1 {...props} />,
         h2: ({ node: _node, ...props }) => <S.Heading2 {...props} />,
+        h3: ({ node: _node, ...props }) => <S.Heading3 {...props} />,
         p: ({ node: _node, ...props }) => <S.Paragraph {...props} />,
         li: ({ node: _node, ...props }) => <S.ListItem {...props} />,
         hr: () => <S.Divider />,
