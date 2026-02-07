@@ -178,3 +178,5 @@ export type EvaluationStatus = {
     interviewStatusText: string
   }>
 }
+
+export type RecruitingTab = 'ONGOING' | 'CLOSED' | 'SCHEDULED'

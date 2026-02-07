@@ -6,6 +6,7 @@ import type { TermsType } from '@/shared/types/umc'
 import type {
   EmailVerificationRequestDTO,
   EmailVerificationResponseDTO,
+  GetActiveGisuResponseDTO,
   GetGisuListResponseDTO,
   GetSchoolLinkResponseDTO,
   GetTermsResponseDTO,
@@ -89,6 +90,11 @@ export async function getTerm({
 
 export const getGisuList = async (): Promise<CommonResponseDTO<GetGisuListResponseDTO>> => {
   const { data } = await axiosInstance.get('/gisu/all')
+  return data
+}
+
+export const getActiveGisu = async (): Promise<CommonResponseDTO<GetActiveGisuResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/gisu/active`)
   return data
 }
 

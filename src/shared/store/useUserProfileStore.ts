@@ -1,16 +1,35 @@
 import { create } from 'zustand'
 
-import type { AccountLevelType } from '@/shared/types/umc'
+import type { PartType } from '@/features/auth/domain'
+import type { AccountLevelType, OrganizationType, RoleType } from '@/shared/types/umc'
 
 type UserProfileState = {
   name: string
   nickname: string
   email: string
   level?: AccountLevelType
+  role: {
+    id: string
+    challengerId: string
+    roleType: RoleType
+    organizationType: OrganizationType
+    responsiblePart: PartType | null
+    gisuId: string
+  } | null
+  setLevel: (level: AccountLevelType | undefined) => void
   setName: (name: string) => void
   setNickname: (nickname: string) => void
   setEmail: (email: string) => void
-  setLevel: (level?: AccountLevelType) => void
+  setRoles: (
+    roles: {
+      id: string
+      challengerId: string
+      roleType: RoleType
+      organizationType: OrganizationType
+      responsiblePart: PartType | null
+      gisuId: string
+    } | null,
+  ) => void
   gisu: string
   setGisu: (gisu: string) => void
   schoolId: string
@@ -22,6 +41,14 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   nickname: '',
   email: '',
   level: 'ADMIN', // TODO: 추후 수정
+  role: {
+    id: '',
+    challengerId: '',
+    roleType: 'SUPER_ADMIN',
+    organizationType: 'CENTRAL',
+    responsiblePart: null,
+    gisuId: '',
+  },
   setName: (name) => set({ name }),
   setNickname: (nickname) => set({ nickname }),
   setEmail: (email) => set({ email }),
@@ -30,4 +57,5 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   setGisu: (gisu) => set({ gisu }),
   schoolId: '',
   setSchoolId: (schoolId) => set({ schoolId }),
+  setRoles: (role) => set({ role }),
 }))

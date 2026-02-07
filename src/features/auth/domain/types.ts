@@ -1,5 +1,7 @@
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { AccountLevelType } from '@/shared/types/umc'
+import type { OrganizationType, RoleType } from '@/shared/types/umc'
+
+import type { PartType } from './model'
 
 export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
 export type RegisterRequestDTO = {
@@ -38,7 +40,14 @@ export type MyInfoResponseDTO = {
   schoolName?: string
   profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
-  level?: AccountLevelType
+  roles: Array<{
+    id: string
+    challengerId: string
+    roleType: RoleType
+    organizationType: OrganizationType
+    responsiblePart: PartType | null
+    gisuId: string
+  }>
 }
 
 export type GetTermsResponseDTO = {
@@ -62,4 +71,9 @@ export type GetGisuListResponseDTO = {
     endsAt: string
     isActive: boolean
   }>
+}
+
+export type GetActiveGisuResponseDTO = {
+  gisuId: string
+  generation: string
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import type { RecruitingTab } from '@/features/school/domain'
 import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
@@ -26,7 +27,7 @@ const RecruitingListLoading = () => (
   </Flex>
 )
 
-const RecruitingListBody = ({ tab }: { tab: 'ONGOING' | 'CLOSED' | 'SCHEDULED' }) => {
+const RecruitingListBody = ({ tab }: { tab: RecruitingTab }) => {
   const { data } = useGetRecruitmentsList(tab)
   const recruitments = data.result.recruitments
   return (
@@ -60,7 +61,7 @@ const RecruitingListBody = ({ tab }: { tab: 'ONGOING' | 'CLOSED' | 'SCHEDULED' }
 }
 
 const RecruitingList = () => {
-  const [tab, setTab] = useState<'ONGOING' | 'CLOSED' | 'SCHEDULED'>('ONGOING')
+  const [tab, setTab] = useState<RecruitingTab>('ONGOING')
   return (
     <Flex gap={20} flexDirection="column">
       <PageTitle title="모집 목록" />

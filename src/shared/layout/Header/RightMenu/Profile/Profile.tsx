@@ -24,7 +24,8 @@ const ProfileMenu = ({
   children?: React.ReactNode
 }) => {
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setGisu, setSchoolId, setLevel } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setRoles, setGisu, setSchoolId, setLevel } =
+    useUserProfileStore()
   const [isModalOpen, setIsModalOpen] = useState<{
     modalType: 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
@@ -33,30 +34,32 @@ const ProfileMenu = ({
     isOpen: false,
   })
   const { data } = useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
-  // TODO: 추후 ACTIVE 기수 조회하는 API가 생기면 수정 필요
-  const { data: gisuList = [] } = useCustomQuery(
-    schoolKeys.gisu().queryKey,
-    schoolKeys.gisu().queryFn,
+  const { data: gisu } = useCustomQuery(
+    schoolKeys.activeGisu().queryKey,
+    schoolKeys.activeGisu().queryFn,
     {
-      select: (response) => response.result.gisuList,
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
     },
   )
-  const gisuId = gisuList[0]?.gisuId || ''
+  const gisuId = gisu?.result.gisuId
+
   useEffect(() => {
     setName(data.name || '')
     setNickname(data.nickname || '')
     setEmail(data.email || '')
-    setGisu(gisuId)
+    setGisu(gisuId || '')
     setSchoolId(data.schoolId ? data.schoolId.toString() : '')
-    setLevel(data.level)
-  }, [data, gisuId, setName, setNickname, setEmail, setGisu, setSchoolId, setLevel])
+    const activeRole = data.roles.find((role) => role.gisuId === gisuId)
+    setRoles(activeRole ?? null)
+  }, [data, gisuId, setName, setNickname, setEmail, setRoles, setGisu, setSchoolId, setLevel])
 
   const handleLogout = () => {
     setName('')
     setNickname('')
     setEmail('')
+    setRoles(null)
+    setGisu('')
     setLevel(undefined)
     clearTokens()
     navigate({
@@ -93,7 +96,7 @@ const ProfileMenu = ({
             <Badge tone="gray" variant="solid" typo="H5.Md">
               권한
             </Badge>
-            {data.status}
+            {data.roles.find((role) => role.gisuId === gisuId)?.roleType || '권한 없음'}
           </S.InfoRow>
         </Flex>
         {children && <S.MobileOnly>{children}</S.MobileOnly>}
