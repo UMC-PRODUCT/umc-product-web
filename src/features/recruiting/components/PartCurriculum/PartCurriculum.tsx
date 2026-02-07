@@ -6,50 +6,15 @@ import { PART_REQUIRED_SKILL } from '@features/recruiting/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { PartType } from '@/features/auth/domain'
-import { useGetCurriculums } from '@/features/management/hooks/getManagementQueries'
 import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { CurriculumTimeline } from '@/shared/ui/curriculum/CurriculumTimeline'
 
 import * as S from './PartCurriculum.style'
-
-const CurriculumTimeline = ({ activeTab }: { activeTab: PartType }) => {
-  const { data } = useGetCurriculums(activeTab)
-  const currentData = data.result.workbooks
-
-  const firstColWeeks = currentData.filter((item) => Number(item.weekNo) <= 6)
-  const secondColWeeks = currentData.filter((item) => Number(item.weekNo) >= 7)
-
-  const secondLastIndex = secondColWeeks.length > 0 ? secondColWeeks.length - 1 : -1
-  const lenFirstColumn = firstColWeeks.length
-
-  return (
-    <S.TimelineGrid>
-      <S.FirstColumn $indexLength={lenFirstColumn}>
-        {firstColWeeks.map((item) => (
-          <S.WeekRow key={item.weekNo}>
-            <S.Dot />
-            <S.WeekLabel>{item.weekNo.toString().padStart(2, '0')}주차</S.WeekLabel>
-            <S.ContentLabel>{item.title}</S.ContentLabel>
-          </S.WeekRow>
-        ))}
-      </S.FirstColumn>
-
-      <S.SecondColumn $lastIndex={secondLastIndex}>
-        {secondColWeeks.map((item) => (
-          <S.WeekRow key={item.weekNo}>
-            <S.Dot />
-            <S.WeekLabel>{item.weekNo.toString().padStart(2, '0')}주차</S.WeekLabel>
-            <S.ContentLabel>{item.title}</S.ContentLabel>
-          </S.WeekRow>
-        ))}
-      </S.SecondColumn>
-    </S.TimelineGrid>
-  )
-}
 
 const PartCurriculum = () => {
   const [activeTab, setActiveTab] = useState<PartType>('PLAN')
