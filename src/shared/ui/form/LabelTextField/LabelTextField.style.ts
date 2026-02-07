@@ -37,8 +37,8 @@ const InputWrapper = styled.div`
 
 const IconBox = styled.span<{ iconPlaced?: 'left' | 'right' }>`
   position: absolute;
-  right: ${(props) => props.iconPlaced === 'right' && '8px'};
-  left: ${(props) => props.iconPlaced === 'left' && '15px'};
+  right: ${(props) => (props.iconPlaced === 'right' ? '15px' : 'auto')};
+  left: ${(props) => (props.iconPlaced === 'left' ? '15px' : 'auto')};
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;

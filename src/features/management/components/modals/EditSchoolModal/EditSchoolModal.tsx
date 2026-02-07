@@ -1,4 +1,5 @@
 import Close from '@/shared/assets/icons/close.svg?react'
+import DefaultSchool from '@/shared/assets/icons/school.svg'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -38,7 +39,7 @@ const EditSchoolModal = ({ onClose }: { onClose: () => void }) => {
             <Section height="fit-content" variant="solid" css={{ marginTop: '32px' }}>
               <Flex alignItems="center" justifyContent="center" gap={25}>
                 <img
-                  src="/src/shared/assets/icons/school.svg"
+                  src={DefaultSchool}
                   alt="학교 이미지"
                   css={{ borderRadius: '50%', width: '100px', height: '100px' }}
                 />

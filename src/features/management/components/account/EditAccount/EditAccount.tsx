@@ -11,6 +11,7 @@ import {
   STATUS_MOCK,
 } from '@/features/management/mocks/managementMocks'
 import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
+import DefaultProfile from '@/shared/assets/icons/profile.svg'
 import Search from '@/shared/assets/icons/search.svg?react'
 import useFilterOptions from '@/shared/hooks/useFilterOptions'
 import * as S from '@/shared/styles/shared'
@@ -146,7 +147,7 @@ const EditAccount = () => {
               <TableStyles.Td>
                 <Flex gap={20}>
                   <img
-                    src="/src/shared/assets/icons/profile.svg"
+                    src={DefaultProfile}
                     alt={`${item.name} 프로필 이미지`}
                     css={{ width: 32, height: 32, borderRadius: '50%' }}
                   />

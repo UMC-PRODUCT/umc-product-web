@@ -26,7 +26,7 @@ export const Logo = styled.div`
 `
 export const TermTitle = styled.h3`
   margin: 0;
-  font-size: ${theme.typography.H4.Sb};
+  ${theme.typography.H4.Sb};
   color: ${theme.colors.white};
 `
 export const Info = styled.span`

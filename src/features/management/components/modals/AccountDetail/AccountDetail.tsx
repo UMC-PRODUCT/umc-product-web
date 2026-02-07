@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Mail from '@/shared/assets/icons/mail.svg?react'
 import Phone from '@/shared/assets/icons/phone.svg?react'
+import DefaultProfile from '@/shared/assets/icons/profile.svg'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -42,7 +43,7 @@ const AccountDetail = ({ onClose }: { onClose: () => void }) => {
             <Section variant="solid" css={{ marginTop: '32px' }}>
               <Flex alignItems="center" justifyContent="center" gap={25}>
                 <img
-                  src="/src/shared/assets/icons/profile.svg"
+                  src={DefaultProfile}
                   alt="프로필 이미지"
                   css={{ borderRadius: '50%', width: '100px', height: '100px' }}
                 />
