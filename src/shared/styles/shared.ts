@@ -6,7 +6,6 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 
 export const AccountContent = styled(Flex)`
   flex-direction: column;
-  gap: 3px;
   align-items: flex-start;
   gap: 16px;
 `
