@@ -4,23 +4,19 @@ import styled from '@emotion/styled'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
-export {
+import {
   FullWidthHeader,
   FullWidthSection,
-  ScrollWrapper,
   SectionBadge,
   SectionDescription,
   SectionTitle,
 } from '../../pages/styles/HomePage.common.style'
 
+export { FullWidthHeader, FullWidthSection, SectionBadge, SectionDescription, SectionTitle }
+
 const slideIn = keyframes`
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
-`
-
-const projectsScroll = keyframes`
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-320px * 3 - 32px * 3 - 60px)); }
 `
 
 export const GenerationTabs = styled.div`
@@ -66,12 +62,35 @@ export const GenerationTab = styled.button<{ $active?: boolean }>`
   }
 `
 
-export const ProjectsScrollContainer = styled.div<{ $paused?: boolean }>`
+export const ProjectsScrollWrapper = styled.div<{ $dragging?: boolean }>`
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 20px 60px;
+  cursor: ${({ $dragging }) => ($dragging ? 'grabbing' : 'grab')};
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 16px 32px;
+  }
+`
+
+export const ProjectsScrollContainer = styled.div`
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+`
+
+export const ProjectsList = styled.div`
   display: flex;
   gap: 32px;
-  width: max-content;
-  animation: ${projectsScroll} 40s linear infinite;
-  animation-play-state: ${({ $paused }) => ($paused ? 'paused' : 'running')};
+  padding-right: 32px;
 `
 
 export const ProjectCard = styled.div`
@@ -84,10 +103,6 @@ export const ProjectCard = styled.div`
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-
-  &:first-of-type {
-    margin-left: 60px;
-  }
 
   &:hover {
     transform: translateY(-12px);

@@ -25,7 +25,6 @@ export const HomePage = () => {
   const [typingDone, setTypingDone] = useState(false)
   const [generation, setGeneration] = useState(7)
   const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(null)
-  const [projectsPaused, setProjectsPaused] = useState(false)
   const statsAnimated = useRef(false)
 
   const projects = useMemo(() => projectsData[generation] ?? [], [generation])
@@ -133,8 +132,6 @@ export const HomePage = () => {
         generation={generation}
         onChangeGeneration={setGeneration}
         projects={projects}
-        paused={projectsPaused}
-        onPause={setProjectsPaused}
       />
       <FaqSection
         items={faqItems}

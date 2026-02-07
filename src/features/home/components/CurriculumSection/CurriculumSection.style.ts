@@ -97,7 +97,6 @@ export const RequiredSkill = styled.div`
   font-size: 18px;
 
   ${media.down(theme.breakPoints.tablet)} {
-    flex-direction: column;
     align-items: flex-start;
     gap: 6px;
     margin-bottom: 18px;
@@ -115,24 +114,14 @@ export const SkillLabel = styled.span`
   font-weight: 700;
   &::after {
     content: '|';
-    margin-left: 12px;
-    color: rgba(255, 255, 255, 0.2);
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    &::after {
-      content: '';
-      margin-left: 0;
-    }
+    margin-left: 18px;
+    color: ${theme.colors.gray[500]};
   }
 `
 
 export const SkillValue = styled.span`
   color: #fff;
-
-  ${media.down(theme.breakPoints.tablet)} {
-    color: ${theme.colors.gray[300]};
-  }
+  margin-left: 18px;
 `
 
 export const TimelineGrid = styled.div`
