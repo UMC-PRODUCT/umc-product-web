@@ -22,7 +22,6 @@ const PageLayout = ({
           {subTitle && <PageSubTitle subTitle={subTitle} />}
         </S.Header>
         {children}
-        <Footer />
       </S.PageLayout>
     </Flex>
   )
