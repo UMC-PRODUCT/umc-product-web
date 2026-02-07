@@ -16,7 +16,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 
 import * as S from './PartCurriculum.style'
 
-const CurriculumTimeline = ({ activeTab }: { activeTab: PartType }) => {
+export const CurriculumTimeline = ({ activeTab }: { activeTab: PartType }) => {
   const { data } = useGetCurriculums(activeTab)
   const currentData = data.result.workbooks
 

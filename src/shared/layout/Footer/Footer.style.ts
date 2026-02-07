@@ -11,6 +11,8 @@ export const FooterContainer = styled.footer`
   display: flex;
   flex-direction: column;
   min-width: 100vw;
+  max-width: 100vw;
+
   ${media.down(theme.breakPoints.desktop)} {
     padding: 48px 60px 32px 60px;
   }
