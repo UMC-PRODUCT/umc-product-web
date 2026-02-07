@@ -39,6 +39,7 @@ export const HomePage = () => {
   useEffect(() => {
     let index = 0
     let timeoutId: number | undefined
+    let doneTimeoutId: number | undefined
 
     const type = () => {
       if (index < heroText.length) {
@@ -46,7 +47,7 @@ export const HomePage = () => {
         index += 1
         timeoutId = window.setTimeout(type, 180)
       } else {
-        window.setTimeout(() => setTypingDone(true), 500)
+        doneTimeoutId = window.setTimeout(() => setTypingDone(true), 500)
       }
     }
 
@@ -54,6 +55,7 @@ export const HomePage = () => {
 
     return () => {
       if (timeoutId) window.clearTimeout(timeoutId)
+      if (doneTimeoutId) window.clearTimeout(doneTimeoutId)
     }
   }, [])
 

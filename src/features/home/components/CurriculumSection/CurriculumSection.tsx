@@ -1,10 +1,10 @@
 import { Suspense, useState } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
-import { CurriculumTimeline } from '@/features/recruiting/components/PartCurriculum/PartCurriculum'
 import { PART_REQUIRED_SKILL } from '@/features/recruiting/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { CurriculumTimeline } from '@/shared/ui/curriculum/CurriculumTimeline'
 
 import * as S from './CurriculumSection.style'
 

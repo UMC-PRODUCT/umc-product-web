@@ -1,3 +1,10 @@
+import gritzyLogo from '@/shared/assets/sponsor/그릿지.svg'
+import nerdinaryLogo from '@/shared/assets/sponsor/너디너리.svg'
+import vieworksLogo from '@/shared/assets/sponsor/뷰웍스.svg'
+import softSquaredLogo from '@/shared/assets/sponsor/소프트스퀘어드.svg'
+import jabberLogo from '@/shared/assets/sponsor/자버.svg'
+import comgongLogo from '@/shared/assets/sponsor/컴공선배.svg'
+
 export type Curriculum = {
   title: string
   items: Array<string>
@@ -212,35 +219,35 @@ export const sponsors: Array<Sponsor> = [
     name: '컴공선배',
     description:
       '컴퓨터공학과를 졸업하고, 프리랜서로 활동하고 있는 잘나가는 선배가 말하는 IT 업계와 개발 이모저모',
-    logo: '/src/shared/assets/sponsor/컴공선배.svg',
+    logo: comgongLogo,
   },
   {
     name: '너디너리',
     description:
       '대학생에게는 스타트업에 대한 관심을, 예비·초기 창업자에게는 고객 유치와 홍보를, 기업에는 우수한 인재 탐색의 장을 제공',
-    logo: '/src/shared/assets/sponsor/너디너리.svg',
+    logo: nerdinaryLogo,
   },
   {
     name: '소프트스퀘어드',
     description:
       'IT 청년들이 꿈을 이룰 수 있도록 노하우를 전수하고 성장할 수 있는 기회를 제공하는 스타트업',
-    logo: '/src/shared/assets/sponsor/소프트스퀘어드.svg',
+    logo: softSquaredLogo,
   },
   {
     name: '그릿지',
     description: '엔터프라이즈 개발 팀이 AI를 활용하여 개발을 자동화 할 수 있도록 돕는 MSP 서비스',
-    logo: '/src/shared/assets/sponsor/그릿지.svg',
+    logo: gritzyLogo,
   },
   {
     name: '자버',
     description:
       'MyData 기반 전자문서 서비스를 통해 기업의 계약, 설문, 공지 등 다양한 업무를 혁신하는 Document Tech 스타트업',
-    logo: '/src/shared/assets/sponsor/자버.svg',
+    logo: jabberLogo,
   },
   {
     name: '뷰웍스',
     description:
       '세계 최고의 이미징 처리 기술을 바탕으로 글로벌 TOP 5에 속하는 이미징 솔루션 전문 기업',
-    logo: '/src/shared/assets/sponsor/뷰웍스.svg',
+    logo: vieworksLogo,
   },
 ]

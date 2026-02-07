@@ -16,8 +16,16 @@ export const FaqContainer = styled.div`
 
 export const FaqItem = styled.div<{ $active?: boolean }>`
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  opacity: 1;
-  transform: none;
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+
+  &.animate {
+    opacity: 1;
+    transform: none;
+  }
 
   ${({ $active }) =>
     $active &&

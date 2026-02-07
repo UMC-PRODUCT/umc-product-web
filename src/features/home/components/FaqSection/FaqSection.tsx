@@ -15,22 +15,38 @@ const FaqSection = ({ items, activeIndex, onToggle }: Props) => {
         <S.SectionTitle>자주 묻는 질문</S.SectionTitle>
       </S.SectionHeader>
       <S.FaqContainer>
-        {items.map((item, index) => (
-          <S.FaqItem
-            key={item.question}
-            $active={activeIndex === index}
-            data-animate
-            style={{ transitionDelay: `${0.1 + index * 0.05}s` }}
-          >
-            <S.FaqQuestion type="button" onClick={() => onToggle(index)}>
-              <S.FaqQuestionTitle>{item.question}</S.FaqQuestionTitle>
-              <S.FaqToggle className="faq-toggle" />
-            </S.FaqQuestion>
-            <S.FaqAnswer className="faq-answer">
-              <S.FaqAnswerText>{item.answer}</S.FaqAnswerText>
-            </S.FaqAnswer>
-          </S.FaqItem>
-        ))}
+        {items.map((item, index) => {
+          const isActive = activeIndex === index
+          const questionId = `faq-question-${index}`
+          const answerId = `faq-answer-${index}`
+          return (
+            <S.FaqItem
+              key={item.question}
+              $active={isActive}
+              data-animate
+              style={{ transitionDelay: `${0.1 + index * 0.05}s` }}
+            >
+              <S.FaqQuestion
+                id={questionId}
+                type="button"
+                aria-expanded={isActive}
+                aria-controls={answerId}
+                onClick={() => onToggle(index)}
+              >
+                <S.FaqQuestionTitle>{item.question}</S.FaqQuestionTitle>
+                <S.FaqToggle className="faq-toggle" />
+              </S.FaqQuestion>
+              <S.FaqAnswer
+                id={answerId}
+                className="faq-answer"
+                role="region"
+                aria-labelledby={questionId}
+              >
+                <S.FaqAnswerText>{item.answer}</S.FaqAnswerText>
+              </S.FaqAnswer>
+            </S.FaqItem>
+          )
+        })}
       </S.FaqContainer>
     </S.Section>
   )
