@@ -1,5 +1,6 @@
 import { applyKeys } from '@/features/apply/domain/queryKeys'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import type { RecruitmentStatusType } from '@/shared/types/umc'
 
 import { schoolKeys } from '../domain/queryKeys'
 
@@ -18,7 +19,7 @@ export const useGetTempSavedApplicationData = (recruitingId: string) => {
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetRecruitmentsList = (status: 'ONGOING' | 'CLOSED' | 'SCHEDULED') => {
+export const useGetRecruitmentsList = (status: RecruitmentStatusType) => {
   const { queryKey, queryFn } = schoolKeys.recruitments({ status })
   return useCustomSuspenseQuery(queryKey, queryFn)
 }

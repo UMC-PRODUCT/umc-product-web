@@ -1,9 +1,11 @@
 import type { PartType } from '@features/auth/domain'
 
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { RecruitingForms } from '@/features/school/domain'
 import type { FormPage, FormQuestion } from '@/shared/types/form'
 
-import { DEFAULT_RECRUITING_PARTS, PART_TYPE_TO_SMALL_PART } from '../domain/constants'
+import { DEFAULT_RECRUITING_PARTS } from '../domain/constants'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
 import { findPartQuestion } from './findPartQuestion'
 import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'

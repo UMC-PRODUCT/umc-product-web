@@ -102,5 +102,3 @@ export const RecruitingPreviewContent = ({
     </S.ModalContentWrapper>
   )
 }
-
-// NOTE: Modal.Root은 외부(RecruitingModals)에서 감싸서 중복 오버레이가 생기지 않도록 합니다.

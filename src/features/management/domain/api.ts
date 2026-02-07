@@ -7,6 +7,6 @@ import type { Curriculum } from './model'
 export const getCurriculums = async (params: {
   part: PartType
 }): Promise<CommonResponseDTO<Curriculum>> => {
-  const { data } = await axiosInstance.get('/admin/curriculums', { params })
+  const { data } = await axiosInstance.get('/curriculums', { params })
   return data
 }

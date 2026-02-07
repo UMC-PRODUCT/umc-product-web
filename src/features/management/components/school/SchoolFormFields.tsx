@@ -36,18 +36,6 @@ export const SchoolFormFields = ({
           }}
           {...register('schoolName')}
         />
-        <LabelTextField
-          type="text"
-          label="지부"
-          autoComplete="off"
-          placeholder="지부를 입력하세요."
-          error={{
-            error: !!errors.affiliated,
-            errorMessage: errors.affiliated?.message || '',
-          }}
-          necessary={false}
-          {...register('affiliated')}
-        />
       </S.InputRow>
       <S.TextAreaWrapper alignItems="flex-start">
         <Label label="비고" necessary={false} />

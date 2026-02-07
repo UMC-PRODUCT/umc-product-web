@@ -12,3 +12,11 @@ export const useTerms = ({ termsType }: { termsType: TermsType }) => {
     { retry: false },
   )
 }
+
+export const useTermsById = (termId: string) => {
+  return useCustomSuspenseQuery(
+    authKeys.termsById(termId).queryKey,
+    authKeys.termsById(termId).queryFn,
+    { retry: false },
+  )
+}

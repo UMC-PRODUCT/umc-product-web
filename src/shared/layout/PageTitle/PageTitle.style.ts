@@ -11,3 +11,9 @@ export const Title = styled.div`
     ${theme.typography.H3.Sb};
   }
 `
+
+export const SubTitle = styled.div`
+  align-self: flex-start;
+  color: ${theme.colors.gray[300]};
+  ${theme.typography.C2.Rg};
+`

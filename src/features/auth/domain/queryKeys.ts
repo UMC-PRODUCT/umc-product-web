@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { TermsType } from '@/shared/types/umc'
 
-import { fetchMyInfo, fetchTerm, getGisuList, getMyInfo, getSchoolLink, getTerm } from './api'
+import { getActiveGisu, getGisuList, getMyInfo, getSchoolLink, getTerm, getTermById } from './api'
 
 export const authKeys = createQueryKeys('auth', {
   terms: (termsType: TermsType) => ({
@@ -13,19 +13,9 @@ export const authKeys = createQueryKeys('auth', {
     queryKey: ['member', 'me'],
     queryFn: () => getMyInfo(),
   }),
-})
-
-export const termsKeys = createQueryKeys('terms', {
-  detail: (termsType: TermsType) => ({
-    queryKey: ['terms', termsType, 'detail'],
-    queryFn: () => fetchTerm({ termsType }),
-  }),
-})
-
-export const memberKeys = createQueryKeys('member', {
-  me: () => ({
-    queryKey: ['member', 'me'],
-    queryFn: () => fetchMyInfo(),
+  termsById: (termId: string) => ({
+    queryKey: ['terms', termId],
+    queryFn: () => getTermById(termId),
   }),
 })
 
@@ -34,8 +24,12 @@ export const schoolKeys = createQueryKeys('school', {
     queryKey: [schoolId, 'link'],
     queryFn: () => getSchoolLink(schoolId),
   }),
-  gisu: () => ({
+  gisuList: () => ({
     queryKey: ['gisu'],
     queryFn: () => getGisuList(),
+  }),
+  activeGisu: () => ({
+    queryKey: ['gisu', 'active'],
+    queryFn: () => getActiveGisu(),
   }),
 })

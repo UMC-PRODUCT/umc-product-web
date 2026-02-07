@@ -1,3 +1,4 @@
+import type { PartType } from '@/features/auth/domain'
 import type { Option } from '@/shared/types/form'
 import type { AccountLevelType, AccountStateType, SchoolStateType } from '@/shared/types/umc'
 
@@ -18,6 +19,20 @@ export const STATUS_MOCK: Array<Option<AccountStateType | '-- 전체 상태 --'>
   { label: '-- 전체 상태 --', id: 0 },
   { label: 'ACTIVE', id: 1 },
   { label: 'INACTIVE', id: 2 },
+]
+
+export const GENERATIONS_MOCK: Array<Option<string | '-- 전체 기수 --'>> = [
+  { label: '-- 전체 기수 --', id: 0 },
+  { label: '1기', id: 1 },
+  { label: '2기', id: 2 },
+  { label: '3기', id: 3 },
+  { label: '4기', id: 4 },
+  { label: '5기', id: 5 },
+  { label: '6기', id: 6 },
+  { label: '7기', id: 7 },
+  { label: '8기', id: 8 },
+  { label: '9기', id: 9 },
+  { label: '10기', id: 10 },
 ]
 
 export const UNI_DELETE_MOCK: Array<{
@@ -67,64 +82,46 @@ export const UNI_DELETE_MOCK: Array<{
 export const ACCOUNT_DELETE_MOCK: Array<{
   id: number
   name: string
-  email: string
+  nickname: string
   school: string
-  branch: string
+  generation: string
+  part: PartType
   role: AccountLevelType
-  status: AccountStateType
 }> = [
   {
     id: 1,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '서울대학교',
-    branch: 'Ain 지부',
+    generation: '27기',
+    part: 'WEB',
     role: 'ADMIN',
-    status: 'ACTIVE',
   },
   {
     id: 2,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '연세대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'PENDING',
+    generation: '27기',
+    part: 'DESIGN',
+    role: 'MANAGER',
   },
   {
     id: 3,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '고려대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'INACTIVE',
+    generation: '26기',
+    part: 'NODEJS',
+    role: 'USER',
   },
   {
     id: 4,
     name: '성이름',
-    email: 'email1234@gmail.com',
+    nickname: '별명이름',
     school: '한양대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
-  },
-  {
-    id: 5,
-    name: '성이름',
-    email: 'email1234@gmail.com',
-    school: '성균관대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
-  },
-  {
-    id: 6,
-    name: '성이름',
-    email: 'email1234@gmail.com',
-    school: '성균관대학교',
-    branch: 'Ain 지부',
-    role: 'ADMIN',
-    status: 'ACTIVE',
+    generation: '25기',
+    part: 'IOS',
+    role: 'CHALLENGER',
   },
 ]

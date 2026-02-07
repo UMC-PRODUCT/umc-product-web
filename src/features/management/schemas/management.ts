@@ -1,7 +1,6 @@
 import { z } from 'zod/v3'
 
 import {
-  affiliatedSchema,
   emailSchema,
   levelSchema,
   nameSchema,
@@ -11,7 +10,7 @@ import {
 
 export const schoolRegisterSchema = z.object({
   schoolName: schoolNameSchema,
-  affiliated: affiliatedSchema,
+  schoolProfile: z.string().url().optional(),
   note: z.string().optional(),
 })
 

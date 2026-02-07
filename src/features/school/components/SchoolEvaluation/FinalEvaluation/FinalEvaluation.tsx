@@ -6,6 +6,9 @@ import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
+import Section from '@/shared/ui/common/Section/Section'
+import Table from '@/shared/ui/common/Table/Table'
+import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
 import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
 import PassInfoModal from '../../modals/PassInfoModal/PassInfoModal'
@@ -13,10 +16,11 @@ import { SetPassPartModal } from '../../modals/SetPassPartModal/SetPassPartModal
 import SetPassSuccessModal from '../../modals/SetPassSuccessModal/SetPassSuccessModal'
 import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
-import FinalEvaluationRow from './FinalEvaluationRow'
+import * as RowS from './FinalEvaluationRow.style'
 
 const FinalEvaluation = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [activeRowId, setActiveRowId] = useState<number | null>(null)
   const [sort, setSort] = useState<Option<string>>({
     label: '점수 높은 순',
     id: 1,
@@ -70,8 +74,8 @@ const FinalEvaluation = () => {
   return (
     <>
       <Shared.TabHeader alignItems="flex-start">
-        <Shared.TabTitle>최종 선발</Shared.TabTitle>
-        <Shared.TabSubtitle>서류와 면접 점수를 종합하여 최종 선발을 진행합니다.</Shared.TabSubtitle>
+        <Shared.TabTitle>최종 평가</Shared.TabTitle>
+        <Shared.TabSubtitle>서류와 면접 점수를 종합하여 최종 평가를 진행합니다.</Shared.TabSubtitle>
       </Shared.TabHeader>
       <S.Container>
         {/* 1. 상단 필터/컨트롤 바 */}
@@ -115,47 +119,100 @@ const FinalEvaluation = () => {
           }
         />
 
-        {/* 2. 메인 테이블 */}
-        <S.TableContainer variant="solid" padding={'0'}>
-          <S.TableScroll>
-            <S.Table>
-              <S.TableRowHeader>
-                <tr>
-                  <th>
-                    <Checkbox
-                      checked={headerChecked}
-                      onCheckedChange={handleToggleAll}
-                      css={{
-                        backgroundColor: theme.colors.gray[600],
-                        borderColor: theme.colors.gray[400],
-                      }}
-                    />
-                  </th>
-                  <th>번호</th>
-                  <th>닉네임/이름</th>
-                  <th>지원 파트</th>
-                  <th>서류 점수</th>
-                  <th>면접 점수</th>
-                  <th>최종 환산 점수</th>
-                  <th>선발 결과</th>
-                  <th>작업</th>
-                </tr>
-              </S.TableRowHeader>
-              <tbody>
-                {applicants.map((item) => (
-                  <FinalEvaluationRow
-                    key={item.id}
-                    item={item}
+        {/* 2. 테이블 */}
+        <Section variant="solid" maxHeight={504} gap={0} padding="12px 16px">
+          <Table
+            headerLabels={[
+              '번호',
+              '닉네임/이름',
+              '지원 파트',
+              '서류 점수',
+              '면접 점수',
+              '최종 환산 점수',
+              '선발 결과',
+              '작업',
+            ]}
+            checkbox={{
+              isAllChecked: headerChecked,
+              onToggleAll: handleToggleAll,
+            }}
+            showFooter={false}
+            rows={applicants}
+            getRowId={(row) => row.id}
+            activeRowId={activeRowId}
+            onRowClick={(id) => setActiveRowId(id)}
+            renderRow={(item) => (
+              <>
+                <TableStyles.Td>
+                  <Checkbox
                     checked={selectedIds.has(item.id)}
-                    onToggle={handleToggleRow(item.id)}
-                    setOpenModal={setModalOpen}
+                    onCheckedChange={handleToggleRow(item.id)}
+                    css={{ borderColor: RowS.colors.checkboxBorder }}
                   />
-                ))}
-              </tbody>
-            </S.Table>
-          </S.TableScroll>
-        </S.TableContainer>
-
+                </TableStyles.Td>
+                <TableStyles.Td>{item.id}</TableStyles.Td>
+                <TableStyles.Td>
+                  <S.UserInfo>{item.name}</S.UserInfo>
+                </TableStyles.Td>
+                <TableStyles.Td>
+                  <S.TagGroup>
+                    {item.parts.map((p) => (
+                      <Button
+                        key={`${item.id}-${p}`}
+                        variant="outline"
+                        tone="gray"
+                        label={p}
+                        typo="B4.Md"
+                        css={RowS.tagButtonStyle}
+                      />
+                    ))}
+                  </S.TagGroup>
+                </TableStyles.Td>
+                <TableStyles.Td>{item.docScore}</TableStyles.Td>
+                <TableStyles.Td>{item.interviewScore}</TableStyles.Td>
+                <TableStyles.Td css={{ color: theme.colors.lime, ...theme.typography.B3.Sb }}>
+                  {item.finalScore}
+                </TableStyles.Td>
+                <TableStyles.Td css={RowS.resultTextStyle}>
+                  {item.result === 'N/A' ? (
+                    item.result
+                  ) : (
+                    <Button
+                      variant="outline"
+                      tone="gray"
+                      label={item.result}
+                      typo="B4.Md"
+                      css={RowS.resultButtonStyle}
+                    />
+                  )}
+                </TableStyles.Td>
+                <TableStyles.Td>
+                  {item.isPassed ? (
+                    <S.ActionButton
+                      variant="solid"
+                      tone="necessary"
+                      label="합격 취소"
+                      typo="B4.Sb"
+                      onClick={() => setModalOpen({ open: true, modalName: 'setFail' })}
+                    />
+                  ) : (
+                    <S.ActionButton
+                      variant="solid"
+                      tone="lime"
+                      label="합격 처리"
+                      typo="B4.Sb"
+                      onClick={() =>
+                        item.parts.length > 1
+                          ? setModalOpen({ open: true, modalName: 'setPassPart' })
+                          : setModalOpen({ open: true, modalName: 'setPassSuccess' })
+                      }
+                    />
+                  )}
+                </TableStyles.Td>
+              </>
+            )}
+          />
+        </Section>
         {/* 3. 하단 선택 관리 바 */}
         <S.BottomBar variant="solid" padding="14px 18px">
           <div className="left">

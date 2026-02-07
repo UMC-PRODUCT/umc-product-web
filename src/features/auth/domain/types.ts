@@ -1,4 +1,7 @@
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { OrganizationType, RoleType } from '@/shared/types/umc'
+
+import type { PartType } from './model'
 
 export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
 export type RegisterRequestDTO = {
@@ -13,7 +16,7 @@ export type RegisterRequestDTO = {
     isAgreed?: boolean
   }>
 }
-export type RefreshResponseDTO = CommonResponseDTO<{ accessToken?: string }>
+export type RefreshResponseDTO = CommonResponseDTO<{ accessToken: string; refreshToken: string }>
 export type RefreshRequestDTO = {
   refreshToken?: string
 }
@@ -37,6 +40,14 @@ export type MyInfoResponseDTO = {
   schoolName?: string
   profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
+  roles: Array<{
+    id: string
+    challengerId: string
+    roleType: RoleType
+    organizationType: OrganizationType
+    responsiblePart: PartType | null
+    gisuId: string
+  }>
 }
 
 export type GetTermsResponseDTO = {
@@ -60,4 +71,9 @@ export type GetGisuListResponseDTO = {
     endsAt: string
     isActive: boolean
   }>
+}
+
+export type GetActiveGisuResponseDTO = {
+  gisuId: string
+  generation: string
 }

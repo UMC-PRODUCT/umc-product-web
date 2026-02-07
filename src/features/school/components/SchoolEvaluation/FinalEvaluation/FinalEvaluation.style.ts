@@ -78,6 +78,10 @@ export const Table = styled.table`
     max-height: 52px;
   }
 
+  tbody tr[data-active='true'] td {
+    box-shadow: inset 0 0 0 1px ${theme.colors.lime};
+  }
+
   td {
     white-space: nowrap;
   }

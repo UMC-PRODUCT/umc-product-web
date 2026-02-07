@@ -5,7 +5,7 @@ import SubmitCompleteIcon from '@/shared/assets/icons/submit.svg?react'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 
-const SUBMIT_ICON_SIZE = 108
+const SUBMIT_ICON_SIZE = 70
 const DASHBOARD_BUTTON_WIDTH = '150px'
 
 const AfterSubmit = () => {
@@ -23,7 +23,12 @@ const AfterSubmit = () => {
         지원 현황은 &apos;대시보드&apos;에서 확인할 수 있습니다.
       </S.SubmitDescription>
       <Flex width={DASHBOARD_BUTTON_WIDTH} css={{ marginTop: '32px' }}>
-        <Button label="대시보드로 이동" tone="lime" onClick={handleNavigateToDashboard} />
+        <Button
+          label="대시보드로 이동"
+          tone="lime"
+          onClick={handleNavigateToDashboard}
+          css={{ height: '48px' }}
+        />
       </Flex>
     </S.SubmitCompleteContainer>
   )

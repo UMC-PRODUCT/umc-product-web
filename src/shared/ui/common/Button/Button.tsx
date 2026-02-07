@@ -19,6 +19,7 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
   Icon?: SvgIconComponent
   iconColor?: string
   isLoading?: boolean
+  iconSize?: number
 }
 
 /**
@@ -39,6 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       Icon,
       className,
       iconColor,
+      iconSize = ICON_SIZE,
       isLoading = false,
       ...restProps
     },
@@ -61,7 +63,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         $typo={typo}
         {...restProps}
       >
-        {Icon && <Icon color={iconColor} width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
+        {Icon && <Icon color={iconColor} width={iconSize} height={iconSize} aria-hidden />}
         {isLoading ? (
           <Loading
             size={16}

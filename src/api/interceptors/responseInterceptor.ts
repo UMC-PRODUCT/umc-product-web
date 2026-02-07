@@ -9,7 +9,7 @@ import axios from 'axios'
 import { refresh } from '@/features/auth/domain/api'
 import type { RefreshResponseDTO } from '@/features/auth/domain/types'
 
-import { clearTokens, getRefreshToken, setAccessToken } from '../tokenManager'
+import { clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '../tokenManager'
 
 let refreshPromise: Promise<void> | null = null
 
@@ -38,12 +38,14 @@ async function refreshTokens(): Promise<void> {
     throw new Error('토큰 재발급 실패')
   }
 
-  const token = refreshResponse.result.accessToken
-  if (!token) {
-    throw new Error('accessToken이 없습니다.')
+  const newAccessToken = refreshResponse.result.accessToken
+  const newRefreshToken = refreshResponse.result.refreshToken
+  if (!newAccessToken || !newRefreshToken) {
+    throw new Error('accessToken이 없습니다. 로그인 페이지로 이동합니다.')
   }
 
-  setAccessToken(token)
+  setAccessToken(newAccessToken)
+  setRefreshToken(newRefreshToken)
 }
 
 function handleRefreshError(errors: unknown): void {

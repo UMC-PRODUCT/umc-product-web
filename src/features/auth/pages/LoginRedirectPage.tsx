@@ -2,11 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { getMyInfo } from '@/features/auth/domain/api'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
+
+import { schoolKeys } from '../domain/queryKeys'
 
 type LoginCallbackParams = {
   success?: boolean
@@ -43,7 +46,15 @@ export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail } = useUserProfileStore()
+  const { data: gisu } = useCustomQuery(
+    schoolKeys.activeGisu().queryKey,
+    schoolKeys.activeGisu().queryFn,
+    {
+      staleTime: 1000 * 60 * 60 * 24,
+      gcTime: 1000 * 60 * 60 * 24 * 7,
+    },
+  )
+  const { setName, setNickname, setEmail, setRoles } = useUserProfileStore()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
   const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
   useEffect(() => {
@@ -73,6 +84,8 @@ export const LoginRedirectPage = () => {
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')
         setNickname(profile.nickname ?? '')
+        const activeRole = profile.roles.find((role) => role.gisuId === gisu?.result.gisuId)
+        setRoles(activeRole ?? null)
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
       }
@@ -83,7 +96,7 @@ export const LoginRedirectPage = () => {
     return () => {
       cancelled = true
     }
-  }, [accessToken, setEmail, setName, setNickname])
+  }, [accessToken, setEmail, setName, setNickname, setRoles, gisu])
 
   useEffect(() => {
     if (!accessToken) return

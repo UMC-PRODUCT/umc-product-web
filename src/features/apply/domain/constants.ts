@@ -1,4 +1,4 @@
-import type { PartSmallType, PartType } from '@/features/auth/domain/model'
+import type { PartType } from '@/features/auth/domain/model'
 
 import type { DocumentStatusType, FinalStatusType } from './model'
 
@@ -61,23 +61,3 @@ export const DEFAULT_RECRUITING_PARTS = [
   'SPRINGBOOT',
   'NODEJS',
 ] as ReadonlyArray<PartType>
-
-export const PART_TYPE_TO_SMALL_PART: Record<PartType, PartSmallType> = {
-  PLAN: 'Plan',
-  DESIGN: 'Design',
-  WEB: 'Web',
-  IOS: 'iOS',
-  ANDROID: 'Android',
-  SPRINGBOOT: 'SpringBoot',
-  NODEJS: 'Node.js',
-}
-
-export const SMALL_PART_TO_PART_TYPE: Record<PartSmallType, PartType> = {
-  Plan: 'PLAN',
-  Design: 'DESIGN',
-  Web: 'WEB',
-  iOS: 'IOS',
-  Android: 'ANDROID',
-  SpringBoot: 'SPRINGBOOT',
-  'Node.js': 'NODEJS',
-}

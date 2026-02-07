@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { clearTokens } from '@/api/tokenManager'
 import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
-import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge/Badge'
@@ -24,7 +24,7 @@ const ProfileMenu = ({
   children?: React.ReactNode
 }) => {
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setGisu, setSchoolId } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setRoles, setGisu, setSchoolId } = useUserProfileStore()
   const [isModalOpen, setIsModalOpen] = useState<{
     modalType: 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
@@ -33,28 +33,32 @@ const ProfileMenu = ({
     isOpen: false,
   })
   const { data } = useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
-  // TODO: 추후 ACTIVE 기수 조회하는 API가 생기면 수정 필요
-  const { data: gisu } = useCustomSuspenseQuery(
-    schoolKeys.gisu().queryKey,
-    schoolKeys.gisu().queryFn,
+  const { data: gisu } = useCustomQuery(
+    schoolKeys.activeGisu().queryKey,
+    schoolKeys.activeGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
     },
   )
-  const gisuId = gisu.result.gisuList[0]?.gisuId || ''
+  const gisuId = gisu?.result.gisuId
+
   useEffect(() => {
     setName(data.name || '')
     setNickname(data.nickname || '')
     setEmail(data.email || '')
-    setGisu(gisuId)
+    setGisu(gisuId || '')
     setSchoolId(data.schoolId ? data.schoolId.toString() : '')
-  }, [data, gisuId, setName, setNickname, setEmail, setGisu, setSchoolId])
+    const activeRole = data.roles.find((role) => role.gisuId === gisuId)
+    setRoles(activeRole ?? null)
+  }, [data, gisuId, setName, setNickname, setEmail, setRoles, setGisu, setSchoolId])
 
   const handleLogout = () => {
     setName('')
     setNickname('')
     setEmail('')
+    setRoles(null)
+    setGisu('')
     clearTokens()
     navigate({
       to: '/auth/login',
@@ -90,7 +94,7 @@ const ProfileMenu = ({
             <Badge tone="gray" variant="solid" typo="H5.Md">
               권한
             </Badge>
-            {data.status}
+            {data.roles.find((role) => role.gisuId === gisuId)?.roleType || '권한 없음'}
           </S.InfoRow>
         </Flex>
         {children && <S.MobileOnly>{children}</S.MobileOnly>}

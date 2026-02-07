@@ -49,7 +49,12 @@ const Heading2 = styled.h2`
   margin-top: 24px;
   margin-bottom: 12px;
 `
-
+const Heading3 = styled.h3`
+  ${theme.typography.B4.Sb};
+  margin-top: 16px;
+  margin-bottom: 12px;
+  color: ${theme.colors.white};
+`
 const Paragraph = styled.p`
   ${theme.typography.B4.Rg};
   margin-bottom: 12px;
@@ -123,6 +128,7 @@ export {
   Header,
   Heading1,
   Heading2,
+  Heading3,
   ListItem,
   Paragraph,
   StatusWrapper,
