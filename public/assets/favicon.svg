@@ -1,20 +1,18 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="32" height="32" fill="#161616"/>
-<g filter="url(#filter0_i_3314_2548)">
-<path d="M10.1848 11H2.43077C2.193 11 2 11.224 2 11.5V16C2 18.761 3.92903 21 6.30782 21C8.68657 21 10.6156 18.761 10.6156 16V11.5C10.6156 11.224 10.4226 11 10.1848 11Z" fill="#EBEBEB"/>
-<path d="M19.8772 11C17.7362 11 16.0002 12.514 16.0002 15C16.0002 12.514 14.2641 11 12.1232 11C11.8853 11 11.6924 11.224 11.6924 11.5V20.5C11.6924 20.776 11.8853 21 12.1232 21H19.8772C20.115 21 20.308 20.776 20.308 20.5V11.5C20.308 11.224 20.115 11 19.8772 11Z" fill="#EBEBEB"/>
-<path d="M30.0005 20.5V11.5C30.0005 11.224 29.8075 11 29.5696 11H25.6926C23.3138 11 21.3848 13.239 21.3848 16C21.3848 18.761 23.3138 21 25.6926 21H29.5696C29.8075 21 30.0005 20.776 30.0005 20.5Z" fill="#EBEBEB"/>
+<rect width="32" height="32" rx="4" fill="#161616"/>
+<g filter="url(#filter0_i_3314_2565)">
+<path d="M23.2 8H8.79999C8.35841 8 8 8.35841 8 8.80004V16C8 20.4176 11.5824 24 16 24C20.4176 24 24 20.4176 24 16V8.80004C24 8.35841 23.6416 8 23.2 8Z" fill="#EBEBEB"/>
 </g>
 <defs>
-<filter id="filter0_i_3314_2548" x="2" y="9" width="28" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_i_3314_2565" x="8" y="5" width="16" height="19" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="-2"/>
-<feGaussianBlur stdDeviation="1"/>
+<feOffset dy="-4"/>
+<feGaussianBlur stdDeviation="1.5"/>
 <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_3314_2548"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_3314_2565"/>
 </filter>
 </defs>
 </svg>
