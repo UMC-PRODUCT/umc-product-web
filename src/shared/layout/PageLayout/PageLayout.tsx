@@ -1,6 +1,5 @@
 import { Flex } from '@/shared/ui/common/Flex'
 
-import Footer from '../Footer/Footer'
 import PageSubTitle from '../PageTitle/PageSubTitle'
 import PageTitle from '../PageTitle/PageTitle'
 import * as S from './PageLayout.style'

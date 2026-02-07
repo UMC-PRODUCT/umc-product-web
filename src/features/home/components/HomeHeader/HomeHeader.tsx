@@ -1,3 +1,5 @@
+import { useNavigate } from '@tanstack/react-router'
+
 import Logo from '@shared/assets/umc.svg?react'
 
 import * as S from './HomeHeader.style'
@@ -7,6 +9,7 @@ type Props = {
 }
 
 const HomeHeader = ({ onScrollToSection }: Props) => {
+  const navigate = useNavigate()
   return (
     <S.FixedHeader>
       <S.Nav>
@@ -40,7 +43,14 @@ const HomeHeader = ({ onScrollToSection }: Props) => {
             </S.NavLink>
           </li>
         </S.NavLinks>
-        <S.ApplyButton type="button" onClick={() => onScrollToSection('apply')}>
+        <S.ApplyButton
+          type="button"
+          onClick={() =>
+            navigate({
+              to: '/apply',
+            })
+          }
+        >
           10기 지원하기
         </S.ApplyButton>
       </S.Nav>

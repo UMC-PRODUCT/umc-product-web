@@ -17,7 +17,7 @@ const left = [
 
 const nav = {
   label: '자주 묻는 질문',
-  link: '/', // TODO: 링크 수정
+  link: '/#faq',
 }
 
 const ChallengerHeader = () => {
