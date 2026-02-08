@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { TabSubtitle, TabTitle } from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import { useGetAllGisu, useGetGisuChapterWithSchools } from '../../hooks/useManagementQueries'
+import { useGisuDropdown } from '../../hooks/useManagedDropdown'
+import { useGetGisuChapterWithSchools } from '../../hooks/useManagementQueries'
 import AddBranchModal from '../modals/AddBranchModal/AddBranchModal'
 import DeleteBranchConfirm from '../modals/DeleteBranchConfirm/DeleteBranchConfirm'
 import * as S from './AddBranch.style'
@@ -71,13 +71,12 @@ const AddBranchContent = ({ baseGisu }: { baseGisu: Option<string> }) => {
   )
 }
 
-const AddBranch = () => {
-  const { data: gisuData } = useGetAllGisu()
-
-  const [baseGisu, setBaseGisu] = useState<Option<string>>({
-    label: gisuData.result.gisuList[0].generation,
-    id: gisuData.result.gisuList[0].gisuId,
+const AddBranchData = () => {
+  const gisuDropdown = useGisuDropdown({
+    includeAllOption: false,
+    defaultToFirst: true,
   })
+
   return (
     <Flex flexDirection="column" gap="24px">
       {/* 헤더 섹션 */}
@@ -87,23 +86,24 @@ const AddBranch = () => {
       </Flex>
 
       {/* 기수 선택 드롭다운 */}
-      <Dropdown
-        options={gisuData.result.gisuList.map((gisu) => ({
-          label: `${gisu.generation}기`,
-          id: gisu.gisuId,
-        }))}
-        css={{ width: '180px', alignSelf: 'flex-start' }}
-        placeholder="기수 선택"
-        value={{ label: baseGisu.label + '기', id: baseGisu.id }}
-        onChange={(selected) => setBaseGisu(selected)}
-      />
+      <Flex width={150} css={{ alignSelf: 'flex-start' }}>
+        {gisuDropdown.Dropdown}
+      </Flex>
       <AsyncBoundary
         fallback={<SuspenseFallback label="지부 정보를 불러오는 중입니다." />}
         errorFallback={() => <div>지부 정보를 불러오는 중 오류가 발생했습니다.</div>}
       >
-        <AddBranchContent baseGisu={baseGisu} />
+        <AddBranchContent baseGisu={gisuDropdown.value!} />
       </AsyncBoundary>
     </Flex>
+  )
+}
+
+const AddBranch = () => {
+  return (
+    <AsyncBoundary fallback={<SuspenseFallback label="기수 정보를 불러오는 중입니다." />}>
+      <AddBranchData />
+    </AsyncBoundary>
   )
 }
 

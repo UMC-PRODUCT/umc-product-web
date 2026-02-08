@@ -3,6 +3,7 @@ import type { PartType } from '@/features/auth/domain'
 import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
 
 import type {
+  ChapterMiniType,
   ChapterType,
   Curriculum,
   GisuType,
@@ -33,6 +34,13 @@ export const getSchoolsPaging = async (params: {
   keyword?: string
 }): Promise<CommonPagingResponseDTO<University>> => {
   const { data } = await axiosInstance.get('/schools', { params })
+  return data
+}
+
+export const getChapter = async (): Promise<
+  CommonResponseDTO<{ chapters: Array<ChapterMiniType> }>
+> => {
+  const { data } = await axiosInstance.get('/chapters')
   return data
 }
 

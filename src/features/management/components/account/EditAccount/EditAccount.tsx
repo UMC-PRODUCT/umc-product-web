@@ -2,44 +2,36 @@ import { useMemo, useState } from 'react'
 
 import Arrow from '@shared/assets/icons/arrow.svg?react'
 
+import type { PartType } from '@/features/auth/domain'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
-  ACCOUNT_DELETE_MOCK,
-  AFFILIATED_MOCK,
-  GENERATIONS_MOCK,
-  ROLE_MOCK,
-  STATUS_MOCK,
-} from '@/features/management/mocks/managementMocks'
+  useChapterDropdown,
+  useGisuDropdown,
+  useSchoolDropdown,
+} from '@/features/management/hooks/useManagedDropdown'
+import { ACCOUNT_DELETE_MOCK } from '@/features/management/mocks/managementMocks'
 import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
 import Search from '@/shared/assets/icons/search.svg?react'
 import useFilterOptions from '@/shared/hooks/useFilterOptions'
 import * as S from '@/shared/styles/shared'
-import type { Option } from '@/shared/types/form'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
-import { transformRoleKorean, transformStateKorean } from '@/shared/utils/transformKorean'
+import { transformPart } from '@/shared/utils/transformKorean'
 
 import AccountDetail from '../../modals/AccountDetail/AccountDetail'
 
-type AffiliatedOption = Option<string>
-type GenerationOption = Option<string>
-type RoleOption = Option<string>
-type StatusOption = Option<string>
-
 const PAGE_SIZE = 5
-
-const EditAccount = () => {
+const EditAccountContent = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const [affiliated, setAffiliated] = useState<AffiliatedOption | undefined>()
-  const [generation, setGeneration] = useState<GenerationOption | undefined>()
-  const [role, setRole] = useState<RoleOption | undefined>()
-  const [status, setStatus] = useState<StatusOption | undefined>()
+  const [part, setPart] = useState<PartType | undefined>()
   const [activeRowId, setActiveRowId] = useState<number | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
@@ -55,26 +47,21 @@ const EditAccount = () => {
     return ACCOUNT_DELETE_MOCK.slice(start, start + PAGE_SIZE)
   }, [currentPage])
 
-  const { options: affiliatedOptions } = useFilterOptions({
-    label: '지부',
-    options: AFFILIATED_MOCK,
-  })
-
-  const { options: roleOptions } = useFilterOptions({
-    label: '역할',
-    options: ROLE_MOCK,
-    mapLabel: transformRoleKorean,
-  })
-
-  const { options: statusOptions } = useFilterOptions({
-    label: '상태',
-    options: STATUS_MOCK,
-    mapLabel: transformStateKorean,
-  })
-
-  const { options: generationOptions } = useFilterOptions({
-    label: '기수',
-    options: GENERATIONS_MOCK,
+  const chapterDropdown = useChapterDropdown({ includeAllOption: true })
+  const schoolDropdown = useSchoolDropdown({ includeAllOption: true })
+  const gisuDropdown = useGisuDropdown({ includeAllOption: true })
+  const { options: partOptions } = useFilterOptions({
+    label: '파트',
+    options: [
+      { id: 'PLAN', label: 'PLAN' },
+      { id: 'DESIGN', label: 'DESIGN' },
+      { id: 'ANDROID', label: 'ANDROID' },
+      { id: 'IOS', label: 'IOS' },
+      { id: 'WEB', label: 'WEB' },
+      { id: 'SPRINGBOOT', label: 'SPRINGBOOT' },
+      { id: 'NODEJS', label: 'NODEJS' },
+    ],
+    mapLabel: transformPart,
   })
 
   const handlePageChange = (nextPage: number) => {
@@ -97,31 +84,18 @@ const EditAccount = () => {
               Icon={Search}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              css={{ width: '252px' }}
+              css={{ width: '252px', height: '54px' }}
             />
+            {gisuDropdown.Dropdown}
+            {chapterDropdown.Dropdown}
+            {schoolDropdown.Dropdown}
             <Dropdown
-              options={generationOptions}
-              placeholder="전체 기수"
-              value={generation}
-              onChange={(option) => setGeneration(option.id === 0 ? undefined : option)}
-            />
-            <Dropdown
-              options={affiliatedOptions}
-              placeholder="전체 지부"
-              value={affiliated}
-              onChange={(option) => setAffiliated(option.id === 0 ? undefined : option)}
-            />
-            <Dropdown
-              options={roleOptions}
-              placeholder="전체 학교"
-              value={role}
-              onChange={(option) => setRole(option.id === 0 ? undefined : option)}
-            />
-            <Dropdown
-              options={statusOptions}
+              options={partOptions}
               placeholder="전체 파트"
-              value={status}
-              onChange={(option) => setStatus(option.id === 0 ? undefined : option)}
+              value={partOptions.find((option) => option.id === part)}
+              onChange={(option) =>
+                setPart(option.id === '0' ? undefined : (option.id as PartType))
+              }
             />
             총 247명
           </>
@@ -175,6 +149,14 @@ const EditAccount = () => {
       </Section>
       {openModal && <AccountDetail onClose={() => setOpenModal(false)} />}
     </S.AccountContent>
+  )
+}
+
+const EditAccount = () => {
+  return (
+    <AsyncBoundary fallback={<SuspenseFallback label="계정 정보를 불러오는 중입니다." />}>
+      <EditAccountContent />
+    </AsyncBoundary>
   )
 }
 

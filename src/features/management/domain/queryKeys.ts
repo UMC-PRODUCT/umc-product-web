@@ -5,6 +5,7 @@ import type { PartType } from '@/features/auth/domain'
 import {
   getAllGisu,
   getAllSchools,
+  getChapter,
   getCurriculums,
   getGisuChapterWithSchools,
   getSchoolDetails,
@@ -46,5 +47,9 @@ export const managementKeys = createQueryKeys('management', {
   schoolDetail: (schoolId: string) => ({
     queryKey: [schoolId],
     queryFn: () => getSchoolDetails({ schoolId }),
+  }),
+  chapter: () => ({
+    queryKey: ['all'],
+    queryFn: () => getChapter(),
   }),
 })

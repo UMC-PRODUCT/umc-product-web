@@ -43,3 +43,8 @@ export function useGetSchoolDetails(schoolId: string) {
   const query = managementKeys.schoolDetail(schoolId)
   return useCustomSuspenseQuery(query.queryKey, query.queryFn)
 }
+
+export function useGetChapters() {
+  const query = managementKeys.chapter()
+  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+}

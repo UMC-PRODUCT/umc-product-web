@@ -6,6 +6,7 @@ import Search from '@shared/assets/icons/search.svg?react'
 
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
@@ -22,7 +23,7 @@ const EditSchool = () => {
   const [searchInput, setSearchInput] = useState('')
   const { debouncedValue: debouncedSearch, flush } = useDebouncedValue(searchInput.trim(), 3000)
 
-  const { data } = useGetSchoolsPaging({
+  const { data, isLoading } = useGetSchoolsPaging({
     page: String(page),
     size: '10',
     keyword: debouncedSearch,
@@ -51,47 +52,53 @@ const EditSchool = () => {
           }}
         />
       </Flex>
-      <Table
-        headerLabels={['학교명', '비고', '상태']}
-        showFooter={true}
-        page={{
-          currentPage: page,
-          totalPages: data ? Number(data.result.totalPages) : 0,
-          onChangePage: setPage,
-        }}
-        rows={data?.result.content ?? []}
-        getRowId={(row) => row.schoolId}
-        onRowClick={(id) => {
-          setSelectedSchoolId(String(id))
-          setOpen(true)
-        }}
-        renderRow={(row) => (
-          <>
-            <TableStyles.Td>
-              <Flex alignItems="center" gap="12px">
-                {/* TODO: 추후 학교 로고 이미지로 변경 */}
-                <img
-                  src={DefaultSchool}
-                  alt="학교 로고"
-                  css={{ width: '50px', height: '50px', borderRadius: '50%' }}
-                />
-                {row.schoolName}
-              </Flex>
-            </TableStyles.Td>
-            {/* TODO:  추후 remark로 변경 */}
-            <TableStyles.Td>{row.schoolId}</TableStyles.Td>
-            <TableStyles.Td>
-              <Flex justifyContent="space-between" alignItems="center">
-                <SchoolStateButton
-                  isActive={row.isActive === true}
-                  label={row.isActive ? '활성' : '비활성'}
-                />
-                <Arrow width={20} css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }} />
-              </Flex>
-            </TableStyles.Td>
-          </>
-        )}
-      />
+      {isLoading ? (
+        <Flex justifyContent="center" alignItems="center" css={{ padding: '48px 0' }}>
+          <SuspenseFallback label="학교 목록을 불러오는 중입니다." />
+        </Flex>
+      ) : (
+        <Table
+          headerLabels={['학교명', '비고', '상태']}
+          showFooter={true}
+          page={{
+            currentPage: page,
+            totalPages: data ? Number(data.result.totalPages) : 0,
+            onChangePage: setPage,
+          }}
+          rows={data?.result.content ?? []}
+          getRowId={(row) => row.schoolId}
+          onRowClick={(id) => {
+            setSelectedSchoolId(String(id))
+            setOpen(true)
+          }}
+          renderRow={(row) => (
+            <>
+              <TableStyles.Td>
+                <Flex alignItems="center" gap="12px">
+                  {/* TODO: 추후 학교 로고 이미지로 변경 */}
+                  <img
+                    src={DefaultSchool}
+                    alt="학교 로고"
+                    css={{ width: '50px', height: '50px', borderRadius: '50%' }}
+                  />
+                  {row.schoolName}
+                </Flex>
+              </TableStyles.Td>
+              {/* TODO:  추후 remark로 변경 */}
+              <TableStyles.Td>{row.schoolId}</TableStyles.Td>
+              <TableStyles.Td>
+                <Flex justifyContent="space-between" alignItems="center">
+                  <SchoolStateButton
+                    isActive={row.isActive === true}
+                    label={row.isActive ? '활성' : '비활성'}
+                  />
+                  <Arrow width={20} css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }} />
+                </Flex>
+              </TableStyles.Td>
+            </>
+          )}
+        />
+      )}
       {open && selectedSchoolId && (
         <EditSchoolModal onClose={() => setOpen(false)} schoolId={selectedSchoolId} />
       )}

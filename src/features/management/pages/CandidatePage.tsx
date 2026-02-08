@@ -55,13 +55,13 @@ export const CandidatePage = ({ filterOptions = defaultFilterOptions }: Candidat
               autoComplete="none"
               Icon={Search}
               IconPlaced="left"
-              css={{ width: '280px', height: '40px' }}
+              css={{ width: '280px', height: '52px' }}
             />
             <Button
               typo="B3.Sb"
               label="검색"
               tone="lime"
-              css={{ minWidth: '80px', width: '80px', height: '40px' }}
+              css={{ minWidth: '80px', width: '80px', height: '52px' }}
             />
             <Button
               typo="B3.Sb"

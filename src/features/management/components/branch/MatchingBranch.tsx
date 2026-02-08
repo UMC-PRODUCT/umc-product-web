@@ -1,18 +1,19 @@
+import type { ReactElement } from 'react'
 import { useState } from 'react'
 
 import Cancle from '@shared/assets/icons/close.svg?react'
 import Grab from '@shared/assets/icons/drag.svg?react'
 
 import { theme } from '@/shared/styles/theme'
-import type { Option } from '@/shared/types/form'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import type { ChapterType, UniversitySimple } from '../../domain/model'
+import { useGisuDropdown } from '../../hooks/useManagedDropdown'
 import { useManagementMutations } from '../../hooks/useManagementMutations'
 import {
-  useGetAllGisu,
   useGetGisuChapterWithSchools,
   useGetUnassignedSchools,
 } from '../../hooks/useManagementQueries'
@@ -37,23 +38,29 @@ const parsePayload = (event: React.DragEvent) => {
   }
 }
 
-const MatchingBranch = () => {
-  const { data: gisuData } = useGetAllGisu()
-  const { usePatchAssignSchools, usePatchUnassignSchools } = useManagementMutations()
-  const { mutate: assignSchool } = usePatchAssignSchools()
-  const { mutate: unassignSchool } = usePatchUnassignSchools()
+type MatchingBranchContentProps = {
+  dropdown: ReactElement
+  gisuId: string
+  initialBranches: Array<ChapterType>
+  initialWaitingSchools: Array<UniversitySimple>
+  assignSchool: (payload: {
+    chapterId: Branch['id']
+    schoolId: UniversitySimple['schoolId']
+  }) => void
+  unassignSchool: (payload: { gisuId: string; schoolId: UniversitySimple['schoolId'] }) => void
+}
 
-  const [baseGisu, setBaseGisu] = useState<Option<string>>({
-    label: gisuData.result.gisuList[0].generation,
-    id: gisuData.result.gisuList[0].gisuId,
-  })
-  const { data: chapterData } = useGetGisuChapterWithSchools(baseGisu.id as string)
-
-  const { data: unassignedSchool } = useGetUnassignedSchools(baseGisu.id as string)
-  const [branches, setBranches] = useState<Array<ChapterType>>(chapterData.result.chapters)
-  const [waitingSchools, setWaitingSchools] = useState<Array<UniversitySimple>>(
-    unassignedSchool.result.schools,
-  )
+const MatchingBranchContent = ({
+  dropdown,
+  gisuId,
+  initialBranches,
+  initialWaitingSchools,
+  assignSchool,
+  unassignSchool,
+}: MatchingBranchContentProps) => {
+  const [branches, setBranches] = useState<Array<ChapterType>>(initialBranches)
+  const [waitingSchools, setWaitingSchools] =
+    useState<Array<UniversitySimple>>(initialWaitingSchools)
 
   const removeFromWaiting = (schoolId: UniversitySimple['schoolId']) =>
     waitingSchools.filter((school) => school.schoolId !== schoolId)
@@ -132,7 +139,7 @@ const MatchingBranch = () => {
     if (!movedSchool) return
     setBranches(nextBranches)
     setWaitingSchools(addToWaiting(movedSchool))
-    unassignSchool({ gisuId: baseGisu.id as string, schoolId: movedSchool.schoolId })
+    unassignSchool({ gisuId, schoolId: movedSchool.schoolId })
   }
 
   // X 버튼으로 지부에서 제거: 대기 영역으로 이동과 동일하게 처리.
@@ -144,7 +151,7 @@ const MatchingBranch = () => {
     if (!movedSchool) return
     setBranches(nextBranches)
     setWaitingSchools(addToWaiting(movedSchool))
-    unassignSchool({ gisuId: baseGisu.id as string, schoolId: movedSchool.schoolId })
+    unassignSchool({ gisuId, schoolId: movedSchool.schoolId })
   }
 
   return (
@@ -155,16 +162,7 @@ const MatchingBranch = () => {
             <TabTitle>지부 매칭</TabTitle>
             <TabSubtitle>지부별 학교를 설정할 수 있습니다.</TabSubtitle>
           </Flex>
-          <Dropdown
-            options={gisuData.result.gisuList.map((gisu) => ({
-              label: `${gisu.generation}기`,
-              id: gisu.gisuId,
-            }))}
-            css={{ width: '180px', alignSelf: 'flex-start' }}
-            placeholder="기수 선택"
-            value={{ label: baseGisu.label + '기', id: baseGisu.id }}
-            onChange={(selected) => setBaseGisu(selected)}
-          />
+          <Flex width={180}>{dropdown}</Flex>
         </S.Header>
 
         {branches.map((branch) => (
@@ -174,7 +172,12 @@ const MatchingBranch = () => {
             onDragOver={(event) => event.preventDefault()}
             onDrop={handleDropToBranch(branch.chapterId)}
             gap={22}
-            css={{ padding: '20px', height: 'fit-content', marginBottom: 24 }}
+            alignItems="flex-start"
+            css={{
+              padding: '20px',
+              height: 'fit-content',
+              marginBottom: 24,
+            }}
           >
             <S.BranchHeader>
               <h2>{branch.chapterName}</h2>
@@ -234,6 +237,39 @@ const MatchingBranch = () => {
         </S.WaitingBox>
       </S.Sidebar>
     </S.Container>
+  )
+}
+
+const MatchingBranchData = () => {
+  const { usePatchAssignSchools, usePatchUnassignSchools } = useManagementMutations()
+  const { mutate: assignSchool } = usePatchAssignSchools()
+  const { mutate: unassignSchool } = usePatchUnassignSchools()
+  const gisuDropdown = useGisuDropdown({
+    includeAllOption: false,
+    defaultToFirst: true,
+  })
+  const gisuId = gisuDropdown.value?.id as string
+  const { data: chapterData } = useGetGisuChapterWithSchools(gisuId)
+  const { data: unassignedSchool } = useGetUnassignedSchools(gisuId)
+
+  return (
+    <MatchingBranchContent
+      key={gisuId}
+      dropdown={gisuDropdown.Dropdown}
+      gisuId={gisuId}
+      initialBranches={chapterData.result.chapters}
+      initialWaitingSchools={unassignedSchool.result.schools}
+      assignSchool={assignSchool}
+      unassignSchool={unassignSchool}
+    />
+  )
+}
+
+const MatchingBranch = () => {
+  return (
+    <AsyncBoundary fallback={<SuspenseFallback label="지부 매칭 정보를 불러오는 중입니다." />}>
+      <MatchingBranchData />
+    </AsyncBoundary>
   )
 }
 

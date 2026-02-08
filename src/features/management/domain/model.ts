@@ -124,3 +124,8 @@ export type ChapterType = {
   chapterName: string
   schools: Array<UniversitySimple>
 }
+
+export type ChapterMiniType = {
+  id: string
+  name: string
+}

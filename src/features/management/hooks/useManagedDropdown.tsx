@@ -1,0 +1,186 @@
+import { useMemo, useState } from 'react'
+
+import type { Option } from '@/shared/types/form'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
+
+import { useGetAllGisu, useGetAllSchools, useGetChapters } from './useManagementQueries'
+
+type UseManagedDropdownConfig = {
+  placeholder?: string
+  includeAllOption?: boolean
+  allLabel?: string
+  defaultToFirst?: boolean
+}
+
+type UseManagedDropdownResult = {
+  value: Option<string> | undefined
+  setValue: (value: Option<string> | undefined) => void
+  options: Array<Option<string>>
+  Dropdown: React.ReactElement
+}
+
+const ALL_ID = '0'
+
+const buildOptions = <T,>(
+  items: Array<T>,
+  mapLabel: (item: T) => string,
+  mapId: (item: T) => string,
+  allLabel: string,
+  includeAllOption: boolean,
+): Array<Option<string>> => [
+  ...(includeAllOption ? [{ label: allLabel, id: ALL_ID }] : []),
+  ...items.map((item) => ({
+    label: mapLabel(item),
+    id: mapId(item),
+  })),
+]
+
+export const useSchoolDropdown = (
+  config: UseManagedDropdownConfig = {},
+): UseManagedDropdownResult => {
+  const {
+    placeholder = '전체 학교',
+    includeAllOption = true,
+    allLabel = '-- 전체 학교 --',
+    defaultToFirst = false,
+  } = config
+  const { data } = useGetAllSchools()
+  const [value, setValueState] = useState<Option<string> | undefined>()
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const options = useMemo(
+    () =>
+      buildOptions(
+        data.result.schools,
+        (school) => school.schoolName,
+        (school) => school.schoolId,
+        allLabel,
+        includeAllOption,
+      ),
+    [allLabel, data.result.schools, includeAllOption],
+  )
+  const defaultValue = useMemo(() => {
+    if (!defaultToFirst || options.length === 0) return undefined
+    return options.find((option) => option.id !== ALL_ID)
+  }, [defaultToFirst, options])
+  const selectedValue = !hasUserSelected && value === undefined ? defaultValue : value
+  const setValue = (next: Option<string> | undefined) => {
+    setHasUserSelected(true)
+    setValueState(next)
+  }
+
+  return {
+    value: selectedValue,
+    setValue,
+    options,
+    Dropdown: (
+      <Dropdown
+        options={options}
+        placeholder={placeholder}
+        value={selectedValue}
+        onChange={(option) =>
+          setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
+        }
+      />
+    ),
+  }
+}
+
+export const useChapterDropdown = (
+  config: UseManagedDropdownConfig = {},
+): UseManagedDropdownResult => {
+  const {
+    placeholder = '전체 지부',
+    includeAllOption = true,
+    allLabel = '-- 전체 지부 --',
+    defaultToFirst = false,
+  } = config
+  const { data } = useGetChapters()
+  const [value, setValueState] = useState<Option<string> | undefined>()
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const options = useMemo(
+    () =>
+      buildOptions(
+        data.result.chapters,
+        (chapter) => chapter.name,
+        (chapter) => chapter.id,
+        allLabel,
+        includeAllOption,
+      ),
+    [allLabel, data.result.chapters, includeAllOption],
+  )
+  const defaultValue = useMemo(() => {
+    if (!defaultToFirst || options.length === 0) return undefined
+    return options.find((option) => option.id !== ALL_ID)
+  }, [defaultToFirst, options])
+  const selectedValue = !hasUserSelected && value === undefined ? defaultValue : value
+  const setValue = (next: Option<string> | undefined) => {
+    setHasUserSelected(true)
+    setValueState(next)
+  }
+
+  return {
+    value: selectedValue,
+    setValue,
+    options,
+    Dropdown: (
+      <Dropdown
+        options={options}
+        placeholder={placeholder}
+        value={selectedValue}
+        onChange={(option) =>
+          setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
+        }
+      />
+    ),
+  }
+}
+
+export const useGisuDropdown = (
+  config: UseManagedDropdownConfig = {},
+): UseManagedDropdownResult => {
+  const {
+    placeholder = '전체 기수',
+    includeAllOption = true,
+    allLabel = '-- 전체 기수 --',
+    defaultToFirst = false,
+  } = config
+  const { data } = useGetAllGisu()
+  const [value, setValueState] = useState<Option<string> | undefined>()
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const options = useMemo(
+    () =>
+      buildOptions(
+        data.result.gisuList,
+        (gisu) => `${gisu.generation}기`,
+        (gisu) => gisu.gisuId,
+        allLabel,
+        includeAllOption,
+      ),
+    [allLabel, data.result.gisuList, includeAllOption],
+  )
+  const defaultValue = useMemo(() => {
+    if (!defaultToFirst || options.length === 0) return undefined
+    return options.find((option) => option.id !== ALL_ID)
+  }, [defaultToFirst, options])
+  const selectedValue = !hasUserSelected && value === undefined ? defaultValue : value
+  const setValue = (next: Option<string> | undefined) => {
+    setHasUserSelected(true)
+    setValueState(next)
+  }
+
+  return {
+    value: selectedValue,
+    setValue,
+    options,
+    Dropdown: (
+      <Dropdown
+        options={options}
+        placeholder={placeholder}
+        value={selectedValue}
+        onChange={(option) =>
+          setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
+        }
+      />
+    ),
+  }
+}
