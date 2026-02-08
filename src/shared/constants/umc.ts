@@ -19,3 +19,5 @@ export type RECRUITING_SCHEDULE_TYPE =
   | 'FINAL_RESULT_AT'
 
 export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'
+
+export type LinkType = 'KAKAO' | 'YOUTUBE' | 'INSTAGRAM'

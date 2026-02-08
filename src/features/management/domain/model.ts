@@ -4,6 +4,8 @@
  */
 
 import type { PartType } from '@/features/auth/domain'
+import type { LinkType } from '@/shared/constants/umc'
+import type { Option } from '@/shared/types/form'
 
 import type {
   EVALUATION_DOCUMENT_CONFIG,
@@ -87,4 +89,11 @@ export type Workbook = {
   missionType: string
   releasedAt: string
   isReleased: boolean
+}
+
+export type LinkTypeOption = Option<LinkType>
+export type LinkItem = {
+  title: string
+  url: string
+  type?: LinkTypeOption | null
 }

@@ -29,8 +29,8 @@ export const TabSubtitle = styled.span`
 export const Form = styled.form`
   width: 100%;
   gap: 32px;
-  height: 440px;
   display: flex;
+  height: fit-content;
   flex-direction: column;
 `
 
@@ -73,7 +73,7 @@ export const FileWrapper = styled(Flex)`
   cursor: pointer;
   border: 2px dashed ${theme.colors.gray[600]};
   border-radius: 6px;
-  height: 100px;
+  min-height: 150px;
   background-color: ${theme.colors.black};
   color: ${theme.colors.gray[500]};
   ${theme.typography.B4.Rg}
@@ -104,7 +104,7 @@ export const FileWrapper = styled(Flex)`
 
 export const TextAreaWrapper = styled(Flex)`
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 `
 
 export const SubmitButtonWrapper = styled(Flex)`
@@ -217,5 +217,80 @@ export const SchoolProfileInfo = styled.div`
       border-radius: 50%;
       background-color: ${theme.colors.lime};
     }
+  }
+`
+export const ExternalLinkWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  gap: 8px;
+  background-color: ${theme.colors.black};
+  border: 2px dashed ${theme.colors.gray[600]};
+  padding: 13px 22px;
+`
+
+export const LinkPreviewList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+`
+export const LinkPreviewItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 4px;
+  padding: 10px 25px;
+  background-color: ${theme.colors.black};
+  border: 1px solid ${theme.colors.gray[600]};
+  border-radius: 8px;
+`
+
+export const LinkTitleText = styled.span`
+  ${theme.typography.C4.Rg};
+  color: ${theme.colors.lime};
+`
+
+export const LinkUrlText = styled.span`
+  ${theme.typography.C5.Rg};
+  color: ${theme.colors.gray[300]};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+export const AddLink = styled.button`
+  background-color: ${theme.colors.black};
+  color: ${theme.colors.lime};
+  border: none;
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  ${theme.typography.B3.Rg}
+  .icon {
+    border-radius: 50%;
+    border: 1px solid ${theme.colors.lime};
+    width: 20px;
+    height: 20px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+  .description {
+    ${theme.typography.C5.Rg}
+    color: ${theme.colors.gray[500]};
   }
 `

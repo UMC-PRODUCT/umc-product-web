@@ -171,3 +171,64 @@ export const ActivityInfo = styled.div<{ isActive: boolean }>`
     color: ${({ isActive }) => (isActive ? theme.colors.white : theme.colors.gray[300])};
   }
 `
+
+export const AddLink = styled.button`
+  background-color: ${theme.colors.black};
+  color: ${theme.colors.lime};
+  border: 1px dashed ${theme.colors.lime};
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${theme.typography.C5.Rg}
+  span {
+    border-radius: 50%;
+    border: 1px solid ${theme.colors.lime};
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  svg {
+    width: 6px;
+    height: 6px;
+  }
+`
+
+export const LinkPreviewList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+`
+
+export const LinkPreviewItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 4px;
+  padding: 10px 25px;
+  background-color: ${theme.colors.black};
+  border: 1px solid ${theme.colors.gray[600]};
+  border-radius: 8px;
+`
+
+export const LinkTitleText = styled.span`
+  ${theme.typography.C4.Rg};
+  color: ${theme.colors.lime};
+`
+
+export const LinkUrlText = styled.span`
+  ${theme.typography.C5.Rg};
+  color: ${theme.colors.gray[300]};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`

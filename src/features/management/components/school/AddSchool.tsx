@@ -3,14 +3,18 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import Upload from '@/shared/assets/icons/arrow_up_circle.svg?react'
+import Close from '@/shared/assets/icons/close.svg?react'
+import Plus from '@/shared/assets/icons/plus.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button/Button'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label/Label'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
+import type { LinkItem, LinkTypeOption } from '../../domain/model'
 import type { SchoolRegisterForm } from '../../schemas/management'
 import { schoolRegisterSchema } from '../../schemas/management'
 import RegisterConfirm from '../modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
@@ -22,8 +26,19 @@ type ModalState = {
   link: string
 }
 
+const linkTypeOptions: Array<LinkTypeOption> = [
+  { id: '1', label: 'KAKAO' },
+  { id: '2', label: 'YOUTUBE' },
+  { id: '3', label: 'INSTAGRAM' },
+]
+
 const AddSchool = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [linkType, setLinkType] = useState<LinkTypeOption | null>(null)
+  const [links, setLinks] = useState<Array<LinkItem>>([])
+  const [linkTitle, setLinkTitle] = useState('')
+  const [linkUrl, setLinkUrl] = useState('')
+  const [openAddLink, setOpenAddLink] = useState(false)
 
   const handleFileInputChange = (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -58,6 +73,17 @@ const AddSchool = () => {
     setModal((prev) => ({ ...prev, isOpen: false }))
   }
 
+  const handleAddLink = () => {
+    const trimmedTitle = linkTitle.trim()
+    const trimmedUrl = linkUrl.trim()
+    if (!trimmedTitle || !trimmedUrl || !linkType) return
+
+    setLinks((prev) => [...prev, { title: trimmedTitle, url: trimmedUrl, type: linkType }])
+    setLinkTitle('')
+    setLinkUrl('')
+    setLinkType(null)
+    setOpenAddLink(false)
+  }
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -80,30 +106,29 @@ const AddSchool = () => {
                 {...register('schoolName')}
               />
             </S.InputRow>
-            <S.FileWrapper
-              alignItems="center"
-              justifyContent="center"
-              gap={6}
-              flexDirection="column"
-              onClick={handleFileWrapperClick}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={(event) => handleFileInputChange(event.target.files)}
-                multiple
-                hidden
-              />
-              <Flex alignItems="center" gap={8} width="fit-content">
-                <Upload />
-                <span className="main-text">클릭하여 이미지 업로드</span>
-              </Flex>
-              <span className="file-notification">PNG, JPG (최대 5MB)</span>
-            </S.FileWrapper>
-            <S.TextAreaWrapper alignItems="flex-start">
-              <Label label="비고" necessary={false} />
-              <S.TextArea placeholder="추가 정보를 입력하세요. (선택)" {...register('note')} />
-            </S.TextAreaWrapper>
+            <Flex flexDirection="column" alignItems="flex-start" gap={8}>
+              <Label label="학교 프로필" necessary={false} />
+              <S.FileWrapper
+                alignItems="center"
+                justifyContent="center"
+                gap={6}
+                flexDirection="column"
+                onClick={handleFileWrapperClick}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(event) => handleFileInputChange(event.target.files)}
+                  multiple
+                  hidden
+                />
+                <Flex alignItems="center" gap={8} width="fit-content" flexDirection="column">
+                  <Upload />
+                  <span className="main-text">클릭하여 이미지 업로드</span>
+                </Flex>
+                <span className="file-notification">PNG, JPG (최대 5MB)</span>
+              </S.FileWrapper>
+            </Flex>
           </Flex>
           <Flex
             height="100%"
@@ -111,41 +136,100 @@ const AddSchool = () => {
             width={'50%'}
             flexDirection="column"
             alignItems="flex-start"
+            gap={24}
             justifyContent="space-between"
           >
-            <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <Label label="미리보기" />
-              <Section
-                variant="outline"
-                height="280px"
-                css={{ backgroundColor: theme.colors.black, borderColor: theme.colors.gray[600] }}
-              >
-                <Section
-                  variant="solid"
-                  flexDirection="row"
-                  gap={20}
-                  height="120px"
-                  padding="10px 20px"
-                  css={{
-                    flexWrap: 'wrap',
-                    [media.down(theme.breakPoints.tablet)]: {
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    },
-                  }}
-                >
-                  <S.SchoolProfile src="https://avatars.githubusercontent.com/u/111187984?v=4" />
-                  <S.SchoolProfileInfo>
-                    <h3>학교명</h3>
-                    <p>비고: 서울 캠퍼스</p>
-                    <button>
-                      <div />
-                      활성
-                    </button>
-                  </S.SchoolProfileInfo>
-                </Section>
-              </Section>
-            </Flex>
+            <LabelTextField
+              placeholder="학교에 대한 추가 정보를 입력하세요. (선택)"
+              type="text"
+              autoComplete="none"
+              label="비고"
+              necessary={false}
+            />
+            <S.TextAreaWrapper alignItems="flex-start">
+              <Label label="외부 링크" necessary={false} />
+              <S.ExternalLinkWrapper>
+                {links.length > 0 && (
+                  <S.LinkPreviewList>
+                    {links.map((link, index) => (
+                      <S.LinkPreviewItem key={`${link.url}-${index}`}>
+                        <Flex gap={4} flexDirection="column" alignItems="flex-start">
+                          <S.LinkTitleText>{link.title}</S.LinkTitleText>
+                          <S.LinkUrlText>{link.url}</S.LinkUrlText>
+                        </Flex>
+                        <Close color={theme.colors.gray[400]} width={20} />
+                      </S.LinkPreviewItem>
+                    ))}
+                  </S.LinkPreviewList>
+                )}
+
+                {!openAddLink && (
+                  <S.AddLink onClick={() => setOpenAddLink(!openAddLink)}>
+                    <span className="icon">
+                      <Plus color={theme.colors.lime} width={20} height={20} />
+                    </span>
+                    클릭하여 링크 추가
+                    <span className="description">
+                      카카오톡, 인스타그램, 유튜브 링크만 가능합니다.
+                    </span>
+                  </S.AddLink>
+                )}
+                {openAddLink && (
+                  <Flex flexDirection="column" gap={8}>
+                    <Flex
+                      gap={8}
+                      alignItems="flex-end"
+                      margin={'16px 0 2px 0'}
+                      css={{
+                        [media.down(theme.breakPoints.desktop)]: {
+                          flexDirection: 'column',
+                        },
+                      }}
+                    >
+                      <LabelTextField
+                        label="링크 제목"
+                        type="text"
+                        placeholder="링크의 제목을 입력하세요."
+                        autoComplete="none"
+                        css={{ height: 'fit-content' }}
+                        value={linkTitle}
+                        onChange={(event) => setLinkTitle(event.target.value)}
+                      />
+                      <Dropdown
+                        placeholder="Type"
+                        options={linkTypeOptions}
+                        value={linkType ?? undefined}
+                        onChange={setLinkType}
+                        css={{
+                          maxWidth: '50px',
+                          height: '50px',
+                          [media.down(theme.breakPoints.desktop)]: {
+                            maxWidth: '100%',
+                          },
+                        }}
+                      />
+                    </Flex>
+                    <LabelTextField
+                      label="URL"
+                      placeholder="URL 주소를 입력하세요."
+                      type="text"
+                      autoComplete="none"
+                      css={{ marginTop: '16px' }}
+                      value={linkUrl}
+                      onChange={(event) => setLinkUrl(event.target.value)}
+                    />
+                    <Button
+                      tone="lime"
+                      typo="C3.Md"
+                      label="링크 등록"
+                      css={{ height: '30px', marginTop: '16px' }}
+                      disabled={!linkTitle.trim() || !linkUrl.trim() || !linkType}
+                      onClick={handleAddLink}
+                    />
+                  </Flex>
+                )}
+              </S.ExternalLinkWrapper>
+            </S.TextAreaWrapper>
             <S.SubmitButtonWrapper width="120px" height="41px">
               <Button
                 type="submit"
