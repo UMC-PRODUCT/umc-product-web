@@ -63,6 +63,10 @@ export type GetTermsResponseDTO = {
   isMandatory: boolean
 }
 
+export type UpdateTermsRequestDTO = {
+  content: string
+}
+
 export type GetSchoolLinkResponseDTO = {
   kakaoLink?: string
   instagramLink?: string

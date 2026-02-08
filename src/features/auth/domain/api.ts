@@ -16,6 +16,7 @@ import type {
   RefreshResponseDTO,
   RegisterRequestDTO,
   RegisterResponseDTO,
+  UpdateTermsRequestDTO,
   VerificationCodeRequestDTO,
   VerificationCodeResponseDTO,
 } from './types'
@@ -104,6 +105,16 @@ export const getTermById = async (
 ): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
   const { data } = await axiosInstance.get(`/terms/${termId}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
+  })
+  return data
+}
+
+export const updateTerm = async (
+  termId: string,
+  requestBody: UpdateTermsRequestDTO,
+): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
+  const { data } = await axiosInstance.patch(`/terms/${termId}`, JSON.stringify(requestBody), {
+    headers: { 'Content-Type': 'application/json' },
   })
   return data
 }

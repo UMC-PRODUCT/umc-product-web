@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import { useTermsById } from '@/features/auth/hooks/register/useTerms'
@@ -59,6 +60,7 @@ const ViewTermContent = ({ termId, onClose }: { termId: string; onClose: () => v
             >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
                 components={{
                   h1: ({ node: _node, ...props }) => <S.Heading1 {...props} />,
                   h2: ({ node: _node, ...props }) => <S.Heading2 {...props} />,
