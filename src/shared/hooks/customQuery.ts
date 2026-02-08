@@ -5,6 +5,7 @@ import type {
   QueryKey,
   UseInfiniteQueryOptions,
   UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseSuspenseQueryOptions,
 } from '@tanstack/react-query'
@@ -119,14 +120,18 @@ export const useCustomInfiniteQuery = <
   })
 }
 
-export const useCustomMutation = <TData, TError, TVariables = void, TContext = unknown>(
+export const useCustomMutation = <
+  TData = unknown,
+  TError = Error,
+  TVariables = void,
+  TContext = unknown,
+>(
   mutationFn: MutationFunction<TData, TVariables>,
-  options?: UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions,
-) => {
-  const safeOptions =
-    options ?? ({} as UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions)
-  const { retry, ...restOptions } = safeOptions
-
+  options?: UseMutationOptions<TData, TError, TVariables, TContext> & {
+    retry?: number | boolean
+  },
+): UseMutationResult<TData, TError, TVariables, TContext> => {
+  const { retry, ...restOptions } = options ?? {}
   return useMutation<TData, TError, TVariables, TContext>({
     mutationFn,
     retry: retry ?? MUTATION_RETRY,

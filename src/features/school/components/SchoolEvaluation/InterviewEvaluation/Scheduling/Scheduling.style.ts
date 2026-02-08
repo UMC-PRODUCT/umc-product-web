@@ -50,6 +50,7 @@ export const TimeSlotItem = styled.div<{ isActive?: boolean }>`
   border-radius: 8px;
   border: 1px solid ${(props) => (props.isActive ? theme.colors.lime : theme.colors.gray[700])};
   background-color: ${theme.colors.black};
+  cursor: pointer;
   .time {
     color: #fff;
     ${theme.typography.B3.Md};

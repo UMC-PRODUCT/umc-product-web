@@ -13,9 +13,14 @@ import { EVALUATION_TAB } from '../domain'
 interface SchoolEvaluationProps {
   activeTab: (typeof EVALUATION_TAB)[number]['value']
   onTabChange: (next: (typeof EVALUATION_TAB)[number]['value']) => void
+  docsContent?: React.ReactNode
 }
 
-export const SchoolEvaluation = ({ activeTab, onTabChange }: SchoolEvaluationProps) => {
+export const SchoolEvaluation = ({
+  activeTab,
+  onTabChange,
+  docsContent,
+}: SchoolEvaluationProps) => {
   return (
     <Flex justifyContent="center">
       <PageLayout>
@@ -25,7 +30,7 @@ export const SchoolEvaluation = ({ activeTab, onTabChange }: SchoolEvaluationPro
           onValueChange={onTabChange}
           contentCss={{ padding: '22px 18px' }}
         >
-          {activeTab === 'docs' && <DocsEvaluation />}
+          {activeTab === 'docs' && (docsContent ?? <DocsEvaluation />)}
           {activeTab === 'interview' && <InterviewEvaluation />}
           {activeTab === 'final' && <FinalEvaluation />}
         </Tab>

@@ -30,6 +30,7 @@ import { Route as appManagementCandidateIndexRouteImport } from './routes/(app)/
 import { Route as appManagementBranchIndexRouteImport } from './routes/(app)/management/branch/index'
 import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
 import { Route as appSchoolRecruitingRecruitingIdIndexRouteImport } from './routes/(app)/school/recruiting/$recruitingId/index'
+import { Route as appSchoolEvaluationRecruitmentIdIndexRouteImport } from './routes/(app)/school/evaluation/$recruitmentId/index'
 import { Route as appDashboardRecruitmentIdResumeIdIndexRouteImport } from './routes/(app)/dashboard/$recruitmentId/$resumeId/index'
 import { Route as appApplyRecruitmentIdResumeIdIndexRouteImport } from './routes/(app)/apply/$recruitmentId/$resumeId/index'
 import { Route as appSchoolRecruitingRecruitingIdPublishedRouteImport } from './routes/(app)/school/recruiting/$recruitingId/published'
@@ -148,6 +149,12 @@ const appSchoolRecruitingRecruitingIdIndexRoute =
     path: '/recruiting/$recruitingId/',
     getParentRoute: () => appSchoolRouteRoute,
   } as any)
+const appSchoolEvaluationRecruitmentIdIndexRoute =
+  appSchoolEvaluationRecruitmentIdIndexRouteImport.update({
+    id: '/evaluation/$recruitmentId/',
+    path: '/evaluation/$recruitmentId/',
+    getParentRoute: () => appSchoolRouteRoute,
+  } as any)
 const appDashboardRecruitmentIdResumeIdIndexRoute =
   appDashboardRecruitmentIdResumeIdIndexRouteImport.update({
     id: '/dashboard/$recruitmentId/$resumeId/',
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/apply/$recruitmentId/$resumeId': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/dashboard/$recruitmentId/$resumeId': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/school/evaluation/$recruitmentId': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -223,6 +231,7 @@ export interface FileRoutesByTo {
   '/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/apply/$recruitmentId/$resumeId': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/dashboard/$recruitmentId/$resumeId': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/school/evaluation/$recruitmentId': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesById {
@@ -251,6 +260,7 @@ export interface FileRoutesById {
   '/(app)/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/(app)/apply/$recruitmentId/$resumeId/': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/(app)/dashboard/$recruitmentId/$resumeId/': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/(app)/school/evaluation/$recruitmentId/': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/(app)/school/recruiting/$recruitingId/': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/school/recruiting/$recruitingId/published'
     | '/apply/$recruitmentId/$resumeId'
     | '/dashboard/$recruitmentId/$resumeId'
+    | '/school/evaluation/$recruitmentId'
     | '/school/recruiting/$recruitingId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/school/recruiting/$recruitingId/published'
     | '/apply/$recruitmentId/$resumeId'
     | '/dashboard/$recruitmentId/$resumeId'
+    | '/school/evaluation/$recruitmentId'
     | '/school/recruiting/$recruitingId'
   id:
     | '__root__'
@@ -332,6 +344,7 @@ export interface FileRouteTypes {
     | '/(app)/school/recruiting/$recruitingId/published'
     | '/(app)/apply/$recruitmentId/$resumeId/'
     | '/(app)/dashboard/$recruitmentId/$resumeId/'
+    | '/(app)/school/evaluation/$recruitmentId/'
     | '/(app)/school/recruiting/$recruitingId/'
   fileRoutesById: FileRoutesById
 }
@@ -493,6 +506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSchoolRecruitingRecruitingIdIndexRouteImport
       parentRoute: typeof appSchoolRouteRoute
     }
+    '/(app)/school/evaluation/$recruitmentId/': {
+      id: '/(app)/school/evaluation/$recruitmentId/'
+      path: '/evaluation/$recruitmentId'
+      fullPath: '/school/evaluation/$recruitmentId'
+      preLoaderRoute: typeof appSchoolEvaluationRecruitmentIdIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
     '/(app)/dashboard/$recruitmentId/$resumeId/': {
       id: '/(app)/dashboard/$recruitmentId/$resumeId/'
       path: '/dashboard/$recruitmentId/$resumeId'
@@ -551,6 +571,7 @@ interface appSchoolRouteRouteChildren {
   appSchoolRecruitingIndexRoute: typeof appSchoolRecruitingIndexRoute
   appSchoolRecruitingRecruitingIdPreviewRoute: typeof appSchoolRecruitingRecruitingIdPreviewRoute
   appSchoolRecruitingRecruitingIdPublishedRoute: typeof appSchoolRecruitingRecruitingIdPublishedRoute
+  appSchoolEvaluationRecruitmentIdIndexRoute: typeof appSchoolEvaluationRecruitmentIdIndexRoute
   appSchoolRecruitingRecruitingIdIndexRoute: typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 
@@ -562,6 +583,8 @@ const appSchoolRouteRouteChildren: appSchoolRouteRouteChildren = {
     appSchoolRecruitingRecruitingIdPreviewRoute,
   appSchoolRecruitingRecruitingIdPublishedRoute:
     appSchoolRecruitingRecruitingIdPublishedRoute,
+  appSchoolEvaluationRecruitmentIdIndexRoute:
+    appSchoolEvaluationRecruitmentIdIndexRoute,
   appSchoolRecruitingRecruitingIdIndexRoute:
     appSchoolRecruitingRecruitingIdIndexRoute,
 }

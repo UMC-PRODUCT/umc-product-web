@@ -163,8 +163,13 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     setIsEmailVerificationModalOpen(false)
   }
 
+  useEffect(() => {
+    if (accessToken) {
+      navigate({ to: '/', replace: true })
+    }
+  }, [accessToken, navigate])
+
   if (accessToken) {
-    navigate({ to: '/', replace: true })
     return null
   }
 

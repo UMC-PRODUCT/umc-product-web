@@ -7,8 +7,8 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type { GetTermsResponseDTO } from '../domain/types'
 import type { RegisterForm } from '../schemas/register'
-import { useAuth } from './register/useAuthMutations'
 import type { TermsAgreementKey } from './register/useTermsAgreement'
+import { useAuthMutation } from './useAuthMutations'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
@@ -31,7 +31,7 @@ export const useRegistrationWorkflow = ({
   onEmailSent,
   terms,
 }: RegistrationWorkflowProps) => {
-  const { useSendEmail, useVerifyCode, useRegister } = useAuth()
+  const { useSendEmail, useVerifyCode, useRegister } = useAuthMutation()
   const { mutate: sendEmailMutate } = useSendEmail()
   const { mutate: verifyCodeMutate } = useVerifyCode()
   const { mutate: registerMutate } = useRegister()

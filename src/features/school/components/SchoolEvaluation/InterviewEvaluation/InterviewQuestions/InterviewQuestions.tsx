@@ -181,6 +181,7 @@ const InterviewQuestions = () => {
               value={PART_OPTIONS.find((option) => option.id === selectedPart)}
               onChange={(option) => setSelectedPart(option.id as PartKey)}
               placeholder="파트 선택"
+              css={{ height: '40px' }}
             />
             <S.SelectionInfo>
               {selectedLabel} 질문 총 {selectedState.items.length}개

@@ -11,6 +11,7 @@ import type {
   GetSchoolLinkResponseDTO,
   GetTermsResponseDTO,
   MyInfoResponseDTO,
+  MyOAuthInfoResponseDTO,
   RefreshRequestDTO,
   RefreshResponseDTO,
   RegisterRequestDTO,
@@ -104,5 +105,30 @@ export const getTermById = async (
   const { data } = await axiosInstance.get(`/terms/${termId}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
   })
+  return data
+}
+
+export const getOAuthInfoMe = async (): Promise<MyOAuthInfoResponseDTO> => {
+  const { data } = await axiosInstance.get('/member-oauth/me')
+  return data.result
+}
+
+export const postAddOAuth = async ({
+  oAuthVerificationToken,
+}: {
+  oAuthVerificationToken: string
+}): Promise<CommonResponseDTO<MyOAuthInfoResponseDTO>> => {
+  const { data } = await axiosInstance.post('/member-oauth', {
+    oAuthVerificationToken,
+  })
+  return data
+}
+
+export const postRemoveOAuth = async ({
+  memberOAuthId,
+}: {
+  memberOAuthId: number
+}): Promise<void> => {
+  const { data } = await axiosInstance.delete(`/member-oauth/${memberOAuthId}`)
   return data
 }

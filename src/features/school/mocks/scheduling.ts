@@ -1,5 +1,5 @@
 export const TIME_SLOTS = [
-  { time: '16:00 - 16:30', count: 7, selected: true },
+  { time: '16:00 - 16:30', count: 7 },
   { time: '16:30 - 17:00', count: 8, completed: true },
   { time: '17:00 - 17:30', count: 12 },
   { time: '17:30 - 18:00', count: 13 },

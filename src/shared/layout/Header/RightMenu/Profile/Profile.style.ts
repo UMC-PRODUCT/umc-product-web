@@ -40,7 +40,7 @@ export const Modal = styled.div({
   width: 232,
   padding: 16,
   gap: 20,
-  zIndex: 10000000,
+  zIndex: 900,
   display: 'flex',
   flexDirection: 'column',
 

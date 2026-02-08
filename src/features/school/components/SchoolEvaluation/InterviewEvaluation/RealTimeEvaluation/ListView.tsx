@@ -15,8 +15,8 @@ const ListView = ({
       <FilterBar
         leftChild={
           <>
-            <Dropdown options={[]} placeholder="날짜" />
-            <Dropdown options={[]} placeholder="전체 파트" />
+            <Dropdown options={[]} placeholder="날짜" css={{ height: '40px' }} />
+            <Dropdown options={[]} placeholder="전체 파트" css={{ height: '40px' }} />
           </>
         }
         rightChild={<S.FilterNotice>* 파트 필터는 1지망 기준입니다.</S.FilterNotice>}

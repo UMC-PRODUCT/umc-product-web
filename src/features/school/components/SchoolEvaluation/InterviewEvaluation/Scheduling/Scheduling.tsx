@@ -16,7 +16,7 @@ const Scheduling = () => {
   const [availableApplicants, setAvailableApplicants] = useState(APPLICANTS.default)
   const [assignedApplicants, setAssignedApplicants] = useState<typeof APPLICANTS.assigned>([])
   const [isDragOver, setIsDragOver] = useState(false)
-
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(TIME_SLOTS[0].time)
   const handleDragStart = (id: string) => (e: DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text/plain', id)
     e.dataTransfer.effectAllowed = 'move'
@@ -79,7 +79,11 @@ const Scheduling = () => {
           <S.SectionTitle>시간대별 가능 인원</S.SectionTitle>
           <S.TimeSlotList>
             {TIME_SLOTS.map((slot) => (
-              <S.TimeSlotItem key={slot.time} isActive={slot.selected}>
+              <S.TimeSlotItem
+                key={slot.time}
+                isActive={slot.time === selectedTimeSlot}
+                onClick={() => setSelectedTimeSlot(slot.time)}
+              >
                 <span className="time">{slot.time}</span>
                 <S.CountBadge isCompleted={slot.completed}>
                   {slot.count}명 가능 {slot.completed && <S.Circle>✓</S.Circle>}
@@ -99,7 +103,7 @@ const Scheduling = () => {
             css={{ overflow: 'hidden', borderRadius: '6px' }}
           >
             <S.ContentHeader>
-              <S.SectionTitle>16:00 - 16:30 지원자 목록</S.SectionTitle>
+              <S.SectionTitle>{selectedTimeSlot} 지원자 목록</S.SectionTitle>
               <TextField
                 type="text"
                 autoComplete="none"
@@ -152,7 +156,7 @@ const Scheduling = () => {
 
           <S.InterviewerSection variant="solid" padding={'12px 17px'} css={{ borderRadius: '6px' }}>
             <S.ContentHeader>
-              <S.SectionTitle>16:00 - 16:30 면접자</S.SectionTitle>
+              <S.SectionTitle>{selectedTimeSlot} 면접자</S.SectionTitle>
               <S.Notice>* 위 목록에서 드래그하고 드롭하여 배치하세요.</S.Notice>
             </S.ContentHeader>
             <S.DropZone

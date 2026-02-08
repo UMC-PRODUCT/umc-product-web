@@ -50,6 +50,12 @@ export type MyInfoResponseDTO = {
   }>
 }
 
+export type MyOAuthInfoResponseDTO = Array<{
+  memberOAuthId: string
+  memberId: string
+  provider: 'KAKAO' | 'GOOGLE' | 'APPLE'
+}>
+
 export type GetTermsResponseDTO = {
   id: string
   title: string

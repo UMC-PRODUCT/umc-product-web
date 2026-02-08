@@ -12,6 +12,7 @@ export const ApplicantCard = styled(Section)`
   border-radius: 8px;
   height: fit-content;
   gap: 16px;
+  cursor: grab;
   .info {
     display: flex;
     gap: 48px;

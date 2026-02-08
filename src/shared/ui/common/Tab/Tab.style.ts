@@ -17,7 +17,7 @@ export const StyledList = styled(TabsPrimitive.List)`
 `
 
 export const StyledTrigger = styled(TabsPrimitive.Trigger)`
-  flex: 1;
+  width: 164px;
   border-radius: 20px 20px 0 0;
   padding: 14px 20px;
   cursor: pointer;

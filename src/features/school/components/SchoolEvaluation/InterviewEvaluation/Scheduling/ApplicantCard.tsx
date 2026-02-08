@@ -50,7 +50,7 @@ const ApplicantCard = ({
         <span className="score">{score}</span>
       </div>
       {time && <span className="time">{time}</span>}
-      {mode === 'default' && <Drag />}
+      {mode === 'default' && <Drag color={theme.colors.gray[400]} />}
       {mode === 'assigned' && !time && <Close width={22} color={theme.colors.gray[400]} />}
     </S.ApplicantCard>
   )

@@ -2,7 +2,15 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { TermsType } from '@/shared/types/umc'
 
-import { getActiveGisu, getGisuList, getMyInfo, getSchoolLink, getTerm, getTermById } from './api'
+import {
+  getActiveGisu,
+  getGisuList,
+  getMyInfo,
+  getOAuthInfoMe,
+  getSchoolLink,
+  getTerm,
+  getTermById,
+} from './api'
 
 export const authKeys = createQueryKeys('auth', {
   terms: (termsType: TermsType) => ({
@@ -16,6 +24,10 @@ export const authKeys = createQueryKeys('auth', {
   termsById: (termId: string) => ({
     queryKey: ['terms', termId],
     queryFn: () => getTermById(termId),
+  }),
+  oAuthMe: () => ({
+    queryKey: ['member', 'oauth', 'me'],
+    queryFn: () => getOAuthInfoMe(),
   }),
 })
 
