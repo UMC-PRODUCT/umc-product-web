@@ -10,14 +10,13 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import type { ChapterType, UniversitySimple } from '../../domain/model'
+import type { Branch, ChapterType, UniversitySimple } from '../../domain/model'
 import { useGisuDropdown } from '../../hooks/useManagedDropdown'
 import { useManagementMutations } from '../../hooks/useManagementMutations'
 import {
   useGetGisuChapterWithSchools,
   useGetUnassignedSchools,
 } from '../../hooks/useManagementQueries'
-import type { Branch } from '../../mocks/branch'
 import { TabSubtitle, TabTitle } from '../school/shared'
 import * as S from './MatchingBranch.style'
 

@@ -22,7 +22,8 @@ export const FaqItem = styled.div<{ $active?: boolean }>`
     opacity 0.6s ease,
     transform 0.6s ease;
 
-  &.animate {
+  &.animate,
+  &[data-animated='true'] {
     opacity: 1;
     transform: none;
   }

@@ -4,7 +4,7 @@ import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
-import type { CandidateType } from '../../mocks/candidates'
+import type { CandidateType } from '../../domain/model'
 
 type CandidateTableProps = {
   items: Array<CandidateType>

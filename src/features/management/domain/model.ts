@@ -129,3 +129,20 @@ export type ChapterMiniType = {
   id: string
   name: string
 }
+
+export interface Branch {
+  id: string
+  name: string
+  schools: Array<UniversitySimple>
+}
+export type CandidateType = {
+  id: number
+  nickname: string
+  name: string
+  school: string
+  part: Array<PartType>
+  finalResult: {
+    status: '합격' | '불합격' | '대기'
+    part: PartType
+  }
+}
