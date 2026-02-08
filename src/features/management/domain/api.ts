@@ -3,6 +3,7 @@ import type { PartType } from '@/features/auth/domain'
 import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
 
 import type {
+  ChapterType,
   Curriculum,
   GisuType,
   University,
@@ -16,6 +17,14 @@ export const getCurriculums = async (params: {
   const { data } = await axiosInstance.get('/curriculums', { params })
   return data
 }
+
+export const getAllSchools = async (): Promise<
+  CommonResponseDTO<{ schools: Array<UniversitySimple> }>
+> => {
+  const { data } = await axiosInstance.get('/schools/all')
+  return data
+}
+
 export const getSchoolsPaging = async (params: {
   page?: string
   size?: string
@@ -31,7 +40,7 @@ export const getUnassignedSchools = async ({
   gisuId,
 }: {
   gisuId: string
-}): Promise<CommonResponseDTO<Array<UniversitySimple>>> => {
+}): Promise<CommonResponseDTO<{ schools: Array<UniversitySimple> }>> => {
   const { data } = await axiosInstance.get('/schools/unassigned', { params: { gisuId } })
   return data
 }
@@ -60,12 +69,10 @@ export const getGisuChapterWithSchools = async ({
   gisuId: string
 }): Promise<
   CommonResponseDTO<{
-    chapterId: string
-    chapterName: string
-    schools: Array<UniversitySimple>
+    chapters: Array<ChapterType>
   }>
 > => {
-  const { data } = await axiosInstance.get(`/gisu/${gisuId}/chapters/schools`)
+  const { data } = await axiosInstance.get(`/chapters/with-schools`, { params: { gisuId } })
   return data
 }
 

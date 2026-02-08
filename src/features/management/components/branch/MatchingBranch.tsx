@@ -4,17 +4,25 @@ import Cancle from '@shared/assets/icons/close.svg?react'
 import Grab from '@shared/assets/icons/drag.svg?react'
 
 import { theme } from '@/shared/styles/theme'
+import type { Option } from '@/shared/types/form'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
-import type { Branch, School } from '../../mocks/branch'
-import { MOCK_BRANCHES_MATCHING, MOCK_WAITING_SCHOOLS } from '../../mocks/branch'
+import type { ChapterType, UniversitySimple } from '../../domain/model'
+import { useManagementMutations } from '../../hooks/useManagementMutations'
+import {
+  useGetAllGisu,
+  useGetGisuChapterWithSchools,
+  useGetUnassignedSchools,
+} from '../../hooks/useManagementQueries'
+import type { Branch } from '../../mocks/branch'
 import { TabSubtitle, TabTitle } from '../school/shared'
 import * as S from './MatchingBranch.style'
 
 type DragPayload = {
   source: 'branch' | 'waiting'
-  schoolId: School['id']
+  schoolId: UniversitySimple['schoolId']
   branchId?: Branch['id']
 }
 
@@ -30,14 +38,64 @@ const parsePayload = (event: React.DragEvent) => {
 }
 
 const MatchingBranch = () => {
-  const [branches, setBranches] = useState<Array<Branch>>(MOCK_BRANCHES_MATCHING)
-  const [waitingSchools, setWaitingSchools] = useState<Array<School>>(MOCK_WAITING_SCHOOLS)
+  const { data: gisuData } = useGetAllGisu()
+  const { usePatchAssignSchools, usePatchUnassignSchools } = useManagementMutations()
+  const { mutate: assignSchool } = usePatchAssignSchools()
+  const { mutate: unassignSchool } = usePatchUnassignSchools()
 
+  const [baseGisu, setBaseGisu] = useState<Option<string>>({
+    label: gisuData.result.gisuList[0].generation,
+    id: gisuData.result.gisuList[0].gisuId,
+  })
+  const { data: chapterData } = useGetGisuChapterWithSchools(baseGisu.id as string)
+
+  const { data: unassignedSchool } = useGetUnassignedSchools(baseGisu.id as string)
+  const [branches, setBranches] = useState<Array<ChapterType>>(chapterData.result.chapters)
+  const [waitingSchools, setWaitingSchools] = useState<Array<UniversitySimple>>(
+    unassignedSchool.result.schools,
+  )
+
+  const removeFromWaiting = (schoolId: UniversitySimple['schoolId']) =>
+    waitingSchools.filter((school) => school.schoolId !== schoolId)
+
+  const addToWaiting = (school: UniversitySimple) =>
+    waitingSchools.some((item) => item.schoolId === school.schoolId)
+      ? waitingSchools
+      : [...waitingSchools, school]
+
+  const removeFromBranch = (
+    sourceBranchId: Branch['id'],
+    schoolId: UniversitySimple['schoolId'],
+  ) => {
+    let moved: UniversitySimple | undefined
+    const next = branches.map((branch) => {
+      if (branch.chapterId !== sourceBranchId) return branch
+      const remaining = branch.schools.filter((school) => school.schoolId !== schoolId)
+      const found = branch.schools.find((school) => school.schoolId === schoolId)
+      if (found) moved = found
+      return { ...branch, schools: remaining }
+    })
+    return { nextBranches: next, movedSchool: moved }
+  }
+
+  const addToBranch = (
+    base: Array<ChapterType>,
+    targetBranchId: Branch['id'],
+    school: UniversitySimple,
+  ) =>
+    base.map((branch) => {
+      if (branch.chapterId !== targetBranchId) return branch
+      if (branch.schools.some((item) => item.schoolId === school.schoolId)) return branch
+      return { ...branch, schools: [...branch.schools, school] }
+    })
+
+  // 드래그 정보를 dataTransfer에 저장해 리스트 간 이동을 가능하게 함.
   const handleDragStart = (payload: DragPayload) => (event: React.DragEvent) => {
     event.dataTransfer.setData('application/json', JSON.stringify(payload))
     event.dataTransfer.effectAllowed = 'move'
   }
 
+  // 지부로 드롭: 대기/다른 지부에서 이동 후 assign 뮤테이션으로 서버 동기화.
   const handleDropToBranch = (targetBranchId: Branch['id']) => (event: React.DragEvent) => {
     event.preventDefault()
     const payload = parsePayload(event)
@@ -45,36 +103,23 @@ const MatchingBranch = () => {
 
     if (payload.source === 'branch' && payload.branchId === targetBranchId) return
 
-    let movedSchool: School | undefined
-    let nextBranches = branches
-    let nextWaiting = waitingSchools
-
     if (payload.source === 'waiting') {
-      movedSchool = waitingSchools.find((school) => school.id === payload.schoolId)
-      nextWaiting = waitingSchools.filter((school) => school.id !== payload.schoolId)
-    } else if (payload.branchId) {
-      nextBranches = branches.map((branch) => {
-        if (branch.id !== payload.branchId) return branch
-        const remaining = branch.schools.filter((school) => school.id !== payload.schoolId)
-        const found = branch.schools.find((school) => school.id === payload.schoolId)
-        if (found) movedSchool = found
-        return { ...branch, schools: remaining }
-      })
+      const moved = waitingSchools.find((school) => school.schoolId === payload.schoolId)
+      if (!moved) return
+      setBranches(addToBranch(branches, targetBranchId, moved))
+      setWaitingSchools(removeFromWaiting(payload.schoolId))
+      assignSchool({ chapterId: targetBranchId, schoolId: moved.schoolId })
+      return
     }
 
+    if (!payload.branchId) return
+    const { nextBranches, movedSchool } = removeFromBranch(payload.branchId, payload.schoolId)
     if (!movedSchool) return
-    const schoolToMove = movedSchool
-
-    nextBranches = nextBranches.map((branch) => {
-      if (branch.id !== targetBranchId) return branch
-      if (branch.schools.some((school) => school.id === schoolToMove.id)) return branch
-      return { ...branch, schools: [...branch.schools, schoolToMove] }
-    })
-
-    setBranches(nextBranches)
-    setWaitingSchools(nextWaiting)
+    setBranches(addToBranch(nextBranches, targetBranchId, movedSchool))
+    assignSchool({ chapterId: targetBranchId, schoolId: movedSchool.schoolId })
   }
 
+  // 대기 영역 드롭: 지부에서 해제하고 unassign 뮤테이션으로 서버 동기화.
   const handleDropToWaiting = (event: React.DragEvent) => {
     event.preventDefault()
     const payload = parsePayload(event)
@@ -82,87 +127,79 @@ const MatchingBranch = () => {
 
     if (payload.source === 'waiting') return
 
-    let movedSchool: School | undefined
-    const nextBranches = branches.map((branch) => {
-      if (branch.id !== payload.branchId) return branch
-      const remaining = branch.schools.filter((school) => school.id !== payload.schoolId)
-      const found = branch.schools.find((school) => school.id === payload.schoolId)
-      if (found) movedSchool = found
-      return { ...branch, schools: remaining }
-    })
-
+    if (!payload.branchId) return
+    const { nextBranches, movedSchool } = removeFromBranch(payload.branchId, payload.schoolId)
     if (!movedSchool) return
-    const schoolToMove = movedSchool
-
-    const nextWaiting = waitingSchools.some((school) => school.id === schoolToMove.id)
-      ? waitingSchools
-      : [...waitingSchools, schoolToMove]
-
     setBranches(nextBranches)
-    setWaitingSchools(nextWaiting)
+    setWaitingSchools(addToWaiting(movedSchool))
+    unassignSchool({ gisuId: baseGisu.id as string, schoolId: movedSchool.schoolId })
   }
 
-  const handleRemoveFromBranch = (branchId: Branch['id'], schoolId: School['id']) => {
-    let removedSchool: School | undefined
-    const nextBranches = branches.map((branch) => {
-      if (branch.id !== branchId) return branch
-      const remaining = branch.schools.filter((school) => school.id !== schoolId)
-      removedSchool = branch.schools.find((school) => school.id === schoolId)
-      return { ...branch, schools: remaining }
-    })
-
-    if (!removedSchool) return
-    const schoolToMove = removedSchool
-
-    const nextWaiting = waitingSchools.some((school) => school.id === schoolToMove.id)
-      ? waitingSchools
-      : [...waitingSchools, schoolToMove]
-
+  // X 버튼으로 지부에서 제거: 대기 영역으로 이동과 동일하게 처리.
+  const handleRemoveFromBranch = (
+    branchId: Branch['id'],
+    schoolId: UniversitySimple['schoolId'],
+  ) => {
+    const { nextBranches, movedSchool } = removeFromBranch(branchId, schoolId)
+    if (!movedSchool) return
     setBranches(nextBranches)
-    setWaitingSchools(nextWaiting)
+    setWaitingSchools(addToWaiting(movedSchool))
+    unassignSchool({ gisuId: baseGisu.id as string, schoolId: movedSchool.schoolId })
   }
 
   return (
     <S.Container>
       <S.MainSection>
         <S.Header>
-          <TabTitle>지부 매칭</TabTitle>
-          <TabSubtitle>지부별 학교를 설정할 수 있습니다.</TabSubtitle>
+          <Flex flexDirection="column" gap="4px" alignItems="flex-start" width="fit-content">
+            <TabTitle>지부 매칭</TabTitle>
+            <TabSubtitle>지부별 학교를 설정할 수 있습니다.</TabSubtitle>
+          </Flex>
+          <Dropdown
+            options={gisuData.result.gisuList.map((gisu) => ({
+              label: `${gisu.generation}기`,
+              id: gisu.gisuId,
+            }))}
+            css={{ width: '180px', alignSelf: 'flex-start' }}
+            placeholder="기수 선택"
+            value={{ label: baseGisu.label + '기', id: baseGisu.id }}
+            onChange={(selected) => setBaseGisu(selected)}
+          />
         </S.Header>
 
         {branches.map((branch) => (
           <Section
             variant="solid"
-            key={branch.id}
+            key={branch.chapterId}
             onDragOver={(event) => event.preventDefault()}
-            onDrop={handleDropToBranch(branch.id)}
+            onDrop={handleDropToBranch(branch.chapterId)}
             gap={22}
             css={{ padding: '20px', height: 'fit-content', marginBottom: 24 }}
           >
             <S.BranchHeader>
-              <h2>{branch.name}</h2>
+              <h2>{branch.chapterName}</h2>
               <span>{branch.schools.length}개 학교</span>
             </S.BranchHeader>
             <S.SchoolGrid>
               {branch.schools.map((school) => (
                 <Flex
-                  key={school.id}
+                  key={school.schoolId}
                   draggable
                   onDragStart={handleDragStart({
                     source: 'branch',
-                    schoolId: school.id,
-                    branchId: branch.id,
+                    schoolId: school.schoolId,
+                    branchId: branch.chapterId,
                   })}
                 >
                   <span css={{ cursor: 'grab', width: 22, height: 22 }}>
                     <Grab color={theme.colors.gray[400]} />
                   </span>
                   <S.SchoolBadge>
-                    <span className="school-name">{school.name}</span>
+                    <span className="school-name">{school.schoolName}</span>
                     <button
                       type="button"
                       className="delete-btn"
-                      onClick={() => handleRemoveFromBranch(branch.id, school.id)}
+                      onClick={() => handleRemoveFromBranch(branch.chapterId, school.schoolId)}
                     >
                       <Cancle width={10} height={10} color="white" />
                     </button>
@@ -181,15 +218,15 @@ const MatchingBranch = () => {
           <Flex flexDirection="column" gap="12px" width={'fit-content'}>
             {waitingSchools.map((school) => (
               <Flex
-                key={school.id}
+                key={school.schoolId}
                 alignItems="center"
                 height={'fit-content'}
                 draggable
-                onDragStart={handleDragStart({ source: 'waiting', schoolId: school.id })}
+                onDragStart={handleDragStart({ source: 'waiting', schoolId: school.schoolId })}
               >
                 <Grab color={theme.colors.lime} css={{ cursor: 'grab', width: 22, height: 22 }} />
                 <S.WaitingItem>
-                  <span className="school-name">{school.name}</span>
+                  <span className="school-name">{school.schoolName}</span>
                 </S.WaitingItem>
               </Flex>
             ))}

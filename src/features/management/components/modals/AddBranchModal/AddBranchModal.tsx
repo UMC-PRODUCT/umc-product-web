@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { UNI_LIST_MOCK } from '@/features/management/mocks/universities'
+import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
+import { useGetUnassignedSchools } from '@/features/management/hooks/useManagementQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
@@ -13,20 +16,59 @@ import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import * as S from './AddBranchModal.style'
 
-const AddBranchModal = ({ onClose }: { onClose: () => void }) => {
+const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: string }) => {
+  const queryClient = useQueryClient()
   const [selectedSchools, setSelectedSchools] = useState<Array<Option<string>>>([])
-
+  const { data: schoolData } = useGetUnassignedSchools(gisuId)
+  const { usePostChapter } = useManagementMutations()
+  const { mutate: postChapterMutate } = usePostChapter()
+  const { register, handleSubmit, setValue } = useForm<{
+    chapterName: string
+    schoolIds: Array<string>
+  }>({
+    defaultValues: { chapterName: '', schoolIds: [] },
+  })
   const handleSelectSchool = (option: Option<string>) => {
     setSelectedSchools((prev) => {
       if (prev.some((school) => school.id === option.id)) {
         return prev
       }
-      return [...prev, option]
+      const next = [...prev, option]
+      setValue(
+        'schoolIds',
+        next.map((school) => String(school.id)),
+      )
+      return next
     })
   }
 
   const handleRemoveSchool = (id: Option<string>['id']) => {
-    setSelectedSchools((prev) => prev.filter((school) => school.id !== id))
+    setSelectedSchools((prev) => {
+      const next = prev.filter((school) => school.id !== id)
+      setValue(
+        'schoolIds',
+        next.map((school) => String(school.id)),
+      )
+      return next
+    })
+  }
+
+  const onSubmit = (data: { chapterName: string; schoolIds: Array<string> }) => {
+    postChapterMutate(
+      {
+        name: data.chapterName,
+        schoolIds: data.schoolIds,
+        gisuId,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['management', 'gisuChapterWithSchools', gisuId],
+          })
+          onClose()
+        },
+      },
+    )
   }
 
   return (
@@ -55,13 +97,15 @@ const AddBranchModal = ({ onClose }: { onClose: () => void }) => {
                 </Modal.Close>
               </Flex>
             </Modal.Header>
-            <Flex
+            <form
+              onSubmit={handleSubmit(onSubmit)}
               css={{
                 marginTop: '24px',
                 gap: '30px',
                 flex: 1,
                 flexDirection: 'column',
                 width: '100%',
+                display: 'flex',
               }}
             >
               <LabelTextField
@@ -70,10 +114,14 @@ const AddBranchModal = ({ onClose }: { onClose: () => void }) => {
                 label="지부 이름"
                 necessary={true}
                 placeholder="지부 이름을 입력하세요."
+                {...register('chapterName')}
               />
               <LabelDropdown
                 placeholder="해당 지부의 소속 학교를 선택하세요. (추후 추가 가능)"
-                options={UNI_LIST_MOCK}
+                options={schoolData.result.schools.map((school) => ({
+                  id: school.schoolId,
+                  label: school.schoolName,
+                }))}
                 label="소속 학교"
                 onChange={handleSelectSchool}
               />
@@ -97,21 +145,21 @@ const AddBranchModal = ({ onClose }: { onClose: () => void }) => {
                   ))}
                 </Flex>
               </Flex>
-            </Flex>
 
-            <Modal.Footer>
-              <S.FooterWrapper>
-                <Button typo="C3.Md" tone="gray" label="취소하기" onClick={onClose} />
-                <Button
-                  type="submit"
-                  tone="lime"
-                  typo="C3.Md"
-                  variant="solid"
-                  label="생성하기"
-                  css={{ width: 'fit-content', padding: '6px 18px' }}
-                />
-              </S.FooterWrapper>
-            </Modal.Footer>
+              <Modal.Footer>
+                <S.FooterWrapper>
+                  <Button typo="C3.Md" tone="gray" label="취소하기" onClick={onClose} />
+                  <Button
+                    type="submit"
+                    tone="lime"
+                    typo="C3.Md"
+                    variant="solid"
+                    label="생성하기"
+                    css={{ width: 'fit-content', padding: '6px 18px' }}
+                  />
+                </S.FooterWrapper>
+              </Modal.Footer>
+            </form>
           </S.ModalContentWrapper>
         </Modal.Content>
       </Modal.Portal>

@@ -1,15 +1,19 @@
 import { useState } from 'react'
 
 import { TabSubtitle, TabTitle } from '@/shared/styles/shared'
+import type { Option } from '@/shared/types/form'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import { MOCK_BRANCHES } from '../../mocks/branch'
+import { useGetAllGisu, useGetGisuChapterWithSchools } from '../../hooks/useManagementQueries'
 import AddBranchModal from '../modals/AddBranchModal/AddBranchModal'
 import DeleteBranchConfirm from '../modals/DeleteBranchConfirm/DeleteBranchConfirm'
 import * as S from './AddBranch.style'
 
-const AddBranch = () => {
+const AddBranchContent = ({ baseGisu }: { baseGisu: Option<string> }) => {
+  const { data } = useGetGisuChapterWithSchools(baseGisu.id as string)
   const [isModalOpen, setIsModalOpen] = useState<{
     isOpen: boolean
     modalName: 'create' | 'delete' | null
@@ -21,6 +25,60 @@ const AddBranch = () => {
   const handleCreate = () => setIsModalOpen({ isOpen: true, modalName: 'create' })
 
   return (
+    <S.GridContainer>
+      {/* 1. 지부 생성 버튼 카드 */}
+      <S.AddCard onClick={handleCreate}>
+        <S.PlusIcon>+</S.PlusIcon>
+        <S.AddText>지부 생성</S.AddText>
+      </S.AddCard>
+
+      {/* 2. 기존 지부 카드 목록 */}
+      {data.result.chapters.map((branch) => (
+        <S.BranchCard
+          key={branch.chapterId}
+          variant="solid"
+          height={'280px'}
+          padding="24px"
+          gap={'10px'}
+        >
+          <S.CardHeader>
+            <S.BranchName>{branch.chapterName}</S.BranchName>
+            <S.CloseButton onClick={() => setIsModalOpen({ isOpen: true, modalName: 'delete' })}>
+              ✕
+            </S.CloseButton>
+          </S.CardHeader>
+          <S.SchoolTagContainer>
+            {branch.schools.map((school, idx) => (
+              <S.SchoolTag key={idx}>{school.schoolName}</S.SchoolTag>
+            ))}
+          </S.SchoolTagContainer>
+          <S.SchoolCountText>총 {branch.schools.length}개 학교</S.SchoolCountText>
+        </S.BranchCard>
+      ))}
+      {isModalOpen.isOpen && isModalOpen.modalName === 'create' && (
+        <AddBranchModal
+          onClose={() => setIsModalOpen({ isOpen: false, modalName: null })}
+          gisuId={baseGisu.id as string}
+        />
+      )}
+      {isModalOpen.isOpen && isModalOpen.modalName === 'delete' && (
+        <DeleteBranchConfirm
+          branchId="1"
+          onClose={() => setIsModalOpen({ isOpen: false, modalName: null })}
+        />
+      )}
+    </S.GridContainer>
+  )
+}
+
+const AddBranch = () => {
+  const { data: gisuData } = useGetAllGisu()
+
+  const [baseGisu, setBaseGisu] = useState<Option<string>>({
+    label: gisuData.result.gisuList[0].generation,
+    id: gisuData.result.gisuList[0].gisuId,
+  })
+  return (
     <Flex flexDirection="column" gap="24px">
       {/* 헤더 섹션 */}
       <Flex flexDirection="column" alignItems="flex-start" gap="4px">
@@ -30,56 +88,21 @@ const AddBranch = () => {
 
       {/* 기수 선택 드롭다운 */}
       <Dropdown
-        options={[
-          { label: '10기', id: '1' },
-          { label: '9기 (현재)', id: '2' },
-          { label: '8기', id: '3' },
-        ]}
+        options={gisuData.result.gisuList.map((gisu) => ({
+          label: `${gisu.generation}기`,
+          id: gisu.gisuId,
+        }))}
         css={{ width: '180px', alignSelf: 'flex-start' }}
         placeholder="기수 선택"
+        value={{ label: baseGisu.label + '기', id: baseGisu.id }}
+        onChange={(selected) => setBaseGisu(selected)}
       />
-
-      {/* 그리드 레이아웃 */}
-      <S.GridContainer>
-        {/* 1. 지부 생성 버튼 카드 */}
-        <S.AddCard onClick={handleCreate}>
-          <S.PlusIcon>+</S.PlusIcon>
-          <S.AddText>지부 생성</S.AddText>
-        </S.AddCard>
-
-        {/* 2. 기존 지부 카드 목록 */}
-        {MOCK_BRANCHES.map((branch) => (
-          <S.BranchCard
-            key={branch.id}
-            variant="solid"
-            height={'280px'}
-            padding="24px"
-            gap={'10px'}
-          >
-            <S.CardHeader>
-              <S.BranchName>{branch.name}</S.BranchName>
-              <S.CloseButton onClick={() => setIsModalOpen({ isOpen: true, modalName: 'delete' })}>
-                ✕
-              </S.CloseButton>
-            </S.CardHeader>
-            <S.SchoolTagContainer>
-              {branch.schools.map((school, idx) => (
-                <S.SchoolTag key={idx}>{school}</S.SchoolTag>
-              ))}
-            </S.SchoolTagContainer>
-            <S.SchoolCountText>총 {branch.totalNum}개 학교</S.SchoolCountText>
-          </S.BranchCard>
-        ))}
-      </S.GridContainer>
-      {isModalOpen.isOpen && isModalOpen.modalName === 'create' && (
-        <AddBranchModal onClose={() => setIsModalOpen({ isOpen: false, modalName: null })} />
-      )}
-      {isModalOpen.isOpen && isModalOpen.modalName === 'delete' && (
-        <DeleteBranchConfirm
-          branchId="1"
-          onClose={() => setIsModalOpen({ isOpen: false, modalName: null })}
-        />
-      )}
+      <AsyncBoundary
+        fallback={<SuspenseFallback label="지부 정보를 불러오는 중입니다." />}
+        errorFallback={() => <div>지부 정보를 불러오는 중 오류가 발생했습니다.</div>}
+      >
+        <AddBranchContent baseGisu={baseGisu} />
+      </AsyncBoundary>
     </Flex>
   )
 }

@@ -13,6 +13,11 @@ export function useGetAllGisu() {
   return useCustomSuspenseQuery(query.queryKey, query.queryFn)
 }
 
+export function useGetAllSchools() {
+  const query = managementKeys.allSchools()
+  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+}
+
 export function useGetGisuChapterWithSchools(gisuId: string) {
   const query = managementKeys.gisuChapterWithSchools(gisuId)
   return useCustomSuspenseQuery(query.queryKey, query.queryFn)

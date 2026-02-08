@@ -119,3 +119,8 @@ export type UniversityFullType = University & {
   createdAt: string
   updatedAt: string
 }
+export type ChapterType = {
+  chapterId: string
+  chapterName: string
+  schools: Array<UniversitySimple>
+}

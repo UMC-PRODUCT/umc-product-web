@@ -4,6 +4,7 @@ import type { PartType } from '@/features/auth/domain'
 
 import {
   getAllGisu,
+  getAllSchools,
   getCurriculums,
   getGisuChapterWithSchools,
   getSchoolDetails,
@@ -16,16 +17,20 @@ export const managementKeys = createQueryKeys('management', {
     queryKey: ['curriculums', part],
     queryFn: () => getCurriculums({ part }),
   }),
+  allSchools: () => ({
+    queryKey: ['school'],
+    queryFn: () => getAllSchools(),
+  }),
   allGisu: () => ({
-    queryKey: ['allGisu'],
+    queryKey: ['gisu', 'all'],
     queryFn: () => getAllGisu(),
   }),
   gisuChapterWithSchools: (gisuId: string) => ({
-    queryKey: ['gisuChapterWithSchools', gisuId],
+    queryKey: [gisuId],
     queryFn: () => getGisuChapterWithSchools({ gisuId }),
   }),
   unassignedSchools: (gisuId: string) => ({
-    queryKey: ['unassignedSchools', gisuId],
+    queryKey: [gisuId],
     queryFn: () => getUnassignedSchools({ gisuId }),
   }),
   school: (params: {

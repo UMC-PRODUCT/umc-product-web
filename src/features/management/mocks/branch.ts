@@ -1,3 +1,5 @@
+import type { UniversitySimple } from '../domain/model'
+
 export const MOCK_BRANCHES = [
   {
     id: 1,
@@ -68,19 +70,5 @@ export interface School {
 export interface Branch {
   id: string
   name: string
-  schools: Array<School>
+  schools: Array<UniversitySimple>
 }
-
-export const MOCK_BRANCHES_MATCHING: Array<Branch> = Array.from({ length: 6 }, (_, i) => ({
-  id: `branch-${i + 1}`,
-  name: 'Ain 지부',
-  schools: Array.from({ length: 8 }, (__, j) => ({
-    id: `school-${i}-${j}`,
-    name: '중앙대학교',
-  })),
-}))
-
-export const MOCK_WAITING_SCHOOLS: Array<School> = Array.from({ length: 5 }, (_, i) => ({
-  id: `waiting-${i}`,
-  name: '중앙대학교',
-}))

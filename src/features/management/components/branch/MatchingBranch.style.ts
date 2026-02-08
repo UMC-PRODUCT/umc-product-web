@@ -17,6 +17,8 @@ export const MainSection = styled.section`
 
 export const Header = styled.div`
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
 `
 
 export const BranchHeader = styled.div`
