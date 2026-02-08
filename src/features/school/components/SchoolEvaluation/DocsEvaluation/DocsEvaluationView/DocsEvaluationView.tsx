@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { css } from '@emotion/react'
+import { useNavigate } from '@tanstack/react-router'
 
 import * as Shared from '@shared/styles/shared'
 
@@ -10,6 +11,8 @@ import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import { Button } from '@/shared/ui/common/Button'
+import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
@@ -26,17 +29,31 @@ const DocsEvaluationContent = () => {
   // const { data } = useGetApplicationAnswer()
   const { data: questionData } = useGetApplicationFormData('34')
   const data = answers
-
+  const navigate = useNavigate()
   return (
     <>
       <Shared.TabHeader flexDirection="row" justifyContent="space-between" alignItems="center">
         <Shared.TabHeader alignItems="flex-start">
           <Shared.TabTitle>지원서 평가</Shared.TabTitle>
         </Shared.TabHeader>
-        <S.Button onClick={() => setModal(true)}>
-          <span>서류 합격 처리</span>
-          <ArrowUp width={22} height={22} color={theme.colors.white} />
-        </S.Button>
+        <Flex width={'fit-content'} gap={16}>
+          <S.Button onClick={() => setModal(true)}>
+            <span>서류 합격 처리</span>
+            <ArrowUp width={22} height={22} color={theme.colors.white} />
+          </S.Button>
+          <Button
+            typo="B4.Md"
+            tone="lime"
+            variant="outline"
+            label="← 뒤로가기"
+            css={{ width: '95px', height: '37px', padding: '5px 14px' }}
+            onClick={() =>
+              navigate({
+                to: '/school/evaluation',
+              })
+            }
+          />
+        </Flex>
       </Shared.TabHeader>
       <S.Wrapper>
         <ApplicantList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
