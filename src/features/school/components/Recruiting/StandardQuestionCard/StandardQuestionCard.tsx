@@ -2,9 +2,15 @@ import type { ComponentProps, HTMLAttributes } from 'react'
 import { useEffect } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { QUESTION_INFO, RESPONSE_INFO } from '@features/school/domain'
 
+import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
+import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
@@ -20,6 +26,7 @@ type StandardQuestionCardProps = {
   index: number
   control: Control<RecruitingForms>
   namePrefix: string
+  recruitingId?: string
   onDelete?: () => void
   canDelete?: boolean
   isLocked?: boolean
@@ -32,6 +39,7 @@ const StandardQuestionCard = ({
   index,
   control,
   namePrefix,
+  recruitingId,
   onDelete,
   canDelete = true,
   isLocked = false,
@@ -51,12 +59,25 @@ const StandardQuestionCard = ({
     control,
     name: `${namePrefix}.question.questionText` as FieldPath<RecruitingForms>,
   })
+  const { field: questionIdField } = useController({
+    control,
+    name: `${namePrefix}.question.questionId` as FieldPath<RecruitingForms>,
+  })
   const {
     field: { value: questionOptionsValue, onChange: questionOptionsOnChange },
   } = useController({
     control,
     name: `${namePrefix}.question.options` as FieldPath<RecruitingForms>,
   })
+  const { form } = useRecruitingContext()
+  const queryClient = useQueryClient()
+  const applicationQuery = schoolKeys.getTempSavedApplication(recruitingId ?? '')
+  const { useDeleteQuestionOption, usePatchTempSavedRecruitQuestions } = useRecruitingMutation()
+  const { mutate: deleteOptionMutate } = useDeleteQuestionOption(recruitingId ?? '')
+  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchTempSavedRecruitQuestions(
+    recruitingId ?? '',
+  )
+  const canDeleteOption = Boolean(recruitingId && questionIdField.value)
   useEffect(() => {
     if (questionTypeField.value === 'RADIO' || questionTypeField.value === 'CHECKBOX') return
     const currentOptions = questionOptionsValue
@@ -141,7 +162,42 @@ const StandardQuestionCard = ({
           ))}
         </Flex>
       </Flex>
-      <QuestionTypeConfig control={control} namePrefix={namePrefix} isLocked={isLocked} />
+      <QuestionTypeConfig
+        control={control}
+        namePrefix={namePrefix}
+        isLocked={isLocked}
+        onDeleteOption={
+          canDeleteOption
+            ? (optionId) => {
+                const questionId = questionIdField.value
+                if (!optionId || !questionId) return
+                deleteOptionMutate({ questionId: String(questionId), optionId: String(optionId) })
+              }
+            : undefined
+        }
+        onAppendOption={
+          recruitingId && !isLocked
+            ? () => {
+                setTimeout(() => {
+                  const items = form.getValues('items')
+                  patchTempSavedRecruitQuestionsMutate(
+                    { items: buildQuestionsPayload(items) },
+                    {
+                      onSuccess: (data) => {
+                        form.setValue('items', convertApplicationFormToItems(data.result), {
+                          shouldDirty: false,
+                          shouldTouch: false,
+                          shouldValidate: true,
+                        })
+                        queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+                      },
+                    },
+                  )
+                }, 0)
+              }
+            : undefined
+        }
+      />
     </Section>
   )
 }

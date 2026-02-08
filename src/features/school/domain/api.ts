@@ -121,3 +121,18 @@ export const getDashboardSummary = async (
   const { data } = await axiosInstance.get(`/recruitments/${recruitmentId}/dashboard`)
   return data
 }
+
+export const deleteOption = async ({
+  recruitmentId,
+  questionId,
+  optionId,
+}: {
+  recruitmentId: string
+  questionId: string
+  optionId: string
+}): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.delete(
+    `/recruitments/${recruitmentId}/application-form/questions/${questionId}/options/${optionId}`,
+  )
+  return data
+}

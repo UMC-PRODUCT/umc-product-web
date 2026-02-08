@@ -10,12 +10,12 @@ export function useGetCurriculums(part: PartType) {
 
 export function useGetAllGisu() {
   const query = managementKeys.allGisu()
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(query.queryKey, query.queryFn)
 }
 
 export function useGetAllSchools() {
   const query = managementKeys.allSchools()
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(query.queryKey, query.queryFn)
 }
 
 export function useGetGisuChapterWithSchools(gisuId: string) {
@@ -46,5 +46,5 @@ export function useGetSchoolDetails(schoolId: string) {
 
 export function useGetChapters() {
   const query = managementKeys.chapter()
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(query.queryKey, query.queryFn)
 }

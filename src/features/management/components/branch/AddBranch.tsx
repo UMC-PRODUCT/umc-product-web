@@ -89,19 +89,31 @@ const AddBranchData = () => {
       <Flex width={150} css={{ alignSelf: 'flex-start' }}>
         {gisuDropdown.Dropdown}
       </Flex>
-      <AsyncBoundary
-        fallback={<SuspenseFallback label="지부 정보를 불러오는 중입니다." />}
-        errorFallback={() => <div>지부 정보를 불러오는 중 오류가 발생했습니다.</div>}
-      >
-        <AddBranchContent baseGisu={gisuDropdown.value!} />
-      </AsyncBoundary>
+      {gisuDropdown.value ? (
+        <AsyncBoundary
+          fallback={<SuspenseFallback label="지부 정보를 불러오는 중입니다." />}
+          errorFallback={() => <div>지부 정보를 불러오는 중 오류가 발생했습니다.</div>}
+        >
+          <AddBranchContent baseGisu={gisuDropdown.value} />
+        </AsyncBoundary>
+      ) : (
+        <Flex justifyContent="center" alignItems="center" css={{ padding: '32px 0' }}>
+          기수 정보를 불러오는 중입니다.
+        </Flex>
+      )}
     </Flex>
   )
 }
 
 const AddBranch = () => {
   return (
-    <AsyncBoundary fallback={<SuspenseFallback label="기수 정보를 불러오는 중입니다." />}>
+    <AsyncBoundary
+      fallback={
+        <div style={{ minHeight: 520 }}>
+          <SuspenseFallback label="기수 정보를 불러오는 중입니다." />
+        </div>
+      }
+    >
       <AddBranchData />
     </AsyncBoundary>
   )

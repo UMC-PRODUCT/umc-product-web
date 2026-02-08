@@ -15,7 +15,7 @@ export const buildPreferredPartItem = (): RecruitingItem => ({
 })
 
 export const buildScheduleItem = (): RecruitingItem => ({
-  target: { kind: 'COMMON_PAGE', pageNo: 1 },
+  target: { kind: 'COMMON_PAGE', pageNo: 2 },
   question: {
     type: 'SCHEDULE',
     questionText: SCHEDULE_TEXT,
@@ -56,7 +56,7 @@ export const hasScheduleItem = (items: Array<RecruitingItem>) =>
   items.some(
     (item) =>
       item.target.kind === 'COMMON_PAGE' &&
-      item.target.pageNo === 1 &&
+      item.target.pageNo === 2 &&
       item.question.type === 'SCHEDULE',
   )
 
@@ -73,7 +73,7 @@ export const ensureRequiredItems = (
         return { ...item, target: { kind: 'COMMON_PAGE' as const, pageNo: 1 } }
       }
       if (item.question.type === 'SCHEDULE') {
-        return { ...item, target: { kind: 'COMMON_PAGE' as const, pageNo: 1 } }
+        return { ...item, target: { kind: 'COMMON_PAGE' as const, pageNo: 2 } }
       }
       return item
     })

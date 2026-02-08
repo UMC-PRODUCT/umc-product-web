@@ -193,6 +193,29 @@ const ResumeFormSection = ({
   return (
     <form onSubmit={handleFormSubmit} method="POST">
       <Flex key={activePage.page} flexDirection="column" gap={24}>
+        {activeScheduleQuestion && (
+          <QuestionLayout
+            questionNumber={activePageQuestions.length + 1}
+            questionText={activeScheduleQuestion.questionText}
+            isRequired={activeScheduleQuestion.required}
+            errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
+          >
+            <Controller
+              name={String(activeScheduleQuestion.questionId)}
+              control={control}
+              render={({ field }) => (
+                <TimeTable
+                  dateRange={activeScheduleQuestion.schedule.dateRange}
+                  timeRange={activeScheduleQuestion.schedule.timeRange}
+                  value={field.value as Record<string, Array<string>>}
+                  disabledSlots={scheduleDisabledSlots}
+                  onChange={field.onChange}
+                  mode={isEdit ? 'edit' : 'view'}
+                />
+              )}
+            />
+          </QuestionLayout>
+        )}
         {activePagePartQuestions.map((partQuestion, index) => (
           <Flex
             key={`${activePage.page}-${partQuestion.part}-${index}`}
@@ -249,29 +272,6 @@ const ResumeFormSection = ({
             )}
           />
         ))}
-        {activeScheduleQuestion && (
-          <QuestionLayout
-            questionNumber={activePageQuestions.length + 1}
-            questionText={activeScheduleQuestion.questionText}
-            isRequired={activeScheduleQuestion.required}
-            errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
-          >
-            <Controller
-              name={String(activeScheduleQuestion.questionId)}
-              control={control}
-              render={({ field }) => (
-                <TimeTable
-                  dateRange={activeScheduleQuestion.schedule.dateRange}
-                  timeRange={activeScheduleQuestion.schedule.timeRange}
-                  value={field.value as Record<string, Array<string>>}
-                  disabledSlots={scheduleDisabledSlots}
-                  onChange={field.onChange}
-                  mode={isEdit ? 'edit' : 'view'}
-                />
-              )}
-            />
-          </QuestionLayout>
-        )}
       </Flex>
 
       <ResumeNavigation

@@ -44,7 +44,7 @@ const RouteComponent = () => {
   // const { role, gisu } = useUserProfileStore()
   // const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
   // const headerType = getHeaderType(activeRole?.roleType)
-  const headerType: HeaderType = 'management' // TODO: 임시로 학교 헤더 고정
+  const headerType: HeaderType = 'school' // TODO: 임시로 학교 헤더 고정
   const HeaderComponent = HEADER_COMPONENTS[headerType]
 
   return (

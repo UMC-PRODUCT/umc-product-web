@@ -5,8 +5,11 @@ import { useFieldArray, useWatch } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 
+import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
+import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms, RecruitingItemTarget } from '@/shared/types/form'
@@ -31,14 +34,17 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const recruitingId =
     (recruitingMatch?.params as Record<string, string> | undefined)?.recruitingId ?? ''
 
+  const { form } = useRecruitingContext()
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
   const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
   const draggingIndexRef = useRef<number | null>(null)
   const placeholderHeightRef = useRef<number>(0)
-  const { useDeleteSingleQuestion } = useRecruitingMutation()
+  const { useDeleteSingleQuestion, usePatchTempSavedRecruitQuestions } = useRecruitingMutation()
   const { mutate: deleteSingleQuestionMutate } = useDeleteSingleQuestion(recruitingId)
+  const { mutate: patchTempSavedRecruitQuestionsMutate } =
+    usePatchTempSavedRecruitQuestions(recruitingId)
   const queryClient = useQueryClient()
   const applicationQuery = schoolKeys.getTempSavedApplication(recruitingId)
   const { fields, append, remove, move, update } = useFieldArray({
@@ -78,6 +84,8 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
       if (preferredIndex !== undefined) {
         next.add(preferredIndex)
       }
+    }
+    if (target.kind === 'COMMON_PAGE' && target.pageNo === 2) {
       const scheduleIndex = filteredIndices.find(
         (index) => normalizedItems[index]?.question.type === 'SCHEDULE',
       )
@@ -105,7 +113,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const handleAddQuestion = () => {
     if (isLocked) return
     const orderNo = filteredIndices.length + 1
-    append({
+    const newItem: RecruitingForms['items'][number] = {
       target,
       question: {
         type: 'LONG_TEXT',
@@ -114,7 +122,22 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
         orderNo,
         options: [],
       },
-    })
+    }
+    append(newItem)
+    if (!recruitingId) return
+    patchTempSavedRecruitQuestionsMutate(
+      { items: buildQuestionsPayload([...normalizedItems, newItem]) },
+      {
+        onSuccess: (data) => {
+          form.setValue('items', convertApplicationFormToItems(data.result), {
+            shouldDirty: false,
+            shouldTouch: false,
+            shouldValidate: true,
+          })
+          queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+        },
+      },
+    )
   }
 
   const handleDeleteQuestion = (index: number, isFixed: boolean) => {
@@ -176,24 +199,29 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderIndex(null)
   }
 
-  const visibleQuestions = useMemo(
-    () =>
-      filteredIndices
-        .map((itemIndex, orderIndex) => {
-          const questionField = fields[itemIndex]
-          return { orderIndex, itemIndex, questionField }
-        })
-        .filter(
-          (
-            entry,
-          ): entry is {
-            orderIndex: number
-            itemIndex: number
-            questionField: (typeof fields)[number]
-          } => Boolean(entry),
-        ),
-    [filteredIndices, fields],
-  )
+  const visibleQuestions = useMemo(() => {
+    const base = filteredIndices
+      .map((itemIndex, orderIndex) => {
+        const questionField = fields[itemIndex]
+        return { orderIndex, itemIndex, questionField }
+      })
+      .filter(
+        (
+          entry,
+        ): entry is {
+          orderIndex: number
+          itemIndex: number
+          questionField: (typeof fields)[number]
+        } => Boolean(entry),
+      )
+    return base.sort((a, b) => {
+      const aType = normalizedItems[a.itemIndex]?.question.type
+      const bType = normalizedItems[b.itemIndex]?.question.type
+      if (aType === 'SCHEDULE' && bType !== 'SCHEDULE') return -1
+      if (aType !== 'SCHEDULE' && bType === 'SCHEDULE') return 1
+      return a.orderIndex - b.orderIndex
+    })
+  }, [filteredIndices, fields, normalizedItems])
 
   return (
     <Flex flexDirection="column" gap={18}>
@@ -225,6 +253,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
                 index={orderIndex}
                 control={control}
                 namePrefix={`items.${itemIndex}`}
+                recruitingId={recruitingId}
                 onDelete={() => handleDeleteQuestion(itemIndex, isFixed)}
                 canDelete={!isLocked && !isFixed}
                 isLocked={isLocked}

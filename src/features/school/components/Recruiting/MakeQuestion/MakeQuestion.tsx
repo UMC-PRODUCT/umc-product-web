@@ -13,6 +13,7 @@ type MakeQuestionProps = {
   index: number
   control: Control<RecruitingForms>
   namePrefix: string
+  recruitingId?: string
   onDelete?: () => void
   canDelete?: boolean
   isLocked?: boolean

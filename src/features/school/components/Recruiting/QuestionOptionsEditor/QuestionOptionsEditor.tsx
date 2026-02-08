@@ -20,6 +20,8 @@ type QuestionOptionsEditorProps = {
   name: string
   variant: 'RADIO' | 'CHECKBOX'
   isLocked?: boolean
+  onDeleteOption?: (optionId: string) => void
+  onAppendOption?: () => void
 }
 
 const getErrorByPath = (errors: FieldErrors<RecruitingForms>, path: string) => {
@@ -77,6 +79,8 @@ const QuestionOptionsEditor = ({
   name,
   variant,
   isLocked = false,
+  onDeleteOption,
+  onAppendOption,
 }: QuestionOptionsEditorProps) => {
   const { field } = useController({
     control,
@@ -123,6 +127,10 @@ const QuestionOptionsEditor = ({
 
   const handleRemove = (index: number) => {
     if (isLocked) return
+    const optionId = normalizedOptions[index]?.optionId
+    if (optionId && onDeleteOption) {
+      onDeleteOption(String(optionId))
+    }
     const next = normalizedOptions
       .filter((_, i) => i !== index)
       .map((option, optionIndex) => ({ ...option, orderNo: optionIndex + 1 }))
@@ -137,6 +145,7 @@ const QuestionOptionsEditor = ({
         { content: '', orderNo: normalizedOptions.length + 1 },
       ]),
     )
+    onAppendOption?.()
   }
 
   const handleAppendOther = () => {
@@ -153,6 +162,7 @@ const QuestionOptionsEditor = ({
         },
       ]),
     )
+    onAppendOption?.()
   }
 
   return (

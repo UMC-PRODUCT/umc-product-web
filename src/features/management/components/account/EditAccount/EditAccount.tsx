@@ -154,7 +154,13 @@ const EditAccountContent = () => {
 
 const EditAccount = () => {
   return (
-    <AsyncBoundary fallback={<SuspenseFallback label="계정 정보를 불러오는 중입니다." />}>
+    <AsyncBoundary
+      fallback={
+        <div style={{ minHeight: 480 }}>
+          <SuspenseFallback label="계정 정보를 불러오는 중입니다." />
+        </div>
+      }
+    >
       <EditAccountContent />
     </AsyncBoundary>
   )

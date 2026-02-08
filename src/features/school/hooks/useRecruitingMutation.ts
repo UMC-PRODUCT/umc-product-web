@@ -1,6 +1,7 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteOption,
   deleteRecruitment,
   deleteSingleQuestion,
   patchPublishedRecruitment,
@@ -50,6 +51,12 @@ export function useRecruitingMutation() {
       patchPublishedRecruitment({ recruitmentId, requestBody }),
     )
   }
+
+  function useDeleteQuestionOption(recruitmentId: string) {
+    return useCustomMutation(({ questionId, optionId }: { questionId: string; optionId: string }) =>
+      deleteOption({ recruitmentId, questionId, optionId }),
+    )
+  }
   return {
     usePostFirstRecruitment,
     usePatchTempSaveRecruitment,
@@ -58,5 +65,6 @@ export function useRecruitingMutation() {
     useDeleteSingleQuestion,
     usePostPublishRecruitment,
     usePatchPublishedRecruitment,
+    useDeleteQuestionOption,
   }
 }

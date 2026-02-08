@@ -151,22 +151,6 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
       </S.BorderSection>
 
       <S.BorderSection>
-        {currentQuestions.map((question, idx) => (
-          <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
-            <Question
-              questionId={question.questionId}
-              questionNumber={idx + 1}
-              type={question.type}
-              question={question.questionText}
-              options={question.options}
-              required={question.required}
-              maxSelectCount={question.maxSelectCount}
-              preferredPartOptions={question.preferredPartOptions}
-              mode="view"
-              value={normalizedAnswers[String(question.questionId)] as QuestionAnswerValue}
-            />
-          </Flex>
-        ))}
         {currentScheduleQuestion && (
           <QuestionLayout
             questionNumber={baseQuestionCount + 1}
@@ -201,6 +185,23 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
             />
           </QuestionLayout>
         )}
+        {currentQuestions.map((question, idx) => (
+          <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
+            <Question
+              questionId={question.questionId}
+              questionNumber={idx + 1}
+              type={question.type}
+              question={question.questionText}
+              options={question.options}
+              required={question.required}
+              maxSelectCount={question.maxSelectCount}
+              preferredPartOptions={question.preferredPartOptions}
+              mode="view"
+              value={normalizedAnswers[String(question.questionId)] as QuestionAnswerValue}
+            />
+          </Flex>
+        ))}
+
         {currentPartQuestions.map((partGroup, groupIndex) => {
           const groupQuestions = flatPartQuestions.filter((item) => item.group === partGroup)
           return (

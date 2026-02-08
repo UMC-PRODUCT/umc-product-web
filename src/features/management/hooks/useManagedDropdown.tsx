@@ -44,20 +44,19 @@ export const useSchoolDropdown = (
     allLabel = '-- 전체 학교 --',
     defaultToFirst = false,
   } = config
-  const { data } = useGetAllSchools()
+  const { data, isLoading } = useGetAllSchools()
   const [value, setValueState] = useState<Option<string> | undefined>()
   const [hasUserSelected, setHasUserSelected] = useState(false)
-  const options = useMemo(
-    () =>
-      buildOptions(
-        data.result.schools,
-        (school) => school.schoolName,
-        (school) => school.schoolId,
-        allLabel,
-        includeAllOption,
-      ),
-    [allLabel, data.result.schools, includeAllOption],
-  )
+  const options = useMemo(() => {
+    const schools = data?.result.schools ?? []
+    return buildOptions(
+      schools,
+      (school) => school.schoolName,
+      (school) => school.schoolId,
+      allLabel,
+      includeAllOption,
+    )
+  }, [allLabel, includeAllOption, data?.result.schools])
   const defaultValue = useMemo(() => {
     if (!defaultToFirst || options.length === 0) return undefined
     return options.find((option) => option.id !== ALL_ID)
@@ -77,6 +76,7 @@ export const useSchoolDropdown = (
         options={options}
         placeholder={placeholder}
         value={selectedValue}
+        disabled={isLoading}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }
@@ -94,20 +94,19 @@ export const useChapterDropdown = (
     allLabel = '-- 전체 지부 --',
     defaultToFirst = false,
   } = config
-  const { data } = useGetChapters()
+  const { data, isLoading } = useGetChapters()
   const [value, setValueState] = useState<Option<string> | undefined>()
   const [hasUserSelected, setHasUserSelected] = useState(false)
-  const options = useMemo(
-    () =>
-      buildOptions(
-        data.result.chapters,
-        (chapter) => chapter.name,
-        (chapter) => chapter.id,
-        allLabel,
-        includeAllOption,
-      ),
-    [allLabel, data.result.chapters, includeAllOption],
-  )
+  const options = useMemo(() => {
+    const chapters = data?.result.chapters ?? []
+    return buildOptions(
+      chapters,
+      (chapter) => chapter.name,
+      (chapter) => chapter.id,
+      allLabel,
+      includeAllOption,
+    )
+  }, [allLabel, includeAllOption, data?.result.chapters])
   const defaultValue = useMemo(() => {
     if (!defaultToFirst || options.length === 0) return undefined
     return options.find((option) => option.id !== ALL_ID)
@@ -127,6 +126,7 @@ export const useChapterDropdown = (
         options={options}
         placeholder={placeholder}
         value={selectedValue}
+        disabled={isLoading}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }
@@ -144,20 +144,19 @@ export const useGisuDropdown = (
     allLabel = '-- 전체 기수 --',
     defaultToFirst = false,
   } = config
-  const { data } = useGetAllGisu()
+  const { data, isLoading } = useGetAllGisu()
   const [value, setValueState] = useState<Option<string> | undefined>()
   const [hasUserSelected, setHasUserSelected] = useState(false)
-  const options = useMemo(
-    () =>
-      buildOptions(
-        data.result.gisuList,
-        (gisu) => `${gisu.generation}기`,
-        (gisu) => gisu.gisuId,
-        allLabel,
-        includeAllOption,
-      ),
-    [allLabel, data.result.gisuList, includeAllOption],
-  )
+  const options = useMemo(() => {
+    const gisuList = data?.result.gisuList ?? []
+    return buildOptions(
+      gisuList,
+      (gisu) => `${gisu.generation}기`,
+      (gisu) => gisu.gisuId,
+      allLabel,
+      includeAllOption,
+    )
+  }, [allLabel, includeAllOption, data?.result.gisuList])
   const defaultValue = useMemo(() => {
     if (!defaultToFirst || options.length === 0) return undefined
     return options.find((option) => option.id !== ALL_ID)
@@ -177,6 +176,7 @@ export const useGisuDropdown = (
         options={options}
         placeholder={placeholder}
         value={selectedValue}
+        disabled={isLoading}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }

@@ -240,22 +240,17 @@ const MatchingBranchContent = ({
   )
 }
 
-const MatchingBranchData = () => {
+const MatchingBranchBody = ({ gisuId, dropdown }: { gisuId: string; dropdown: ReactElement }) => {
   const { usePatchAssignSchools, usePatchUnassignSchools } = useManagementMutations()
   const { mutate: assignSchool } = usePatchAssignSchools()
   const { mutate: unassignSchool } = usePatchUnassignSchools()
-  const gisuDropdown = useGisuDropdown({
-    includeAllOption: false,
-    defaultToFirst: true,
-  })
-  const gisuId = gisuDropdown.value?.id as string
   const { data: chapterData } = useGetGisuChapterWithSchools(gisuId)
   const { data: unassignedSchool } = useGetUnassignedSchools(gisuId)
 
   return (
     <MatchingBranchContent
       key={gisuId}
-      dropdown={gisuDropdown.Dropdown}
+      dropdown={dropdown}
       gisuId={gisuId}
       initialBranches={chapterData.result.chapters}
       initialWaitingSchools={unassignedSchool.result.schools}
@@ -265,12 +260,44 @@ const MatchingBranchData = () => {
   )
 }
 
-const MatchingBranch = () => {
+const MatchingBranchData = () => {
+  const gisuDropdown = useGisuDropdown({
+    includeAllOption: false,
+    defaultToFirst: true,
+  })
+
+  if (!gisuDropdown.value) {
+    return (
+      <S.Container>
+        <S.MainSection>
+          <S.Header>
+            <Flex flexDirection="column" gap="4px" alignItems="flex-start" width="fit-content">
+              <TabTitle>지부 매칭</TabTitle>
+              <TabSubtitle>지부별 학교를 설정할 수 있습니다.</TabSubtitle>
+            </Flex>
+            <Flex width={180}>{gisuDropdown.Dropdown}</Flex>
+          </S.Header>
+          <Flex justifyContent="center" alignItems="center" css={{ padding: '32px 0' }}>
+            기수 정보를 불러오는 중입니다.
+          </Flex>
+        </S.MainSection>
+      </S.Container>
+    )
+  }
+
   return (
-    <AsyncBoundary fallback={<SuspenseFallback label="지부 매칭 정보를 불러오는 중입니다." />}>
-      <MatchingBranchData />
+    <AsyncBoundary
+      fallback={
+        <div style={{ minHeight: 520 }}>
+          <SuspenseFallback label="지부 매칭 정보를 불러오는 중입니다." />
+        </div>
+      }
+    >
+      <MatchingBranchBody gisuId={String(gisuDropdown.value.id)} dropdown={gisuDropdown.Dropdown} />
     </AsyncBoundary>
   )
 }
+
+const MatchingBranch = () => <MatchingBranchData />
 
 export default MatchingBranch

@@ -145,15 +145,6 @@ const ApplicationView = ({
                   </S.PageHeader>
 
                   <S.QuestionsCard>
-                    {page.questions?.map((question) => (
-                      <S.Question key={question.questionId}>
-                        <S.QuestionTitle>
-                          문항 {nextIndex()} - {question.questionText}
-                        </S.QuestionTitle>
-                        {renderAnswer(question)}
-                      </S.Question>
-                    ))}
-
                     {page.scheduleQuestion && (
                       <S.Question key={page.scheduleQuestion.questionId}>
                         <S.QuestionTitle>
@@ -170,6 +161,14 @@ const ApplicationView = ({
                         </S.TimetableWrapper>
                       </S.Question>
                     )}
+                    {page.questions?.map((question) => (
+                      <S.Question key={question.questionId}>
+                        <S.QuestionTitle>
+                          문항 {nextIndex()} - {question.questionText}
+                        </S.QuestionTitle>
+                        {renderAnswer(question)}
+                      </S.Question>
+                    ))}
 
                     {page.partQuestions?.map((partGroup) => (
                       <S.QuestionsCard key={partGroup.part}>
