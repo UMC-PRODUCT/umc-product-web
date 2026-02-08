@@ -7,7 +7,6 @@ import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { Badge } from '@/shared/ui/common/Badge/Badge'
-import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
@@ -75,11 +74,13 @@ const ProfileMenuContent = ({
   if (profileError || !data) {
     const errorMessage = profileError instanceof Error ? profileError.message : undefined
     return (
-      <ErrorPage
-        title="프로필 정보를 불러오는 중 오류가 발생했습니다."
-        description={errorMessage || '잠시 후 다시 시도해 주세요.'}
-        onRetry={refetchProfile}
-      />
+      <Flex flexDirection="column" gap="8px" alignItems="flex-start">
+        <S.NameText>프로필 정보를 불러올 수 없습니다.</S.NameText>
+        <S.EmailText>{errorMessage || '잠시 후 다시 시도해 주세요.'}</S.EmailText>
+        <S.ModalButton type="button" onClick={() => refetchProfile()}>
+          다시 시도
+        </S.ModalButton>
+      </Flex>
     )
   }
 

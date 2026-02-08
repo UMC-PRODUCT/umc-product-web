@@ -4,6 +4,7 @@ import Footer from '@/shared/layout/Footer/Footer'
 import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
 import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
 import SuperHeader from '@/shared/layout/Header/SuperHeader'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 // import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import type { RoleType } from '@/shared/types/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'
@@ -41,10 +42,9 @@ const HEADER_COMPONENTS: Record<HeaderType, React.ComponentType> = {
  * - 공통 Footer 렌더링
  */
 const RouteComponent = () => {
-  // const { role, gisu } = useUserProfileStore()
-  // const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
-  // const headerType = getHeaderType(activeRole?.roleType)
-  const headerType: HeaderType = 'school' // TODO: 임시로 학교 헤더 고정
+  const { role, gisu } = useUserProfileStore()
+  const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
+  const headerType = getHeaderType(activeRole?.roleType)
   const HeaderComponent = HEADER_COMPONENTS[headerType]
 
   return (

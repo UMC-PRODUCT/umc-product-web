@@ -74,6 +74,8 @@ export const Avatar = styled(Icon)({
 
 export const NameText = styled.span({
   color: theme.colors.white,
+  marginTop: '30px',
+  wordBreak: 'keep-all',
   ...theme.typography.B3.Md,
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B4.Md,
@@ -83,9 +85,7 @@ export const NameText = styled.span({
 export const EmailText = styled.span({
   color: theme.colors.gray[300],
   ...theme.typography.B4.Rg,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
+  whiteSpace: 'wrap',
   maxWidth: '100%',
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B5.Rg,
