@@ -24,7 +24,11 @@ const GenerationCard = () => {
       justifyContent="space-between"
       flexDirection="row"
       alignItems="center"
-      css={{ color: theme.colors.white, ...theme.typography.C2.Rg }}
+      css={{
+        color: theme.colors.white,
+        border: `1px solid #2a2a2a`,
+        ...theme.typography.C2.Rg,
+      }}
     >
       10기
       <Button

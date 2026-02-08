@@ -1,10 +1,13 @@
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 
+import { realUploadFile } from '@/shared/api/file/api'
 import Upload from '@/shared/assets/icons/arrow_up_circle.svg?react'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Plus from '@/shared/assets/icons/plus.svg?react'
+import { useFile } from '@/shared/hooks/useFile'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button/Button'
@@ -15,6 +18,7 @@ import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import type { LinkItem, LinkTypeOption } from '../../domain/model'
+import { useManagementMutations } from '../../hooks/useManagementMutations'
 import type { SchoolRegisterForm } from '../../schemas/management'
 import { schoolRegisterSchema } from '../../schemas/management'
 import RegisterConfirm from '../modals/SchoolRegisterConfirm/SchoolRegisterConfirm'
@@ -32,18 +36,72 @@ const linkTypeOptions: Array<LinkTypeOption> = [
   { id: '3', label: 'INSTAGRAM' },
 ]
 
+const MAX_PROFILE_SIZE = 5 * 1024 * 1024
+const PROFILE_CATEGORY = 'SCHOOL_LOGO'
+const ALLOWED_PROFILE_TYPES = new Set(['image/png', 'image/jpeg', 'image/jpg'])
+const FALLBACK_CONTENT_TYPE = 'application/octet-stream'
+
 const AddSchool = () => {
+  const { usePostSchool } = useManagementMutations()
+  const { mutate: postSchool } = usePostSchool()
+  const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const previewUrlRef = useRef<string | null>(null)
+  const { useUploadFile, useConfirmUpload, useDeleteFile } = useFile()
+  const uploadFileMutation = useUploadFile()
+  const confirmUploadMutation = useConfirmUpload()
+  const deleteFileMutation = useDeleteFile()
+  const [profilePreview, setProfilePreview] = useState<string | null>(null)
+  const [profileFileId, setProfileFileId] = useState<string | null>(null)
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const [linkType, setLinkType] = useState<LinkTypeOption | null>(null)
   const [links, setLinks] = useState<Array<LinkItem>>([])
   const [linkTitle, setLinkTitle] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [openAddLink, setOpenAddLink] = useState(false)
 
-  const handleFileInputChange = (files: FileList | null) => {
+  const handleFileInputChange = async (files: FileList | null) => {
     if (!files || files.length === 0) return
+    const file = files[0]
+    if (!ALLOWED_PROFILE_TYPES.has(file.type)) return
+    if (file.size > MAX_PROFILE_SIZE) return
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+    }
+    const previewUrl = URL.createObjectURL(file)
+    previewUrlRef.current = previewUrl
+    setProfilePreview(previewUrl)
+    setUploadProgress(0)
+    setIsUploading(true)
+
+    try {
+      const prepare = await uploadFileMutation.mutateAsync({
+        fileName: file.name,
+        contentType: file.type || FALLBACK_CONTENT_TYPE,
+        fileSize: file.size,
+        category: PROFILE_CATEGORY,
+      })
+
+      await realUploadFile(
+        prepare.result.uploadUrl,
+        file,
+        file.type || FALLBACK_CONTENT_TYPE,
+        (p) => setUploadProgress(p),
+      )
+      await confirmUploadMutation.mutateAsync(prepare.result.fileId)
+      setProfileFileId(prepare.result.fileId)
+    } catch (error) {
+      setProfileFileId(null)
+      setUploadProgress(null)
+      setProfilePreview(null)
+    } finally {
+      setIsUploading(false)
+    }
   }
   const handleFileWrapperClick = () => {
+    if (isUploading) return
     fileInputRef.current?.click()
   }
   const [modal, setModal] = useState<ModalState>({
@@ -62,11 +120,27 @@ const AddSchool = () => {
   })
 
   const onSubmit = (data: SchoolRegisterForm) => {
-    setModal({
-      isOpen: true,
-      schoolName: data.schoolName,
-      link: `/management/school/edit?school=${data.schoolName}`,
-    })
+    console.log('Submitting school data:', data)
+    postSchool(
+      {
+        schoolName: data.schoolName,
+        remark: data.remark,
+        logoImageId: profileFileId || undefined,
+        kakaoLink: links.find((link) => link.type?.label === 'KAKAO')?.url || undefined,
+        instagramLink: links.find((link) => link.type?.label === 'INSTAGRAM')?.url || undefined,
+        youtubeLink: links.find((link) => link.type?.label === 'YOUTUBE')?.url || undefined,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['management', 'school'] })
+          setModal({
+            isOpen: true,
+            schoolName: data.schoolName,
+            link: `/management/school?tab=edit`,
+          })
+        },
+      },
+    )
   }
 
   const closeModal = () => {
@@ -83,6 +157,19 @@ const AddSchool = () => {
     setLinkUrl('')
     setLinkType(null)
     setOpenAddLink(false)
+  }
+
+  const handleRemoveProfile = async () => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
+    setProfilePreview(null)
+    setUploadProgress(null)
+    if (profileFileId) {
+      await deleteFileMutation.mutateAsync(profileFileId)
+      setProfileFileId(null)
+    }
   }
   return (
     <>
@@ -119,14 +206,40 @@ const AddSchool = () => {
                   type="file"
                   ref={fileInputRef}
                   onChange={(event) => handleFileInputChange(event.target.files)}
-                  multiple
+                  accept="image/png,image/jpeg"
                   hidden
                 />
-                <Flex alignItems="center" gap={8} width="fit-content" flexDirection="column">
-                  <Upload />
-                  <span className="main-text">클릭하여 이미지 업로드</span>
-                </Flex>
-                <span className="file-notification">PNG, JPG (최대 5MB)</span>
+                {profilePreview ? (
+                  <Flex alignItems="center" gap={8} width="fit-content" flexDirection="column">
+                    <img
+                      src={profilePreview}
+                      alt="학교 프로필 미리보기"
+                      css={{ width: '120px', height: '120px', borderRadius: '50%' }}
+                    />
+                    {uploadProgress !== null && (
+                      <span className="file-notification">업로드 {uploadProgress}%</span>
+                    )}
+                    <Button
+                      tone="gray"
+                      variant="outline"
+                      typo="C4.Md"
+                      label="삭제"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        void handleRemoveProfile()
+                      }}
+                      css={{ height: '28px', padding: '0 10px' }}
+                    />
+                  </Flex>
+                ) : (
+                  <>
+                    <Flex alignItems="center" gap={8} width="fit-content" flexDirection="column">
+                      <Upload />
+                      <span className="main-text">클릭하여 이미지 업로드</span>
+                    </Flex>
+                    <span className="file-notification">PNG, JPG (최대 5MB)</span>
+                  </>
+                )}
               </S.FileWrapper>
             </Flex>
           </Flex>
@@ -145,6 +258,7 @@ const AddSchool = () => {
               autoComplete="none"
               label="비고"
               necessary={false}
+              {...register('remark')}
             />
             <S.TextAreaWrapper alignItems="flex-start">
               <Label label="외부 링크" necessary={false} />

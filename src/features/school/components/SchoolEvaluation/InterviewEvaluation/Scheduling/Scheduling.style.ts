@@ -1,7 +1,19 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
+
+export const Wrapper = styled.div`
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content;
+  }
+`
 
 export const Container = styled.div`
   display: flex;
@@ -17,14 +29,23 @@ export const MainLayout = styled.div`
   height: 100%;
   width: 100%;
   overflow: hidden;
+  ${media.down(theme.breakPoints.desktop)} {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: fit-content;
+  }
 `
 
 /* 좌측 사이드바 */
 export const Sidebar = styled(Section)`
+  width: 360px !important;
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
   border-radius: 6px;
+  ${media.down(theme.breakPoints.desktop)} {
+    width: 100% !important;
+  }
 `
 
 export const SectionTitle = styled.h3`
@@ -32,6 +53,7 @@ export const SectionTitle = styled.h3`
   width: 100%;
   ${theme.typography.B3.Sb};
   margin: 0;
+  white-space: nowrap;
 `
 
 export const TimeSlotList = styled.div`
@@ -88,6 +110,10 @@ export const Content = styled.div`
   grid-template-rows: 1fr 1fr;
   height: 100%;
   overflow-y: auto;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content !important;
+    grid-template-rows: 1fr;
+  }
 `
 
 export const ContentHeader = styled.div`
@@ -113,6 +139,10 @@ export const ApplicantList = styled(Section)`
   gap: 8px;
   background-color: ${theme.colors.black};
   width: 100%;
+  height: 320px !important;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content !important;
+  }
 `
 
 export const DragHandle = styled.div`
@@ -125,6 +155,7 @@ export const InterviewerSection = styled(Section)`
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  height: fit-content;
 `
 
 export const DropZone = styled(Section)`

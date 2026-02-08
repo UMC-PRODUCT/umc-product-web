@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import type { LinkItem, LinkTypeOption } from '@/features/management/domain/model'
+import { useGetSchoolDetails } from '@/features/management/hooks/useManagementQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import DefaultSchool from '@/shared/assets/icons/school.svg'
@@ -21,10 +22,11 @@ const linkTypeOptions: Array<LinkTypeOption> = [
   { id: '3', label: 'INSTAGRAM' },
 ]
 
-const EditSchoolModal = ({ onClose }: { onClose: () => void }) => {
+const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId: string }) => {
   const [isOpen, setIsOpen] = useState(true)
+  const { data: schoolDetails } = useGetSchoolDetails(schoolId)
   const [openAddLink, setOpenAddLink] = useState(false)
-  const [links, setLinks] = useState<Array<LinkItem>>([])
+  const [_links, setLinks] = useState<Array<LinkItem>>([])
   const [linkTitle, setLinkTitle] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [linkType, setLinkType] = useState<LinkTypeOption | null>(null)
@@ -82,41 +84,68 @@ const EditSchoolModal = ({ onClose }: { onClose: () => void }) => {
                 />
                 <Flex flexDirection="column" alignItems="flex-start">
                   <Flex alignItems="center" gap={20}>
-                    <S.Name>UMC대학교</S.Name>
+                    <S.Name>{schoolDetails.result.schoolName}</S.Name>
                     <S.Status>
                       <S.Circle />
                       활성
                     </S.Status>
                   </Flex>
 
-                  <S.SubInfo>비고비고비고</S.SubInfo>
+                  <S.SubInfo>{schoolDetails.result.remark}</S.SubInfo>
                 </Flex>
               </Flex>
             </Section>
             <Flex flexDirection="column" gap={10}>
               <Flex flexDirection="column" gap={8}>
                 <S.Title>학교명</S.Title>
-                <TextField type="text" autoComplete="none" placeholder="학교명을 입력해주세요" />
+                <TextField
+                  type="text"
+                  autoComplete="none"
+                  placeholder="학교명을 입력해주세요"
+                  value={schoolDetails.result.schoolName}
+                />
               </Flex>
               <Flex flexDirection="column" gap={8}>
                 <S.Title>비고</S.Title>
-                <TextField type="text" autoComplete="none" placeholder="비고 (선택)" />
+                <TextField
+                  type="text"
+                  autoComplete="none"
+                  placeholder="비고 (선택)"
+                  value={schoolDetails.result.remark ?? ''}
+                />
               </Flex>
               <Flex flexDirection="column" gap={8}>
                 <S.Title>외부 링크</S.Title>
-                {links.length > 0 && (
-                  <S.LinkPreviewList>
-                    {links.map((link, index) => (
-                      <S.LinkPreviewItem key={`${link.url}-${index}`}>
-                        <Flex gap={4} flexDirection="column" alignItems="flex-start">
-                          <S.LinkTitleText>{link.title}</S.LinkTitleText>
-                          <S.LinkUrlText>{link.url}</S.LinkUrlText>
-                        </Flex>
-                        <Close color={theme.colors.gray[400]} width={20} />
-                      </S.LinkPreviewItem>
-                    ))}
-                  </S.LinkPreviewList>
-                )}
+
+                <S.LinkPreviewList>
+                  {schoolDetails.result.kakaoLink && (
+                    <S.LinkPreviewItem key={`kakao`}>
+                      <Flex gap={4} flexDirection="column" alignItems="flex-start">
+                        <S.LinkTitleText>{schoolDetails.result.kakaoLink}</S.LinkTitleText>
+                        <S.LinkUrlText>{schoolDetails.result.kakaoLink}</S.LinkUrlText>
+                      </Flex>
+                      <Close color={theme.colors.gray[400]} width={20} />
+                    </S.LinkPreviewItem>
+                  )}
+                  {schoolDetails.result.instagramLink && (
+                    <S.LinkPreviewItem key={`instagram`}>
+                      <Flex gap={4} flexDirection="column" alignItems="flex-start">
+                        <S.LinkTitleText>{schoolDetails.result.instagramLink}</S.LinkTitleText>
+                        <S.LinkUrlText>{schoolDetails.result.instagramLink}</S.LinkUrlText>
+                      </Flex>
+                      <Close color={theme.colors.gray[400]} width={20} />
+                    </S.LinkPreviewItem>
+                  )}
+                  {schoolDetails.result.youtubeLink && (
+                    <S.LinkPreviewItem key={`youtube`}>
+                      <Flex gap={4} flexDirection="column" alignItems="flex-start">
+                        <S.LinkTitleText>{schoolDetails.result.youtubeLink}</S.LinkTitleText>
+                        <S.LinkUrlText>{schoolDetails.result.youtubeLink}</S.LinkUrlText>
+                      </Flex>
+                      <Close color={theme.colors.gray[400]} width={20} />
+                    </S.LinkPreviewItem>
+                  )}
+                </S.LinkPreviewList>
 
                 {!openAddLink && (
                   <S.AddLink onClick={() => setOpenAddLink(!openAddLink)}>

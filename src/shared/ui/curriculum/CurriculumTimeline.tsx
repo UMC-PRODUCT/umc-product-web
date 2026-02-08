@@ -1,5 +1,5 @@
 import type { PartType } from '@/features/auth/domain'
-import { useGetCurriculums } from '@/features/management/hooks/getManagementQueries'
+import { useGetCurriculums } from '@/features/management/hooks/useManagementQueries'
 
 import * as S from './CurriculumTimeline.style'
 

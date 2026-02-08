@@ -11,7 +11,7 @@ import {
 export const schoolRegisterSchema = z.object({
   schoolName: schoolNameSchema,
   schoolProfile: z.string().url().optional(),
-  note: z.string().optional(),
+  remark: z.string().optional(),
 })
 
 export type SchoolRegisterForm = z.infer<typeof schoolRegisterSchema>

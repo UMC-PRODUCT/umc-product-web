@@ -1,21 +1,32 @@
 import { useState } from 'react'
 
 import Arrow from '@shared/assets/icons/arrow.svg?react'
+import DefaultSchool from '@shared/assets/icons/school.svg'
 import Search from '@shared/assets/icons/search.svg?react'
 
+import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { Flex } from '@/shared/ui/common/Flex'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
-import { UNI_LIST_MOCK } from '../../mocks/universities'
+import { useGetSchoolsPaging } from '../../hooks/useManagementQueries'
 import EditSchoolModal from '../modals/EditSchoolModal/EditSchoolModal'
 import SchoolStateButton from './SchoolStateButton'
 import * as S from './shared'
 
 const EditSchool = () => {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const [open, setOpen] = useState(false)
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null)
+  const [searchInput, setSearchInput] = useState('')
+  const { debouncedValue: debouncedSearch, flush } = useDebouncedValue(searchInput.trim(), 3000)
+
+  const { data } = useGetSchoolsPaging({
+    page: String(page),
+    size: '10',
+    keyword: debouncedSearch,
+  })
   return (
     <>
       <S.TabHeader alignItems="flex-start">
@@ -29,6 +40,15 @@ const EditSchool = () => {
           autoComplete="none"
           Icon={Search}
           IconPlaced="left"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              setPage(0)
+              flush(searchInput.trim())
+            }
+          }}
         />
       </Flex>
       <Table
@@ -36,36 +56,45 @@ const EditSchool = () => {
         showFooter={true}
         page={{
           currentPage: page,
-          totalPages: 10,
+          totalPages: data ? Number(data.result.totalPages) : 0,
           onChangePage: setPage,
         }}
-        rows={UNI_LIST_MOCK}
-        getRowId={(row) => row.id}
-        onRowClick={() => setOpen(true)}
+        rows={data?.result.content ?? []}
+        getRowId={(row) => row.schoolId}
+        onRowClick={(id) => {
+          setSelectedSchoolId(String(id))
+          setOpen(true)
+        }}
         renderRow={(row) => (
           <>
             <TableStyles.Td>
               <Flex alignItems="center" gap="12px">
                 {/* TODO: 추후 학교 로고 이미지로 변경 */}
                 <img
-                  src="https://avatars.githubusercontent.com/u/111187984?v=4"
+                  src={DefaultSchool}
                   alt="학교 로고"
                   css={{ width: '50px', height: '50px', borderRadius: '50%' }}
                 />
-                {row.label}
+                {row.schoolName}
               </Flex>
             </TableStyles.Td>
-            <TableStyles.Td>{row.info}</TableStyles.Td>
+            {/* TODO:  추후 remark로 변경 */}
+            <TableStyles.Td>{row.schoolId}</TableStyles.Td>
             <TableStyles.Td>
               <Flex justifyContent="space-between" alignItems="center">
-                <SchoolStateButton isActive={row.status === '활성'} label={row.status} />
+                <SchoolStateButton
+                  isActive={row.isActive === true}
+                  label={row.isActive ? '활성' : '비활성'}
+                />
                 <Arrow width={20} css={{ cursor: 'pointer', transform: 'rotate(-90deg)' }} />
               </Flex>
             </TableStyles.Td>
           </>
         )}
       />
-      {open && <EditSchoolModal onClose={() => setOpen(false)} />}
+      {open && selectedSchoolId && (
+        <EditSchoolModal onClose={() => setOpen(false)} schoolId={selectedSchoolId} />
+      )}
     </>
   )
 }

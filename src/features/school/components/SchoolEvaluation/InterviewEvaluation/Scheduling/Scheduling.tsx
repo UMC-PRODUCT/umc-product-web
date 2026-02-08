@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import { APPLICANTS, TIME_SLOTS } from '@/features/school/mocks/scheduling'
 import Search from '@/shared/assets/icons/search.svg?react'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
@@ -44,16 +45,11 @@ const Scheduling = () => {
     ])
     setIsDragOver(false)
   }
+  const handleRemoveAssigned = (id: string) => {
+    setAssignedApplicants((prev) => prev.filter((item) => item.id !== id))
+  }
   return (
-    <div
-      style={{
-        height: '600px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        width: '100%',
-      }}
-    >
+    <S.Wrapper>
       <FilterBar
         leftChild={
           <>
@@ -75,7 +71,7 @@ const Scheduling = () => {
 
       <S.MainLayout>
         {/* 좌측 시간대 리스트 */}
-        <S.Sidebar height={'100%'} width={360} variant="solid" padding={'15px 17px'}>
+        <S.Sidebar height={'100%'} variant="solid" padding={'15px 17px'}>
           <S.SectionTitle>시간대별 가능 인원</S.SectionTitle>
           <S.TimeSlotList>
             {TIME_SLOTS.map((slot) => (
@@ -99,8 +95,12 @@ const Scheduling = () => {
             variant="solid"
             padding={'12px 17px'}
             gap={20}
-            height={320}
-            css={{ overflow: 'hidden', borderRadius: '6px' }}
+            css={{
+              overflow: 'hidden',
+              borderRadius: '6px',
+              height: '320px',
+              [media.down(theme.breakPoints.desktop)]: { height: 'fit-content' },
+            }}
           >
             <S.ContentHeader>
               <S.SectionTitle>{selectedTimeSlot} 지원자 목록</S.SectionTitle>
@@ -109,19 +109,22 @@ const Scheduling = () => {
                 autoComplete="none"
                 placeholder="닉네임, 이름으로 검색"
                 Icon={Search}
-                css={{ width: '320px', height: '36px', padding: '7px 12px' }}
+                css={{ maxWidth: '320px', height: '36px', padding: '7px 12px' }}
               />
             </S.ContentHeader>
 
             <S.ApplicantList
               padding={'14px 16px'}
-              height={320}
-              css={{ overflowY: 'auto', borderRadius: '6px' }}
+              css={{
+                overflowY: 'auto',
+                borderRadius: '6px',
+              }}
             >
               {availableApplicants.map((app, i) => {
                 return (
                   <ApplicantCard
                     key={app.id}
+                    id={app.id}
                     name={app.name}
                     nickname={app.nickname}
                     tags={app.tags}
@@ -139,6 +142,7 @@ const Scheduling = () => {
                 return (
                   <ApplicantCard
                     key={app.id}
+                    id={app.id}
                     name={app.name}
                     nickname={app.nickname}
                     tags={app.tags}
@@ -176,12 +180,14 @@ const Scheduling = () => {
                   {assignedApplicants.map((app, i) => (
                     <ApplicantCard
                       key={app.id}
+                      id={app.id}
                       name={app.name}
                       tags={app.tags}
                       nickname={app.nickname}
                       score={app.score}
                       i={i}
                       mode="assigned"
+                      onRemove={handleRemoveAssigned}
                     />
                   ))}
                 </S.AssignedList>
@@ -190,7 +196,7 @@ const Scheduling = () => {
           </S.InterviewerSection>
         </S.Content>
       </S.MainLayout>
-    </div>
+    </S.Wrapper>
   )
 }
 
