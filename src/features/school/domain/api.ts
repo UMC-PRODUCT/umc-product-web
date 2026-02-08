@@ -1,8 +1,10 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type {
   DeleteSingleQuestionResponseDTO,
+  GetAllDocsApplicantsResponseDTO,
   GetApplicationFormResponseDTO,
   GetDashboardResponseDTO,
   GetRecruitmentNoticesResponseDTO,
@@ -133,6 +135,24 @@ export const deleteOption = async ({
 }): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.delete(
     `/recruitments/${recruitmentId}/application-form/questions/${questionId}/options/${optionId}`,
+  )
+  return data
+}
+
+export const getDocumentAllApplicants = async (
+  recruitmentId: string,
+  params: {
+    part: PartType
+    keyword: string
+    page: string
+    size: string
+  },
+): Promise<CommonResponseDTO<GetAllDocsApplicantsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/document-evaluations`,
+    {
+      params,
+    },
   )
   return data
 }

@@ -90,6 +90,12 @@ export const ListItem = styled.div<{ isSelected: boolean }>`
     background-color: ${theme.colors.gray[800]};
   }
 `
+export const NoApplicants = styled.div`
+  ${theme.typography.B5.Rg};
+  color: ${theme.colors.gray[500]};
+  text-align: center;
+  padding: 24px 0;
+`
 
 export const Name = styled.span`
   ${theme.typography.B5.Md};

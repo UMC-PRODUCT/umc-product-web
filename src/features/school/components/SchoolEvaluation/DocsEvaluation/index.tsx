@@ -1,5 +1,6 @@
 import * as Shared from '@shared/styles/shared'
 
+import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -7,6 +8,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 import RecruitmentCard from './RecruitmentCard/RecruitmentCard'
 
 const DocsEvaluationContent = () => {
+  const { data } = useGetRecruitmentsList('ONGOING')
   return (
     <>
       <Shared.TabHeader flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -16,14 +18,17 @@ const DocsEvaluationContent = () => {
         </Shared.TabHeader>
       </Shared.TabHeader>
       <Section variant="solid" padding="18px 22px">
-        <RecruitmentCard
-          start="2026-02-16"
-          end="2026-02-28"
-          applicants={67}
-          title="UMC 중앙대학교 10기 모집"
-          parts={['PLAN', 'DESIGN', 'ANDROID', 'IOS', 'WEB', 'SPRINGBOOT', 'NODEJS']}
-          recruitmentId="34"
-        />
+        {data.result.recruitments.map((recruitment) => (
+          <RecruitmentCard
+            key={recruitment.recruitmentId}
+            start={recruitment.startDate}
+            end={recruitment.endDate}
+            applicants={recruitment.applicantCount}
+            title={recruitment.recruitmentName}
+            parts={['PLAN', 'DESIGN', 'ANDROID', 'IOS', 'WEB', 'SPRINGBOOT', 'NODEJS']}
+            recruitmentId={recruitment.recruitmentId}
+          />
+        ))}
       </Section>
     </>
   )

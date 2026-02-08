@@ -180,3 +180,29 @@ export type EvaluationStatus = {
 }
 
 export type RecruitingTab = 'ONGOING' | 'CLOSED' | 'SCHEDULED'
+
+export type GetAllDocsApplicantsResponseDTO = {
+  recruitmentId: string
+  summary: {
+    totalCount: string
+    evaluatedCount: string
+  }
+  applicationSummaries: Array<{
+    applicationId: string
+    applicantMemberId: string
+    applicantName: string
+    applicantNickname: string
+    preferredParts: Array<{
+      priority: string
+      part: PartType
+      label: string
+    }>
+    isEvaluated: boolean
+  }>
+  paination: {
+    page: string
+    size: string
+    totalPages: string
+    totalElements: string
+  }
+}

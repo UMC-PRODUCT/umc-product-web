@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { css } from '@emotion/react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 import * as Shared from '@shared/styles/shared'
 
@@ -26,8 +26,9 @@ import * as S from './DocsEvaluationView.style'
 const DocsEvaluationContent = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [modal, setModal] = useState(false)
+  const { recruitmentId } = useParams({ from: '/(app)/school/evaluation/$recruitmentId/' })
   // const { data } = useGetApplicationAnswer()
-  const { data: questionData } = useGetApplicationFormData('34')
+  const { data: questionData } = useGetApplicationFormData(recruitmentId)
   const data = answers
   const navigate = useNavigate()
   return (
@@ -56,7 +57,11 @@ const DocsEvaluationContent = () => {
         </Flex>
       </Shared.TabHeader>
       <S.Wrapper>
-        <ApplicantList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
+        <ApplicantList
+          recruitmentId={recruitmentId}
+          selectedUserId={selectedUserId}
+          setSelectedUserId={setSelectedUserId}
+        />
         <Section
           variant="solid"
           padding={'12px'}

@@ -1,5 +1,8 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
+import type { PartType } from '@/features/auth/domain'
+import { getDocumentAllApplicants } from '@/features/school/domain'
+
 import {
   getActiveRecruitmentId,
   getApplicationAnswer,
@@ -38,5 +41,17 @@ export const applyKeys = createQueryKeys('user', {
   getMyApplicationStatus: (recruitmentId: string) => ({
     queryKey: ['recruitment', 'myApplicationStatus', recruitmentId],
     queryFn: () => getMyApplicationStatus(recruitmentId),
+  }),
+  getDocsEvaluationApplicants: (
+    recruitmentId: string,
+    params: {
+      part: PartType
+      keyword: string
+      page: string
+      size: string
+    },
+  ) => ({
+    queryKey: ['recruitment', 'docsEvaluationApplicants', recruitmentId, params],
+    queryFn: () => getDocumentAllApplicants(recruitmentId, params),
   }),
 })
