@@ -24,9 +24,6 @@ import ApplicationView from '../ApplicationView/ApplicationView'
 import * as S from './DocsEvaluationView.style'
 
 const DocsEvaluationContent = () => {
-  const roleType = useUserProfileStore((state) => state.role?.roleType)
-  const canEdit = roleType === 'SCHOOL_PRESIDENT'
-  console.log('roleType', roleType)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [modal, setModal] = useState(false)
   const [summary, setSummary] = useState<{ totalCount: string; evaluatedCount: string } | null>(
