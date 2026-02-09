@@ -11,12 +11,16 @@ const DocsEvaluationRow = ({
   onToggle,
   onPass,
   onFail,
+  isPassLoading = false,
+  isFailLoading = false,
 }: {
   item: DocumentSelectionApplication
   checked: boolean
   onToggle: (checked: boolean | 'indeterminate') => void
   onPass: () => void
   onFail: () => void
+  isPassLoading?: boolean
+  isFailLoading?: boolean
 }) => {
   return (
     <tr>
@@ -52,36 +56,60 @@ const DocsEvaluationRow = ({
         {item.documentResult.decision === 'WAIT' ? (
           <Flex gap={8}>
             <S.ActionButton
-              variant="solid"
-              tone="lime"
-              label="합격 처리"
+              variant="outline"
+              tone="gray"
+              label="합격"
               typo="B4.Sb"
+              isLoading={isPassLoading}
               onClick={() => onPass()}
             />
             <S.ActionButton
-              variant="solid"
-              tone="necessary"
-              label="불합격 처리"
+              variant="outline"
+              tone="gray"
+              label="불합격"
               typo="B4.Sb"
+              isLoading={isFailLoading}
               onClick={() => onFail()}
             />
           </Flex>
         ) : item.documentResult.decision === 'PASS' ? (
-          <S.ActionButton
-            variant="solid"
-            tone="necessary"
-            label="합격 취소"
-            typo="B4.Sb"
-            onClick={() => onFail()}
-          />
+          <Flex gap={8}>
+            <S.ActionButton
+              variant="outline"
+              tone="lime"
+              label="합격"
+              typo="B4.Sb"
+              isLoading={isPassLoading}
+              onClick={() => onPass()}
+            />
+            <S.ActionButton
+              variant="outline"
+              tone="gray"
+              label="불합격"
+              typo="B4.Sb"
+              isLoading={isFailLoading}
+              onClick={() => onFail()}
+            />
+          </Flex>
         ) : (
-          <S.ActionButton
-            variant="solid"
-            tone="lime"
-            label="합격 처리"
-            typo="B4.Sb"
-            onClick={() => onPass()}
-          />
+          <Flex gap={8}>
+            <S.ActionButton
+              variant="outline"
+              tone="gray"
+              label="합격"
+              typo="B4.Sb"
+              isLoading={isPassLoading}
+              onClick={() => onPass()}
+            />
+            <S.ActionButton
+              variant="outline"
+              tone="necessary"
+              label="불합격"
+              typo="B4.Sb"
+              isLoading={isFailLoading}
+              onClick={() => onFail()}
+            />
+          </Flex>
         )}
       </td>
     </tr>

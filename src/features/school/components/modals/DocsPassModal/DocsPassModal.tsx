@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 import type { PartType } from '@/features/auth/domain'
 import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
@@ -28,7 +29,11 @@ import * as S from './DocsPassModal.style'
 
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const { value: part, Dropdown } = usePartDropdown()
+  const queryClient = useQueryClient()
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [pendingDecisionById, setPendingDecisionById] = useState<
+    Record<string, 'PASS' | 'FAIL' | null>
+  >({})
   const sortOptions: Array<Option<string>> = [
     { label: '점수 높은 순', id: 'SCORE_DESC' },
     { label: '점수 낮은 순', id: 'SCORE_ASC' },
@@ -67,6 +72,10 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   )
 
   const selectedCount = selectedIds.size
+  const selectedItems = items.filter((item) => selectedIds.has(Number(item.applicationId)))
+  const alreadyPassedCount = selectedItems.filter(
+    (item) => item.documentResult.decision === 'PASS',
+  ).length
   const allSelected = totalCount > 0 && selectedCount === totalCount
   const headerChecked = allSelected ? true : selectedCount > 0 ? 'indeterminate' : false
 
@@ -92,9 +101,45 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const { mutate: patchStatus } = useCustomMutation(
     ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
       patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
+    {
+      onMutate: ({ applicationId, decision }) => {
+        setPendingDecisionById((prev) => ({ ...prev, [applicationId]: decision }))
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['documentSelectedApplicants'],
+          exact: false,
+        })
+      },
+      onSettled: (_data, _error, variables) => {
+        setPendingDecisionById((prev) => ({ ...prev, [variables.applicationId]: null }))
+      },
+    },
   )
   const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
     patchStatus({ applicationId, decision })
+  }
+  const { mutate: bulkPass } = useCustomMutation((applicationIds: Array<string>) => {
+    return Promise.all(
+      applicationIds.map((applicationId) =>
+        patchDocumentSelectionStatus(recruitingId, applicationId, { decision: 'PASS' }),
+      ),
+    )
+  })
+  const handleBulkPass = () => {
+    const targetIds = selectedItems
+      .filter((item) => item.documentResult.decision !== 'PASS')
+      .map((item) => item.applicationId)
+    if (targetIds.length === 0) return
+    bulkPass(targetIds, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['documentSelectedApplicants'],
+          exact: false,
+        })
+        setSelectedIds(new Set())
+      },
+    })
   }
   return (
     <Modal.Body className="body">
@@ -152,16 +197,21 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                 </tr>
               </S.TableRowHeader>
               <tbody>
-                {items.map((item) => (
-                  <DocsEvaluationRow
-                    key={item.applicationId}
-                    item={item}
-                    checked={selectedIds.has(Number(item.applicationId))}
-                    onToggle={handleToggleRow(Number(item.applicationId))}
-                    onPass={() => handlePatchStatus(item.applicationId, 'PASS')}
-                    onFail={() => handlePatchStatus(item.applicationId, 'FAIL')}
-                  />
-                ))}
+                {items.map((item) => {
+                  const pendingDecision = pendingDecisionById[item.applicationId] ?? null
+                  return (
+                    <DocsEvaluationRow
+                      key={item.applicationId}
+                      item={item}
+                      checked={selectedIds.has(Number(item.applicationId))}
+                      onToggle={handleToggleRow(Number(item.applicationId))}
+                      onPass={() => handlePatchStatus(item.applicationId, 'PASS')}
+                      onFail={() => handlePatchStatus(item.applicationId, 'FAIL')}
+                      isPassLoading={pendingDecision === 'PASS'}
+                      isFailLoading={pendingDecision === 'FAIL'}
+                    />
+                  )
+                })}
               </tbody>
             </S.Table>
             {isFetchingNextPage && (
@@ -194,7 +244,10 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                 typo="B4.Sb"
                 css={{ width: '144px', height: '30px' }}
                 onClick={() =>
-                  selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })
+                  selectedCount > 0 &&
+                  (alreadyPassedCount > 0
+                    ? setModalOpen({ open: true, modalName: 'inform' })
+                    : handleBulkPass())
                 }
               />
             </div>
@@ -208,7 +261,15 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
         <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
       )}
       {modalOpen.open && modalOpen.modalName === 'inform' && (
-        <PassInfoModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+        <PassInfoModal
+          onClose={() => setModalOpen({ open: false, modalName: null })}
+          onConfirm={() => {
+            handleBulkPass()
+            setModalOpen({ open: false, modalName: null })
+          }}
+          selectedCount={selectedCount}
+          alreadyPassedCount={alreadyPassedCount}
+        />
       )}
     </Modal.Body>
   )
