@@ -248,7 +248,14 @@ const FinalEvaluation = () => {
         <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
       )}
       {modalOpen.open && modalOpen.modalName === 'inform' && (
-        <PassInfoModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+        <PassInfoModal
+          selectedCount={selectedCount}
+          alreadyPassedCount={0}
+          onConfirm={() => {
+            setModalOpen({ open: false, modalName: null })
+          }}
+          onClose={() => setModalOpen({ open: false, modalName: null })}
+        />
       )}
     </>
   )
