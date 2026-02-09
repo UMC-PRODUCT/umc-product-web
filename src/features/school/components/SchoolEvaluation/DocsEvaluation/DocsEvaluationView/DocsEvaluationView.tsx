@@ -29,7 +29,10 @@ const DocsEvaluationContent = () => {
     null,
   )
   const { recruitmentId } = useParams({ from: '/(app)/school/evaluation/$recruitmentId/' })
-  const { data: answerData } = useGetDocumentEvaluationApplication(recruitmentId, selectedUserId)
+  const { data: answerData, isLoading: isApplicationLoading } = useGetDocumentEvaluationApplication(
+    recruitmentId,
+    selectedUserId,
+  )
 
   const navigate = useNavigate()
   return (
@@ -74,7 +77,10 @@ const DocsEvaluationContent = () => {
           css={{ overflowY: 'hidden', boxSizing: 'border-box' }}
         >
           <div css={RightSection}>
-            <ApplicationView data={answerData?.result} />
+            <ApplicationView
+              data={answerData?.result}
+              isLoading={Boolean(selectedUserId) && isApplicationLoading}
+            />
             <div
               css={{
                 display: 'grid',
@@ -86,12 +92,12 @@ const DocsEvaluationContent = () => {
               }}
             >
               <EvaluationStatus selectedUserId={selectedUserId} recruitingId={recruitmentId} />
-              <MyEvaluation selectedUserId={selectedUserId} />
+              <MyEvaluation selectedUserId={selectedUserId} recruitingId={recruitmentId} />
             </div>
           </div>
         </Section>
       </S.Wrapper>
-      {modal && <DocsPassModal onClose={() => setModal(false)} />}
+      {modal && <DocsPassModal onClose={() => setModal(false)} recruitingId={recruitmentId} />}
     </>
   )
 }

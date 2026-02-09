@@ -39,6 +39,7 @@ const Spinner = styled.span<{
 const Label = styled.span<{ $color?: string }>`
   color: ${({ $color }) => $color ?? theme.colors.gray[300]};
   ${theme.typography.B4.Rg};
+  white-space: nowrap;
 `
 
 type LoadingProps = {

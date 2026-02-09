@@ -12,6 +12,8 @@ export const Container = styled.div`
   flex-direction: column;
   gap: 14px;
   width: 100%;
+  height: 100%;
+  min-height: 0;
   color: ${theme.colors.white};
 `
 
@@ -122,6 +124,7 @@ export const BottomBar = styled(Section)`
   align-items: center;
   white-space: nowrap;
   overflow-x: scroll;
+  margin-top: auto;
 `
 
 export const CountBadge = styled.span`
@@ -156,11 +159,24 @@ export const ModalContentWrapper = styled(Flex)`
   overflow: hidden;
   max-width: 90vw;
   max-height: 90vh;
+  min-height: 500px;
+  height: 100%;
+  .body {
+    flex: 1;
+    min-height: 0;
+  }
   .body {
     ${media.down(theme.breakPoints.desktop)} {
       height: fit-content;
     }
   }
+`
+
+export const BodyPlaceholder = styled.div`
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 export const Title = styled.div`
   ${theme.typography.H3.Sb}

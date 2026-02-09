@@ -9,6 +9,26 @@ export const Header = styled.div`
   gap: 16px;
 `
 
+export const Container = styled.div`
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 17, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+`
+
 export const Title = styled.div`
   ${theme.typography.H3.Sb};
   color: ${theme.colors.white};

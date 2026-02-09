@@ -3,6 +3,7 @@ import type {
   GetDocumentEvaluationApplicationResponseDTO,
 } from '@/features/apply/domain/model'
 import { theme } from '@/shared/styles/theme'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import { MiniTimeTable } from '@/shared/ui/common/Question/TimeTable/MiniTimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -11,9 +12,11 @@ import * as S from './ApplicationView.style'
 const ApplicationView = ({
   data,
   isModal = false,
+  isLoading = false,
 }: {
   data: GetDocumentEvaluationApplicationResponseDTO | undefined
   isModal?: boolean
+  isLoading?: boolean
 }) => {
   const pageInfo = [
     { page: 1, label: '지원자 정보 및 희망 파트 선택' },
@@ -124,15 +127,30 @@ const ApplicationView = ({
         return (
           <S.AnswerGroup>
             {files.length > 0 &&
-              files.map((file: any) => (
-                <S.Hyperlink key={file.fileId ?? file.fileName ?? file.id}>
-                  {file.fileId ?? file.fileName ?? file.name}
-                </S.Hyperlink>
-              ))}
+              files.map((file: any) => {
+                const url = file.url ?? file.link ?? file.fileUrl
+                const label = file.fileName ?? file.name ?? file.fileId ?? file.id
+                return (
+                  <S.Hyperlink
+                    key={file.fileId ?? file.fileName ?? file.id}
+                    href={typeof url === 'string' ? url : undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {label}
+                  </S.Hyperlink>
+                )
+              })}
             {links.length > 0 &&
-              links.map((link: any) => (
-                <S.Hyperlink key={link.url ?? link}>{link.url ?? link}</S.Hyperlink>
-              ))}
+              links.map((link: any) => {
+                const href = typeof link === 'string' ? link : link.url
+                const label = typeof link === 'string' ? link : link.url
+                return (
+                  <S.Hyperlink key={label} href={href} target="_blank" rel="noreferrer">
+                    {label}
+                  </S.Hyperlink>
+                )
+              })}
             {files.length === 0 && links.length === 0 ? '—' : null}
           </S.AnswerGroup>
         )
@@ -151,64 +169,73 @@ const ApplicationView = ({
       gap={'14px'}
       css={{ backgroundColor: `${theme.colors.gray[700]}`, flex: 1 }}
     >
-      {!isModal && (
-        <S.Header>
-          <S.Title>
-            {data?.applicant ? `${data.applicant.nickname}/${data.applicant.name} 님의 지원서` : ''}
-          </S.Title>
-        </S.Header>
-      )}
+      <S.Container>
+        {isLoading && (
+          <S.LoadingOverlay>
+            <Loading size={24} label="불러오는 중" labelPlacement="bottom" />
+          </S.LoadingOverlay>
+        )}
+        {!isModal && (
+          <S.Header>
+            <S.Title>
+              {data?.applicant
+                ? `${data.applicant.nickname}/${data.applicant.name} 님의 지원서`
+                : ''}
+            </S.Title>
+          </S.Header>
+        )}
 
-      <S.PageList>
-        {data?.formPages.map((page) => (
-          <S.PageCard key={page.pageNo}>
-            {(() => {
-              let pageQuestionIndex = 0
-              const nextIndex = () => {
-                pageQuestionIndex += 1
-                return pageQuestionIndex
-              }
-              const pageNo = Number(page.pageNo)
+        <S.PageList>
+          {data?.formPages.map((page) => (
+            <S.PageCard key={page.pageNo}>
+              {(() => {
+                let pageQuestionIndex = 0
+                const nextIndex = () => {
+                  pageQuestionIndex += 1
+                  return pageQuestionIndex
+                }
+                const pageNo = Number(page.pageNo)
 
-              return (
-                <>
-                  <S.PageHeader>
-                    <S.Page>Page {page.pageNo}</S.Page>
-                    <S.PageInfo>{pageInfo[pageNo - 1]?.label}</S.PageInfo>
-                  </S.PageHeader>
+                return (
+                  <>
+                    <S.PageHeader>
+                      <S.Page>Page {page.pageNo}</S.Page>
+                      <S.PageInfo>{pageInfo[pageNo - 1]?.label}</S.PageInfo>
+                    </S.PageHeader>
 
-                  <S.QuestionsCard>
-                    {page.questions.map((question) => (
-                      <S.Question key={question.questionId}>
-                        <S.QuestionTitle>
-                          문항 {nextIndex()} - {question.questionText}
-                        </S.QuestionTitle>
-                        {renderAnswer(question)}
-                      </S.Question>
-                    ))}
+                    <S.QuestionsCard>
+                      {page.questions.map((question) => (
+                        <S.Question key={question.questionId}>
+                          <S.QuestionTitle>
+                            문항 {nextIndex()} - {question.questionText}
+                          </S.QuestionTitle>
+                          {renderAnswer(question)}
+                        </S.Question>
+                      ))}
 
-                    {page.partQuestions.map((partGroup) => (
-                      <S.QuestionsCard key={partGroup.part}>
-                        <S.AnswerGroup>
-                          <S.Chip>{partGroup.part}</S.Chip>
-                        </S.AnswerGroup>
-                        {partGroup.questions.map((question, idx) => (
-                          <S.Question key={question.questionId}>
-                            <S.QuestionTitle>
-                              문항 {idx + 1} - {question.questionText}
-                            </S.QuestionTitle>
-                            {renderAnswer(question)}
-                          </S.Question>
-                        ))}
-                      </S.QuestionsCard>
-                    ))}
-                  </S.QuestionsCard>
-                </>
-              )
-            })()}
-          </S.PageCard>
-        ))}
-      </S.PageList>
+                      {page.partQuestions.map((partGroup) => (
+                        <S.QuestionsCard key={partGroup.part}>
+                          <S.AnswerGroup>
+                            <S.Chip>{partGroup.part}</S.Chip>
+                          </S.AnswerGroup>
+                          {partGroup.questions.map((question, idx) => (
+                            <S.Question key={question.questionId}>
+                              <S.QuestionTitle>
+                                문항 {idx + 1} - {question.questionText}
+                              </S.QuestionTitle>
+                              {renderAnswer(question)}
+                            </S.Question>
+                          ))}
+                        </S.QuestionsCard>
+                      ))}
+                    </S.QuestionsCard>
+                  </>
+                )
+              })()}
+            </S.PageCard>
+          ))}
+        </S.PageList>
+      </S.Container>
     </Section>
   )
 }

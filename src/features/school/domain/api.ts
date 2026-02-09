@@ -5,7 +5,7 @@ import type {
 } from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { FinalSelectionsSortType } from '@/shared/types/umc'
+import type { SelectionsSortType } from '@/shared/types/umc'
 
 import type {
   DeleteSingleQuestionResponseDTO,
@@ -13,12 +13,13 @@ import type {
   GetApplicationFormResponseDTO,
   GetDashboardResponseDTO,
   GetDocsMyEvaluationResponseDTO,
+  GetDocsSelectedApplicantsResponseDTO,
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
   GetTempSavedRecruitmentResponseDTO,
   PatchDocsMyEvaluationResponseDTO,
-  patchPublishedRecruitmentRequestDTO,
+  PatchPublishedRecruitmentRequestDTO,
   PatchTempSavedRecruitQuestionsRequestDTO,
   PatchTempSavedRecruitQuestionsResponseDTO,
   PatchTempSaveRecruitmentRequestDTO,
@@ -116,7 +117,7 @@ export const deleteSingleQuestion = async ({
 export const patchPublishedRecruitment = async ({
   recruitmentId,
   requestBody,
-}: patchPublishedRecruitmentRequestDTO) => {
+}: PatchPublishedRecruitmentRequestDTO) => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/published`,
     requestBody,
@@ -199,12 +200,12 @@ export const getDocumentEvaluationAnswerMe = async (
 export const getDocumentSelectedApplicants = async (
   recruitmentId: string,
   params: {
-    part: PartType
+    part: PartType | 'ALL'
     page: string
     size: string
-    sort: FinalSelectionsSortType
+    sort: SelectionsSortType
   },
-): Promise<CommonResponseDTO<GetAllDocsApplicantsResponseDTO>> => {
+): Promise<CommonResponseDTO<GetDocsSelectedApplicantsResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/applications/document-selections`,
     {
@@ -225,6 +226,20 @@ export const patchMyDocumentEvaluationAnswer = async (
 ): Promise<CommonResponseDTO<PatchDocsMyEvaluationResponseDTO>> => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations/me`,
+    requestBody,
+  )
+  return data
+}
+
+export const patchDocsApplicationStatus = async (
+  recruitmentId: string,
+  applicationId: string,
+  requestBody: {
+    decision: 'PASS' | 'FAIL' | 'WAIT'
+  },
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/document-status`,
     requestBody,
   )
   return data

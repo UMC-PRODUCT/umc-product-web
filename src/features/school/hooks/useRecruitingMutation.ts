@@ -4,6 +4,7 @@ import {
   deleteOption,
   deleteRecruitment,
   deleteSingleQuestion,
+  patchDocsApplicationStatus,
   patchMyDocumentEvaluationAnswer,
   patchPublishedRecruitment,
   patchTempSavedRecruitQuestions,
@@ -65,6 +66,12 @@ export function useRecruitingMutation() {
         patchMyDocumentEvaluationAnswer(recruitmentId, applicantId, answers),
     )
   }
+
+  function usePatchDocsApplicationStatus(recruitmentId: string, applicantId: string) {
+    return useCustomMutation((status: { decision: 'PASS' | 'FAIL' | 'WAIT' }) =>
+      patchDocsApplicationStatus(recruitmentId, applicantId, status),
+    )
+  }
   return {
     usePostFirstRecruitment,
     usePatchTempSaveRecruitment,
@@ -75,5 +82,6 @@ export function useRecruitingMutation() {
     usePatchPublishedRecruitment,
     useDeleteQuestionOption,
     usePatchDocsEvaluationAnswerMe,
+    usePatchDocsApplicationStatus,
   }
 }

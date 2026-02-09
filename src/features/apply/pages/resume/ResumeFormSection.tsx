@@ -111,15 +111,13 @@ const ResumeFormSection = ({
 
   const partQuestionIds = useMemo(() => {
     return normalizedPages
-      .flatMap((page) => {
-        const baseQuestions = Array.isArray(page.questions) ? page.questions : []
-        const partQuestions = Array.isArray(page.partQuestions)
+      .flatMap((page) =>
+        Array.isArray(page.partQuestions)
           ? page.partQuestions.flatMap((partGroup) =>
               Array.isArray(partGroup.questions) ? partGroup.questions : [],
             )
-          : []
-        return [...baseQuestions, ...partQuestions]
-      })
+          : [],
+      )
       .map((question) => question.questionId)
   }, [normalizedPages])
 
@@ -131,13 +129,12 @@ const ResumeFormSection = ({
   const hasPartAnswers = useMemo(() => {
     if (partQuestionIds.length === 0) return false
     return normalizedPages.some((page) => {
-      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
       const pagePartQuestions = Array.isArray(page.partQuestions)
         ? page.partQuestions.flatMap((partGroup) =>
             Array.isArray(partGroup.questions) ? partGroup.questions : [],
           )
         : []
-      return [...pageQuestions, ...pagePartQuestions].some((question) => {
+      return pagePartQuestions.some((question) => {
         const index = partQuestionIds.indexOf(question.questionId)
         const answerValue = partQuestionValues[index]
         return !isAnswerEmpty(question, answerValue)
@@ -222,7 +219,7 @@ const ResumeFormSection = ({
             flexDirection="column"
             gap={12}
           >
-            <PartDivider label={partQuestion.label ?? partQuestion.part} />
+            <PartDivider label={partQuestion.part} />
             {partQuestion.questions.map((question, idx) => (
               <Controller
                 key={question.questionId}

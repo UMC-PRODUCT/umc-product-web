@@ -1,10 +1,11 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartType } from '@/features/auth/domain'
-import type { FinalSelectionsSortType } from '@/shared/types/umc'
+import type { SelectionsSortType } from '@/shared/types/umc'
 
 import {
   getDashboardSummary,
+  getDocumentAllApplicants,
   getDocumentEvaluationAnswerMe,
   getDocumentEvaluationAnswers,
   getDocumentEvaluationApplication,
@@ -40,10 +41,10 @@ export const schoolKeys = createQueryKeys('recruitment', {
   getAllDocumentSelectedApplicants: (
     recruitmentId: string,
     params: {
-      part: PartType
+      part: PartType | 'ALL'
       page: string
       size: string
-      sort: FinalSelectionsSortType
+      sort: SelectionsSortType
     },
   ) => ({
     queryKey: ['documentSelectedApplicants', recruitmentId, params],
@@ -60,5 +61,17 @@ export const schoolKeys = createQueryKeys('recruitment', {
   getDocumentEvaluationAnswerMe: (recruitmentId: string, applicantId: string) => ({
     queryKey: ['documentEvaluationAnswerMe', recruitmentId, applicantId],
     queryFn: () => getDocumentEvaluationAnswerMe(recruitmentId, applicantId),
+  }),
+  getDocsEvaluationApplicants: (
+    recruitmentId: string,
+    params: {
+      part: PartType | 'ALL'
+      keyword: string
+      page: string
+      size: string
+    },
+  ) => ({
+    queryKey: ['docsEvaluationApplicants', recruitmentId, params],
+    queryFn: () => getDocumentAllApplicants(recruitmentId, params),
   }),
 })

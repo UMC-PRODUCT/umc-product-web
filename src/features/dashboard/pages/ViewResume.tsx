@@ -33,12 +33,12 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
   const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
   const normalizedAnswers = useMemo(
-    () => buildDefaultValuesFromQuestions(questionsData.result, answerData.result),
+    () => buildDefaultValuesFromQuestions(questionsData.result, answerData?.result),
     [questionsData, answerData],
   )
 
   const answeredQuestionIds = useMemo(() => {
-    const answers = Array.isArray(answerData.result.answers) ? answerData.result.answers : []
+    const answers = Array.isArray(answerData?.result.answers) ? answerData.result.answers : []
     return new Set(answers.map((entry) => String(entry.questionId)))
   }, [answerData])
 
@@ -111,13 +111,21 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   )
 
   const pageTitle = `${questionsData.result.noticeTitle}`
-  const submitAt = new Date(answerData.result.submittedAt!)
-  const submittedTimeText = `${submitAt.getFullYear()}년 ${(submitAt.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}월 ${submitAt.getDate().toString().padStart(2, '0')}일 ${submitAt
-    .getHours()
-    .toString()
-    .padStart(2, '0')}:${submitAt.getMinutes().toString().padStart(2, '0')}에 제출됨.`
+  const submittedAt = answerData?.result.submittedAt
+  const submittedTimeText = submittedAt
+    ? `${new Date(submittedAt).getFullYear()}년 ${(new Date(submittedAt).getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}월 ${new Date(submittedAt)
+        .getDate()
+        .toString()
+        .padStart(2, '0')}일 ${new Date(submittedAt)
+        .getHours()
+        .toString()
+        .padStart(2, '0')}:${new Date(submittedAt)
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}에 제출됨.`
+    : ''
 
   const onBack = () => {
     navigate({
@@ -211,7 +219,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
               gap={12}
               width="100%"
             >
-              <PartDivider label={partGroup.label ?? partGroup.part} />
+              <PartDivider label={partGroup.part} />
               {groupQuestions.map((item) => {
                 const partIndex = flatPartQuestions.indexOf(item)
                 return (

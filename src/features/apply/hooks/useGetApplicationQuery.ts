@@ -1,4 +1,5 @@
 import type { GetDocumentEvaluationApplicationResponseDTO } from '@/features/apply/domain/model'
+import { schoolKeys } from '@/features/school/domain'
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
@@ -83,7 +84,7 @@ export function useGetMyApplicationStatus(recruitmentId: string) {
 }
 
 type DocumentEvaluationApplicationQueryKey = ReturnType<
-  typeof applyKeys.getDocumentEvaluationApplication
+  typeof schoolKeys.getDocumentEvaluationApplication
 >['queryKey']
 type DocumentEvaluationApplicationResponse =
   CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>
@@ -102,7 +103,7 @@ export function useGetDocumentEvaluationApplication(
   options?: DocumentEvaluationApplicationOptions,
 ) {
   const resolvedApplicantId = applicantId ?? ''
-  const { queryKey, queryFn } = applyKeys.getDocumentEvaluationApplication(
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplication(
     recruitmentId,
     resolvedApplicantId,
   )

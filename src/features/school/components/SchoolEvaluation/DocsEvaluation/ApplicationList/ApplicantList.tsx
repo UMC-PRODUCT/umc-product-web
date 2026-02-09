@@ -7,8 +7,8 @@ import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
-import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 import * as S from './ApplicationList.style'
@@ -28,15 +28,17 @@ const ApplicantListContent = ({
   const { value, Dropdown } = usePartDropdown()
   const selectedPart = (value?.id as PartType | undefined) ?? 'ALL'
 
-  const { data } = useGetDocumentAllApplicants(recruitmentId, {
-    part: selectedPart,
-    keyword: keyword.trim(),
-    page: '0',
-    size: '20',
-  })
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetDocumentAllApplicants(recruitmentId, {
+      part: selectedPart,
+      keyword: keyword.trim(),
+      size: '20',
+    })
 
-  const applicants = data.result.applicationSummaries
-  const summary = data.result.summary
+  const pages = data?.pages ?? []
+  const summary =
+    pages.length > 0 ? pages[0].result.summary : { totalCount: '0', evaluatedCount: '0' }
+  const applicants = pages.flatMap((page) => page.result.applicationSummaries)
   const totalCount = summary.totalCount
   const evaluatedCount = summary.evaluatedCount
 
@@ -79,7 +81,21 @@ const ApplicantListContent = ({
           <span>평가</span>
         </S.TableHeader>
 
-        <S.ScrollArea>
+        <S.ScrollArea
+          onScroll={(event) => {
+            if (!hasNextPage || isFetchingNextPage) return
+            const target = event.currentTarget
+            const distanceToBottom = target.scrollHeight - target.scrollTop - target.clientHeight
+            if (distanceToBottom < 80) {
+              fetchNextPage()
+            }
+          }}
+        >
+          {isLoading && (
+            <S.LoadingOverlay>
+              <Loading size={24} label="불러오는 중" labelPlacement="right" />
+            </S.LoadingOverlay>
+          )}
           {applicants.map((applicant) => {
             const partsLabel = applicant.preferredParts.map((part) => part.label).join(', ')
             return (
@@ -99,6 +115,11 @@ const ApplicantListContent = ({
             )
           })}
           {applicants.length === 0 && <S.NoApplicants>지원자가 없습니다.</S.NoApplicants>}
+          {isFetchingNextPage && (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+              <Loading size={20} label="불러오는 중" labelPlacement="right" />
+            </div>
+          )}
         </S.ScrollArea>
       </S.ListContainer>
     </Section>
@@ -117,7 +138,7 @@ const ApplicantList = ({
   onSummaryChange?: (summary: { totalCount: string; evaluatedCount: string }) => void
 }) => {
   return (
-    <AsyncBoundary fallback={<SuspenseFallback label="지원자 목록을 불러오는 중입니다." />}>
+    <AsyncBoundary fallback={null}>
       <ApplicantListContent
         recruitmentId={recruitmentId}
         selectedUserId={selectedUserId}

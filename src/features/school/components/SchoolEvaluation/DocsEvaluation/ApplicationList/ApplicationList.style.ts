@@ -57,6 +57,7 @@ export const TableHeader = styled.div`
 export const ScrollArea = styled.div`
   height: 500px; // 이미지 비중에 맞춰 조절
   overflow-y: auto;
+  position: relative;
 
   /* 스크롤바 스타일 (이미지의 얇은 회색 바 구현) */
   &::-webkit-scrollbar {
@@ -66,6 +67,16 @@ export const ScrollArea = styled.div`
     background: ${theme.colors.gray[600]};
     border-radius: 10px;
   }
+`
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 17, 1);
+  backdrop-filter: blur(2px);
 `
 
 export const ListItem = styled.div<{ isSelected: boolean }>`

@@ -232,6 +232,7 @@ export const usePartDropdown = (
         placeholder={placeholder}
         value={selectedValue}
         disabled={false}
+        css={{ width: '100%', height: '100%' }}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }

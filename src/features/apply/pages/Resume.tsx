@@ -45,7 +45,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { mutate: submitApplication } = useSubmitApplication()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
-  const resumeForm = useResumeForm(questionDataForForm, answerData.result)
+  const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
 
   const {
     control,
@@ -64,7 +64,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
   const displayLastSavedTime = (() => {
-    const raw = answerData.result.lastSavedAt
+    const raw = answerData?.result.lastSavedAt
     if (!raw) return null
     const savedDate = new Date(raw)
     if (Number.isNaN(savedDate.getTime())) return null

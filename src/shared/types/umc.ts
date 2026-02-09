@@ -40,7 +40,7 @@ export type OrganizationType = 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
 
 export type RecruitmentStatusType = 'ONGOING' | 'SCHEDULED' | 'CLOSED' | 'DRAFT'
 
-export type FinalSelectionsSortType = 'SCORE_DESC' | 'SCORE_ASC' | 'EVALUATED_AT_ASC'
+export type SelectionsSortType = 'SCORE_DESC' | 'SCORE_ASC' | 'EVALUATED_AT_ASC'
 
 export type PostFileType = 'PROFILE_IMAGE' | 'SCHOOL_LOGO' | 'PORTFOLIO' | 'ETC'
 

@@ -94,21 +94,20 @@ export const useCustomInfiniteQuery = <
 >(
   queryKey: TQueryKey,
   queryFn: QueryFunction<TQueryFnData, TQueryKey, TPageParam>,
-  infiniteOptions?: UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam> &
+  infiniteOptions?: Omit<
+    UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>,
+    'queryKey' | 'queryFn'
+  > &
     DefaultQueryOptions,
 ) => {
   const safeOptions =
     infiniteOptions ??
-    ({} as UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam> &
+    ({} as Omit<
+      UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>,
+      'queryKey' | 'queryFn'
+    > &
       DefaultQueryOptions)
-  const {
-    staleTime,
-    retry,
-    refetchOnWindowFocus,
-    queryKey: _,
-    queryFn: __,
-    ...restOptions
-  } = safeOptions
+  const { staleTime, retry, refetchOnWindowFocus, ...restOptions } = safeOptions
 
   return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey, TPageParam>({
     queryKey,

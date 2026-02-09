@@ -170,22 +170,18 @@ const filterScheduleValue = (
   value: TimeTableSlots,
   schedule: ScheduleQuestion['schedule'],
 ): TimeTableSlots => {
-  const disabledMap = schedule.disabledByDate.reduce<Partial<Record<string, Set<string>>>>(
-    (acc, slot) => {
-      if (!slot.date || !Array.isArray(slot.times)) return acc
-      acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
-      return acc
-    },
-    {},
-  )
-  const enabledMap = schedule.enabledByDate.reduce<Partial<Record<string, Set<string>>>>(
-    (acc, slot) => {
-      if (!slot.date || !Array.isArray(slot.times)) return acc
-      acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
-      return acc
-    },
-    {},
-  )
+  const disabledByDate = Array.isArray(schedule.disabledByDate) ? schedule.disabledByDate : []
+  const enabledByDate = Array.isArray(schedule.enabledByDate) ? schedule.enabledByDate : []
+  const disabledMap = disabledByDate.reduce<Partial<Record<string, Set<string>>>>((acc, slot) => {
+    if (!slot.date || !Array.isArray(slot.times)) return acc
+    acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
+    return acc
+  }, {})
+  const enabledMap = enabledByDate.reduce<Partial<Record<string, Set<string>>>>((acc, slot) => {
+    if (!slot.date || !Array.isArray(slot.times)) return acc
+    acc[slot.date] = new Set(slot.times.filter((t): t is string => typeof t === 'string'))
+    return acc
+  }, {})
   const hasEnabled = Object.keys(enabledMap).length > 0
 
   return Object.entries(value).reduce<TimeTableSlots>((acc, [date, times]) => {

@@ -8,6 +8,7 @@ import type { EvaluationDocumentType, EvaluationFinalType } from '@features/mana
 
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { RecruitingStatus } from '@/shared/types/form'
+import type { SelectionsSortType } from '@/shared/types/umc'
 
 import type { ApplicationFormPayload, Phase, RecruitingDraft, RecruitingForms } from './types'
 
@@ -106,7 +107,7 @@ export type PatchTempSavedRecruitQuestionsResponseDTO = RecruitingForms
 
 export type DeleteSingleQuestionResponseDTO = RecruitingForms
 
-export type patchPublishedRecruitmentRequestDTO = {
+export type PatchPublishedRecruitmentRequestDTO = {
   recruitmentId: string
   requestBody: RecruitmentEditable
 }
@@ -187,18 +188,7 @@ export type GetAllDocsApplicantsResponseDTO = {
     totalCount: string
     evaluatedCount: string
   }
-  applicationSummaries: Array<{
-    applicationId: string
-    applicantMemberId: string
-    applicantName: string
-    applicantNickname: string
-    preferredParts: Array<{
-      priority: string
-      part: PartType
-      label: string
-    }>
-    isEvaluated: boolean
-  }>
+  applicationSummaries: Array<ApplicationSummary>
   paination: {
     page: string
     size: string
@@ -221,4 +211,53 @@ export type MyEvaluation = {
 
 export type GetDocsMyEvaluationResponseDTO = {
   myEvaluation: MyEvaluation | null
+}
+
+export type ApplicationSummary = {
+  applicationId: string
+  applicantMemberId: string
+  applicantName: string
+  applicantNickname: string
+  preferredParts: Array<{
+    priority: string
+    part: PartType
+    label: string
+  }>
+  isEvaluated: boolean
+}
+
+export type GetDocsSelectedApplicantsResponseDTO = {
+  summary: {
+    totalCount: string
+    selectedCount: string
+  }
+  sort: SelectionsSortType
+  documentSelectionApplications: {
+    content: Array<SelectedApplication>
+    page: string
+    size: string
+    totalPages: string
+    totalElements: string
+    hasNext: boolean
+    hasPrevious: boolean
+  }
+}
+
+export type SelectedApplication = {
+  applicationId: string
+  applicant: {
+    nickname: string
+    name: string
+  }
+  appliedParts: Array<{
+    priority: string
+    part: {
+      key: PartType
+      label: string
+    }
+  }>
+  documentScore: string
+  documentResult: {
+    decision: 'WAIT' | 'PASS' | 'FAIL'
+  }
 }

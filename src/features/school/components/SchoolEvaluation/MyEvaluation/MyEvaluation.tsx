@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { useGetDocumentEvaluationAnswerMe } from '@/features/school/hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
@@ -19,6 +20,7 @@ const MyEvaluation = ({
   selectedUserId: string | null
   recruitingId?: string | null
 }) => {
+  const queryClient = useQueryClient()
   const { usePatchDocsEvaluationAnswerMe } = useRecruitingMutation()
   const { mutate, isPending } = usePatchDocsEvaluationAnswerMe(
     recruitingId ?? '',
@@ -27,6 +29,7 @@ const MyEvaluation = ({
   const { data } = useGetDocumentEvaluationAnswerMe(recruitingId!, selectedUserId)
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
+
   const canSubmit = Boolean(recruitingId) && Boolean(selectedUserId)
   const scoreError = useMemo(() => {
     if (!canSubmit) return ''
@@ -45,11 +48,23 @@ const MyEvaluation = ({
 
   const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
     if (!canSubmit || scoreError) return
-    mutate({
-      action,
-      score,
-      comments: comment,
-    })
+    mutate(
+      {
+        action,
+        score,
+        comments: comment,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['recruitment'],
+          })
+          queryClient.invalidateQueries({
+            queryKey: ['user'],
+          })
+        },
+      },
+    )
   }
   return (
     <Section
@@ -100,7 +115,10 @@ const MyEvaluation = ({
 
         <S.Footer>
           {data?.result.myEvaluation?.savedAt && (
-            <S.DateText>{formatDateTimeDot(data.result.myEvaluation.savedAt)} 제출</S.DateText>
+            <S.DateText>
+              {formatDateTimeDot(data.result.myEvaluation.savedAt)}{' '}
+              {data.result.myEvaluation.submitted ? '제출' : '저장'}
+            </S.DateText>
           )}
           <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
             {!data?.result.myEvaluation?.submitted && (

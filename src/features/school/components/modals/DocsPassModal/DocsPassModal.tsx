@@ -1,13 +1,23 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useMemo, useState } from 'react'
 
+import type { PartType } from '@/features/auth/domain'
+import { patchDocsApplicationStatus } from '@/features/school/domain/api'
+import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useGetRecruitingData'
 import Close from '@/shared/assets/icons/close.svg?react'
+import { useCustomMutation } from '@/shared/hooks/customQuery'
+import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import type { SelectionsSortType } from '@/shared/types/umc'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
+// import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import FilterBar from '../../SchoolEvaluation/FilterBar/FilterBar'
 import PassCancleCautionModal from '../PassCancleCautionModal/PassCancleCautionModal'
@@ -16,12 +26,16 @@ import SetPassSuccessModal from '../SetPassSuccessModal/SetPassSuccessModal'
 import DocsEvaluationRow from './DocsEvaluationRow/DocsEvaluationRow'
 import * as S from './DocsPassModal.style'
 
-export const DocsPassModal = ({ onClose }: { onClose: () => void }) => {
+const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
+  const { value: part, Dropdown } = usePartDropdown()
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  const [sort, setSort] = useState<Option<string>>({
-    label: '점수 높은 순',
-    id: 1,
-  })
+  const sortOptions: Array<Option<string>> = [
+    { label: '점수 높은 순', id: 'SCORE_DESC' },
+    { label: '점수 낮은 순', id: 'SCORE_ASC' },
+    { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
+  ]
+  const [sortId, setSortId] = useState<SelectionsSortType>('SCORE_DESC')
+  const sortValue = sortOptions.find((option) => option.id === sortId)
 
   const [modalOpen, setModalOpen] = useState<{
     open: boolean
@@ -31,24 +45,34 @@ export const DocsPassModal = ({ onClose }: { onClose: () => void }) => {
     modalName: null,
   })
   const handleSortChange = (option: Option<unknown>) => {
-    setSort(option as Option<string>)
+    const id = option.id
+    if (id === 'SCORE_DESC' || id === 'SCORE_ASC' || id === 'EVALUATED_AT_ASC') {
+      setSortId(id)
+    }
   }
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetDocumentSelectedApplicants(recruitingId, {
+      part: part ? (part.id === '0' ? 'ALL' : (part.id as PartType)) : 'ALL',
+      size: '10',
+      sort: sortId,
+    })
 
-  // 임시 데이터
-  const applicants = Array.from({ length: 24 }, (_, i) => ({
-    id: i + 1,
-    name: '닉네임/성이름',
-    parts: ['SpringBoot', 'Node.js'],
-    docScore: '92.0',
-    isPassed: i === 0,
-  }))
+  const pages = data?.pages ?? []
+  const summary =
+    pages.length > 0 ? pages[0].result.summary : { totalCount: '0', selectedCount: '0' }
+  const totalCount = Number(summary.totalCount)
+  const items = useMemo(
+    () => pages.flatMap((page) => page.result.documentSelectionApplications.content),
+    [pages],
+  )
+
   const selectedCount = selectedIds.size
-  const allSelected = applicants.length > 0 && selectedCount === applicants.length
+  const allSelected = totalCount > 0 && selectedCount === totalCount
   const headerChecked = allSelected ? true : selectedCount > 0 ? 'indeterminate' : false
 
   const handleToggleAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
-      setSelectedIds(new Set(applicants.map((item) => item.id)))
+      setSelectedIds(new Set(items.map((item) => Number(item.applicationId))))
       return
     }
     setSelectedIds(new Set())
@@ -65,6 +89,139 @@ export const DocsPassModal = ({ onClose }: { onClose: () => void }) => {
       return next
     })
   }
+  const { mutate: patchStatus } = useCustomMutation(
+    ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
+      patchDocsApplicationStatus(recruitingId, applicationId, { decision }),
+  )
+  const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
+    patchStatus({ applicationId, decision })
+  }
+  return (
+    <Modal.Body className="body">
+      <S.Container>
+        {isLoading && pages.length === 0 ? (
+          <SuspenseFallback label="서류 합격 대상자를 불러오는 중입니다." />
+        ) : null}
+        {/* 1. 상단 필터/컨트롤 바 */}
+        <FilterBar
+          leftChild={
+            <>
+              <Flex css={{ width: '200px', height: '36px' }}>{Dropdown}</Flex>
+              <S.SelectionInfo onClick={() => {}}>전체 {totalCount}명 중 1명 선발</S.SelectionInfo>
+            </>
+          }
+          rightChild={
+            <>
+              <S.SelectBox value={sortValue} options={sortOptions} onChange={handleSortChange} />
+              <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
+            </>
+          }
+        />
+
+        {/* 2. 메인 테이블 */}
+        <S.TableContainer variant="solid" padding={'0'}>
+          <S.TableScroll
+            onScroll={(event) => {
+              if (!hasNextPage || isFetchingNextPage) return
+              const target = event.currentTarget
+              const distanceToBottom = target.scrollHeight - target.scrollTop - target.clientHeight
+              if (distanceToBottom < 80) {
+                fetchNextPage()
+              }
+            }}
+          >
+            <S.Table>
+              <S.TableRowHeader>
+                <tr>
+                  <th>
+                    <Checkbox
+                      checked={headerChecked}
+                      onCheckedChange={handleToggleAll}
+                      css={{
+                        backgroundColor: theme.colors.gray[600],
+                        borderColor: theme.colors.gray[400],
+                      }}
+                    />
+                  </th>
+                  <th>번호</th>
+                  <th>닉네임/이름</th>
+                  <th>지원 파트</th>
+                  <th>서류 점수</th>
+
+                  <th>작업</th>
+                </tr>
+              </S.TableRowHeader>
+              <tbody>
+                {items.map((item) => (
+                  <DocsEvaluationRow
+                    key={item.applicationId}
+                    item={item}
+                    checked={selectedIds.has(Number(item.applicationId))}
+                    onToggle={handleToggleRow(Number(item.applicationId))}
+                    onPass={() => handlePatchStatus(item.applicationId, 'PASS')}
+                    onFail={() => handlePatchStatus(item.applicationId, 'FAIL')}
+                    setOpenModal={setModalOpen}
+                  />
+                ))}
+              </tbody>
+            </S.Table>
+            {isFetchingNextPage && (
+              <Flex justifyContent="center" css={{ padding: '12px 0' }}>
+                <Loading size={20} label="불러오는 중" labelPlacement="right" />
+              </Flex>
+            )}
+          </S.TableScroll>
+        </S.TableContainer>
+
+        {/* 3. 하단 선택 관리 바 */}
+        <Modal.Footer>
+          <S.BottomBar variant="solid" padding="14px 18px">
+            <div className="left">
+              선택된 지원자 <S.CountBadge>{selectedCount}명</S.CountBadge>
+            </div>
+            <div className="right" css={{ gap: '14px', display: 'flex' }}>
+              <Button
+                label="선택 해제"
+                tone={selectedCount > 0 ? 'gray' : 'darkGray'}
+                variant="solid"
+                typo="B4.Sb"
+                css={{ width: '80px', height: '30px' }}
+                onClick={() => setSelectedIds(new Set())}
+              />
+              <Button
+                label={`선택된 ${selectedCount}명 합격 처리`}
+                tone={selectedCount > 0 ? 'lime' : 'darkGray'}
+                variant="solid"
+                typo="B4.Sb"
+                css={{ width: '144px', height: '30px' }}
+                onClick={() =>
+                  selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })
+                }
+              />
+            </div>
+          </S.BottomBar>
+        </Modal.Footer>
+      </S.Container>
+      {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
+        <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+      {modalOpen.open && modalOpen.modalName === 'setFail' && (
+        <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+      {modalOpen.open && modalOpen.modalName === 'inform' && (
+        <PassInfoModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      )}
+    </Modal.Body>
+  )
+}
+
+export const DocsPassModal = ({
+  onClose,
+  recruitingId,
+}: {
+  onClose: () => void
+  recruitingId: string
+}) => {
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Modal.Portal>
@@ -78,6 +235,7 @@ export const DocsPassModal = ({ onClose }: { onClose: () => void }) => {
             flexDirection="column"
             padding={'24px 28px'}
             width={'920px'}
+            height={'700px'}
           >
             <Modal.Header>
               <Flex
@@ -99,131 +257,18 @@ export const DocsPassModal = ({ onClose }: { onClose: () => void }) => {
                 </Modal.Close>
               </Flex>
             </Modal.Header>
-            <Modal.Body className="body">
-              <S.Container>
-                {/* 1. 상단 필터/컨트롤 바 */}
-                <FilterBar
-                  leftChild={
-                    <>
-                      <Dropdown
-                        options={[
-                          {
-                            label: '전체 파트',
-                            id: 0,
-                          },
-                          { label: 'SpringBoot', id: 1 },
-                          { label: 'Node.js', id: 2 },
-                        ]}
-                        placeholder="전체 파트"
-                        css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
-                      />
-                      <S.SelectionInfo onClick={() => {}}>전체 92명 중 1명 선발</S.SelectionInfo>
-                    </>
-                  }
-                  rightChild={
-                    <>
-                      <S.SelectBox
-                        value={sort}
-                        options={[
-                          {
-                            label: '점수 높은 순',
-                            id: 1,
-                          },
-                          {
-                            label: '점수 낮은 순',
-                            id: 2,
-                          },
-                          { label: '평가 완료 시각 순', id: 3 },
-                        ]}
-                        onChange={handleSortChange}
-                      />
-                      <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
-                    </>
-                  }
-                />
-
-                {/* 2. 메인 테이블 */}
-                <S.TableContainer variant="solid" padding={'0'}>
-                  <S.TableScroll>
-                    <S.Table>
-                      <S.TableRowHeader>
-                        <tr>
-                          <th>
-                            <Checkbox
-                              checked={headerChecked}
-                              onCheckedChange={handleToggleAll}
-                              css={{
-                                backgroundColor: theme.colors.gray[600],
-                                borderColor: theme.colors.gray[400],
-                              }}
-                            />
-                          </th>
-                          <th>번호</th>
-                          <th>닉네임/이름</th>
-                          <th>지원 파트</th>
-                          <th>서류 점수</th>
-
-                          <th>작업</th>
-                        </tr>
-                      </S.TableRowHeader>
-                      <tbody>
-                        {applicants.map((item) => (
-                          <DocsEvaluationRow
-                            key={item.id}
-                            item={item}
-                            checked={selectedIds.has(item.id)}
-                            onToggle={handleToggleRow(item.id)}
-                            setOpenModal={setModalOpen}
-                          />
-                        ))}
-                      </tbody>
-                    </S.Table>
-                  </S.TableScroll>
-                </S.TableContainer>
-
-                {/* 3. 하단 선택 관리 바 */}
-                <Modal.Footer>
-                  <S.BottomBar variant="solid" padding="14px 18px">
-                    <div className="left">
-                      선택된 지원자 <S.CountBadge>{selectedCount}명</S.CountBadge>
-                    </div>
-                    <div className="right" css={{ gap: '14px', display: 'flex' }}>
-                      <Button
-                        label="선택 해제"
-                        tone={selectedCount > 0 ? 'gray' : 'darkGray'}
-                        variant="solid"
-                        typo="B4.Sb"
-                        css={{ width: '80px', height: '30px' }}
-                        onClick={() => setSelectedIds(new Set())}
-                      />
-                      <Button
-                        label={`선택된 ${selectedCount}명 합격 처리`}
-                        tone={selectedCount > 0 ? 'lime' : 'darkGray'}
-                        variant="solid"
-                        typo="B4.Sb"
-                        css={{ width: '144px', height: '30px' }}
-                        onClick={() =>
-                          selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })
-                        }
-                      />
-                    </div>
-                  </S.BottomBar>
-                </Modal.Footer>
-              </S.Container>
-            </Modal.Body>
+            <AsyncBoundary
+              fallback={
+                <S.BodyPlaceholder>
+                  <SuspenseFallback label="서류 합격 대상자를 불러오는 중입니다." />
+                </S.BodyPlaceholder>
+              }
+            >
+              <DocsPassModalContent recruitingId={recruitingId} />
+            </AsyncBoundary>
           </S.ModalContentWrapper>
         </Modal.Content>
       </Modal.Portal>
-
-      {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
-        <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
-      )}
-      {modalOpen.open && modalOpen.modalName === 'setFail' && (
-        <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
-      )}
-      {modalOpen.open && modalOpen.modalName === 'inform' && (
-        <PassInfoModal onClose={() => setModalOpen({ open: false, modalName: null })} />
-      )}
     </Modal.Root>
   )
 }

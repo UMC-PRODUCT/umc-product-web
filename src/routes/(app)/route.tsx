@@ -14,7 +14,7 @@ type HeaderType = 'challenger' | 'management' | 'school'
 /**
  * 권한에 맞는 헤더 타입을 결정
  */
-function getHeaderType(roleType?: RoleType): HeaderType {
+function getHeaderType(roleType?: RoleType | null): HeaderType {
   if (
     roleType === 'SCHOOL_ETC_ADMIN' ||
     roleType === 'SCHOOL_PART_LEADER' ||
