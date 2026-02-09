@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
 import { formatDateTimeDot } from '@/shared/utils/date'
 
@@ -27,7 +28,7 @@ const MyEvaluation = ({
     recruitingId ?? '',
     selectedUserId ?? '',
   )
-  const { data } = useGetDocumentEvaluationMyAnswer(recruitingId!, selectedUserId)
+  const { data, isLoading } = useGetDocumentEvaluationMyAnswer(recruitingId!, selectedUserId)
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
 
@@ -40,12 +41,23 @@ const MyEvaluation = ({
     if (numericScore < 0 || numericScore > 100) return '0 이상 100 이하의 정수를 입력하세요.'
     return ''
   }, [score, canSubmit])
+  const showScoreError = !isLoading && Boolean(scoreError)
 
   useEffect(() => {
-    if (!data?.result.myEvaluation) return
-    setScore(data.result.myEvaluation.score)
-    setComment(data.result.myEvaluation.comments)
-  }, [data?.result.myEvaluation])
+    if (!selectedUserId || !recruitingId) {
+      setScore('')
+      setComment('')
+      return
+    }
+    const evaluation = data?.result.myEvaluation
+    if (!evaluation) {
+      setScore('')
+      setComment('')
+      return
+    }
+    setScore(evaluation.score)
+    setComment(evaluation.comments)
+  }, [data?.result.myEvaluation, recruitingId, selectedUserId])
 
   const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
     if (!canSubmit || scoreError) return
@@ -66,6 +78,23 @@ const MyEvaluation = ({
               queryKey: schoolKeys.getDocumentEvaluationMyAnswer(recruitingId, selectedUserId)
                 .queryKey,
             })
+            queryClient.invalidateQueries({
+              predicate: (query) => {
+                const [scope, key, params] = query.queryKey as [string?, string?, any?]
+                if (scope === 'documentEvaluationApplicants') {
+                  return String(params?.recruitingId) === String(recruitingId)
+                }
+                return (
+                  scope === 'school' &&
+                  key === 'documentEvaluationApplicants' &&
+                  String(params?.recruitmentId) === String(recruitingId)
+                )
+              },
+            })
+            queryClient.invalidateQueries({
+              queryKey: ['documentEvaluationApplicants'],
+              exact: false,
+            })
           }
         },
       },
@@ -82,73 +111,80 @@ const MyEvaluation = ({
         borderRadius: '12px',
       }}
     >
-      <S.Header>
-        <S.SubTitle>나의 평가</S.SubTitle>
-      </S.Header>
+      <S.Container>
+        {isLoading && (
+          <S.LoadingOverlay>
+            <Loading size={24} label="불러오는 중" labelPlacement="right" />
+          </S.LoadingOverlay>
+        )}
+        <S.Header>
+          <S.SubTitle>나의 평가</S.SubTitle>
+        </S.Header>
 
-      <S.FormContainer>
-        {/* 점수 섹션 - 입력 가능 */}
-        <S.InputWrapper>
-          <S.ScoreHeader>
-            <Label label="점수" necessary={true} />
-            {scoreError && <ErrorMessage typo="C3.Md" errorMessage={scoreError} />}
-          </S.ScoreHeader>
-          <S.ScoreInputBox>
-            <S.ScoreInput
-              type="number"
-              value={score}
-              onChange={(e) => setScore(e.target.value)}
-              min="0"
-              max="100"
+        <S.FormContainer>
+          {/* 점수 섹션 - 입력 가능 */}
+          <S.InputWrapper>
+            <S.ScoreHeader>
+              <Label label="점수" necessary={true} />
+              {showScoreError && <ErrorMessage typo="C3.Md" errorMessage={scoreError} />}
+            </S.ScoreHeader>
+            <S.ScoreInputBox>
+              <S.ScoreInput
+                type="number"
+                value={score}
+                onChange={(e) => setScore(e.target.value)}
+                min="0"
+                max="100"
+              />
+              <span className="total">/ 100</span>
+            </S.ScoreInputBox>
+          </S.InputWrapper>
+
+          {/* 코멘트 섹션 */}
+          <S.InputWrapper>
+            <S.FlexHeader>
+              <Label label="코멘트" necessary={false} />
+              <S.CharCount>{comment.length} / 80</S.CharCount>
+            </S.FlexHeader>
+            <S.TextArea
+              value={comment}
+              onChange={(e) => setComment(e.target.value.slice(0, 80))}
+              placeholder="코멘트를 입력해주세요."
             />
-            <span className="total">/ 100</span>
-          </S.ScoreInputBox>
-        </S.InputWrapper>
+          </S.InputWrapper>
 
-        {/* 코멘트 섹션 */}
-        <S.InputWrapper>
-          <S.FlexHeader>
-            <Label label="코멘트" necessary={false} />
-            <S.CharCount>{comment.length} / 80</S.CharCount>
-          </S.FlexHeader>
-          <S.TextArea
-            value={comment}
-            onChange={(e) => setComment(e.target.value.slice(0, 80))}
-            placeholder="코멘트를 입력해주세요."
-          />
-        </S.InputWrapper>
-
-        <S.Footer>
-          {data?.result.myEvaluation?.savedAt && (
-            <S.DateText>
-              {formatDateTimeDot(data.result.myEvaluation.savedAt)}{' '}
-              {data.result.myEvaluation.submitted ? '제출' : '저장'}
-            </S.DateText>
-          )}
-          <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
-            {!data?.result.myEvaluation?.submitted && (
+          <S.Footer>
+            {data?.result.myEvaluation?.savedAt && (
+              <S.DateText>
+                {formatDateTimeDot(data.result.myEvaluation.savedAt)}{' '}
+                {data.result.myEvaluation.submitted ? '제출' : '저장'}
+              </S.DateText>
+            )}
+            <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
+              {!data?.result.myEvaluation?.submitted && (
+                <Button
+                  variant="solid"
+                  tone={'gray'}
+                  type="button"
+                  label={'임시저장'}
+                  css={{ padding: '7px 0', width: '112px' }}
+                  disabled={!canSubmit || Boolean(scoreError) || isPending}
+                  onClick={() => handleSubmit('DRAFT_SAVE')}
+                />
+              )}
               <Button
                 variant="solid"
-                tone={'gray'}
+                tone={data?.result.myEvaluation?.submitted ? 'lime' : 'gray'}
                 type="button"
-                label={'임시저장'}
+                label={data?.result.myEvaluation?.submitted ? '평가 재제출' : '평가 제출'}
                 css={{ padding: '7px 0', width: '112px' }}
                 disabled={!canSubmit || Boolean(scoreError) || isPending}
-                onClick={() => handleSubmit('DRAFT_SAVE')}
+                onClick={() => handleSubmit('SUBMIT')}
               />
-            )}
-            <Button
-              variant="solid"
-              tone={data?.result.myEvaluation?.submitted ? 'lime' : 'gray'}
-              type="button"
-              label={data?.result.myEvaluation?.submitted ? '평가 재제출' : '평가 제출'}
-              css={{ padding: '7px 0', width: '112px' }}
-              disabled={!canSubmit || Boolean(scoreError) || isPending}
-              onClick={() => handleSubmit('SUBMIT')}
-            />
-          </Flex>
-        </S.Footer>
-      </S.FormContainer>
+            </Flex>
+          </S.Footer>
+        </S.FormContainer>
+      </S.Container>
     </Section>
   )
 }
