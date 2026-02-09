@@ -16,6 +16,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 import { formatDateTimeKorean, scrollToTop } from '@/shared/utils'
 
 import ResumeContent from '../components/ResumeContent'
+import type { QuestionAnswerValue } from '../domain/model'
 import { applyKeys } from '../domain/queryKeys'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
@@ -92,6 +93,33 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     interval: AUTO_SAVE_INTERVAL_MS,
   })
 
+  const handlePortfolioImmediateSave = (questionId: number, nextValue: QuestionAnswerValue) => {
+    const currentValues = getValues()
+    const sanitizedValue =
+      nextValue && typeof nextValue === 'object'
+        ? {
+            ...nextValue,
+            files: Array.isArray((nextValue as { files?: Array<{ status?: unknown }> }).files)
+              ? (nextValue as { files: Array<{ status?: unknown }> }).files.filter(
+                  (file) => file.status === 'success',
+                )
+              : [],
+          }
+        : nextValue
+    const mergedValues = { ...currentValues, [String(questionId)]: sanitizedValue }
+    const answers = getSubmissionItems(resolvedPages, mergedValues, defaultValues)
+    patchApplication(
+      { recruitmentId, formResponseId: resumeId, items: answers },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
+          })
+        },
+      },
+    )
+  }
+
   const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
     const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
 
@@ -153,6 +181,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         formData={questionDataForForm}
         displayLastSavedTime={displayLastSavedTime}
         handleSave={handleSave}
+        onPortfolioImmediateSave={handlePortfolioImmediateSave}
         control={control}
         setValue={setValue}
         clearErrors={clearErrors}

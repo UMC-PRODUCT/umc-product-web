@@ -26,6 +26,7 @@ interface FileItemProps {
   progress: number
   onRetry: () => void
   mode: QuestionMode
+  errorMessage?: string
 }
 
 const FileItem = ({
@@ -36,6 +37,7 @@ const FileItem = ({
   progress,
   onRetry,
   mode,
+  errorMessage,
 }: FileItemProps) => {
   const isEditable = mode === 'edit'
 
@@ -53,7 +55,9 @@ const FileItem = ({
         </Flex>
         <FileInfoWrapper flexDirection="column" alignItems="flex-start" gap={2}>
           <span className="fileName">{fileName}</span>
-          <span className="fileSize">{status === 'error' ? '업로드 실패' : fileSize}</span>
+          <span className="fileSize">
+            {status === 'error' ? errorMessage || '업로드 실패' : fileSize}
+          </span>
         </FileInfoWrapper>
       </File>
 

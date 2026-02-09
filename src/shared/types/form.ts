@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType } from '@/shared/types/apply'
+import type { QuestionAnswerValue, QuestionType } from '@/shared/types/apply'
 
 import type { PartType } from './umc'
 
@@ -64,6 +64,7 @@ export interface ResumeFormSectionProps {
   isSubmitDisabled: boolean
   onOpenSubmitModal: () => void
   onPageChange: (nextPage: number) => void
+  onPortfolioImmediateSave?: (questionId: number, nextValue: QuestionAnswerValue) => void
   isEdit?: boolean
 }
 export interface RecruitingForms {

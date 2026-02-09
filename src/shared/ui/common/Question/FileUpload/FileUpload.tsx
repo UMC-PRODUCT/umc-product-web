@@ -34,6 +34,7 @@ function createFileInfo(file: File): UploadedFile {
     status: 'loading',
     progress: 0,
     file,
+    errorMessage: undefined,
   }
 }
 
@@ -64,15 +65,38 @@ export const FileUpload = ({
     onChange({ files: nextFiles, links: currentLinks })
   }
 
-  const updateFileStatus = (fileId: string, status: FileUploadStatus, progress: number): void => {
+  const updateFileStatus = (
+    fileId: string,
+    status: FileUploadStatus,
+    progress: number,
+    errorMessage?: string,
+  ): void => {
     updateFiles((previousFiles) =>
-      previousFiles.map((file) => (file.id === fileId ? { ...file, status, progress } : file)),
+      previousFiles.map((file) =>
+        file.id === fileId ? { ...file, status, progress, errorMessage } : file,
+      ),
     )
+  }
+
+  const extractErrorMessage = (error: unknown): string | undefined => {
+    if (!error || typeof error !== 'object') return undefined
+    const candidate = error as {
+      message?: unknown
+      response?: { data?: { message?: unknown } }
+    }
+    const responseMessage = candidate.response?.data?.message
+    if (typeof responseMessage === 'string' && responseMessage.trim()) {
+      return responseMessage.trim()
+    }
+    if (typeof candidate.message === 'string' && candidate.message.trim()) {
+      return candidate.message.trim()
+    }
+    return undefined
   }
 
   const uploadSingleFile = async (fileInfo: UploadedFile) => {
     const contentType = fileInfo.file.type || DEFAULT_CONTENT_TYPE
-    updateFileStatus(fileInfo.id, 'loading', 0)
+    updateFileStatus(fileInfo.id, 'loading', 0, undefined)
     try {
       const prepare = await uploadFileMutation.mutateAsync({
         fileName: fileInfo.name,
@@ -94,7 +118,7 @@ export const FileUpload = ({
         ),
       )
     } catch (error) {
-      updateFileStatus(fileInfo.id, 'error', 0)
+      updateFileStatus(fileInfo.id, 'error', 0, extractErrorMessage(error))
     }
   }
 
@@ -112,6 +136,9 @@ export const FileUpload = ({
 
   const handleFileInputChange = (fileList: FileList | null) => {
     processFiles(fileList)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const handleDropzoneClick = () => {
@@ -146,7 +173,7 @@ export const FileUpload = ({
     if (!fileObject) return
     const currentFile = filesRef.current.find((file) => file.id === fileId)
     if (!currentFile) return
-    updateFileStatus(fileId, 'loading', 0)
+    updateFileStatus(fileId, 'loading', 0, undefined)
     void uploadSingleFile({ ...currentFile, file: fileObject })
   }
 

@@ -55,9 +55,9 @@ const buildCheckboxAnswer = (value: unknown): checkboxAnswer | null => {
   }
 }
 
-const extractFiles = (value: unknown): Array<{ id?: string }> => {
+const extractFiles = (value: unknown): Array<{ id?: string; status?: unknown }> => {
   if (value && typeof value === 'object' && Array.isArray((value as { files?: unknown }).files)) {
-    return (value as { files: Array<{ id?: string }> }).files
+    return (value as { files: Array<{ id?: string; status?: unknown }> }).files
   }
   return []
 }
@@ -72,7 +72,8 @@ const extractLinks = (value: unknown): Array<string> => {
 const buildPortfolioAnswer = (value: unknown): portfolioAnswer | null => {
   if (!value || typeof value !== 'object') return null
   const files = extractFiles(value)
-    .filter((file): file is { id: string } => typeof file.id === 'string')
+    .filter((file): file is { id: string; status?: unknown } => typeof file.id === 'string')
+    .filter((file) => !file.status || file.status === 'success')
     .map((file) => ({ fileId: file.id }))
   const links = extractLinks(value).map((url) => ({ url }))
   if (files.length === 0 && links.length === 0) return null

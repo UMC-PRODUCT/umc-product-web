@@ -2,6 +2,7 @@ import type {
   FileUploadAnswer,
   GetRecruitmentApplicationAnswerResponseDTO,
   preferredPartAnswer,
+  UploadedFile,
 } from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 import type {
@@ -148,24 +149,80 @@ export function buildDefaultValuesFromQuestions(
     const empty: FileUploadAnswer = { files: [], links: [] }
     if (!value || typeof value !== 'object') return empty
 
-    const candidateAsUpload = value as { links?: unknown }
-    if (
-      Array.isArray(candidateAsUpload.links) &&
-      candidateAsUpload.links.every((link) => typeof link === 'string')
-    ) {
-      return { files: [], links: candidateAsUpload.links }
-    }
+    const raw = value as { files?: unknown; links?: unknown }
 
-    const candidateLinks = Array.isArray((value as { links?: unknown }).links)
-      ? (value as { links: Array<unknown> }).links
+    const normalizedFiles: Array<UploadedFile> = Array.isArray(raw.files)
+      ? raw.files
+          .map((file) => {
+            if (!file || typeof file !== 'object') return undefined
+            const candidate = file as {
+              id?: unknown
+              fileId?: unknown
+              name?: unknown
+              fileName?: unknown
+              originalFileName?: unknown
+              size?: unknown
+              fileSize?: unknown
+              contentType?: unknown
+            }
+
+            const id =
+              typeof candidate.fileId === 'string'
+                ? candidate.fileId
+                : typeof candidate.id === 'string'
+                  ? candidate.id
+                  : undefined
+            if (!id) return undefined
+
+            const name =
+              typeof candidate.originalFileName === 'string'
+                ? candidate.originalFileName
+                : typeof candidate.fileName === 'string'
+                  ? candidate.fileName
+                  : typeof candidate.name === 'string'
+                    ? candidate.name
+                    : id
+
+            const rawSize =
+              typeof candidate.fileSize === 'number' || typeof candidate.fileSize === 'string'
+                ? Number(candidate.fileSize)
+                : typeof candidate.size === 'number' || typeof candidate.size === 'string'
+                  ? Number(candidate.size)
+                  : 0
+            const size = Number.isFinite(rawSize) && rawSize > 0 ? rawSize : 0
+
+            const contentType =
+              typeof candidate.contentType === 'string'
+                ? candidate.contentType
+                : 'application/octet-stream'
+
+            return {
+              id,
+              name,
+              size,
+              status: 'success',
+              progress: 100,
+              file: new File([], name, { type: contentType }),
+            }
+          })
+          .filter((file): file is UploadedFile => Boolean(file))
       : []
-    const normalizedLinks = candidateLinks
-      .map((link) =>
-        link && typeof link === 'object' ? (link as { url?: unknown }).url : undefined,
-      )
-      .filter((url): url is string => typeof url === 'string')
 
-    return { files: [], links: normalizedLinks }
+    const normalizedLinks = Array.isArray(raw.links)
+      ? raw.links
+          .map((link) => {
+            if (typeof link === 'string') return link
+            if (link && typeof link === 'object') {
+              const candidate = link as { url?: unknown; link?: unknown }
+              if (typeof candidate.url === 'string') return candidate.url
+              if (typeof candidate.link === 'string') return candidate.link
+            }
+            return undefined
+          })
+          .filter((url): url is string => typeof url === 'string')
+      : []
+
+    return { files: normalizedFiles, links: normalizedLinks }
   }
 
   const resolveDefaultValue = (currentQuestion: DefaultQuestion) => {

@@ -19,6 +19,7 @@ export interface UploadedFile {
   status: FileUploadStatus
   progress: number
   file: File
+  errorMessage?: string
 }
 
 export interface FileUploadAnswer {

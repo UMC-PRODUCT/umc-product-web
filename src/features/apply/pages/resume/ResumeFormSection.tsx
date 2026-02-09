@@ -87,6 +87,7 @@ const ResumeFormSection = ({
   isSubmitDisabled,
   onOpenSubmitModal,
   onPageChange,
+  onPortfolioImmediateSave,
   isEdit,
 }: ResumeFormSectionProps) => {
   const normalizedPages = useMemo(() => (Array.isArray(pages) ? pages : []), [pages])
@@ -160,6 +161,24 @@ const ResumeFormSection = ({
     field: ControllerRenderProps<Record<string, unknown>, string>,
     newValue: QuestionAnswerValue,
   ) => {
+    if (isEdit && question.type === 'PORTFOLIO' && onPortfolioImmediateSave) {
+      const prevValue = field.value as {
+        files?: Array<{ status?: unknown }>
+        links?: Array<unknown>
+      } | null
+      const nextValue = newValue as { files?: Array<{ status?: unknown }>; links?: Array<unknown> }
+      const prevFilesCount = Array.isArray(prevValue?.files)
+        ? prevValue.files.filter((file) => file.status === 'success').length
+        : 0
+      const prevLinksCount = Array.isArray(prevValue?.links) ? prevValue.links.length : 0
+      const nextFilesCount = Array.isArray(nextValue.files)
+        ? nextValue.files.filter((file) => file.status === 'success').length
+        : 0
+      const nextLinksCount = Array.isArray(nextValue.links) ? nextValue.links.length : 0
+      if (nextFilesCount > prevFilesCount || nextLinksCount > prevLinksCount) {
+        onPortfolioImmediateSave(question.questionId, newValue)
+      }
+    }
     requestPartChange({
       questionId: question.questionId,
       currentValue: field.value as QuestionAnswerValue,

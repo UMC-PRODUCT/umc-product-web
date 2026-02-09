@@ -35,6 +35,7 @@ export interface UploadedFile {
   status: FileUploadStatus
   progress: number
   file: File
+  errorMessage?: string
 }
 
 /** 파일 업로드 응답으로 전달하는 데이터 */
