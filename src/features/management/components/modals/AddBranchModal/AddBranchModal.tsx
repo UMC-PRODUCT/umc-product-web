@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 
+import { managementKeys } from '@/features/management/domain/queryKeys'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
 import { useGetUnassignedSchools } from '@/features/management/hooks/useManagementQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
@@ -63,7 +64,7 @@ const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: stri
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['management', 'gisuChapterWithSchools', gisuId],
+            queryKey: managementKeys.getGisuChapterWithSchools(gisuId).queryKey,
           })
           onClose()
         },

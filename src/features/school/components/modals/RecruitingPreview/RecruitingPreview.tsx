@@ -9,7 +9,7 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
-import { useGetApplicationFormData } from '../../../hooks/useGetRecruitingData'
+import { useGetRecruitmentApplicationForm } from '../../../hooks/useGetRecruitingData'
 import * as S from './RecruitingPreview.style'
 
 export const RecruitingPreviewContent = ({
@@ -21,7 +21,7 @@ export const RecruitingPreviewContent = ({
   title: string
   recruitingId: string
 }) => {
-  const { data } = useGetApplicationFormData(recruitingId)
+  const { data } = useGetRecruitmentApplicationForm(recruitingId)
   const questionData = data.result
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -75,15 +75,7 @@ export const RecruitingPreviewContent = ({
             isFormIncomplete={isFormIncomplete}
             openSubmitModal={() => {}}
             handlePageNavigation={handlePageNavigation}
-            formData={{
-              recruitmentid: 0,
-              formId: 0,
-              status: '',
-              recruitmentFormTitle: title,
-              noticeTitle: title,
-              noticeContent: questionData.noticeContent,
-              pages: [],
-            }}
+            formData={questionData}
           />
         </S.ContentWrapper>
       </Modal.Body>

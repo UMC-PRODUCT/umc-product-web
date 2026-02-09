@@ -7,16 +7,16 @@ import { authKeys } from '../../domain/queryKeys'
 
 export const useTerms = ({ termsType }: { termsType: TermsType }) => {
   return useCustomSuspenseQuery(
-    authKeys.terms(termsType).queryKey,
-    authKeys.terms(termsType).queryFn,
+    authKeys.getTermsByType(termsType).queryKey,
+    authKeys.getTermsByType(termsType).queryFn,
     { retry: false },
   )
 }
 
 export const useTermsById = (termId: string) => {
   return useCustomSuspenseQuery(
-    authKeys.termsById(termId).queryKey,
-    authKeys.termsById(termId).queryFn,
+    authKeys.getTermsById(termId).queryKey,
+    authKeys.getTermsById(termId).queryFn,
     { retry: false },
   )
 }

@@ -2,28 +2,39 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
-  emailVerification,
-  postAddOAuth,
-  postRemoveOAuth,
-  register,
-  verifyEmailCode,
+  deleteMemberOAuth,
+  postEmailVerification,
+  postEmailVerificationCode,
+  postMemberOAuth,
+  postRegister,
 } from '../domain/api'
 
 export function useAuthMutation() {
-  function useRegister() {
-    return useCustomMutation(register)
+  /** 회원가입 */
+  function usePostRegister() {
+    return useCustomMutation(postRegister)
   }
-  function useSendEmail() {
-    return useCustomMutation(emailVerification)
+  /** 이메일 인증 요청 */
+  function usePostEmailVerification() {
+    return useCustomMutation(postEmailVerification)
   }
-  function useVerifyCode() {
-    return useCustomMutation(verifyEmailCode)
+  /** 이메일 인증 코드 확인 */
+  function usePostEmailVerificationCode() {
+    return useCustomMutation(postEmailVerificationCode)
   }
-  function useAddOAuth() {
-    return useCustomMutation(postAddOAuth)
+  /** OAuth 연결 추가 */
+  function usePostMemberOAuth() {
+    return useCustomMutation(postMemberOAuth)
   }
-  function useDeleteOAuth() {
-    return useCustomMutation(postRemoveOAuth)
+  /** OAuth 연결 해제 */
+  function useDeleteMemberOAuth() {
+    return useCustomMutation(deleteMemberOAuth)
   }
-  return { useRegister, useSendEmail, useVerifyCode, useAddOAuth, useDeleteOAuth }
+  return {
+    usePostRegister,
+    usePostEmailVerification,
+    usePostEmailVerificationCode,
+    usePostMemberOAuth,
+    useDeleteMemberOAuth,
+  }
 }

@@ -1,7 +1,6 @@
 import type { QuestionType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
 import type {
-  FormPage,
   RecruitingInterviewTimeTable,
   RecruitingItem,
   RecruitingSchedule,
@@ -59,16 +58,6 @@ export type RequiredSchedule = RecruitingSchedule & {
 
 export type RequiredScheduleWithDisabled = RecruitingSchedule & {
   interviewTimeTable: InterviewTimeTableWithDisabled
-}
-
-export type RecruitingForms = {
-  recruitmentid: number
-  formId: number
-  status: string
-  recruitmentFormTitle: string
-  noticeTitle: string
-  noticeContent: string
-  pages: Array<FormPage>
 }
 
 export type Phase =

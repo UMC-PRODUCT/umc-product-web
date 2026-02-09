@@ -1,44 +1,50 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
+import { getRecruitmentApplicationForm } from '@/features/apply/domain/api'
 import type { PartType } from '@/features/auth/domain'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import {
-  getDashboardSummary,
-  getDocumentAllApplicants,
-  getDocumentEvaluationAnswerMe,
   getDocumentEvaluationAnswers,
-  getDocumentEvaluationApplication,
+  getDocumentEvaluationApplicants,
+  getDocumentEvaluationApplicationDetail,
+  getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
+  getRecruitmentApplicationFormDraft,
+  getRecruitmentDashboardSummary,
+  getRecruitmentDraft,
   getRecruitments,
-  getSavedApplicationQuestions,
-  getTempSavedApplicationQuestions,
-  getTempSavedRecruitment,
 } from './api'
 import type { GetRecruitmentsRequestDTO } from './model'
 
-export const schoolKeys = createQueryKeys('recruitment', {
-  recruitments: (status: GetRecruitmentsRequestDTO) => ({
-    queryKey: [status],
+export const schoolKeys = createQueryKeys('school', {
+  /** GET /recruitments */
+  getRecruitments: (status: GetRecruitmentsRequestDTO) => ({
+    queryKey: ['recruitments', status],
     queryFn: () => getRecruitments(status),
   }),
-  getTempSavedRecruitments: (recruitingId: string) => ({
-    queryKey: ['tempSaved', recruitingId],
-    queryFn: () => getTempSavedRecruitment(recruitingId),
+  /** GET /recruitments/{recruitingId} */
+  getRecruitmentDraft: (recruitingId: string) => ({
+    queryKey: ['recruitmentDraft', { recruitingId }],
+    queryFn: () => getRecruitmentDraft(recruitingId),
   }),
-  getApplicationForm: (recruitingId: string) => ({
-    queryKey: ['applicationForm', recruitingId],
-    queryFn: () => getSavedApplicationQuestions(recruitingId),
+  /** GET /recruitments/{recruitingId}/application-form */
+  getRecruitmentApplicationForm: (recruitingId: string) => ({
+    queryKey: ['recruitmentApplicationForm', { recruitingId }],
+    queryFn: () => getRecruitmentApplicationForm(recruitingId),
   }),
-  getTempSavedApplication: (recruitingId: string) => ({
-    queryKey: ['tempSaved', recruitingId],
-    queryFn: () => getTempSavedApplicationQuestions(recruitingId),
+  /** GET /recruitments/{recruitingId}/application-form/draft */
+  getRecruitmentApplicationFormDraft: (recruitingId: string) => ({
+    queryKey: ['recruitmentApplicationFormDraft', { recruitingId }],
+    queryFn: () => getRecruitmentApplicationFormDraft(recruitingId),
   }),
-  getRecruitmentDashboard: (recruitingId: string) => ({
-    queryKey: ['dashboard', recruitingId],
-    queryFn: () => getDashboardSummary(recruitingId),
+  /** GET /recruitments/{recruitingId}/dashboard */
+  getRecruitmentDashboardSummary: (recruitingId: string) => ({
+    queryKey: ['recruitmentDashboardSummary', { recruitingId }],
+    queryFn: () => getRecruitmentDashboardSummary(recruitingId),
   }),
-  getAllDocumentSelectedApplicants: (
+  /** GET /recruitments/{recruitmentId}/applications/document-selections */
+  getDocumentSelectedApplicants: (
     recruitmentId: string,
     params: {
       part: PartType | 'ALL'
@@ -47,22 +53,26 @@ export const schoolKeys = createQueryKeys('recruitment', {
       sort: SelectionsSortType
     },
   ) => ({
-    queryKey: ['documentSelectedApplicants', recruitmentId, params],
+    queryKey: ['documentSelectedApplicants', { recruitmentId, ...params }],
     queryFn: () => getDocumentSelectedApplicants(recruitmentId, params),
   }),
-  getDocumentEvaluationApplication: (recruitmentId: string, applicantId: string) => ({
-    queryKey: ['documentEvaluationApplication', recruitmentId, applicantId],
-    queryFn: () => getDocumentEvaluationApplication(recruitmentId, applicantId),
+  /** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluation */
+  getDocumentEvaluationApplicationDetail: (recruitmentId: string, applicantId: string) => ({
+    queryKey: ['documentEvaluationApplicationDetail', { recruitmentId, applicantId }],
+    queryFn: () => getDocumentEvaluationApplicationDetail(recruitmentId, applicantId),
   }),
+  /** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluations */
   getDocumentEvaluationAnswers: (recruitmentId: string, applicantId: string) => ({
-    queryKey: ['documentEvaluationAnswers', recruitmentId, applicantId],
+    queryKey: ['documentEvaluationAnswers', { recruitmentId, applicantId }],
     queryFn: () => getDocumentEvaluationAnswers(recruitmentId, applicantId),
   }),
-  getDocumentEvaluationAnswerMe: (recruitmentId: string, applicantId: string) => ({
-    queryKey: ['documentEvaluationAnswerMe', recruitmentId, applicantId],
-    queryFn: () => getDocumentEvaluationAnswerMe(recruitmentId, applicantId),
+  /** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluations/me */
+  getDocumentEvaluationMyAnswer: (recruitmentId: string, applicantId: string) => ({
+    queryKey: ['documentEvaluationMyAnswer', { recruitmentId, applicantId }],
+    queryFn: () => getDocumentEvaluationMyAnswer(recruitmentId, applicantId),
   }),
-  getDocsEvaluationApplicants: (
+  /** GET /recruitments/{recruitmentId}/applications/document-evaluations */
+  getDocumentEvaluationApplicants: (
     recruitmentId: string,
     params: {
       part: PartType | 'ALL'
@@ -71,7 +81,7 @@ export const schoolKeys = createQueryKeys('recruitment', {
       size: string
     },
   ) => ({
-    queryKey: ['docsEvaluationApplicants', recruitmentId, params],
-    queryFn: () => getDocumentAllApplicants(recruitmentId, params),
+    queryKey: ['documentEvaluationApplicants', { recruitmentId, ...params }],
+    queryFn: () => getDocumentEvaluationApplicants(recruitmentId, params),
   }),
 })

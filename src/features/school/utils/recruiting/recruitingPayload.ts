@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 
 import { isOtherOptionContent } from '@/features/school/constants/questionOption'
-import type { RecruitmentEditable } from '@/features/school/domain/apiTypes'
+import type { RecruitmentEditable } from '@/features/school/domain/model'
 import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shared/types/form'
 
 const toDateOnly = (value: string | null | undefined) =>

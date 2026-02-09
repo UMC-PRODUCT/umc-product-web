@@ -1,4 +1,4 @@
-import type { SelectedApplication } from '@/features/school/domain'
+import type { DocumentSelectionApplication } from '@/features/school/domain'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -11,20 +11,12 @@ const DocsEvaluationRow = ({
   onToggle,
   onPass,
   onFail,
-  setOpenModal,
 }: {
-  item: SelectedApplication
+  item: DocumentSelectionApplication
   checked: boolean
   onToggle: (checked: boolean | 'indeterminate') => void
   onPass: () => void
   onFail: () => void
-  setOpenModal: ({
-    open,
-    modalName,
-  }: {
-    open: boolean
-    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | null
-  }) => void
 }) => {
   return (
     <tr>

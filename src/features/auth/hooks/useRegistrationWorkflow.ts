@@ -31,10 +31,11 @@ export const useRegistrationWorkflow = ({
   onEmailSent,
   terms,
 }: RegistrationWorkflowProps) => {
-  const { useSendEmail, useVerifyCode, useRegister } = useAuthMutation()
-  const { mutate: sendEmailMutate } = useSendEmail()
-  const { mutate: verifyCodeMutate } = useVerifyCode()
-  const { mutate: registerMutate } = useRegister()
+  const { usePostEmailVerification, usePostEmailVerificationCode, usePostRegister } =
+    useAuthMutation()
+  const { mutate: sendEmailMutate } = usePostEmailVerification()
+  const { mutate: verifyCodeMutate } = usePostEmailVerificationCode()
+  const { mutate: registerMutate } = usePostRegister()
 
   const [emailVerificationId, setEmailVerificationId] = useState<string | null>(null)
   const [hasEmailBeenSent, setHasEmailBeenSent] = useState(false)

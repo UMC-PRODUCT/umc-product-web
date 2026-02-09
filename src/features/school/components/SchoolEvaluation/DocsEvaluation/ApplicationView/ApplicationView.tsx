@@ -1,7 +1,7 @@
 import type {
   DocumentEvaluationQuestion,
   GetDocumentEvaluationApplicationResponseDTO,
-} from '@/features/apply/domain/model'
+} from '@/features/school/domain/model'
 import { theme } from '@/shared/styles/theme'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import { MiniTimeTable } from '@/shared/ui/common/Question/TimeTable/MiniTimeTable'

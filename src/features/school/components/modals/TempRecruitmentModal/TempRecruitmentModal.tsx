@@ -19,7 +19,7 @@ type TempRecruitmentModalProps = {
 
 const TempRecruitmentList = () => {
   const { data } = useCustomSuspenseQuery(
-    schoolKeys.recruitments({ status: 'DRAFT' }).queryKey,
+    schoolKeys.getRecruitments({ status: 'DRAFT' }).queryKey,
     () => getRecruitments({ status: 'DRAFT' }),
   )
 

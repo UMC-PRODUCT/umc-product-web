@@ -132,7 +132,7 @@ const AddSchool = () => {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['management', 'school'] })
+          queryClient.invalidateQueries({ queryKey: ['schoolsPaging'] })
           setModal({
             isOpen: true,
             schoolName: data.schoolName,

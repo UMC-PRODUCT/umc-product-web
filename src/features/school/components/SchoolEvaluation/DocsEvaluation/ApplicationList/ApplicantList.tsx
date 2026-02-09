@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useGetDocumentAllApplicants } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetDocumentEvaluationApplicants } from '@/features/school/hooks/useGetRecruitingData'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import Search from '@/shared/assets/icons/search.svg?react'
 import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
@@ -29,7 +29,7 @@ const ApplicantListContent = ({
   const selectedPart = (value?.id as PartType | undefined) ?? 'ALL'
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useGetDocumentAllApplicants(recruitmentId, {
+    useGetDocumentEvaluationApplicants(recruitmentId, {
       part: selectedPart,
       keyword: keyword.trim(),
       size: '20',

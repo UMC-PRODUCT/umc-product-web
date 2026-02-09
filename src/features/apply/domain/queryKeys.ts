@@ -2,41 +2,48 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import {
   getActiveRecruitmentId,
-  getApplicationAnswer,
-  getApplicationForm,
   getMyApplicationStatus,
+  getRecruitmentApplicationAnswer,
+  getRecruitmentApplicationForm,
   getRecruitmentNotice,
+  getRecruitmentParts,
   getRecruitmentSchedules,
-  getSpecificPartRecruiting,
 } from './api'
 
-export const applyKeys = createQueryKeys('user', {
+export const applyKeys = createQueryKeys('apply', {
+  /** GET /recruitments/active-id */
   getActiveRecruitmentId: () => ({
-    queryKey: ['recruitment', 'active'],
+    queryKey: ['activeRecruitmentId'],
     queryFn: () => getActiveRecruitmentId(),
   }),
-  getApplicationForm: (recruitmentId: string) => ({
-    queryKey: ['recruitment', 'applicationForm', recruitmentId],
-    queryFn: () => getApplicationForm(recruitmentId),
+  /** GET /recruitments/{recruitmentId}/application-form */
+  getRecruitmentApplicationForm: (recruitmentId: string) => ({
+    queryKey: ['recruitmentApplicationForm', { recruitmentId }],
+    queryFn: () => getRecruitmentApplicationForm(recruitmentId),
   }),
-  getApplicationAnswer: (recruitmentId: string, formId: string) => ({
-    queryKey: ['recruitment', 'applicationAnswer', recruitmentId, formId],
-    queryFn: () => getApplicationAnswer(recruitmentId, formId),
+  /** GET /recruitments/{recruitmentId}/applications/{formResponseId} */
+  getRecruitmentApplicationAnswer: (recruitmentId: string, formId: string) => ({
+    queryKey: ['recruitmentApplicationAnswer', { recruitmentId, formId }],
+    queryFn: () => getRecruitmentApplicationAnswer(recruitmentId, formId),
   }),
-  getSpecificPartRecruiting: (recruitmentId: string) => ({
-    queryKey: ['recruitment', 'part', recruitmentId],
-    queryFn: () => getSpecificPartRecruiting(recruitmentId),
+  /** GET /recruitments/{recruitmentId}/parts */
+  getRecruitmentParts: (recruitmentId: string) => ({
+    queryKey: ['recruitmentParts', { recruitmentId }],
+    queryFn: () => getRecruitmentParts(recruitmentId),
   }),
+  /** GET /recruitments/{recruitmentId}/schedules */
   getRecruitmentSchedules: (recruitmentId: string) => ({
-    queryKey: ['recruitment', 'schedules', recruitmentId],
+    queryKey: ['recruitmentSchedules', { recruitmentId }],
     queryFn: () => getRecruitmentSchedules(recruitmentId),
   }),
+  /** GET /recruitments/{recruitmentId}/notice */
   getRecruitmentNotice: (recruitmentId: string) => ({
-    queryKey: ['recruitment', 'notice', recruitmentId],
+    queryKey: ['recruitmentNotice', { recruitmentId }],
     queryFn: () => getRecruitmentNotice(recruitmentId),
   }),
+  /** GET /recruitments/me/{recruitmentId}/applications */
   getMyApplicationStatus: (recruitmentId: string) => ({
-    queryKey: ['recruitment', 'myApplicationStatus', recruitmentId],
+    queryKey: ['myApplicationStatus', { recruitmentId }],
     queryFn: () => getMyApplicationStatus(recruitmentId),
   }),
 })

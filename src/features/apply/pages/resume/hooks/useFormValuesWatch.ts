@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
-import type { RecruitingForms } from '@/features/school/domain'
-import type { FormPage } from '@/shared/types/form'
+import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import { resolvePagesWithSlots } from '../../../utils'
 import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
@@ -15,7 +14,7 @@ import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQues
  */
 export function useFormValuesWatch(
   control: Control<ResumeFormValues>,
-  questionData: RecruitingForms,
+  questionData: RecruitmentApplicationForm,
   defaultValues: ResumeFormValues,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ) {

@@ -71,10 +71,11 @@ const StandardQuestionCard = ({
   })
   const { form } = useRecruitingContext()
   const queryClient = useQueryClient()
-  const applicationQuery = schoolKeys.getTempSavedApplication(recruitingId ?? '')
-  const { useDeleteQuestionOption, usePatchTempSavedRecruitQuestions } = useRecruitingMutation()
-  const { mutate: deleteOptionMutate } = useDeleteQuestionOption(recruitingId ?? '')
-  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchTempSavedRecruitQuestions(
+  const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId ?? '')
+  const { useDeleteRecruitmentQuestionOption, usePatchRecruitmentApplicationFormDraft } =
+    useRecruitingMutation()
+  const { mutate: deleteOptionMutate } = useDeleteRecruitmentQuestionOption(recruitingId ?? '')
+  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchRecruitmentApplicationFormDraft(
     recruitingId ?? '',
   )
   const canDeleteOption = Boolean(recruitingId && questionIdField.value)

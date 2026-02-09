@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getMyInfo } from '@/features/auth/domain/api'
+import { getMemberMe } from '@/features/auth/domain/api'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
@@ -48,16 +48,16 @@ export const LoginRedirectPage = () => {
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
   const { data: gisu } = useCustomQuery(
-    schoolKeys.activeGisu().queryKey,
-    schoolKeys.activeGisu().queryFn,
+    schoolKeys.getActiveGisu().queryKey,
+    schoolKeys.getActiveGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
     },
   )
   const { setName, setNickname, setEmail, setRoles } = useUserProfileStore()
-  const { useAddOAuth } = useAuthMutation()
-  const { mutateAsync: addOAuthMutateAsync } = useAddOAuth()
+  const { usePostMemberOAuth } = useAuthMutation()
+  const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
   const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
   const { getItem: getOAuthRedirectFrom, removeItem: removeOAuthRedirectFrom } =
@@ -146,7 +146,7 @@ export const LoginRedirectPage = () => {
     if (!accessToken) return
     const loadProfile = async () => {
       try {
-        const profile = await getMyInfo()
+        const profile = await getMemberMe()
         if (cancelled) return
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')

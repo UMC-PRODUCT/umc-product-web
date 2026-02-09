@@ -1,87 +1,87 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
-  deleteOption,
   deleteRecruitment,
-  deleteSingleQuestion,
-  patchDocsApplicationStatus,
-  patchMyDocumentEvaluationAnswer,
-  patchPublishedRecruitment,
-  patchTempSavedRecruitQuestions,
-  patchTempSaveRecruitment,
-  postFirstRecruitment,
+  deleteRecruitmentQuestion,
+  deleteRecruitmentQuestionOption,
+  patchDocumentEvaluationMyAnswer,
+  patchDocumentSelectionStatus,
+  patchRecruitmentApplicationFormDraft,
+  patchRecruitmentDraft,
+  patchRecruitmentPublished,
+  postRecruitmentCreate,
   postRecruitmentPublish,
 } from '../domain/api'
 import type {
-  PatchTempSavedRecruitQuestionsRequestDTO,
-  PatchTempSaveRecruitmentRequestDTO,
-  PostRecruitmentRequestPublishDTO,
+  PatchRecruitmentApplicationFormDraftRequestDTO,
+  PatchRecruitmentDraftRequestDTO,
+  PostRecruitmentPublishRequestDTO,
   RecruitmentEditable,
 } from '../domain/model'
 
 export function useRecruitingMutation() {
-  function usePostFirstRecruitment() {
-    return useCustomMutation(postFirstRecruitment)
+  function usePostRecruitmentCreate() {
+    return useCustomMutation(postRecruitmentCreate)
   }
-  function usePatchTempSaveRecruitment(recruitingId: string) {
-    return useCustomMutation((data: PatchTempSaveRecruitmentRequestDTO) =>
-      patchTempSaveRecruitment(recruitingId, data),
+  function usePatchRecruitmentDraft(recruitingId: string) {
+    return useCustomMutation((data: PatchRecruitmentDraftRequestDTO) =>
+      patchRecruitmentDraft(recruitingId, data),
     )
   }
-  function usePatchTempSavedRecruitQuestions(recruitingId: string) {
-    return useCustomMutation((data: PatchTempSavedRecruitQuestionsRequestDTO) =>
-      patchTempSavedRecruitQuestions(recruitingId, data),
+  function usePatchRecruitmentApplicationFormDraft(recruitingId: string) {
+    return useCustomMutation((data: PatchRecruitmentApplicationFormDraftRequestDTO) =>
+      patchRecruitmentApplicationFormDraft(recruitingId, data),
     )
   }
   function useDeleteRecruitment(recruitingId: string) {
     return useCustomMutation(() => deleteRecruitment(recruitingId))
   }
 
-  function useDeleteSingleQuestion(recruitingId: string) {
+  function useDeleteRecruitmentQuestion(recruitingId: string) {
     return useCustomMutation((questionId: string) =>
-      deleteSingleQuestion({ recruitmentId: recruitingId, questionId }),
+      deleteRecruitmentQuestion({ recruitmentId: recruitingId, questionId }),
     )
   }
-  function usePostPublishRecruitment(recrutingId: string) {
-    return useCustomMutation((requestBody: PostRecruitmentRequestPublishDTO) =>
+  function usePostRecruitmentPublish(recrutingId: string) {
+    return useCustomMutation((requestBody: PostRecruitmentPublishRequestDTO) =>
       postRecruitmentPublish(recrutingId, requestBody),
     )
   }
 
-  function usePatchPublishedRecruitment(recruitmentId: string) {
+  function usePatchRecruitmentPublished(recruitmentId: string) {
     return useCustomMutation((requestBody: RecruitmentEditable) =>
-      patchPublishedRecruitment({ recruitmentId, requestBody }),
+      patchRecruitmentPublished({ recruitmentId, requestBody }),
     )
   }
 
-  function useDeleteQuestionOption(recruitmentId: string) {
+  function useDeleteRecruitmentQuestionOption(recruitmentId: string) {
     return useCustomMutation(({ questionId, optionId }: { questionId: string; optionId: string }) =>
-      deleteOption({ recruitmentId, questionId, optionId }),
+      deleteRecruitmentQuestionOption({ recruitmentId, questionId, optionId }),
     )
   }
 
-  function usePatchDocsEvaluationAnswerMe(recruitmentId: string, applicantId: string) {
+  function usePatchDocumentEvaluationMyAnswer(recruitmentId: string, applicantId: string) {
     return useCustomMutation(
       (answers: { action: 'DRAFT_SAVE' | 'SUBMIT'; score: string; comments: string }) =>
-        patchMyDocumentEvaluationAnswer(recruitmentId, applicantId, answers),
+        patchDocumentEvaluationMyAnswer(recruitmentId, applicantId, answers),
     )
   }
 
-  function usePatchDocsApplicationStatus(recruitmentId: string, applicantId: string) {
+  function usePatchDocumentSelectionStatus(recruitmentId: string, applicantId: string) {
     return useCustomMutation((status: { decision: 'PASS' | 'FAIL' | 'WAIT' }) =>
-      patchDocsApplicationStatus(recruitmentId, applicantId, status),
+      patchDocumentSelectionStatus(recruitmentId, applicantId, status),
     )
   }
   return {
-    usePostFirstRecruitment,
-    usePatchTempSaveRecruitment,
-    usePatchTempSavedRecruitQuestions,
+    usePostRecruitmentCreate,
+    usePatchRecruitmentDraft,
+    usePatchRecruitmentApplicationFormDraft,
     useDeleteRecruitment,
-    useDeleteSingleQuestion,
-    usePostPublishRecruitment,
-    usePatchPublishedRecruitment,
-    useDeleteQuestionOption,
-    usePatchDocsEvaluationAnswerMe,
-    usePatchDocsApplicationStatus,
+    useDeleteRecruitmentQuestion,
+    usePostRecruitmentPublish,
+    usePatchRecruitmentPublished,
+    useDeleteRecruitmentQuestionOption,
+    usePatchDocumentEvaluationMyAnswer,
+    usePatchDocumentSelectionStatus,
   }
 }

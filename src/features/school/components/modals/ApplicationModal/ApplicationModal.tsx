@@ -1,5 +1,3 @@
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
-import { answers } from '@/features/school/mocks/application'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
@@ -12,9 +10,7 @@ import ApplicationView from '../../SchoolEvaluation/DocsEvaluation/ApplicationVi
 import * as S from './ApplicationModal.style'
 
 const ApplicationModalContent = () => {
-  const { data: questionData } = useGetApplicationFormData('34')
-  const data = answers
-  return <ApplicationView data={data} questions={questionData.result} isModal={true} />
+  return <ApplicationView data={undefined} isModal={true} />
 }
 
 const ApplicationModal = ({ onClose }: { onClose: () => void }) => {

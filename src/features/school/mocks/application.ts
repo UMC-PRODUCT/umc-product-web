@@ -1,10 +1,10 @@
 import type {
   FinalStatusType,
-  GetApplicationAnswerResponseDTO,
+  GetRecruitmentApplicationAnswerResponseDTO,
 } from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 
-export const answers: GetApplicationAnswerResponseDTO = {
+export const answers: GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: '34',
   formId: '34',
   formResponseId: '10',

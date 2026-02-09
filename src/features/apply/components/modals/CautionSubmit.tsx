@@ -46,7 +46,7 @@ const CautionSubmit = ({
           onClick={() => {
             onSubmit()
             queryClient.invalidateQueries({
-              queryKey: ['recruitment'],
+              queryKey: ['apply'],
             })
             onClose()
             onAllowNavigate?.()

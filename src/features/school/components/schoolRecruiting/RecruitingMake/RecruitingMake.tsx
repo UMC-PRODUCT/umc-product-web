@@ -14,8 +14,8 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
   const navigate = useNavigate()
-  const { usePostFirstRecruitment } = useRecruitingMutation()
-  const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
+  const { usePostRecruitmentCreate } = useRecruitingMutation()
+  const { mutate: postFirstRecruitmentMutate } = usePostRecruitmentCreate()
 
   const handleCreateRecruiting = () => {
     postFirstRecruitmentMutate(undefined, {

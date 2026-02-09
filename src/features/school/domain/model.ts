@@ -7,10 +7,10 @@ import type { PartType } from '@features/auth/domain'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
 
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { RecruitingStatus } from '@/shared/types/form'
+import type { RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
-import type { ApplicationFormPayload, Phase, RecruitingDraft, RecruitingForms } from './types'
+import type { ApplicationFormPayload, Phase, RecruitingDraft } from './types'
 
 /** 파트별 지원 현황 */
 export interface PartApplyStatus {
@@ -79,40 +79,38 @@ export type GetRecruitmentNoticesResponseDTO = {
   parts: Array<PartType>
 }
 
-export type GetTempSavedRecruitmentResponseDTO = RecruitingDraft
+export type GetRecruitmentDraftResponseDTO = RecruitingDraft
 
-export interface PostRecruitmentRequestPublishDTO {
+export interface PostRecruitmentPublishRequestDTO {
   recruitmentDraft: RecruitingDraft
   applicationFormQuestions: ApplicationFormPayload
 }
 
-export type PatchTempSaveRecruitmentRequestDTO = Partial<RecruitingDraft>
+export type PatchRecruitmentDraftRequestDTO = Partial<RecruitingDraft>
 
-export type PatchTempSaveRecruitmentResponseDTO =
-  CommonResponseDTO<PatchTempSaveRecruitmentRequestDTO>
+export type PatchRecruitmentDraftResponseDTO = CommonResponseDTO<PatchRecruitmentDraftRequestDTO>
 
-export type PostFirstRecruitmentRequestDTO = {
+export type PostRecruitmentCreateRequestDTO = {
   recruitmentName?: string
   parts?: Array<PartType>
 }
 
-export type PostFirstRecruitmentResponseDTO = {
+export type PostRecruitmentCreateResponseDTO = {
   recruitmentId?: number
   formId?: number
 }
-export type PatchTempSavedRecruitQuestionsRequestDTO = ApplicationFormPayload
+export type PatchRecruitmentApplicationFormDraftRequestDTO = ApplicationFormPayload
 
-export type GetApplicationFormResponseDTO = RecruitingForms
-export type PatchTempSavedRecruitQuestionsResponseDTO = RecruitingForms
+export type PatchRecruitmentApplicationFormDraftResponseDTO = RecruitmentApplicationFormResponseDTO
 
-export type DeleteSingleQuestionResponseDTO = RecruitingForms
+export type DeleteRecruitmentQuestionResponseDTO = RecruitmentApplicationFormResponseDTO
 
-export type PatchPublishedRecruitmentRequestDTO = {
+export type PatchRecruitmentPublishedRequestDTO = {
   recruitmentId: string
   requestBody: RecruitmentEditable
 }
 
-export type GetDashboardResponseDTO = {
+export type GetRecruitmentDashboardResponseDTO = {
   recruitmentId: string
   scheduleSummary: ScheduleSummary
   progress: Progress
@@ -127,6 +125,73 @@ export type RecruitmentEditable = {
   interviewStartAt?: string
   interviewEndAt?: string
   finalResultAt?: string
+}
+
+export type RecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm
+
+export type DocumentEvaluationQuestionOption = {
+  optionId: string
+  content: string
+  isOther: boolean
+}
+
+export type DocumentEvaluationAnswer = {
+  answeredAsType: string
+  displayText: string | null
+  rawValue: Record<string, unknown>
+}
+
+export type DocumentEvaluationQuestion = {
+  questionId: string
+  orderNo: string
+  type:
+    | 'PREFERRED_PART'
+    | 'SCHEDULE'
+    | 'LONG_TEXT'
+    | 'SHORT_TEXT'
+    | 'RADIO'
+    | 'CHECKBOX'
+    | 'PORTFOLIO'
+    | 'DROPDOWN'
+  questionText: string
+  required: boolean
+  options: Array<DocumentEvaluationQuestionOption>
+  answer: DocumentEvaluationAnswer | null
+}
+
+export type DocumentEvaluationFormPage = {
+  pageNo: string
+  questions: Array<DocumentEvaluationQuestion>
+  partQuestions: Array<{
+    part: string
+    questions: Array<DocumentEvaluationQuestion>
+  }>
+}
+
+export type GetDocumentEvaluationApplicationResponseDTO = {
+  applicationId: string
+  status: string
+  applicant: {
+    memberId: string
+    name: string
+    nickname: string
+  }
+  formPages: Array<DocumentEvaluationFormPage>
+}
+
+export type GetDocumentEvaluationAnswersResponseDTO = {
+  recruitmentId: string
+  applicationId: string
+  avgDocScore: string
+  docEvaluationSummaries: Array<DocEvaluationSummary>
+}
+
+export type DocEvaluationSummary = {
+  evaluatorMemberId: string
+  evaluatorName: string
+  evaluatorNickname: string
+  score: string
+  comments: string
 }
 
 export type ScheduleSummary = {
@@ -182,13 +247,13 @@ export type EvaluationStatus = {
 
 export type RecruitingTab = 'ONGOING' | 'CLOSED' | 'SCHEDULED'
 
-export type GetAllDocsApplicantsResponseDTO = {
+export type GetDocumentEvaluationApplicantsResponseDTO = {
   recruitmentId: string
   summary: {
     totalCount: string
     evaluatedCount: string
   }
-  applicationSummaries: Array<ApplicationSummary>
+  applicationSummaries: Array<DocumentEvaluationApplicantSummary>
   paination: {
     page: string
     size: string
@@ -196,7 +261,7 @@ export type GetAllDocsApplicantsResponseDTO = {
     totalElements: string
   }
 }
-export type PatchDocsMyEvaluationResponseDTO = {
+export type PatchDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
 }
 
@@ -209,11 +274,11 @@ export type MyEvaluation = {
   savedAt: string
 }
 
-export type GetDocsMyEvaluationResponseDTO = {
+export type GetDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
 }
 
-export type ApplicationSummary = {
+export type DocumentEvaluationApplicantSummary = {
   applicationId: string
   applicantMemberId: string
   applicantName: string
@@ -226,14 +291,14 @@ export type ApplicationSummary = {
   isEvaluated: boolean
 }
 
-export type GetDocsSelectedApplicantsResponseDTO = {
+export type GetDocumentSelectedApplicantsResponseDTO = {
   summary: {
     totalCount: string
     selectedCount: string
   }
   sort: SelectionsSortType
   documentSelectionApplications: {
-    content: Array<SelectedApplication>
+    content: Array<DocumentSelectionApplication>
     page: string
     size: string
     totalPages: string
@@ -243,7 +308,7 @@ export type GetDocsSelectedApplicantsResponseDTO = {
   }
 }
 
-export type SelectedApplication = {
+export type DocumentSelectionApplication = {
   applicationId: string
   applicant: {
     nickname: string

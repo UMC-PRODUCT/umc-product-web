@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
-import { patchDocsApplicationStatus } from '@/features/school/domain/api'
+import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
 import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useGetRecruitingData'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
@@ -91,7 +91,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   }
   const { mutate: patchStatus } = useCustomMutation(
     ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
-      patchDocsApplicationStatus(recruitingId, applicationId, { decision }),
+      patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
   )
   const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
     patchStatus({ applicationId, decision })
@@ -160,7 +160,6 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                     onToggle={handleToggleRow(Number(item.applicationId))}
                     onPass={() => handlePatchStatus(item.applicationId, 'PASS')}
                     onFail={() => handlePatchStatus(item.applicationId, 'FAIL')}
-                    setOpenModal={setModalOpen}
                   />
                 ))}
               </tbody>

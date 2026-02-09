@@ -5,42 +5,49 @@ import type { TermsType } from '@/shared/types/umc'
 import {
   getActiveGisu,
   getGisuList,
-  getMyInfo,
-  getOAuthInfoMe,
+  getMemberMe,
+  getMemberOAuthMe,
   getSchoolLink,
-  getTerm,
-  getTermById,
+  getTermsById,
+  getTermsByType,
 } from './api'
 
 export const authKeys = createQueryKeys('auth', {
-  terms: (termsType: TermsType) => ({
+  /** GET /terms/type/{termsType} */
+  getTermsByType: (termsType: TermsType) => ({
     queryKey: ['terms', termsType, 'detail'],
-    queryFn: () => getTerm({ termsType }),
+    queryFn: () => getTermsByType({ termsType }),
   }),
-  me: () => ({
+  /** GET /member/me */
+  getMemberMe: () => ({
     queryKey: ['member', 'me'],
-    queryFn: () => getMyInfo(),
+    queryFn: () => getMemberMe(),
   }),
-  termsById: (termId: string) => ({
+  /** GET /terms/{termId} */
+  getTermsById: (termId: string) => ({
     queryKey: ['terms', termId],
-    queryFn: () => getTermById(termId),
+    queryFn: () => getTermsById(termId),
   }),
-  oAuthMe: () => ({
+  /** GET /member-oauth/me */
+  getMemberOAuthMe: () => ({
     queryKey: ['member', 'oauth', 'me'],
-    queryFn: () => getOAuthInfoMe(),
+    queryFn: () => getMemberOAuthMe(),
   }),
 })
 
 export const schoolKeys = createQueryKeys('school', {
-  schoolLink: (schoolId: string) => ({
+  /** GET /schools/link/{schoolId} */
+  getSchoolLink: (schoolId: string) => ({
     queryKey: [schoolId, 'link'],
     queryFn: () => getSchoolLink(schoolId),
   }),
-  gisuList: () => ({
+  /** GET /gisu/all */
+  getGisuList: () => ({
     queryKey: ['gisu'],
     queryFn: () => getGisuList(),
   }),
-  activeGisu: () => ({
+  /** GET /gisu/active */
+  getActiveGisu: () => ({
     queryKey: ['gisu', 'active'],
     queryFn: () => getActiveGisu(),
   }),

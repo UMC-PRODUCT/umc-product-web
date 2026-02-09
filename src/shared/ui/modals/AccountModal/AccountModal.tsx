@@ -1,7 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 
+import { authKeys } from '@/features/auth/domain'
 import { useAuthMutation } from '@/features/auth/hooks/useAuthMutations'
-import { useOAuthInfoMe } from '@/features/auth/hooks/useAuthQueries'
+import { useGetMemberOAuthMe } from '@/features/auth/hooks/useAuthQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
 import AppleIcon from '@/shared/assets/social/apple.svg?react'
 import GoogleIcon from '@/shared/assets/social/google.svg?react'
@@ -22,7 +23,7 @@ type AccountModalProps = {
 }
 
 const AccountModalContent = () => {
-  const { data } = useOAuthInfoMe()
+  const { data } = useGetMemberOAuthMe()
   const queryClient = useQueryClient()
   const { setItem: setCurrentPage } = useLocalStorage('currentPage')
   const { setItem: setOAuthRedirectFrom } = useLocalStorage('oAuthRedirectFrom')
@@ -36,8 +37,8 @@ const AccountModalContent = () => {
     { KAKAO: null, GOOGLE: null, APPLE: null },
   )
   const isConnected = (provider: 'KAKAO' | 'GOOGLE' | 'APPLE') => connectedProviders.has(provider)
-  const { useDeleteOAuth } = useAuthMutation()
-  const { mutate: deleteOAuthMutate } = useDeleteOAuth()
+  const { useDeleteMemberOAuth } = useAuthMutation()
+  const { mutate: deleteOAuthMutate } = useDeleteMemberOAuth()
   const handleConnect = (provider: 'kakao' | 'google' | 'apple') => {
     if (typeof window === 'undefined') return
     setOAuthRedirectFrom('accountModal')
@@ -52,7 +53,9 @@ const AccountModalContent = () => {
       { memberOAuthId: Number(memberOAuthId) },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['auth'] })
+          queryClient.invalidateQueries({
+            queryKey: authKeys.getMemberOAuthMe().queryKey,
+          })
         },
       },
     )

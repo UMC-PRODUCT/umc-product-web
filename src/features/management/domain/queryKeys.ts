@@ -14,42 +14,50 @@ import {
 } from './api'
 
 export const managementKeys = createQueryKeys('management', {
-  curriculums: (part: PartType) => ({
+  /** GET /curriculums */
+  getCurriculums: (part: PartType) => ({
     queryKey: ['curriculums', part],
     queryFn: () => getCurriculums({ part }),
   }),
-  allSchools: () => ({
-    queryKey: ['school'],
+  /** GET /schools/all */
+  getAllSchools: () => ({
+    queryKey: ['schools', 'all'],
     queryFn: () => getAllSchools(),
   }),
-  allGisu: () => ({
+  /** GET /gisu/all */
+  getAllGisu: () => ({
     queryKey: ['gisu', 'all'],
     queryFn: () => getAllGisu(),
   }),
-  gisuChapterWithSchools: (gisuId: string) => ({
-    queryKey: [gisuId],
+  /** GET /chapters/with-schools */
+  getGisuChapterWithSchools: (gisuId: string) => ({
+    queryKey: ['gisuChapterWithSchools', gisuId],
     queryFn: () => getGisuChapterWithSchools({ gisuId }),
   }),
-  unassignedSchools: (gisuId: string) => ({
-    queryKey: [gisuId],
+  /** GET /schools/unassigned */
+  getUnassignedSchools: (gisuId: string) => ({
+    queryKey: ['unassignedSchools', gisuId],
     queryFn: () => getUnassignedSchools({ gisuId }),
   }),
-  school: (params: {
+  /** GET /schools (paging) */
+  getSchoolsPaging: (params: {
     page?: string
     size?: string
     sort?: 'asc' | 'desc'
     chapterId?: string
     keyword?: string
   }) => ({
-    queryKey: [params],
+    queryKey: ['schoolsPaging', params],
     queryFn: () => getSchoolsPaging(params),
   }),
-  schoolDetail: (schoolId: string) => ({
-    queryKey: [schoolId],
+  /** GET /schools/{schoolId} */
+  getSchoolDetails: (schoolId: string) => ({
+    queryKey: ['schoolDetail', schoolId],
     queryFn: () => getSchoolDetails({ schoolId }),
   }),
-  chapter: () => ({
-    queryKey: ['all'],
+  /** GET /chapters */
+  getChapters: () => ({
+    queryKey: ['chapters', 'all'],
     queryFn: () => getChapter(),
   }),
 })

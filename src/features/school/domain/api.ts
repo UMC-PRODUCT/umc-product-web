@@ -1,70 +1,66 @@
 import { axiosInstance } from '@/api/axiosInstance'
-import type {
-  GetApplicationsAnswerResponseDTO,
-  GetDocumentEvaluationApplicationResponseDTO,
-} from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import type {
-  DeleteSingleQuestionResponseDTO,
-  GetAllDocsApplicantsResponseDTO,
-  GetApplicationFormResponseDTO,
-  GetDashboardResponseDTO,
-  GetDocsMyEvaluationResponseDTO,
-  GetDocsSelectedApplicantsResponseDTO,
+  DeleteRecruitmentQuestionResponseDTO,
+  GetDocumentEvaluationAnswersResponseDTO,
+  GetDocumentEvaluationApplicantsResponseDTO,
+  GetDocumentEvaluationApplicationResponseDTO,
+  GetDocumentEvaluationMyAnswerResponseDTO,
+  GetDocumentSelectedApplicantsResponseDTO,
+  GetRecruitmentDashboardResponseDTO,
+  GetRecruitmentDraftResponseDTO,
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
-  GetTempSavedRecruitmentResponseDTO,
-  PatchDocsMyEvaluationResponseDTO,
-  PatchPublishedRecruitmentRequestDTO,
-  PatchTempSavedRecruitQuestionsRequestDTO,
-  PatchTempSavedRecruitQuestionsResponseDTO,
-  PatchTempSaveRecruitmentRequestDTO,
-  PatchTempSaveRecruitmentResponseDTO,
-  PostFirstRecruitmentResponseDTO,
-  PostRecruitmentRequestPublishDTO,
+  PatchDocumentEvaluationMyAnswerResponseDTO,
+  PatchRecruitmentApplicationFormDraftRequestDTO,
+  PatchRecruitmentApplicationFormDraftResponseDTO,
+  PatchRecruitmentDraftRequestDTO,
+  PatchRecruitmentDraftResponseDTO,
+  PatchRecruitmentPublishedRequestDTO,
+  PostRecruitmentCreateResponseDTO,
+  PostRecruitmentPublishRequestDTO,
 } from './model'
 
-export const postFirstRecruitment = async (): Promise<
-  CommonResponseDTO<PostFirstRecruitmentResponseDTO>
+/** POST /recruitments - 모집 생성 (초기) */
+export const postRecruitmentCreate = async (): Promise<
+  CommonResponseDTO<PostRecruitmentCreateResponseDTO>
 > => {
   const { data } = await axiosInstance.post('/recruitments')
   return data
 }
 
-export const patchTempSaveRecruitment = async (
+/** PATCH /recruitments/{recruitingId} - 모집 임시저장 */
+export const patchRecruitmentDraft = async (
   recruitingId: string,
-  requestBody: PatchTempSaveRecruitmentRequestDTO,
-): Promise<CommonResponseDTO<PatchTempSaveRecruitmentResponseDTO>> => {
+  requestBody: PatchRecruitmentDraftRequestDTO,
+): Promise<CommonResponseDTO<PatchRecruitmentDraftResponseDTO>> => {
   const { data } = await axiosInstance.patch(`/recruitments/${recruitingId}`, requestBody)
   return data
 }
 
-export const patchTempSavedRecruitQuestions = async (
+/** PATCH /recruitments/{recruitingId}/application-form - 지원서 폼 임시저장 */
+export const patchRecruitmentApplicationFormDraft = async (
   recruitingId: string,
-  requestBody: PatchTempSavedRecruitQuestionsRequestDTO,
-): Promise<CommonResponseDTO<PatchTempSavedRecruitQuestionsResponseDTO>> => {
+  requestBody: PatchRecruitmentApplicationFormDraftRequestDTO,
+): Promise<CommonResponseDTO<PatchRecruitmentApplicationFormDraftResponseDTO>> => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitingId}/application-form`,
     requestBody,
   )
   return data
 }
-export const getTempSavedApplicationQuestions = async (
+/** GET /recruitments/{recruitingId}/application-form/draft - 지원서 폼 임시저장 조회 */
+export const getRecruitmentApplicationFormDraft = async (
   recruitingId: string,
-): Promise<CommonResponseDTO<GetApplicationFormResponseDTO>> => {
+): Promise<CommonResponseDTO<PatchRecruitmentApplicationFormDraftResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/application-form/draft`)
   return data
 }
-export const getSavedApplicationQuestions = async (
-  recruitingId: string,
-): Promise<CommonResponseDTO<GetApplicationFormResponseDTO>> => {
-  const { data } = await axiosInstance.get(`/recruitments/${recruitingId}/application-form`)
-  return data
-}
+/** GET /recruitments - 모집 리스트 조회 */
 export const getRecruitments = async (
   params: GetRecruitmentsRequestDTO,
 ): Promise<CommonResponseDTO<GetRecruitmentsResponseDTO>> => {
@@ -74,13 +70,15 @@ export const getRecruitments = async (
   return data
 }
 
-export const getTempSavedRecruitment = async (
+/** GET /recruitments/{recruitingId} - 모집 임시저장 조회 */
+export const getRecruitmentDraft = async (
   recruitingId: string,
-): Promise<CommonResponseDTO<GetTempSavedRecruitmentResponseDTO>> => {
+): Promise<CommonResponseDTO<GetRecruitmentDraftResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments/${recruitingId}`)
   return data
 }
 
+/** GET /recruitments/{recruitingId}/notices - 모집 공지 목록 조회 */
 export const getRecruitmentNotices = async (
   recruitingId: string,
 ): Promise<CommonResponseDTO<GetRecruitmentNoticesResponseDTO>> => {
@@ -88,36 +86,40 @@ export const getRecruitmentNotices = async (
   return data
 }
 
+/** POST /recruitments/{recruitingId}/publish - 모집 게시 */
 export const postRecruitmentPublish = async (
   recruitingId: string,
-  requestBody: PostRecruitmentRequestPublishDTO,
-): Promise<CommonResponseDTO<PostFirstRecruitmentResponseDTO>> => {
+  requestBody: PostRecruitmentPublishRequestDTO,
+): Promise<CommonResponseDTO<PostRecruitmentCreateResponseDTO>> => {
   const { data } = await axiosInstance.post(`/recruitments/${recruitingId}/publish`, requestBody)
   return data
 }
 
+/** DELETE /recruitments/{recruitingId} - 모집 삭제 */
 export const deleteRecruitment = async (recruitingId: string) => {
   const { data } = await axiosInstance.delete(`/recruitments/${recruitingId}`)
   return data
 }
 
-export const deleteSingleQuestion = async ({
+/** DELETE /recruitments/{recruitmentId}/application-form/questions/{questionId} - 질문 삭제 */
+export const deleteRecruitmentQuestion = async ({
   recruitmentId,
   questionId,
 }: {
   recruitmentId: string
   questionId: string
-}): Promise<CommonResponseDTO<DeleteSingleQuestionResponseDTO>> => {
+}): Promise<CommonResponseDTO<DeleteRecruitmentQuestionResponseDTO>> => {
   const { data } = await axiosInstance.delete(
     `/recruitments/${recruitmentId}/application-form/questions/${questionId}`,
   )
   return data
 }
 
-export const patchPublishedRecruitment = async ({
+/** PATCH /recruitments/{recruitmentId}/published - 게시된 모집 수정 */
+export const patchRecruitmentPublished = async ({
   recruitmentId,
   requestBody,
-}: PatchPublishedRecruitmentRequestDTO) => {
+}: PatchRecruitmentPublishedRequestDTO) => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/published`,
     requestBody,
@@ -125,14 +127,16 @@ export const patchPublishedRecruitment = async ({
   return data
 }
 
-export const getDashboardSummary = async (
+/** GET /recruitments/{recruitmentId}/dashboard - 대시보드 요약 조회 */
+export const getRecruitmentDashboardSummary = async (
   recruitmentId: string,
-): Promise<CommonResponseDTO<GetDashboardResponseDTO>> => {
+): Promise<CommonResponseDTO<GetRecruitmentDashboardResponseDTO>> => {
   const { data } = await axiosInstance.get(`/recruitments/${recruitmentId}/dashboard`)
   return data
 }
 
-export const deleteOption = async ({
+/** DELETE /recruitments/{recruitmentId}/application-form/questions/{questionId}/options/{optionId} - 옵션 삭제 */
+export const deleteRecruitmentQuestionOption = async ({
   recruitmentId,
   questionId,
   optionId,
@@ -147,7 +151,8 @@ export const deleteOption = async ({
   return data
 }
 
-export const getDocumentAllApplicants = async (
+/** GET /recruitments/{recruitmentId}/applications/document-evaluations - 서류 평가 대상자 목록 */
+export const getDocumentEvaluationApplicants = async (
   recruitmentId: string,
   params: {
     part: PartType | 'ALL'
@@ -155,7 +160,7 @@ export const getDocumentAllApplicants = async (
     page: string
     size: string
   },
-): Promise<CommonResponseDTO<GetAllDocsApplicantsResponseDTO>> => {
+): Promise<CommonResponseDTO<GetDocumentEvaluationApplicantsResponseDTO>> => {
   const { part, ...restParams } = params
   const requestParams = part === 'ALL' ? restParams : { ...restParams, part }
   const { data } = await axiosInstance.get(
@@ -167,7 +172,8 @@ export const getDocumentAllApplicants = async (
   return data
 }
 
-export const getDocumentEvaluationApplication = async (
+/** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluation - 지원서 상세 조회(서류 평가용) */
+export const getDocumentEvaluationApplicationDetail = async (
   recruitmentId: string,
   applicationId: string,
 ): Promise<CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>> => {
@@ -177,26 +183,29 @@ export const getDocumentEvaluationApplication = async (
   return data
 }
 
+/** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluations - 서류 평가 답변 목록 */
 export const getDocumentEvaluationAnswers = async (
   recruitmentId: string,
   applicationId: string,
-): Promise<CommonResponseDTO<GetApplicationsAnswerResponseDTO>> => {
+): Promise<CommonResponseDTO<GetDocumentEvaluationAnswersResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations`,
   )
   return data
 }
 
-export const getDocumentEvaluationAnswerMe = async (
+/** GET /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluations/me - 내 서류 평가 조회 */
+export const getDocumentEvaluationMyAnswer = async (
   recruitmentId: string,
   applicationId: string,
-): Promise<CommonResponseDTO<GetDocsMyEvaluationResponseDTO>> => {
+): Promise<CommonResponseDTO<GetDocumentEvaluationMyAnswerResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations/me`,
   )
   return data
 }
 
+/** GET /recruitments/{recruitmentId}/applications/document-selections - 서류 합격 대상자 목록 */
 export const getDocumentSelectedApplicants = async (
   recruitmentId: string,
   params: {
@@ -205,7 +214,7 @@ export const getDocumentSelectedApplicants = async (
     size: string
     sort: SelectionsSortType
   },
-): Promise<CommonResponseDTO<GetDocsSelectedApplicantsResponseDTO>> => {
+): Promise<CommonResponseDTO<GetDocumentSelectedApplicantsResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/applications/document-selections`,
     {
@@ -215,7 +224,8 @@ export const getDocumentSelectedApplicants = async (
   return data
 }
 
-export const patchMyDocumentEvaluationAnswer = async (
+/** PATCH /recruitments/{recruitmentId}/applications/{applicationId}/document-evaluations/me - 내 서류 평가 저장/제출 */
+export const patchDocumentEvaluationMyAnswer = async (
   recruitmentId: string,
   applicationId: string,
   requestBody: {
@@ -223,7 +233,7 @@ export const patchMyDocumentEvaluationAnswer = async (
     comments: string
     action: 'DRAFT_SAVE' | 'SUBMIT'
   },
-): Promise<CommonResponseDTO<PatchDocsMyEvaluationResponseDTO>> => {
+): Promise<CommonResponseDTO<PatchDocumentEvaluationMyAnswerResponseDTO>> => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations/me`,
     requestBody,
@@ -231,7 +241,8 @@ export const patchMyDocumentEvaluationAnswer = async (
   return data
 }
 
-export const patchDocsApplicationStatus = async (
+/** PATCH /recruitments/{recruitmentId}/applications/{applicationId}/document-status - 서류 합격 상태 변경 */
+export const patchDocumentSelectionStatus = async (
   recruitmentId: string,
   applicationId: string,
   requestBody: {

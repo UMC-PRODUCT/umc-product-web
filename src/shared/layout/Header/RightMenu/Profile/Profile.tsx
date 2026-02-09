@@ -38,11 +38,11 @@ const ProfileMenuContent = ({
     isLoading: isProfileLoading,
     error: profileError,
     refetch: refetchProfile,
-  } = useCustomQuery(authKeys.me().queryKey, authKeys.me().queryFn)
+  } = useCustomQuery(authKeys.getMemberMe().queryKey, authKeys.getMemberMe().queryFn)
 
   const { data: gisu } = useCustomQuery(
-    schoolKeys.activeGisu().queryKey,
-    schoolKeys.activeGisu().queryFn,
+    schoolKeys.getActiveGisu().queryKey,
+    schoolKeys.getActiveGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,

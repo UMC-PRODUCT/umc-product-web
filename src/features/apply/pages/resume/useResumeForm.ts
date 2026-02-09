@@ -1,9 +1,8 @@
 import type { useForm } from 'react-hook-form'
 
-import type { RecruitingForms } from '@/features/school/domain'
-import type { FormPage } from '@/shared/types/form'
+import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 
-import type { GetApplicationAnswerResponseDTO } from '../../domain/model'
+import type { GetRecruitmentApplicationAnswerResponseDTO } from '../../domain/model'
 import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
 import {
   useFormCompleteness,
@@ -37,14 +36,15 @@ export interface UseResumeFormReturn {
  * - useFormValidationRegistration: 동적 검증 규칙 등록
  */
 export function useResumeForm(
-  questionData?: RecruitingForms,
-  answerData?: GetApplicationAnswerResponseDTO,
+  questionData?: RecruitmentApplicationForm,
+  answerData?: GetRecruitmentApplicationAnswerResponseDTO,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ): UseResumeFormReturn {
-  const defaultQuestionData: RecruitingForms = {
-    recruitmentid: 0,
+  const defaultQuestionData: RecruitmentApplicationForm = {
+    recruitmentId: 0,
     formId: 0,
     status: 'DRAFT',
+    title: '',
     recruitmentFormTitle: '',
     noticeTitle: '',
     noticeContent: '',

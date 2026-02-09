@@ -2,8 +2,7 @@ import type { PartType } from '@features/auth/domain'
 
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
-import type { RecruitingForms } from '@/features/school/domain'
-import type { FormPage, FormQuestion } from '@/shared/types/form'
+import type { FormPage, FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import { DEFAULT_RECRUITING_PARTS } from '../domain/constants'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
@@ -69,17 +68,15 @@ const addPageNumbers = (pageList: Array<FormPage>) =>
   pageList.map((page, index) => ({ ...page, page: index + 1 }))
 
 export function resolvePagesWithSlots(
-  questionData: RecruitingForms,
+  questionData: RecruitmentApplicationForm,
   formValues: ResumeFormValues,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ) {
   const labelMode = options?.labelMode ?? 'ranked'
   const showAllParts = options?.showAllParts ?? false
 
-  const pages = Array.isArray(questionData.pages) ? questionData.pages : []
-  const partQuestionGroups = pages.flatMap((page) =>
-    Array.isArray(page.partQuestions) ? page.partQuestions : [],
-  )
+  const pages = questionData.pages
+  const partQuestionGroups = pages.flatMap((page) => page.partQuestions ?? [])
 
   const partQuestion = findPartQuestion(questionData)
   const availableParts = Array.from(new Set(partQuestionGroups.map((group) => group.part)))

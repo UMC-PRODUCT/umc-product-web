@@ -1,3 +1,4 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
-export const dashboardKeys = createQueryKeys('recruiting', {})
+// Recruiting 도메인 Query Keys
+export const recruitingKeys = createQueryKeys('recruiting', {})

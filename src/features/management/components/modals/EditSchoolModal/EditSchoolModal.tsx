@@ -26,7 +26,7 @@ const linkTypeOptions: Array<LinkTypeOption> = [
 
 const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId: string }) => {
   const [isOpen, setIsOpen] = useState(true)
-  const schoolQuery = managementKeys.schoolDetail(schoolId)
+  const schoolQuery = managementKeys.getSchoolDetails(schoolId)
   const { data: schoolDetails, isLoading } = useCustomQuery(
     schoolQuery.queryKey,
     schoolQuery.queryFn,

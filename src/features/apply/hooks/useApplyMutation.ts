@@ -1,31 +1,35 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
-  patchSaveDraftApplication,
-  postClearDraftApplication,
-  postFirstDraftApplication,
-  postSubmitApplication,
+  patchRecruitmentApplicationAnswers,
+  postRecruitmentApplicationDraft,
+  postRecruitmentApplicationDraftReset,
+  postRecruitmentApplicationSubmit,
 } from '../domain/api'
-import type { PatchApplicationAnswerRequestDTO } from '../domain/model'
+import type { PatchRecruitmentApplicationAnswersRequestDTO } from '../domain/model'
 
 export function useApplyMutation() {
   function useFirstCreateDraft() {
-    return useCustomMutation((recruitmentId: string) => postFirstDraftApplication(recruitmentId))
+    return useCustomMutation((recruitmentId: string) =>
+      postRecruitmentApplicationDraft(recruitmentId),
+    )
   }
   function useSubmitApplication() {
     return useCustomMutation(
       ({ recruitmentId, formResponseId }: { recruitmentId: string; formResponseId: string }) =>
-        postSubmitApplication(recruitmentId, formResponseId),
+        postRecruitmentApplicationSubmit(recruitmentId, formResponseId),
     )
   }
   function useResetDraftApplication() {
-    return useCustomMutation((recruitmentId: string) => postClearDraftApplication(recruitmentId))
+    return useCustomMutation((recruitmentId: string) =>
+      postRecruitmentApplicationDraftReset(recruitmentId),
+    )
   }
 
   function usePatchApplication() {
     return useCustomMutation(
-      ({ recruitmentId, formResponseId, items }: PatchApplicationAnswerRequestDTO) =>
-        patchSaveDraftApplication({ recruitmentId, formResponseId, items }),
+      ({ recruitmentId, formResponseId, items }: PatchRecruitmentApplicationAnswersRequestDTO) =>
+        patchRecruitmentApplicationAnswers({ recruitmentId, formResponseId, items }),
     )
   }
 

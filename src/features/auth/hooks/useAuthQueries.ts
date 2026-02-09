@@ -2,10 +2,15 @@ import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 
 import { authKeys } from '../domain'
 
-export function useMyInfo() {
-  return useCustomSuspenseQuery(authKeys.me().queryKey, authKeys.me().queryFn)
+/** 내 정보 조회 */
+export function useGetMemberMe() {
+  return useCustomSuspenseQuery(authKeys.getMemberMe().queryKey, authKeys.getMemberMe().queryFn)
 }
 
-export function useOAuthInfoMe() {
-  return useCustomSuspenseQuery(authKeys.oAuthMe().queryKey, authKeys.oAuthMe().queryFn)
+/** OAuth 연결 정보 조회 */
+export function useGetMemberOAuthMe() {
+  return useCustomSuspenseQuery(
+    authKeys.getMemberOAuthMe().queryKey,
+    authKeys.getMemberOAuthMe().queryFn,
+  )
 }

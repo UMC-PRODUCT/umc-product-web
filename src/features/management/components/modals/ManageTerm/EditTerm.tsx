@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { updateTerm } from '@/features/auth/domain/api'
+import { patchTerms } from '@/features/auth/domain/api'
 import { useTermsById } from '@/features/auth/hooks/register/useTerms'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
@@ -44,7 +44,7 @@ const EditTermContent = ({ onClose, termId }: { termId: string; onClose: () => v
   const handleSave = async () => {
     const editor = editorRef.current
     const current = editor?.innerHTML ?? contentRef.current
-    await updateTerm(termId, { content: current })
+    await patchTerms(termId, { content: current })
     console.log('EditTerm saved content:', current)
   }
 

@@ -2,8 +2,7 @@ import type { FieldErrors } from 'react-hook-form'
 
 import type { PartType } from '@features/auth/domain'
 
-import type { RecruitingForms } from '@/features/school/domain'
-import type { FormPage, FormQuestion } from '@/shared/types/form'
+import type { FormPage, FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import type {
   AnswerItem,
@@ -25,12 +24,8 @@ type FormValues = Record<string, unknown>
 type ScheduleQuestion = NonNullable<FormPage['scheduleQuestion']>
 
 const getAllPageQuestions = (page: FormPage) => {
-  const baseQuestions = Array.isArray(page.questions) ? page.questions : []
-  const partQuestions = Array.isArray(page.partQuestions)
-    ? page.partQuestions.flatMap((partGroup) =>
-        Array.isArray(partGroup.questions) ? partGroup.questions : [],
-      )
-    : []
+  const baseQuestions = page.questions ?? []
+  const partQuestions = (page.partQuestions ?? []).flatMap((partGroup) => partGroup.questions)
   return [...baseQuestions, ...partQuestions]
 }
 
@@ -76,7 +71,7 @@ export function getPageRequiredFieldIds(page: FormPage | undefined): Array<strin
  * 제출할 파트 목록을 추출합니다.
  */
 export function getSelectedPartsForSubmission(
-  questionData: RecruitingForms,
+  questionData: RecruitmentApplicationForm,
   formValues: FormValues,
 ): Array<PartType> {
   const partQuestion = findPartQuestion(questionData)

@@ -9,9 +9,9 @@ import type {
 } from '@/shared/types/form'
 
 import type {
-  GetTempSavedRecruitmentResponseDTO,
-  PatchTempSaveRecruitmentRequestDTO,
-} from '../../domain/apiTypes'
+  GetRecruitmentDraftResponseDTO,
+  PatchRecruitmentDraftRequestDTO,
+} from '../../domain/model'
 import { normalizeTempRecruitingForm } from './tempDraft'
 
 const defaultInterviewTimeTable: RecruitingInterviewTimeTable = {
@@ -39,7 +39,7 @@ const toDateLast = (value: string | null) =>
   value ? dayjs(value).format('YYYY-MM-DDT23:59:59+09:00') : null
 export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
-): PatchTempSaveRecruitmentRequestDTO['schedule'] => ({
+): PatchRecruitmentDraftRequestDTO['schedule'] => ({
   applyStartAt: toDateOnly(schedule.applyStartAt),
   applyEndAt: toDateLast(schedule.applyEndAt),
   docResultAt: toDateOnly(schedule.docResultAt),
@@ -84,7 +84,7 @@ export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
   }))
 
 export function buildRecruitingInitialForm(
-  result: GetTempSavedRecruitmentResponseDTO,
+  result: GetRecruitmentDraftResponseDTO,
 ): RecruitingForms {
   const schedule = result.schedule ?? defaultRecruitingSchedule
   const interviewTimeTable = schedule.interviewTimeTable

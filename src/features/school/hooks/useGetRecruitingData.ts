@@ -9,40 +9,47 @@ import {
 } from '@/shared/hooks/customQuery'
 import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
 
-import { getDocumentAllApplicants, getDocumentSelectedApplicants } from '../domain/api'
+import { getDocumentEvaluationApplicants, getDocumentSelectedApplicants } from '../domain/api'
 import { schoolKeys } from '../domain/queryKeys'
 
-export const useGetRecruitingData = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getTempSavedRecruitments(recruitingId)
+/** 모집 임시저장 조회 */
+export const useGetRecruitmentDraft = (recruitingId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getRecruitmentDraft(recruitingId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetApplicationFormData = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getApplicationForm(recruitingId)
+/** 지원서 폼 조회 */
+export const useGetRecruitmentApplicationForm = (recruitingId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationForm(recruitingId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetTempSavedApplicationData = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getTempSavedApplication(recruitingId)
+/** 지원서 폼 임시저장 조회 */
+export const useGetRecruitmentApplicationFormDraft = (recruitingId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
+/** 모집 리스트 조회 */
 export const useGetRecruitmentsList = (status: RecruitmentStatusType) => {
-  const { queryKey, queryFn } = schoolKeys.recruitments({ status })
+  const { queryKey, queryFn } = schoolKeys.getRecruitments({ status })
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetApplicationAnswer = (recruitmentId: string, formId: string) => {
-  const { queryKey, queryFn } = applyKeys.getApplicationAnswer(recruitmentId, formId)
+/** 지원서 답변 조회 */
+export const useGetRecruitmentApplicationAnswer = (recruitmentId: string, formId: string) => {
+  const { queryKey, queryFn } = applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetRecruitmentDashboard = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitmentDashboard(recruitingId)
+/** 모집 대시보드 요약 조회 */
+export const useGetRecruitmentDashboardSummary = (recruitingId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getRecruitmentDashboardSummary(recruitingId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
-export const useGetDocumentAllApplicants = (
+/** 서류 평가 대상자 목록 */
+export const useGetDocumentEvaluationApplicants = (
   recruitingId: string,
   params: {
     part: PartType | 'ALL'
@@ -50,16 +57,19 @@ export const useGetDocumentAllApplicants = (
     size: string
   },
 ) => {
+  type DocumentEvaluationApplicantsQueryKey = Array<
+    string | { recruitingId: string; part: PartType | 'ALL'; keyword: string; size: string }
+  >
   return useCustomInfiniteQuery<
-    Awaited<ReturnType<typeof getDocumentAllApplicants>>,
+    Awaited<ReturnType<typeof getDocumentEvaluationApplicants>>,
     unknown,
-    InfiniteData<Awaited<ReturnType<typeof getDocumentAllApplicants>>, number>,
-    Array<string | typeof params>,
+    InfiniteData<Awaited<ReturnType<typeof getDocumentEvaluationApplicants>>, number>,
+    DocumentEvaluationApplicantsQueryKey,
     number
   >(
-    ['docsEvaluationApplicants', recruitingId, params],
+    ['documentEvaluationApplicants', { recruitingId, ...params }],
     ({ pageParam = 0 }) =>
-      getDocumentAllApplicants(recruitingId, {
+      getDocumentEvaluationApplicants(recruitingId, {
         ...params,
         page: String(pageParam),
       }),
@@ -78,6 +88,7 @@ export const useGetDocumentAllApplicants = (
   )
 }
 
+/** 서류 합격 대상자 목록 */
 export const useGetDocumentSelectedApplicants = (
   recruitingId: string,
   params: {
@@ -86,14 +97,18 @@ export const useGetDocumentSelectedApplicants = (
     sort: SelectionsSortType
   },
 ) => {
+  type DocumentSelectedApplicantsQueryKey = Array<
+    | string
+    | { recruitingId: string; part: PartType | 'ALL'; size: string; sort: SelectionsSortType }
+  >
   return useCustomInfiniteQuery<
     Awaited<ReturnType<typeof getDocumentSelectedApplicants>>,
     unknown,
     InfiniteData<Awaited<ReturnType<typeof getDocumentSelectedApplicants>>, number>,
-    Array<string | typeof params>,
+    DocumentSelectedApplicantsQueryKey,
     number
   >(
-    ['documentSelectedApplicants', recruitingId, params],
+    ['documentSelectedApplicants', { recruitingId, ...params }],
     ({ pageParam = 0 }) =>
       getDocumentSelectedApplicants(recruitingId, {
         ...params,
@@ -110,14 +125,19 @@ export const useGetDocumentSelectedApplicants = (
   )
 }
 
-export const useGetDocumentEvaluationApplication = (recruitingId: string, applicantId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplication(
+/** 서류 평가용 지원서 상세 조회 */
+export const useGetDocumentEvaluationApplicationDetail = (
+  recruitingId: string,
+  applicantId: string,
+) => {
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplicationDetail(
     recruitingId,
     applicantId,
   )
   return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
+/** 서류 평가 답변 목록 */
 export const useGetDocumentEvaluationAnswers = (
   recruitingId?: string | null,
   applicantId?: string | null,
@@ -132,13 +152,14 @@ export const useGetDocumentEvaluationAnswers = (
   return useCustomQuery(queryKey, queryFn, { enabled })
 }
 
-export const useGetDocumentEvaluationAnswerMe = (
+/** 내 서류 평가 조회 */
+export const useGetDocumentEvaluationMyAnswer = (
   recruitingId: string | null,
   applicantId: string | null,
 ) => {
   const resolvedRecruitingId = recruitingId ?? ''
   const resolvedApplicantId = applicantId ?? ''
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationAnswerMe(
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationMyAnswer(
     resolvedRecruitingId,
     resolvedApplicantId,
   )

@@ -41,12 +41,13 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
   const draggingIndexRef = useRef<number | null>(null)
   const placeholderHeightRef = useRef<number>(0)
-  const { useDeleteSingleQuestion, usePatchTempSavedRecruitQuestions } = useRecruitingMutation()
-  const { mutate: deleteSingleQuestionMutate } = useDeleteSingleQuestion(recruitingId)
+  const { useDeleteRecruitmentQuestion, usePatchRecruitmentApplicationFormDraft } =
+    useRecruitingMutation()
+  const { mutate: deleteSingleQuestionMutate } = useDeleteRecruitmentQuestion(recruitingId)
   const { mutate: patchTempSavedRecruitQuestionsMutate } =
-    usePatchTempSavedRecruitQuestions(recruitingId)
+    usePatchRecruitmentApplicationFormDraft(recruitingId)
   const queryClient = useQueryClient()
-  const applicationQuery = schoolKeys.getTempSavedApplication(recruitingId)
+  const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   const { fields, append, remove, move, update } = useFieldArray({
     control,
     name: 'items' as never,

@@ -9,10 +9,18 @@ import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
 import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
 import { setScheduleValidationContext } from '@/features/school/schemas/validation'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
-import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
+import type {
+  FormPage,
+  FormQuestion,
+  RecruitingForms,
+  RecruitingSchedule,
+} from '@/shared/types/form'
 
 import { schoolKeys } from '../domain/queryKeys'
-import { useGetRecruitingData, useGetTempSavedApplicationData } from '../hooks/useGetRecruitingData'
+import {
+  useGetRecruitmentApplicationFormDraft,
+  useGetRecruitmentDraft,
+} from '../hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
 import { convertApplicationFormToItems } from '../utils/recruiting/applicationFormMapper'
 import {
@@ -56,20 +64,20 @@ export const useRecruitingContentLogic = ({
     setPartCompletionMap((prev) => ({ ...prev, ...next }))
   }, [])
   const forceLockFromEnv = forceLockedMode ?? false
-  const { data: recruitingData } = useGetRecruitingData(recruitingId!)
-  const { data: applicationData } = useGetTempSavedApplicationData(recruitingId!)
+  const { data: recruitingData } = useGetRecruitmentDraft(recruitingId!)
+  const { data: applicationData } = useGetRecruitmentApplicationFormDraft(recruitingId!)
   const {
-    usePatchTempSaveRecruitment,
-    usePatchTempSavedRecruitQuestions,
-    usePostPublishRecruitment,
-    usePatchPublishedRecruitment,
+    usePatchRecruitmentDraft,
+    usePatchRecruitmentApplicationFormDraft,
+    usePostRecruitmentPublish,
+    usePatchRecruitmentPublished,
   } = useRecruitingMutation()
-  const { mutate: patchTempSaveRecruitmentMutate } = usePatchTempSaveRecruitment(recruitingId!)
-  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchTempSavedRecruitQuestions(
+  const { mutate: patchTempSaveRecruitmentMutate } = usePatchRecruitmentDraft(recruitingId!)
+  const { mutate: patchTempSavedRecruitQuestionsMutate } = usePatchRecruitmentApplicationFormDraft(
     recruitingId!,
   )
-  const { mutate: postPublishRecruitmentMutate } = usePostPublishRecruitment(recruitingId!)
-  const { mutate: patchPublishedRecruitmentMutate } = usePatchPublishedRecruitment(recruitingId!)
+  const { mutate: postPublishRecruitmentMutate } = usePostRecruitmentPublish(recruitingId!)
+  const { mutate: patchPublishedRecruitmentMutate } = usePatchRecruitmentPublished(recruitingId!)
 
   const queryClient = useQueryClient()
 
@@ -103,8 +111,8 @@ export const useRecruitingContentLogic = ({
     if (!result.pages.length) return
     const nextItems = convertApplicationFormToItems(result)
     const preferredQuestion = result.pages
-      .flatMap((page) => page.questions ?? [])
-      .find((question) => question.type === 'PREFERRED_PART')
+      .flatMap((page: FormPage) => page.questions ?? [])
+      .find((question: FormQuestion) => question.type === 'PREFERRED_PART')
     const nextMaxPreferredCount = preferredQuestion?.maxSelectCount
       ? Number(preferredQuestion.maxSelectCount)
       : undefined
@@ -181,7 +189,9 @@ export const useRecruitingContentLogic = ({
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [recruitingId] })
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.getRecruitmentDraft(recruitingId!).queryKey,
+            })
           },
           onError: (error) => {
             console.error('Failed to auto-save temp recruitment draft:', error)
@@ -197,7 +207,9 @@ export const useRecruitingContentLogic = ({
               shouldTouch: false,
               shouldValidate: true,
             })
-            queryClient.invalidateQueries({ queryKey: [recruitingId] })
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId!).queryKey,
+            })
           },
           onError: (error) => {
             console.error('Failed to auto-save temp recruitment questions:', error)
@@ -248,7 +260,7 @@ export const useRecruitingContentLogic = ({
 
   const openPreview = () => {
     queryClient.invalidateQueries({
-      queryKey: schoolKeys.getApplicationForm(recruitingId!).queryKey,
+      queryKey: schoolKeys.getRecruitmentApplicationForm(recruitingId!).queryKey,
     })
     setModal({ isOpen: true, modalName: 'recruitingPreview' })
   }
@@ -270,7 +282,9 @@ export const useRecruitingContentLogic = ({
       patchPublishedRecruitmentMutate(payload, {
         onSuccess: () => {
           navigationBlocker.allowNextNavigationOnce()
-          queryClient.invalidateQueries({ queryKey: [recruitingId] })
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.getRecruitmentDraft(recruitingId!).queryKey,
+          })
           navigate({ to: '/school/recruiting', replace: true })
         },
         onError: (error) => {

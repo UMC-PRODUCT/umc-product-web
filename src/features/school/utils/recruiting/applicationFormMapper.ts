@@ -1,7 +1,7 @@
 import type { PartType } from '@/features/auth/domain'
 import { isOtherOptionContent } from '@/features/school/constants/questionOption'
-import type { GetApplicationFormResponseDTO } from '@/features/school/domain'
-import type { RecruitingItem } from '@/shared/types/form'
+import type { RecruitmentApplicationFormResponseDTO } from '@/features/school/domain/model'
+import type { FormPage, FormQuestion, RecruitingItem } from '@/shared/types/form'
 
 const toRecruitingItemOptions = (
   options:
@@ -40,13 +40,13 @@ const buildRecruitingItemFromQuestion = (
   },
 })
 
-export const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) => {
+export const convertApplicationFormToItems = (formData: RecruitmentApplicationFormResponseDTO) => {
   const items: Array<RecruitingItem> = []
   const pages = formData.pages
 
-  pages.forEach((page) => {
-    const questions = Array.isArray(page.questions) ? page.questions : []
-    questions.forEach((question, index) =>
+  pages.forEach((page: FormPage) => {
+    const questions: Array<FormQuestion> = Array.isArray(page.questions) ? page.questions : []
+    questions.forEach((question: FormQuestion, index: number) =>
       items.push(
         buildRecruitingItemFromQuestion(
           question,
@@ -68,8 +68,10 @@ export const convertApplicationFormToItems = (formData: GetApplicationFormRespon
 
     const partGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
     partGroups.forEach((partGroup) => {
-      const groupQuestions = Array.isArray(partGroup.questions) ? partGroup.questions : []
-      groupQuestions.forEach((question, index) =>
+      const groupQuestions: Array<FormQuestion> = Array.isArray(partGroup.questions)
+        ? partGroup.questions
+        : []
+      groupQuestions.forEach((question: FormQuestion, index: number) =>
         items.push(
           buildRecruitingItemFromQuestion(
             question,

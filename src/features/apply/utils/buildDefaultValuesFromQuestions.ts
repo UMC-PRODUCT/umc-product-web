@@ -1,10 +1,14 @@
 import type { PartType } from '@/features/auth/domain'
-import type { RecruitingForms } from '@/features/school/domain'
-import type { FormPage, FormQuestion, OptionAnswerValue } from '@/shared/types/form'
+import type {
+  FormPage,
+  FormQuestion,
+  OptionAnswerValue,
+  RecruitmentApplicationForm,
+} from '@/shared/types/form'
 
 import type {
   FileUploadAnswer,
-  GetApplicationAnswerResponseDTO,
+  GetRecruitmentApplicationAnswerResponseDTO,
   preferredPartAnswer,
 } from '../domain/model'
 import { isOptionAnswerValue } from './optionAnswer'
@@ -14,8 +18,8 @@ export type ResumeFormValues = Record<string, unknown>
 type DefaultQuestion = FormQuestion | NonNullable<FormPage['scheduleQuestion']>
 
 export function buildDefaultValuesFromQuestions(
-  questionData: RecruitingForms,
-  answerData?: GetApplicationAnswerResponseDTO,
+  questionData: RecruitmentApplicationForm,
+  answerData?: GetRecruitmentApplicationAnswerResponseDTO,
 ): ResumeFormValues {
   const defaultValues: ResumeFormValues = {}
   const answers = Array.isArray(answerData?.answers) ? answerData.answers : []
@@ -183,9 +187,9 @@ export function buildDefaultValuesFromQuestions(
     }
   }
 
-  const pages = Array.isArray(questionData.pages) ? questionData.pages : []
+  const pages = questionData.pages
   pages.forEach((page) => {
-    const questions = Array.isArray(page.questions) ? page.questions : []
+    const questions = page.questions ?? []
     questions.forEach((question) => {
       defaultValues[String(question.questionId)] = resolveDefaultValue(question)
     })
@@ -196,11 +200,9 @@ export function buildDefaultValuesFromQuestions(
       )
     }
 
-    const partQuestions = Array.isArray(page.partQuestions) ? page.partQuestions : []
+    const partQuestions = page.partQuestions ?? []
     partQuestions.forEach((partQuestionGroup) => {
-      const nestedQuestions = Array.isArray(partQuestionGroup.questions)
-        ? partQuestionGroup.questions
-        : []
+      const nestedQuestions = partQuestionGroup.questions
       nestedQuestions.forEach((question) => {
         defaultValues[String(question.questionId)] = resolveDefaultValue(question)
       })

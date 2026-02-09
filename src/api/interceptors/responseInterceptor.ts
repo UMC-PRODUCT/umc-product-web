@@ -6,8 +6,8 @@
 import type { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 
-import { refresh } from '@/features/auth/domain/api'
-import type { RefreshResponseDTO } from '@/features/auth/domain/types'
+import { postRefreshToken } from '@/features/auth/domain/api'
+import type { PostRefreshTokenResponseDTO } from '@/features/auth/domain/types'
 
 import { clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '../tokenManager'
 
@@ -33,7 +33,7 @@ async function refreshTokens(): Promise<void> {
     throw new Error('refreshToken이 없습니다.')
   }
 
-  const refreshResponse = await refresh({ refreshToken })
+  const refreshResponse = await postRefreshToken({ refreshToken })
   if (!refreshResponse.success) {
     throw new Error('토큰 재발급 실패')
   }
@@ -50,7 +50,7 @@ async function refreshTokens(): Promise<void> {
 
 function handleRefreshError(errors: unknown): void {
   if (axios.isAxiosError(errors)) {
-    const refreshError = errors as AxiosError<RefreshResponseDTO>
+    const refreshError = errors as AxiosError<PostRefreshTokenResponseDTO>
     const refreshStatus = refreshError.response?.status
     if (refreshStatus === 401) {
       console.error('refreshToken이 없습니다. 로그인 페이지로 이동합니다.')

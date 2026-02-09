@@ -4,7 +4,7 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 
 import * as Shared from '@shared/styles/shared'
 
-import { useGetDocumentEvaluationApplication } from '@/features/apply/hooks/useGetApplicationQuery'
+import { useGetDocumentEvaluationApplicationDetail } from '@/features/apply/hooks/useGetApplicationQuery'
 // import { answers } from '@/features/school/mocks/application'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { media } from '@/shared/styles/media'
@@ -29,10 +29,8 @@ const DocsEvaluationContent = () => {
     null,
   )
   const { recruitmentId } = useParams({ from: '/(app)/school/evaluation/$recruitmentId/' })
-  const { data: answerData, isLoading: isApplicationLoading } = useGetDocumentEvaluationApplication(
-    recruitmentId,
-    selectedUserId,
-  )
+  const { data: answerData, isLoading: isApplicationLoading } =
+    useGetDocumentEvaluationApplicationDetail(recruitmentId, selectedUserId)
 
   const navigate = useNavigate()
   return (

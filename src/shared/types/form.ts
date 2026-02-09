@@ -76,6 +76,17 @@ export interface RecruitingForms {
   items: Array<RecruitingItem>
 }
 
+export type RecruitmentApplicationForm = {
+  recruitmentId: number
+  formId: number
+  status: string
+  title?: string
+  recruitmentFormTitle?: string
+  noticeTitle: string
+  noticeContent: string
+  pages: Array<FormPage>
+}
+
 export type QuestionMode = 'view' | 'edit'
 
 export interface RecruitingQuestion {

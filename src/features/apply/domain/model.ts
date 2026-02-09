@@ -1,10 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
-import type { RecruitingForms } from '@/features/school/domain'
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
 import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
-import type { OptionAnswerValue } from '@/shared/types/form'
+import type { OptionAnswerValue, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 
@@ -178,10 +177,10 @@ export interface NavigationBlockerResult {
 }
 
 /** 지원서 폼 조회 응답 */
-export type GetApplicationFormResponseDTO = RecruitingForms
+export type GetRecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm
 
 /** 지원서 답변 조회 응답 */
-export type GetApplicationAnswerResponseDTO = {
+export type GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: string
   formId: string
   formResponseId: string
@@ -191,55 +190,6 @@ export type GetApplicationAnswerResponseDTO = {
   answers: Array<AnswerItem>
 }
 
-export type DocumentEvaluationQuestionOption = {
-  optionId: string
-  content: string
-  isOther: boolean
-}
-
-export type DocumentEvaluationAnswer = {
-  answeredAsType: string
-  displayText: string | null
-  rawValue: Record<string, unknown>
-}
-
-export type DocumentEvaluationQuestion = {
-  questionId: string
-  orderNo: string
-  type:
-    | 'PREFERRED_PART'
-    | 'SCHEDULE'
-    | 'LONG_TEXT'
-    | 'SHORT_TEXT'
-    | 'RADIO'
-    | 'CHECKBOX'
-    | 'PORTFOLIO'
-    | 'DROPDOWN'
-  questionText: string
-  required: boolean
-  options: Array<DocumentEvaluationQuestionOption>
-  answer: DocumentEvaluationAnswer | null
-}
-
-export type DocumentEvaluationFormPage = {
-  pageNo: string
-  questions: Array<DocumentEvaluationQuestion>
-  partQuestions: Array<{
-    part: string
-    questions: Array<DocumentEvaluationQuestion>
-  }>
-}
-
-export type GetDocumentEvaluationApplicationResponseDTO = {
-  applicationId: string
-  status: string
-  applicant: {
-    memberId: string
-    name: string
-    nickname: string
-  }
-  formPages: Array<DocumentEvaluationFormPage>
-}
 /** 일정 조회 응답 */
 export type GetRecruitmentSchedulesResponseDTO = {
   recruitmentId: string
@@ -251,9 +201,9 @@ export type GetRecruitmentSchedulesResponseDTO = {
   }>
 }
 /** 초안 리셋 응답 */
-export type PostResetDraftResponseDTO = RecruitmentForm
+export type PostRecruitmentApplicationDraftResetResponseDTO = RecruitmentForm
 /** 초안 생성 응답 */
-export type PostFirstDraftResponseDTO = RecruitmentForm
+export type PostRecruitmentApplicationDraftResponseDTO = RecruitmentForm
 /** 제출된 지원서 메타 정보 */
 export type RecruitmentForm = {
   recruitmentId: string
@@ -262,7 +212,7 @@ export type RecruitmentForm = {
   createdAt: string
 }
 /** 제출 응답 */
-export type PostSubmitApplicationResponseDTO = {
+export type PostRecruitmentApplicationSubmitResponseDTO = {
   recruitmentId: string
   formResponseId: string
   applicationId: string
@@ -298,14 +248,14 @@ export type GetMyApplicationStatusResponseDTO = {
   }>
 }
 /** 공고 정보 */
-export type GetRecruitmentNotice = {
+export type GetRecruitmentNoticeResponseDTO = {
   recruitmentId: string
   title: string
   content: string
   parts: Array<PartType>
 }
 /** 특정 파트 모집 정보 */
-export type GetSpecificPartRecruiting = {
+export type GetRecruitmentPartsResponseDTO = {
   recruitmentId: string
   title: string
   recruitmentPeriod: {
@@ -379,28 +329,13 @@ export type scheduleAnswer = {
   }>
 }
 
-export type PatchApplicationAnswerRequestDTO = {
+export type PatchRecruitmentApplicationAnswersRequestDTO = {
   recruitmentId: string
   formResponseId: string
   items: Array<AnswerItem>
 }
 
-export type PatchApplicationAnswerResponseDTO = {
+export type PatchRecruitmentApplicationAnswersResponseDTO = {
   formResponseId: string
   savedQuestionIds: Array<string>
-}
-
-export type GetApplicationsAnswerResponseDTO = {
-  recruitmentId: string
-  applicationId: string
-  avgDocScore: string
-  docEvaluationSummaries: Array<DocEvaluationSummary>
-}
-
-export type DocEvaluationSummary = {
-  evaluatorMemberId: string
-  evaluatorName: string
-  evaluatorNickname: string
-  score: string
-  comments: string
 }

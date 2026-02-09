@@ -19,8 +19,8 @@ import ResumeContent from '../components/ResumeContent'
 import { applyKeys } from '../domain/queryKeys'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
-  useGetApplicationAnswer,
-  useGetApplicationQuestions,
+  useGetRecruitmentApplicationAnswer,
+  useGetRecruitmentApplicationForm,
 } from '../hooks/useGetApplicationQuery'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import { findFirstErrorPageIndex, getPageRequiredFieldIds, getSubmissionItems } from '../utils'
@@ -38,8 +38,8 @@ interface ResumeProps {
 const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
-  const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
-  const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const { data: questionsData } = useGetRecruitmentApplicationForm(recruitmentId)
+  const { data: answerData } = useGetRecruitmentApplicationAnswer(recruitmentId, resumeId)
   const { usePatchApplication, useSubmitApplication } = useApplyMutation()
   const { mutate: patchApplication } = usePatchApplication()
   const { mutate: submitApplication } = useSubmitApplication()
@@ -83,7 +83,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+              queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
             })
           },
         },
@@ -131,7 +131,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
           })
           setIsSubmitModalOpen(false)
         },

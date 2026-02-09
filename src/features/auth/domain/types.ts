@@ -3,8 +3,8 @@ import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 import type { PartType } from './model'
 
-export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
-export type RegisterRequestDTO = {
+export type PostRegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
+export type PostRegisterRequestDTO = {
   oAuthVerificationToken?: string
   name?: string
   nickname?: string
@@ -16,22 +16,25 @@ export type RegisterRequestDTO = {
     isAgreed?: boolean
   }>
 }
-export type RefreshResponseDTO = CommonResponseDTO<{ accessToken: string; refreshToken: string }>
-export type RefreshRequestDTO = {
+export type PostRefreshTokenResponseDTO = CommonResponseDTO<{
+  accessToken: string
+  refreshToken: string
+}>
+export type PostRefreshTokenRequestDTO = {
   refreshToken?: string
 }
-export type EmailVerificationRequestDTO = {
+export type PostEmailVerificationRequestDTO = {
   email?: string
 }
-export type EmailVerificationResponseDTO = { emailVerificationId?: string }
+export type PostEmailVerificationResponseDTO = { emailVerificationId?: string }
 
-export type VerificationCodeRequestDTO = {
+export type PostEmailVerificationCodeRequestDTO = {
   emailVerificationId?: string
   verificationCode?: string
 }
-export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
+export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
 
-export type MyInfoResponseDTO = {
+export type GetMemberMeResponseDTO = {
   id?: number
   name?: string
   nickname?: string
@@ -50,7 +53,7 @@ export type MyInfoResponseDTO = {
   }>
 }
 
-export type MyOAuthInfoResponseDTO = Array<{
+export type GetMemberOAuthMeResponseDTO = Array<{
   memberOAuthId: string
   memberId: string
   provider: 'KAKAO' | 'GOOGLE' | 'APPLE'
@@ -63,7 +66,7 @@ export type GetTermsResponseDTO = {
   isMandatory: boolean
 }
 
-export type UpdateTermsRequestDTO = {
+export type PatchTermsRequestDTO = {
   content: string
 }
 

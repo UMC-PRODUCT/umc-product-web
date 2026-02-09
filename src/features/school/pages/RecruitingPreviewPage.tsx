@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import ResumeContent from '@/features/apply/components/ResumeContent'
 import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetRecruitmentApplicationForm } from '@/features/school/hooks/useGetRecruitingData'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
@@ -14,7 +14,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
-  const { data } = useGetApplicationFormData(recruitingId)
+  const { data } = useGetRecruitmentApplicationForm(recruitingId)
   const questionData = data.result
 
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
@@ -24,7 +24,11 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
   )
 
   const totalPages = resolvedPages.length
-  const previewTitle = questionData.recruitmentFormTitle || '지원서 미리보기'
+  const previewTitle =
+    questionData.noticeTitle ||
+    questionData.recruitmentFormTitle ||
+    questionData.title ||
+    '지원서 미리보기'
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)

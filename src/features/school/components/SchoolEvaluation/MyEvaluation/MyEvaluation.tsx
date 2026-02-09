@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { useGetDocumentEvaluationAnswerMe } from '@/features/school/hooks/useGetRecruitingData'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useGetDocumentEvaluationMyAnswer } from '@/features/school/hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
@@ -21,12 +22,12 @@ const MyEvaluation = ({
   recruitingId?: string | null
 }) => {
   const queryClient = useQueryClient()
-  const { usePatchDocsEvaluationAnswerMe } = useRecruitingMutation()
-  const { mutate, isPending } = usePatchDocsEvaluationAnswerMe(
+  const { usePatchDocumentEvaluationMyAnswer } = useRecruitingMutation()
+  const { mutate, isPending } = usePatchDocumentEvaluationMyAnswer(
     recruitingId ?? '',
     selectedUserId ?? '',
   )
-  const { data } = useGetDocumentEvaluationAnswerMe(recruitingId!, selectedUserId)
+  const { data } = useGetDocumentEvaluationMyAnswer(recruitingId!, selectedUserId)
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
 
@@ -56,12 +57,16 @@ const MyEvaluation = ({
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['recruitment'],
-          })
-          queryClient.invalidateQueries({
-            queryKey: ['user'],
-          })
+          if (recruitingId && selectedUserId) {
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.getDocumentEvaluationAnswers(recruitingId, selectedUserId)
+                .queryKey,
+            })
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.getDocumentEvaluationMyAnswer(recruitingId, selectedUserId)
+                .queryKey,
+            })
+          }
         },
       },
     )

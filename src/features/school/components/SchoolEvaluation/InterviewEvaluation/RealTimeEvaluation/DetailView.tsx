@@ -160,8 +160,8 @@ const DetailView = ({
 
           {/* 오른쪽: 현황 및 입력 섹션 */}
           <S.SideColumn>
-            <EvaluationStatus selectedUserId={selectedUser.id} />
-            <MyEvaluation selectedUserId={selectedUser.id} />
+            <EvaluationStatus selectedUserId={selectedUser.id} recruitingId={null} />
+            <MyEvaluation selectedUserId={selectedUser.id} recruitingId={null} />
           </S.SideColumn>
         </S.MainContent>
       </S.DetailWrapper>
