@@ -13,6 +13,7 @@ const DocsEvaluationRow = ({
   onFail,
   isPassLoading = false,
   isFailLoading = false,
+  isActionDisabled = false,
 }: {
   item: DocumentSelectionApplication
   checked: boolean
@@ -21,6 +22,7 @@ const DocsEvaluationRow = ({
   onFail: () => void
   isPassLoading?: boolean
   isFailLoading?: boolean
+  isActionDisabled?: boolean
 }) => {
   return (
     <tr>
@@ -61,6 +63,7 @@ const DocsEvaluationRow = ({
               label="합격"
               typo="B4.Sb"
               isLoading={isPassLoading}
+              disabled={isActionDisabled}
               onClick={() => onPass()}
             />
             <S.ActionButton
@@ -69,6 +72,7 @@ const DocsEvaluationRow = ({
               label="불합격"
               typo="B4.Sb"
               isLoading={isFailLoading}
+              disabled={isActionDisabled}
               onClick={() => onFail()}
             />
           </Flex>
@@ -80,6 +84,7 @@ const DocsEvaluationRow = ({
               label="합격"
               typo="B4.Sb"
               isLoading={isPassLoading}
+              disabled={isActionDisabled}
               onClick={() => onPass()}
             />
             <S.ActionButton
@@ -88,6 +93,7 @@ const DocsEvaluationRow = ({
               label="불합격"
               typo="B4.Sb"
               isLoading={isFailLoading}
+              disabled={isActionDisabled}
               onClick={() => onFail()}
             />
           </Flex>
@@ -99,6 +105,7 @@ const DocsEvaluationRow = ({
               label="합격"
               typo="B4.Sb"
               isLoading={isPassLoading}
+              disabled={isActionDisabled}
               onClick={() => onPass()}
             />
             <S.ActionButton
@@ -107,6 +114,7 @@ const DocsEvaluationRow = ({
               label="불합격"
               typo="B4.Sb"
               isLoading={isFailLoading}
+              disabled={isActionDisabled}
               onClick={() => onFail()}
             />
           </Flex>

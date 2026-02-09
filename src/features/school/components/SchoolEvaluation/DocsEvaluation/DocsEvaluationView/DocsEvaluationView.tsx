@@ -7,6 +7,7 @@ import * as Shared from '@shared/styles/shared'
 import { useGetDocumentEvaluationApplicationDetail } from '@/features/apply/hooks/useGetApplicationQuery'
 // import { answers } from '@/features/school/mocks/application'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
@@ -23,6 +24,9 @@ import ApplicationView from '../ApplicationView/ApplicationView'
 import * as S from './DocsEvaluationView.style'
 
 const DocsEvaluationContent = () => {
+  const roleType = useUserProfileStore((state) => state.role?.roleType)
+  const canEdit = roleType === 'SCHOOL_PRESIDENT'
+  console.log('roleType', roleType)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [modal, setModal] = useState(false)
   const [summary, setSummary] = useState<{ totalCount: string; evaluatedCount: string } | null>(

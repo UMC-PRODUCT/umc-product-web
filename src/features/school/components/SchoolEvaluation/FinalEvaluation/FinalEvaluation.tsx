@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
@@ -19,6 +20,9 @@ import * as S from './FinalEvaluation.style'
 import * as RowS from './FinalEvaluationRow.style'
 
 const FinalEvaluation = () => {
+  const roleType = useUserProfileStore((state) => state.role?.roleType)
+  const canEdit = roleType === 'SCHOOL_PRESIDENT'
+  console.log('roleType', roleType)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [activeRowId, setActiveRowId] = useState<number | null>(null)
   const [sort, setSort] = useState<Option<string>>({
@@ -193,6 +197,7 @@ const FinalEvaluation = () => {
                       tone="necessary"
                       label="합격 취소"
                       typo="B4.Sb"
+                      disabled={!canEdit}
                       onClick={() => setModalOpen({ open: true, modalName: 'setFail' })}
                     />
                   ) : (
@@ -201,6 +206,7 @@ const FinalEvaluation = () => {
                       tone="lime"
                       label="합격 처리"
                       typo="B4.Sb"
+                      disabled={!canEdit}
                       onClick={() =>
                         item.parts.length > 1
                           ? setModalOpen({ open: true, modalName: 'setPassPart' })
@@ -225,6 +231,7 @@ const FinalEvaluation = () => {
               variant="solid"
               typo="B4.Sb"
               css={{ width: '80px', height: '30px' }}
+              disabled={!canEdit}
               onClick={() => setSelectedIds(new Set())}
             />
             <Button
@@ -233,6 +240,7 @@ const FinalEvaluation = () => {
               variant="solid"
               typo="B4.Sb"
               css={{ width: '144px', height: '30px' }}
+              disabled={!canEdit}
               onClick={() => selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })}
             />
           </div>

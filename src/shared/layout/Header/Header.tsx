@@ -1,12 +1,11 @@
+import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { schoolKeys } from '@/features/auth/domain/queryKeys'
-import type { GetSchoolLinkResponseDTO } from '@/features/auth/domain/types'
+import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
-import type { CommonResponseDTO } from '@/shared/types/api'
 
 import * as S from './Header.style'
 
@@ -25,16 +24,46 @@ const Header = ({
   }
 }) => {
   const navigate = useNavigate()
-  const { schoolId } = useUserProfileStore()
-  type SchoolLinkQueryKey = ReturnType<typeof schoolKeys.getSchoolLink>['queryKey']
-  const { data: schoolLinkData } = useCustomQuery<
-    CommonResponseDTO<GetSchoolLinkResponseDTO>,
-    unknown,
-    CommonResponseDTO<GetSchoolLinkResponseDTO>,
-    SchoolLinkQueryKey
-  >(schoolKeys.getSchoolLink(schoolId).queryKey, schoolKeys.getSchoolLink(schoolId).queryFn, {
-    enabled: !!schoolId,
-  })
+  const { schoolId, setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } =
+    useUserProfileStore()
+  const { data: profileData } = useCustomQuery(
+    authKeys.getMemberMe().queryKey,
+    authKeys.getMemberMe().queryFn,
+  )
+  const { data: gisuData } = useCustomQuery(
+    schoolKeys.getActiveGisu().queryKey,
+    schoolKeys.getActiveGisu().queryFn,
+    {
+      staleTime: 1000 * 60 * 60 * 24,
+      gcTime: 1000 * 60 * 60 * 24 * 7,
+    },
+  )
+  const gisuId = gisuData?.result.gisuId
+
+  useEffect(() => {
+    if (!profileData) return
+    setName(profileData.name || '')
+    setNickname(profileData.nickname || '')
+    setEmail(profileData.email || '')
+    setSchoolId(profileData.schoolId ? profileData.schoolId.toString() : '')
+  }, [profileData, setName, setNickname, setEmail, setSchoolId])
+
+  useEffect(() => {
+    if (!profileData || !gisuId) return
+    setGisu(gisuId)
+    const activeRole = profileData.roles.find((role) => role.gisuId === gisuId)
+    if (activeRole) {
+      setRoles(activeRole)
+    }
+  }, [profileData, gisuId, setGisu, setRoles])
+
+  const { data: schoolLinkData } = useCustomQuery(
+    schoolKeys.getSchoolLink(schoolId).queryKey,
+    schoolKeys.getSchoolLink(schoolId).queryFn,
+    {
+      enabled: !!schoolId,
+    },
+  )
   return (
     <header css={{ minWidth: '100vw', maxWidth: '100vw' }}>
       <S.Nav aria-label="Main Navigation">

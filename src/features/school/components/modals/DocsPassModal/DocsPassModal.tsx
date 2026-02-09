@@ -8,6 +8,7 @@ import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useGet
 import Close from '@/shared/assets/icons/close.svg?react'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
 import type { SelectionsSortType } from '@/shared/types/umc'
@@ -30,6 +31,8 @@ import * as S from './DocsPassModal.style'
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const { value: part, Dropdown } = usePartDropdown()
   const queryClient = useQueryClient()
+  const roleType = useUserProfileStore((state) => state.role?.roleType)
+  const canEdit = roleType === 'SCHOOL_PRESIDENT'
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [pendingDecisionById, setPendingDecisionById] = useState<
     Record<string, 'PASS' | 'FAIL' | null>
@@ -205,10 +208,11 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                       item={item}
                       checked={selectedIds.has(Number(item.applicationId))}
                       onToggle={handleToggleRow(Number(item.applicationId))}
-                      onPass={() => handlePatchStatus(item.applicationId, 'PASS')}
-                      onFail={() => handlePatchStatus(item.applicationId, 'FAIL')}
+                      onPass={() => canEdit && handlePatchStatus(item.applicationId, 'PASS')}
+                      onFail={() => canEdit && handlePatchStatus(item.applicationId, 'FAIL')}
                       isPassLoading={pendingDecision === 'PASS'}
                       isFailLoading={pendingDecision === 'FAIL'}
+                      isActionDisabled={!canEdit}
                     />
                   )
                 })}
@@ -243,6 +247,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                 variant="solid"
                 typo="B4.Sb"
                 css={{ width: '144px', height: '30px' }}
+                disabled={!canEdit}
                 onClick={() =>
                   selectedCount > 0 &&
                   (alreadyPassedCount > 0
