@@ -10,7 +10,7 @@ export const buildPreferredPartItem = (): RecruitingItem => ({
     type: 'PREFERRED_PART',
     questionText: PREFERRED_PART_TEXT,
     required: true,
-    orderNo: 1,
+    orderNo: '1',
   },
 })
 
@@ -20,7 +20,7 @@ export const buildScheduleItem = (): RecruitingItem => ({
     type: 'SCHEDULE',
     questionText: SCHEDULE_TEXT,
     required: true,
-    orderNo: 1,
+    orderNo: '1',
   },
 })
 
@@ -30,7 +30,7 @@ export const buildDefaultPage2Item = (): RecruitingItem => ({
     type: 'LONG_TEXT',
     questionText: '',
     required: true,
-    orderNo: 1,
+    orderNo: '1',
   },
 })
 
@@ -40,7 +40,7 @@ export const buildDefaultPartItem = (part: PartType): RecruitingItem => ({
     type: 'LONG_TEXT',
     questionText: '',
     required: true,
-    orderNo: 1,
+    orderNo: '1',
   },
 })
 

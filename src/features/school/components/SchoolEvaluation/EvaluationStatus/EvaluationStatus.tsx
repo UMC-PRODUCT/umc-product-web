@@ -1,20 +1,17 @@
+import { useGetDocumentEvaluationAnswers } from '@/features/school/hooks/useGetRecruitingData'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
 import * as S from './EvaluationStatus.style'
 
-const MOCK = [
-  { id: '1', score: '95', nickname: '닉네임1', name: '이름1', comment: '잘했어요' },
-  { id: '2', score: '88', nickname: '닉네임2', name: '이름2', comment: '보완이 필요해요' },
-  { id: '3', score: '92', nickname: '닉네임3', name: '이름3', comment: '좋아요' },
-]
-
 const EvaluationStatus = ({
-  selectedUserId: _selectedUserId,
+  selectedUserId,
+  recruitingId,
 }: {
   selectedUserId: string | null
+  recruitingId: string | null
 }) => {
-  // TODO: selectedUserId를 사용하여 해당 유저의 평가 현황 조회
+  const { data } = useGetDocumentEvaluationAnswers(recruitingId, selectedUserId)
   return (
     <Section
       variant="both"
@@ -27,17 +24,17 @@ const EvaluationStatus = ({
         <S.AverageScore>
           <span className="label">평균 점수</span>
           <div>
-            <span className="score">95.0</span>
+            <span className="score">{data?.result.avgDocScore ?? 0}</span>
             <span className="total">/100</span>
           </div>
         </S.AverageScore>
       </S.Header>
       <S.Content>
-        {MOCK.map((evaluation) => (
+        {data?.result.docEvaluationSummaries.map((evaluation) => (
           <Section
             height="fit-content"
             variant="solid"
-            key={evaluation.id}
+            key={evaluation.evaluatorMemberId}
             gap={3}
             padding={'10px 16px'}
             width={'100%'}
@@ -45,7 +42,7 @@ const EvaluationStatus = ({
             <S.Header>
               <S.Wrapper>
                 <S.Name>
-                  {evaluation.nickname}/{evaluation.name}
+                  {evaluation.evaluatorNickname}/{evaluation.evaluatorName}
                 </S.Name>
               </S.Wrapper>
               <S.Wrapper>
@@ -53,9 +50,12 @@ const EvaluationStatus = ({
                 <S.OtherTotalScore>/100</S.OtherTotalScore>
               </S.Wrapper>
             </S.Header>
-            <S.Comment>{evaluation.comment}</S.Comment>
+            <S.Comment>{evaluation.comments}</S.Comment>
           </Section>
         ))}
+        {data?.result.docEvaluationSummaries.length === 0 && (
+          <S.EmptyAnswer>아직 평가 내역이 없습니다.</S.EmptyAnswer>
+        )}
       </S.Content>
     </Section>
   )

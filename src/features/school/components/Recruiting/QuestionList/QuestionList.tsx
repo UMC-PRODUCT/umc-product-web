@@ -99,12 +99,12 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   useEffect(() => {
     filteredIndices.forEach((itemIndex, orderIndex) => {
       const item = normalizedItems[itemIndex]
-      if (item.question.orderNo === orderIndex + 1) return
+      if (Number(item.question.orderNo) === orderIndex + 1) return
       update(itemIndex, {
         ...item,
         question: {
           ...item.question,
-          orderNo: orderIndex + 1,
+          orderNo: String(orderIndex + 1),
         },
       })
     })
@@ -112,7 +112,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
 
   const handleAddQuestion = () => {
     if (isLocked) return
-    const orderNo = filteredIndices.length + 1
+    const orderNo = String(filteredIndices.length + 1)
     const newItem: RecruitingForms['items'][number] = {
       target,
       question: {

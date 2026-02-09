@@ -112,11 +112,11 @@ const PreferredPartQuestionCard = ({
       </Flex>
       <Flex alignItems="center" gap={8}>
         <Checkbox
-          checked={maxPreferredField.value === 1}
+          checked={String(maxPreferredField.value) === '1'}
           disabled={isLocked}
           onCheckedChange={(checked) => {
             if (isLocked) return
-            maxPreferredField.onChange(checked ? 1 : 2)
+            maxPreferredField.onChange(checked ? '1' : '2')
           }}
         />
         <S.Body>1지망만 입력받기</S.Body>

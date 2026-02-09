@@ -1,7 +1,7 @@
 import { applyKeys } from '@/features/apply/domain/queryKeys'
 import type { PartType } from '@/features/auth/domain'
-import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
-import type { RecruitmentStatusType } from '@/shared/types/umc'
+import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import type { FinalSelectionsSortType, RecruitmentStatusType } from '@/shared/types/umc'
 
 import { schoolKeys } from '../domain/queryKeys'
 
@@ -38,7 +38,7 @@ export const useGetRecruitmentDashboard = (recruitingId: string) => {
 export const useGetDocumentAllApplicants = (
   recruitingId: string,
   params: {
-    part: PartType
+    part: PartType | 'ALL'
     keyword: string
     page: string
     size: string
@@ -46,4 +46,53 @@ export const useGetDocumentAllApplicants = (
 ) => {
   const { queryKey, queryFn } = applyKeys.getDocsEvaluationApplicants(recruitingId, params)
   return useCustomSuspenseQuery(queryKey, queryFn)
+}
+
+export const useGetDocumentSelectedApplicants = (
+  recruitingId: string,
+  params: {
+    part: PartType
+    page: string
+    size: string
+    sort: FinalSelectionsSortType
+  },
+) => {
+  const { queryKey, queryFn } = schoolKeys.getAllDocumentSelectedApplicants(recruitingId, params)
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}
+
+export const useGetDocumentEvaluationApplication = (recruitingId: string, applicantId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplication(
+    recruitingId,
+    applicantId,
+  )
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}
+
+export const useGetDocumentEvaluationAnswers = (
+  recruitingId?: string | null,
+  applicantId?: string | null,
+) => {
+  const resolvedRecruitingId = recruitingId ?? ''
+  const resolvedApplicantId = applicantId ?? ''
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationAnswers(
+    resolvedRecruitingId,
+    resolvedApplicantId,
+  )
+  const enabled = Boolean(recruitingId) && Boolean(applicantId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
+}
+
+export const useGetDocumentEvaluationAnswerMe = (
+  recruitingId: string | null,
+  applicantId: string | null,
+) => {
+  const resolvedRecruitingId = recruitingId ?? ''
+  const resolvedApplicantId = applicantId ?? ''
+  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationAnswerMe(
+    resolvedRecruitingId,
+    resolvedApplicantId,
+  )
+  const enabled = Boolean(recruitingId) && Boolean(applicantId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
 }

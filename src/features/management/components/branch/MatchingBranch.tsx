@@ -10,8 +10,8 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import { useGisuDropdown } from '../../../../shared/hooks/useManagedDropdown'
 import type { Branch, ChapterType, UniversitySimple } from '../../domain/model'
-import { useGisuDropdown } from '../../hooks/useManagedDropdown'
 import { useManagementMutations } from '../../hooks/useManagementMutations'
 import {
   useGetGisuChapterWithSchools,

@@ -206,3 +206,19 @@ export type GetAllDocsApplicantsResponseDTO = {
     totalElements: string
   }
 }
+export type PatchDocsMyEvaluationResponseDTO = {
+  myEvaluation: MyEvaluation | null
+}
+
+export type MyEvaluation = {
+  applicationId: string
+  evaluationId: string
+  score: string
+  comments: string
+  submitted: boolean
+  savedAt: string
+}
+
+export type GetDocsMyEvaluationResponseDTO = {
+  myEvaluation: MyEvaluation | null
+}

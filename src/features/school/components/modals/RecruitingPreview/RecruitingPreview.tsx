@@ -38,14 +38,7 @@ export const RecruitingPreviewContent = ({
   }
 
   return (
-    <S.ModalContentWrapper
-      css={{
-        backgroundColor: theme.colors.black,
-        boxShadow: '0 8px 20px 0 rgba(0, 0, 0, 0.70)',
-      }}
-      flexDirection="column"
-      width={'fit-content'}
-    >
+    <S.ModalContentWrapper>
       <Modal.Header>
         <Flex
           justifyContent="space-between"
@@ -67,12 +60,7 @@ export const RecruitingPreviewContent = ({
         </Flex>
       </Modal.Header>
       <Modal.Body>
-        <S.ContentWrapper
-          flexDirection="column"
-          justifyContent="flex-start"
-          alignItems="center"
-          gap={22}
-        >
+        <S.ContentWrapper>
           <ResumeContent
             pages={resolvedPages}
             displayLastSavedTime={null}

@@ -4,6 +4,7 @@ import {
   deleteOption,
   deleteRecruitment,
   deleteSingleQuestion,
+  patchMyDocumentEvaluationAnswer,
   patchPublishedRecruitment,
   patchTempSavedRecruitQuestions,
   patchTempSaveRecruitment,
@@ -57,6 +58,13 @@ export function useRecruitingMutation() {
       deleteOption({ recruitmentId, questionId, optionId }),
     )
   }
+
+  function usePatchDocsEvaluationAnswerMe(recruitmentId: string, applicantId: string) {
+    return useCustomMutation(
+      (answers: { action: 'DRAFT_SAVE' | 'SUBMIT'; score: string; comments: string }) =>
+        patchMyDocumentEvaluationAnswer(recruitmentId, applicantId, answers),
+    )
+  }
   return {
     usePostFirstRecruitment,
     usePatchTempSaveRecruitment,
@@ -66,5 +74,6 @@ export function useRecruitingMutation() {
     usePostPublishRecruitment,
     usePatchPublishedRecruitment,
     useDeleteQuestionOption,
+    usePatchDocsEvaluationAnswerMe,
   }
 }

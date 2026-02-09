@@ -31,7 +31,7 @@ const Step5 = ({
       const pageNoA = itemPageNo(a)
       const pageNoB = itemPageNo(b)
       if (pageNoA !== pageNoB) return pageNoA - pageNoB
-      return a.question.orderNo - b.question.orderNo
+      return Number(a.question.orderNo) - Number(b.question.orderNo)
     })
 
   const partItems = formData.items
@@ -40,7 +40,7 @@ const Step5 = ({
       const partA = itemPartKey(a)
       const partB = itemPartKey(b)
       if (partA !== partB) return partA.localeCompare(partB)
-      return a.question.orderNo - b.question.orderNo
+      return Number(a.question.orderNo) - Number(b.question.orderNo)
     })
 
   function itemPageNo(item: RecruitingItem) {

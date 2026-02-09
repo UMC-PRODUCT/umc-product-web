@@ -1,13 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import type { PartType } from '@/features/auth/domain'
-import { PART_CONFIG, PART_LIST } from '@/features/auth/domain/constants'
 import { useGetDocumentAllApplicants } from '@/features/school/hooks/useGetRecruitingData'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import Search from '@/shared/assets/icons/search.svg?react'
+import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import { theme } from '@/shared/styles/theme'
+import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
@@ -18,17 +17,16 @@ const ApplicantListContent = ({
   selectedUserId,
   setSelectedUserId,
   recruitmentId,
+  onSummaryChange,
 }: {
   recruitmentId: string
   selectedUserId: string | null
   setSelectedUserId: (selectedUserId: string | null) => void
+  onSummaryChange?: (summary: { totalCount: string; evaluatedCount: string }) => void
 }) => {
   const [keyword, setKeyword] = useState('')
-  const [selectedPart, setSelectedPart] = useState<PartType>(PART_LIST[0])
-  const partOptions = useMemo(
-    () => PART_LIST.map((part) => ({ id: part, label: PART_CONFIG[part].label })),
-    [],
-  )
+  const { value, Dropdown } = usePartDropdown()
+  const selectedPart = (value?.id as PartType | undefined) ?? 'ALL'
 
   const { data } = useGetDocumentAllApplicants(recruitmentId, {
     part: selectedPart,
@@ -41,6 +39,15 @@ const ApplicantListContent = ({
   const summary = data.result.summary
   const totalCount = summary.totalCount
   const evaluatedCount = summary.evaluatedCount
+
+  useEffect(() => {
+    if (selectedUserId || applicants.length === 0) return
+    setSelectedUserId(applicants[0].applicationId)
+  }, [applicants, selectedUserId, setSelectedUserId])
+
+  useEffect(() => {
+    onSummaryChange?.({ totalCount, evaluatedCount })
+  }, [onSummaryChange, totalCount, evaluatedCount])
 
   return (
     <Section variant="solid" padding={'16px'} gap={'12px'}>
@@ -62,14 +69,7 @@ const ApplicantListContent = ({
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
         />
-        <Dropdown
-          placeholder="전체 파트"
-          options={partOptions}
-          value={partOptions.find((option) => option.id === selectedPart)}
-          onChange={(option) => setSelectedPart(option.id as PartType)}
-          className="dropdown"
-          css={{ maxHeight: '40px', ...theme.typography.B4.Rg }}
-        />
+        <>{Dropdown}</>
       </S.FilterWrapper>
 
       <S.ListContainer>
@@ -109,10 +109,12 @@ const ApplicantList = ({
   selectedUserId,
   setSelectedUserId,
   recruitmentId,
+  onSummaryChange,
 }: {
   recruitmentId: string
   selectedUserId: string | null
   setSelectedUserId: (selectedUserId: string | null) => void
+  onSummaryChange?: (summary: { totalCount: string; evaluatedCount: string }) => void
 }) => {
   return (
     <AsyncBoundary fallback={<SuspenseFallback label="지원자 목록을 불러오는 중입니다." />}>
@@ -120,6 +122,7 @@ const ApplicantList = ({
         recruitmentId={recruitmentId}
         selectedUserId={selectedUserId}
         setSelectedUserId={setSelectedUserId}
+        onSummaryChange={onSummaryChange}
       />
     </AsyncBoundary>
   )

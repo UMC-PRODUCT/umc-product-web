@@ -102,8 +102,20 @@ export const useRecruitingContentLogic = ({
     const result = applicationData.result
     if (!result.pages.length) return
     const nextItems = convertApplicationFormToItems(result)
+    const preferredQuestion = result.pages
+      .flatMap((page) => page.questions ?? [])
+      .find((question) => question.type === 'PREFERRED_PART')
+    const nextMaxPreferredCount = preferredQuestion?.maxSelectCount
+      ? Number(preferredQuestion.maxSelectCount)
+      : undefined
     form.reset(
-      { ...form.getValues(), items: nextItems },
+      {
+        ...form.getValues(),
+        items: nextItems,
+        ...(nextMaxPreferredCount
+          ? { maxPreferredPartCount: nextMaxPreferredCount.toString() }
+          : {}),
+      },
       { keepErrors: true, keepTouched: true, keepDirty: false },
     )
   }, [form, applicationData.result])

@@ -358,12 +358,12 @@ const itemQuestionSchema = z.object({
   type: z.string(),
   questionText: z.string(),
   required: z.boolean(),
-  orderNo: z.number(),
+  orderNo: z.string(),
   options: z
     .array(
       z.object({
         content: z.string(),
-        orderNo: z.number(),
+        orderNo: z.string(),
         optionId: z.string().optional(),
       }),
     )
@@ -437,7 +437,7 @@ export const recruitingFormSchema = withDateOrderRules(
   z.object({
     title: step1Schema.shape.title,
     recruitmentParts: step1Schema.shape.recruitmentParts,
-    maxPreferredPartCount: z.number().min(1),
+    maxPreferredPartCount: z.string().min(1),
     schedule: z.object({
       applyStartAt: baseScheduleSchema.shape.applyStartAt.nullable(),
       applyEndAt: baseScheduleSchema.shape.applyEndAt.nullable(),

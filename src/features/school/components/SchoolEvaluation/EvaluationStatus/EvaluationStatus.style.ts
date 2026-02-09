@@ -70,3 +70,9 @@ export const Name = styled.span`
   ${theme.typography.B5.Md};
   color: ${theme.colors.white};
 `
+export const EmptyAnswer = styled.div`
+  ${theme.typography.B4.Rg};
+  color: ${theme.colors.gray[500]};
+  text-align: center;
+  margin-top: 40px;
+`

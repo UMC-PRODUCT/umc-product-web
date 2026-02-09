@@ -1,9 +1,14 @@
 import { useMemo, useState } from 'react'
 
+import { PART_LIST, PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import type { Option } from '@/shared/types/form'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
-import { useGetAllGisu, useGetAllSchools, useGetChapters } from './useManagementQueries'
+import {
+  useGetAllGisu,
+  useGetAllSchools,
+  useGetChapters,
+} from '../../features/management/hooks/useManagementQueries'
 
 type UseManagedDropdownConfig = {
   placeholder?: string
@@ -177,6 +182,56 @@ export const useGisuDropdown = (
         placeholder={placeholder}
         value={selectedValue}
         disabled={isLoading}
+        onChange={(option) =>
+          setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
+        }
+      />
+    ),
+  }
+}
+
+export const usePartDropdown = (
+  config: UseManagedDropdownConfig = {},
+): UseManagedDropdownResult => {
+  const {
+    placeholder = '전체 파트',
+    includeAllOption = true,
+    allLabel = '-- 전체 파트 --',
+    defaultToFirst = false,
+  } = config
+  const [value, setValueState] = useState<Option<string> | undefined>()
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const options = useMemo(
+    () =>
+      buildOptions(
+        [...PART_LIST],
+        (part) => PART_TYPE_TO_SMALL_PART[part],
+        (part) => part,
+        allLabel,
+        includeAllOption,
+      ),
+    [allLabel, includeAllOption],
+  )
+  const defaultValue = useMemo(() => {
+    if (!defaultToFirst || options.length === 0) return undefined
+    return options.find((option) => option.id !== ALL_ID)
+  }, [defaultToFirst, options])
+  const selectedValue = !hasUserSelected && value === undefined ? defaultValue : value
+  const setValue = (next: Option<string> | undefined) => {
+    setHasUserSelected(true)
+    setValueState(next)
+  }
+
+  return {
+    value: selectedValue,
+    setValue,
+    options,
+    Dropdown: (
+      <Dropdown
+        options={options}
+        placeholder={placeholder}
+        value={selectedValue}
+        disabled={false}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }

@@ -69,7 +69,7 @@ export interface ResumeFormSectionProps {
 export interface RecruitingForms {
   title: string
   recruitmentParts: Array<PartType>
-  maxPreferredPartCount: number
+  maxPreferredPartCount: string
   schedule: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus
@@ -128,7 +128,7 @@ export type RecruitingItemTarget = {
 
 export type RecruitingItemOption = {
   content: string
-  orderNo: number
+  orderNo: string
   optionId?: string
   isOther?: boolean
 }
@@ -138,7 +138,7 @@ export type RecruitingItemQuestion = {
   type: RecruitingItemQuestionType
   questionText: string
   required: boolean
-  orderNo: number
+  orderNo: string
   options?: Array<RecruitingItemOption>
 }
 

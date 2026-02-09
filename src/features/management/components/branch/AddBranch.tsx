@@ -6,7 +6,7 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import { useGisuDropdown } from '../../hooks/useManagedDropdown'
+import { useGisuDropdown } from '../../../../shared/hooks/useManagedDropdown'
 import { useGetGisuChapterWithSchools } from '../../hooks/useManagementQueries'
 import AddBranchModal from '../modals/AddBranchModal/AddBranchModal'
 import DeleteBranchConfirm from '../modals/DeleteBranchConfirm/DeleteBranchConfirm'

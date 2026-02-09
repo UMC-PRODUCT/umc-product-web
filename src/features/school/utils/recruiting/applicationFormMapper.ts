@@ -5,13 +5,13 @@ import type { RecruitingItem } from '@/shared/types/form'
 
 const toRecruitingItemOptions = (
   options:
-    | Array<{ content: string; orderNo?: number; optionId?: string; isOther?: boolean }>
+    | Array<{ content: string; orderNo?: string; optionId?: string; isOther?: boolean }>
     | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
     content: option.content,
-    orderNo: option.orderNo ?? fallbackOrder + index + 1,
+    orderNo: String(option.orderNo ?? fallbackOrder + index + 1),
     optionId: option.optionId,
     isOther: option.isOther ?? isOtherOptionContent(option.content),
   })) ?? []
@@ -22,7 +22,7 @@ const buildRecruitingItemFromQuestion = (
     type: string
     questionText: string
     required: boolean
-    options?: Array<{ content: string; orderNo?: number; optionId?: string }>
+    options?: Array<{ content: string; orderNo?: string; optionId?: string }>
   },
   target:
     | { kind: 'COMMON_PAGE'; pageNo: number }
@@ -35,7 +35,7 @@ const buildRecruitingItemFromQuestion = (
     type: question.type as RecruitingItem['question']['type'],
     questionText: question.questionText,
     required: question.required,
-    orderNo: orderIndex + 1,
+    orderNo: String(orderIndex + 1),
     options: toRecruitingItemOptions(question.options, orderIndex),
   },
 })

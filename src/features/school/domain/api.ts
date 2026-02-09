@@ -1,16 +1,23 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import type {
+  GetApplicationsAnswerResponseDTO,
+  GetDocumentEvaluationApplicationResponseDTO,
+} from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { FinalSelectionsSortType } from '@/shared/types/umc'
 
 import type {
   DeleteSingleQuestionResponseDTO,
   GetAllDocsApplicantsResponseDTO,
   GetApplicationFormResponseDTO,
   GetDashboardResponseDTO,
+  GetDocsMyEvaluationResponseDTO,
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
   GetTempSavedRecruitmentResponseDTO,
+  PatchDocsMyEvaluationResponseDTO,
   patchPublishedRecruitmentRequestDTO,
   PatchTempSavedRecruitQuestionsRequestDTO,
   PatchTempSavedRecruitQuestionsResponseDTO,
@@ -142,17 +149,83 @@ export const deleteOption = async ({
 export const getDocumentAllApplicants = async (
   recruitmentId: string,
   params: {
-    part: PartType
+    part: PartType | 'ALL'
     keyword: string
     page: string
     size: string
   },
 ): Promise<CommonResponseDTO<GetAllDocsApplicantsResponseDTO>> => {
+  const { part, ...restParams } = params
+  const requestParams = part === 'ALL' ? restParams : { ...restParams, part }
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/applications/document-evaluations`,
     {
+      params: requestParams,
+    },
+  )
+  return data
+}
+
+export const getDocumentEvaluationApplication = async (
+  recruitmentId: string,
+  applicationId: string,
+): Promise<CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluation`,
+  )
+  return data
+}
+
+export const getDocumentEvaluationAnswers = async (
+  recruitmentId: string,
+  applicationId: string,
+): Promise<CommonResponseDTO<GetApplicationsAnswerResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations`,
+  )
+  return data
+}
+
+export const getDocumentEvaluationAnswerMe = async (
+  recruitmentId: string,
+  applicationId: string,
+): Promise<CommonResponseDTO<GetDocsMyEvaluationResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations/me`,
+  )
+  return data
+}
+
+export const getDocumentSelectedApplicants = async (
+  recruitmentId: string,
+  params: {
+    part: PartType
+    page: string
+    size: string
+    sort: FinalSelectionsSortType
+  },
+): Promise<CommonResponseDTO<GetAllDocsApplicantsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/document-selections`,
+    {
       params,
     },
+  )
+  return data
+}
+
+export const patchMyDocumentEvaluationAnswer = async (
+  recruitmentId: string,
+  applicationId: string,
+  requestBody: {
+    score: string
+    comments: string
+    action: 'DRAFT_SAVE' | 'SUBMIT'
+  },
+): Promise<CommonResponseDTO<PatchDocsMyEvaluationResponseDTO>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/document-evaluations/me`,
+    requestBody,
   )
   return data
 }

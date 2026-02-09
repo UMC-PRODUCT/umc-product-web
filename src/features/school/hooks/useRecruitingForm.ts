@@ -16,7 +16,7 @@ import {
 const defaultValues: RecruitingForms = {
   title: '',
   recruitmentParts: [],
-  maxPreferredPartCount: 2,
+  maxPreferredPartCount: '2',
   schedule: {
     applyStartAt: null,
     applyEndAt: null,

@@ -4,16 +4,16 @@ import Arrow from '@shared/assets/icons/arrow.svg?react'
 
 import type { PartType } from '@/features/auth/domain'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
-import {
-  useChapterDropdown,
-  useGisuDropdown,
-  useSchoolDropdown,
-} from '@/features/management/hooks/useManagedDropdown'
 import { ACCOUNT_DELETE_MOCK } from '@/features/management/mocks/managementMocks'
 import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
 import Search from '@/shared/assets/icons/search.svg?react'
 import useFilterOptions from '@/shared/hooks/useFilterOptions'
+import {
+  useChapterDropdown,
+  useGisuDropdown,
+  useSchoolDropdown,
+} from '@/shared/hooks/useManagedDropdown'
 import * as S from '@/shared/styles/shared'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Dropdown } from '@/shared/ui/common/Dropdown'

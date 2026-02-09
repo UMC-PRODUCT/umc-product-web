@@ -190,6 +190,56 @@ export type GetApplicationAnswerResponseDTO = {
   submittedAt: string | null
   answers: Array<AnswerItem>
 }
+
+export type DocumentEvaluationQuestionOption = {
+  optionId: string
+  content: string
+  isOther: boolean
+}
+
+export type DocumentEvaluationAnswer = {
+  answeredAsType: string
+  displayText: string | null
+  rawValue: Record<string, unknown>
+}
+
+export type DocumentEvaluationQuestion = {
+  questionId: string
+  orderNo: string
+  type:
+    | 'PREFERRED_PART'
+    | 'SCHEDULE'
+    | 'LONG_TEXT'
+    | 'SHORT_TEXT'
+    | 'RADIO'
+    | 'CHECKBOX'
+    | 'PORTFOLIO'
+    | 'DROPDOWN'
+  questionText: string
+  required: boolean
+  options: Array<DocumentEvaluationQuestionOption>
+  answer: DocumentEvaluationAnswer | null
+}
+
+export type DocumentEvaluationFormPage = {
+  pageNo: string
+  questions: Array<DocumentEvaluationQuestion>
+  partQuestions: Array<{
+    part: string
+    questions: Array<DocumentEvaluationQuestion>
+  }>
+}
+
+export type GetDocumentEvaluationApplicationResponseDTO = {
+  applicationId: string
+  status: string
+  applicant: {
+    memberId: string
+    name: string
+    nickname: string
+  }
+  formPages: Array<DocumentEvaluationFormPage>
+}
 /** 일정 조회 응답 */
 export type GetRecruitmentSchedulesResponseDTO = {
   recruitmentId: string
@@ -338,4 +388,19 @@ export type PatchApplicationAnswerRequestDTO = {
 export type PatchApplicationAnswerResponseDTO = {
   formResponseId: string
   savedQuestionIds: Array<string>
+}
+
+export type GetApplicationsAnswerResponseDTO = {
+  recruitmentId: string
+  applicationId: string
+  avgDocScore: string
+  docEvaluationSummaries: Array<DocEvaluationSummary>
+}
+
+export type DocEvaluationSummary = {
+  evaluatorMemberId: string
+  evaluatorName: string
+  evaluatorNickname: string
+  score: string
+  comments: string
 }

@@ -10,7 +10,7 @@ import type {
 
 export type QuestionOption = {
   content: string
-  orderNo: number
+  orderNo: string
   isOther?: boolean
 }
 
@@ -26,7 +26,7 @@ export type InterviewTimeTableWithDisabled = RecruitingInterviewTimeTable & {
 export type RecruitingDraft = {
   title: string
   recruitmentParts: Array<PartType>
-  maxPreferredPartCount: number
+  maxPreferredPartCount: string
   schedule?: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus
@@ -37,7 +37,7 @@ export interface ApplicationFormQuestion {
   type: QuestionType
   questionText: string
   required: boolean
-  orderNo: number
+  orderNo: string
   options?: Array<QuestionOption>
 }
 

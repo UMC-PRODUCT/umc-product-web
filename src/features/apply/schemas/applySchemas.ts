@@ -7,7 +7,7 @@ export const createPartValidation = (question: FormQuestion) => (value: unknown)
   const selections = Array.isArray(value) ? value : []
   const first = selections.find((item) => item?.id === 1)?.answer
   const second = selections.find((item) => item?.id === 2)?.answer
-  const maxSelectCountValue = Number(question.maxSelectCount ?? 1)
+  const maxSelectCountValue = Number(question.maxSelectCount ?? '1')
   const requiredCount = Math.max(!Number.isNaN(maxSelectCountValue) ? maxSelectCountValue : 1, 1)
 
   if (question.required) {

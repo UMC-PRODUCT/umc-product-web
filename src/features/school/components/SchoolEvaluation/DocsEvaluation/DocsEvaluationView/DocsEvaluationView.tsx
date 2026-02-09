@@ -4,9 +4,8 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 
 import * as Shared from '@shared/styles/shared'
 
-// import { useGetApplicationAnswer } from '@/features/apply/hooks/useGetApplicationQuery'
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
-import { answers } from '@/features/school/mocks/application'
+import { useGetDocumentEvaluationApplication } from '@/features/apply/hooks/useGetApplicationQuery'
+// import { answers } from '@/features/school/mocks/application'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -26,10 +25,12 @@ import * as S from './DocsEvaluationView.style'
 const DocsEvaluationContent = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [modal, setModal] = useState(false)
+  const [summary, setSummary] = useState<{ totalCount: string; evaluatedCount: string } | null>(
+    null,
+  )
   const { recruitmentId } = useParams({ from: '/(app)/school/evaluation/$recruitmentId/' })
-  // const { data } = useGetApplicationAnswer()
-  const { data: questionData } = useGetApplicationFormData(recruitmentId)
-  const data = answers
+  const { data: answerData } = useGetDocumentEvaluationApplication(recruitmentId, selectedUserId)
+
   const navigate = useNavigate()
   return (
     <>
@@ -38,10 +39,12 @@ const DocsEvaluationContent = () => {
           <Shared.TabTitle>지원서 평가</Shared.TabTitle>
         </Shared.TabHeader>
         <Flex width={'fit-content'} gap={16}>
-          <S.Button onClick={() => setModal(true)}>
-            <span>서류 합격 처리</span>
-            <ArrowUp width={22} height={22} color={theme.colors.white} />
-          </S.Button>
+          {summary && summary.totalCount === summary.evaluatedCount && (
+            <S.Button onClick={() => setModal(true)}>
+              <span>서류 합격 처리</span>
+              <ArrowUp width={22} height={22} color={theme.colors.white} />
+            </S.Button>
+          )}
           <Button
             typo="B4.Md"
             tone="lime"
@@ -61,6 +64,7 @@ const DocsEvaluationContent = () => {
           recruitmentId={recruitmentId}
           selectedUserId={selectedUserId}
           setSelectedUserId={setSelectedUserId}
+          onSummaryChange={setSummary}
         />
         <Section
           variant="solid"
@@ -70,7 +74,7 @@ const DocsEvaluationContent = () => {
           css={{ overflowY: 'hidden', boxSizing: 'border-box' }}
         >
           <div css={RightSection}>
-            <ApplicationView data={data} questions={questionData.result} />
+            <ApplicationView data={answerData?.result} />
             <div
               css={{
                 display: 'grid',
@@ -81,7 +85,7 @@ const DocsEvaluationContent = () => {
                 gridTemplateRows: '1fr 1fr',
               }}
             >
-              <EvaluationStatus selectedUserId={selectedUserId} />
+              <EvaluationStatus selectedUserId={selectedUserId} recruitingId={recruitmentId} />
               <MyEvaluation selectedUserId={selectedUserId} />
             </div>
           </div>

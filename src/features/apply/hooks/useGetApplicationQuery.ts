@@ -1,4 +1,6 @@
-import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import type { GetDocumentEvaluationApplicationResponseDTO } from '@/features/apply/domain/model'
+import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import type { CommonResponseDTO } from '@/shared/types/api'
 
 import { getActiveRecruitmentId } from '../domain/api'
 import { applyKeys } from '../domain/queryKeys'
@@ -48,7 +50,7 @@ export function useGetApplicationQuestions(recruitmentId: string) {
 }
 
 export function useGetApplicationAnswer(recruitmentId: string, formId: string) {
-  return useCustomSuspenseQuery(
+  return useCustomQuery(
     applyKeys.getApplicationAnswer(recruitmentId, formId).queryKey,
     applyKeys.getApplicationAnswer(recruitmentId, formId).queryFn,
   )
@@ -78,4 +80,37 @@ export function useGetMyApplicationStatus(recruitmentId: string) {
     applyKeys.getMyApplicationStatus(recruitmentId).queryKey,
     applyKeys.getMyApplicationStatus(recruitmentId).queryFn,
   )
+}
+
+type DocumentEvaluationApplicationQueryKey = ReturnType<
+  typeof applyKeys.getDocumentEvaluationApplication
+>['queryKey']
+type DocumentEvaluationApplicationResponse =
+  CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>
+type DocumentEvaluationApplicationOptions = Parameters<
+  typeof useCustomQuery<
+    DocumentEvaluationApplicationResponse,
+    unknown,
+    DocumentEvaluationApplicationResponse,
+    DocumentEvaluationApplicationQueryKey
+  >
+>[2]
+
+export function useGetDocumentEvaluationApplication(
+  recruitmentId: string,
+  applicantId?: string | null,
+  options?: DocumentEvaluationApplicationOptions,
+) {
+  const resolvedApplicantId = applicantId ?? ''
+  const { queryKey, queryFn } = applyKeys.getDocumentEvaluationApplication(
+    recruitmentId,
+    resolvedApplicantId,
+  )
+  const enabled = options?.enabled ?? Boolean(applicantId)
+  return useCustomQuery<
+    DocumentEvaluationApplicationResponse,
+    unknown,
+    DocumentEvaluationApplicationResponse,
+    DocumentEvaluationApplicationQueryKey
+  >(queryKey, queryFn, { ...options, enabled })
 }

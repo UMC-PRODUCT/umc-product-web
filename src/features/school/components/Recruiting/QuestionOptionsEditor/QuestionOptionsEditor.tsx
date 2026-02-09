@@ -63,7 +63,7 @@ const getDuplicateOptionMessage = (options: Array<RecruitingItemOption>) => {
 
 const annotateOption = (option: RecruitingItemOption, index: number) => ({
   ...option,
-  orderNo: index + 1,
+  orderNo: String(index + 1),
   isOther: option.isOther ?? isOtherOptionContent(option.content),
 })
 
@@ -92,7 +92,7 @@ const QuestionOptionsEditor = ({
     if (typeof option === 'string') {
       return {
         content: option,
-        orderNo: index + 1,
+        orderNo: String(index + 1),
         isOther: isOtherOptionContent(option),
       }
     }
@@ -107,7 +107,7 @@ const QuestionOptionsEditor = ({
   useEffect(() => {
     if (isLocked) return
     if (normalizedOptions.length === 0) {
-      field.onChange([{ content: '', orderNo: 1 }])
+      field.onChange([{ content: '', orderNo: '1' }])
       return
     }
     if (JSON.stringify(normalizedOptions) !== JSON.stringify(options)) {
@@ -119,8 +119,8 @@ const QuestionOptionsEditor = ({
     if (isLocked) return
     const next = normalizedOptions.map((option, optionIndex) =>
       optionIndex === index
-        ? { ...option, content: event.target.value, orderNo: optionIndex + 1 }
-        : { ...option, orderNo: optionIndex + 1 },
+        ? { ...option, content: event.target.value, orderNo: String(optionIndex + 1) }
+        : { ...option, orderNo: String(optionIndex + 1) },
     )
     field.onChange(normalizeOptions(next))
   }
@@ -133,7 +133,7 @@ const QuestionOptionsEditor = ({
     }
     const next = normalizedOptions
       .filter((_, i) => i !== index)
-      .map((option, optionIndex) => ({ ...option, orderNo: optionIndex + 1 }))
+      .map((option, optionIndex) => ({ ...option, orderNo: String(optionIndex + 1) }))
     field.onChange(normalizeOptions(next))
   }
 
@@ -142,7 +142,7 @@ const QuestionOptionsEditor = ({
     field.onChange(
       normalizeOptions([
         ...normalizedOptions,
-        { content: '', orderNo: normalizedOptions.length + 1 },
+        { content: '', orderNo: String(normalizedOptions.length + 1) },
       ]),
     )
     onAppendOption?.()
@@ -157,7 +157,7 @@ const QuestionOptionsEditor = ({
         ...normalizedOptions,
         {
           content: OTHER_OPTION_LABEL,
-          orderNo: normalizedOptions.length + 1,
+          orderNo: String(normalizedOptions.length + 1),
           isOther: true,
         },
       ]),
