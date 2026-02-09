@@ -1,3 +1,8 @@
+import type {
+  FileUploadAnswer,
+  GetRecruitmentApplicationAnswerResponseDTO,
+  preferredPartAnswer,
+} from '@/features/apply/domain/model'
 import type { PartType } from '@/features/auth/domain'
 import type {
   FormPage,
@@ -6,17 +11,15 @@ import type {
   RecruitmentApplicationForm,
 } from '@/shared/types/form'
 
-import type {
-  FileUploadAnswer,
-  GetRecruitmentApplicationAnswerResponseDTO,
-  preferredPartAnswer,
-} from '../domain/model'
-import { isOptionAnswerValue } from './optionAnswer'
+import { isOptionAnswerValue } from './answerUtils'
 
 export type ResumeFormValues = Record<string, unknown>
 
 type DefaultQuestion = FormQuestion | NonNullable<FormPage['scheduleQuestion']>
 
+/**
+ * 지원서 질문/답변 데이터를 기준으로 폼 기본값을 생성합니다.
+ */
 export function buildDefaultValuesFromQuestions(
   questionData: RecruitmentApplicationForm,
   answerData?: GetRecruitmentApplicationAnswerResponseDTO,

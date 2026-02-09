@@ -74,7 +74,6 @@ export const Avatar = styled(Icon)({
 
 export const NameText = styled.span({
   color: theme.colors.white,
-  marginTop: '30px',
   wordBreak: 'keep-all',
   ...theme.typography.B3.Md,
   [media.down(theme.breakPoints.tablet)]: {

@@ -147,15 +147,18 @@ const Step2 = ({
 
   useEffect(() => {
     if (interviewDates.length === 0) return
-    const hasEmptyDate = interviewDates.some((date) => {
+    const startDate = interviewDates[0]
+    const endDate = interviewDates[interviewDates.length - 1]
+    const hasNoTimesOnDate = (date: string) => {
       const targetSlot = enabledSlots.find((slot) => slot.date === date)
       const slotsForDate = targetSlot?.times ?? []
       return slotsForDate.length === 0
-    })
+    }
+    const hasEmptyDate = hasNoTimesOnDate(startDate) || hasNoTimesOnDate(endDate)
     updateErrorState(
       'schedule.interviewTimeTable.enabledByDate',
       hasEmptyDate,
-      '모든 면접 날짜에 최소 1개의 시간을 선택해 주세요.',
+      '시작일과 마지막일에는 최소 1개의 시간을 선택해 주세요.',
     )
   }, [enabledSlots, interviewDates, updateErrorState])
 

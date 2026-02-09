@@ -2,10 +2,9 @@ import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 
 import type { GetRecruitmentApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
+import type { ResumeFormValues } from '@/features/apply/utils'
+import { buildDefaultValuesFromQuestions } from '@/features/apply/utils'
 import type { RecruitmentApplicationForm } from '@/shared/types/form'
-
-import { buildDefaultValuesFromQuestions } from '../../../utils'
-import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
 /**
  * 폼 초기 설정을 담당하는 훅

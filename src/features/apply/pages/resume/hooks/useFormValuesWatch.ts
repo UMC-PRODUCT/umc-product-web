@@ -2,10 +2,9 @@ import { useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
 
+import type { ResumeFormValues } from '@/features/apply/utils'
+import { resolvePagesWithSlots } from '@/features/apply/utils'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
-
-import { resolvePagesWithSlots } from '../../../utils'
-import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
 /**
  * 폼 값 변화를 감시하고 동적 페이지를 해석하는 훅

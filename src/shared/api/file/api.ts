@@ -51,14 +51,22 @@ export const realUploadFile = async (
   contentType: string,
   onProgress?: (progress: number) => void,
 ): Promise<void> => {
-  await axios.put(uploadUrl, file, {
-    headers: {
-      'Content-Type': contentType,
-    },
-    onUploadProgress: (event) => {
-      if (!event.total) return
-      const nextProgress = Math.min(Math.round((event.loaded / event.total) * 100), 100)
-      onProgress?.(nextProgress)
-    },
-  })
+  console.log('PUT Content-Type =', contentType, 'file.type =', file.type)
+  try {
+    await axios.put(uploadUrl, file, {
+      headers: {
+        'Content-Type': contentType,
+      },
+      onUploadProgress: (event) => {
+        if (!event.total) return
+        const nextProgress = Math.min(Math.round((event.loaded / event.total) * 100), 100)
+        onProgress?.(nextProgress)
+      },
+    })
+  } catch (e: any) {
+    console.log('status', e?.response?.status)
+    console.log('data', e?.response?.data) // <-- 여기에 S3 XML 에러코드 뜸
+    console.log('headers', e?.response?.headers)
+    throw e
+  }
 }

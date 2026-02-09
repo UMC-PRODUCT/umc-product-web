@@ -1,17 +1,23 @@
-import type { FormQuestion, RecruitingSchedule } from '@/shared/types/form'
+import type { FormPage, FormQuestion, OptionAnswerValue } from '@/shared/types/form'
 
-import { isOptionAnswerValue } from './optionAnswer'
+type ScheduleQuestion = NonNullable<FormPage['scheduleQuestion']>
 
-type SharedQuestionOptions = Omit<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'> &
-  Partial<Pick<FormQuestion, 'maxSelectCount' | 'preferredPartOptions'>>
+export type ResumeQuestion = FormQuestion | ScheduleQuestion
 
-export type ResumeQuestion =
-  | FormQuestion
-  | (SharedQuestionOptions & { schedule?: RecruitingSchedule })
+/**
+ * 옵션형 답변(체크박스/라디오 등)인지 확인합니다.
+ */
+export const isOptionAnswerValue = (value: unknown): value is OptionAnswerValue =>
+  typeof value === 'object' &&
+  value !== null &&
+  Array.isArray((value as OptionAnswerValue).selectedOptionIds)
 
 const isQuestionRequired = (question: ResumeQuestion): boolean =>
   'necessary' in question ? question.required : 'required' in question ? question.required : false
 
+/**
+ * 질문 타입별로 "비어있는 답변"인지 판별합니다.
+ */
 export function isQuestionAnswerEmpty(question: ResumeQuestion, answerValue: unknown): boolean {
   if (!isQuestionRequired(question)) return false
 

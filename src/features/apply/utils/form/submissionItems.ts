@@ -1,8 +1,4 @@
-import type { FieldErrors } from 'react-hook-form'
-
 import type { PartType } from '@features/auth/domain'
-
-import type { FormPage, FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import type {
   AnswerItem,
@@ -14,77 +10,14 @@ import type {
   scheduleAnswer,
   shortTextAnswer,
   TimeTableSlots,
-} from '../domain/model'
-import { findPartQuestion } from './findPartQuestion'
-import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
-import { isQuestionAnswerEmpty } from './isQuestionAnswerEmpty'
-import { isOptionAnswerValue } from './optionAnswer'
+} from '@/features/apply/domain/model'
+import type { FormPage, FormQuestion } from '@/shared/types/form'
+
+import { isOptionAnswerValue, isQuestionAnswerEmpty } from './answerUtils'
+import { getAllQuestionFieldIds, getPageQuestions } from './questionSelectors'
 
 type FormValues = Record<string, unknown>
 type ScheduleQuestion = NonNullable<FormPage['scheduleQuestion']>
-
-const getAllPageQuestions = (page: FormPage) => {
-  const baseQuestions = page.questions ?? []
-  const partQuestions = (page.partQuestions ?? []).flatMap((partGroup) => partGroup.questions)
-  return [...baseQuestions, ...partQuestions]
-}
-
-/**
- * 폼 에러 중 첫 번째 에러가 발생한 페이지 인덱스를 찾습니다.
- */
-export function findFirstErrorPageIndex(
-  formErrors: FieldErrors<FormValues>,
-  pages: Array<FormPage>,
-): number {
-  const errorFieldIds = Object.keys(formErrors)
-  if (errorFieldIds.length === 0) return -1
-
-  const firstErrorFieldId = errorFieldIds[0]
-  return pages.findIndex((page: FormPage) =>
-    getAllPageQuestions(page).some(
-      (question: FormQuestion) => String(question.questionId) === firstErrorFieldId,
-    ),
-  )
-}
-
-/**
- * 모든 페이지에서 질문 필드 ID 목록을 추출합니다.
- */
-export function getAllQuestionFieldIds(pages: Array<FormPage>): Array<string> {
-  return pages.flatMap((page) =>
-    getAllPageQuestions(page).map((question: FormQuestion) => String(question.questionId)),
-  )
-}
-
-/**
- * 특정 페이지에서 필수 질문 필드 ID 목록을 추출합니다.
- */
-export function getPageRequiredFieldIds(page: FormPage | undefined): Array<string> {
-  if (!page) return []
-  const allQuestions = getAllPageQuestions(page)
-  return allQuestions
-    .filter((question: FormQuestion) => question.required)
-    .map((question: FormQuestion) => String(question.questionId))
-}
-
-/**
- * 제출할 파트 목록을 추출합니다.
- */
-export function getSelectedPartsForSubmission(
-  questionData: RecruitmentApplicationForm,
-  formValues: FormValues,
-): Array<PartType> {
-  const partQuestion = findPartQuestion(questionData)
-  if (!partQuestion) return []
-
-  const partQuestionId = partQuestion.questionId
-  const order: Array<1 | 2> = [1, 2]
-  const maxSelectCountValue = Number(partQuestion.maxSelectCount ?? 0)
-  const requiredCount = Math.max(!Number.isNaN(maxSelectCountValue) ? maxSelectCountValue : 0, 1)
-  const effectiveOrder = order.slice(0, requiredCount)
-  const answerValue = formValues[String(partQuestionId)]
-  return getSelectedPartsFromAnswer(answerValue, effectiveOrder)
-}
 
 const isScheduleValuePresent = (value: unknown): value is TimeTableSlots => {
   if (!value || typeof value !== 'object') return false
@@ -157,7 +90,6 @@ const buildPreferredPartAnswer = (value: unknown): preferredPartAnswer | null =>
     })
     .filter((part): part is PartType => Boolean(part))
 
-  // 모든 지망을 순서대로 전달한다. (1지망, 2지망 ...)
   return preferredParts.length > 0 ? { preferredParts } : null
 }
 
@@ -271,14 +203,7 @@ export function getSubmissionItems(
   const mergedValues = { ...(fallbackValues ?? {}), ...formValues }
 
   const questionItems = pageList
-    .flatMap((page) => {
-      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
-      const partQuestionGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
-      const partQuestions = partQuestionGroups.flatMap((partGroup) =>
-        Array.isArray(partGroup.questions) ? partGroup.questions : [],
-      )
-      return [...pageQuestions, ...partQuestions]
-    })
+    .flatMap((page) => getPageQuestions(page))
     .map((question) => mapQuestionToAnswerItem(question, mergedValues[String(question.questionId)]))
     .filter((item): item is AnswerItem => Boolean(item))
 
@@ -297,35 +222,14 @@ export function getSubmissionItems(
 }
 
 /**
- * 제출 가능한 값들만 필터링하여 반환합니다.
+ * 제출 가능한 질문들만 필터링하여 반환합니다.
  */
 export function getSubmissionFormValues(
-  questionData: Array<FormPage> | undefined,
+  pages: Array<FormPage> | undefined,
   formValues: FormValues,
 ): FormValues {
-  const pagesData = Array.isArray(questionData)
-    ? questionData
-    : (questionData as unknown as Array<FormPage>)
-
-  const baseQuestionIds = pagesData.flatMap((page) =>
-    (Array.isArray(page.questions) ? page.questions : []).map((question: FormQuestion) =>
-      String(question.questionId),
-    ),
-  )
-
-  const scheduleQuestionIds = pagesData
-    .filter((page) => page.scheduleQuestion !== null)
-    .map((page) => String(page.scheduleQuestion!.questionId))
-
-  const partQuestionIds = pagesData.flatMap((page) =>
-    Array.isArray(page.partQuestions)
-      ? page.partQuestions.flatMap((partGroup: { questions: Array<FormQuestion> }) =>
-          partGroup.questions.map((question: FormQuestion) => String(question.questionId)),
-        )
-      : [],
-  )
-
-  const allowedIds = new Set([...baseQuestionIds, ...scheduleQuestionIds, ...partQuestionIds])
+  const pagesData = Array.isArray(pages) ? pages : []
+  const allowedIds = new Set(getAllQuestionFieldIds(pagesData))
   return Object.keys(formValues).reduce<FormValues>((acc, key) => {
     if (allowedIds.has(key)) {
       acc[key] = formValues[key]

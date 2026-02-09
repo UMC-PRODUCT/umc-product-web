@@ -99,7 +99,13 @@ const ProfileMenuContent = ({
     <>
       <Flex gap="12px">
         <S.Avatar />
-        <Flex flexDirection="column" alignItems="flex-start" gap="4px" css={{ overflow: 'hidden' }}>
+        <Flex
+          flexDirection="column"
+          alignItems="flex-start"
+          gap="4px"
+          height={'fit-content'}
+          css={{ overflow: 'hidden' }}
+        >
           <S.NameText>
             {data.nickname}/{data.name}
           </S.NameText>

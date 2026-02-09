@@ -213,7 +213,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
           orderIndex: number
           itemIndex: number
           questionField: (typeof fields)[number]
-        } => Boolean(entry),
+        } => Boolean(entry.questionField),
       )
     return base.sort((a, b) => {
       const aType = normalizedItems[a.itemIndex]?.question.type
@@ -228,6 +228,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     <Flex flexDirection="column" gap={18}>
       {visibleQuestions.map(({ itemIndex, orderIndex, questionField }) => {
         const isFixed = fixedIndices.has(itemIndex)
+
         return (
           <div
             key={questionField.id}

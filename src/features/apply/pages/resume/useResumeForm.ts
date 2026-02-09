@@ -1,9 +1,9 @@
 import type { useForm } from 'react-hook-form'
 
+import type { ResumeFormValues } from '@/features/apply/utils'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import type { GetRecruitmentApplicationAnswerResponseDTO } from '../../domain/model'
-import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
 import {
   useFormCompleteness,
   useFormSetup,

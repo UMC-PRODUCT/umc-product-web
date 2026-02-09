@@ -88,16 +88,18 @@ const QuestionOptionsEditor = ({
   })
   const { errors } = useFormState({ control })
   const rawOptions = Array.isArray(field.value) ? field.value : []
-  const options = rawOptions.map((option, index) => {
-    if (typeof option === 'string') {
-      return {
-        content: option,
-        orderNo: String(index + 1),
-        isOther: isOtherOptionContent(option),
+  const options = rawOptions
+    .filter((option): option is RecruitingItemOption | string => Boolean(option))
+    .map((option, index) => {
+      if (typeof option === 'string') {
+        return {
+          content: option,
+          orderNo: String(index + 1),
+          isOther: isOtherOptionContent(option),
+        }
       }
-    }
-    return option as RecruitingItemOption
-  })
+      return option
+    })
   const normalizedOptions = normalizeOptions(options)
   const optionErrors = getErrorByPath(errors, name)
   const optionErrorMessage = getErrorMessage(optionErrors)

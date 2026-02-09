@@ -309,15 +309,19 @@ export const step2Schema = withDateOrderRules(
   }),
 )
 
-const hasSlotsForAllDates = (
+const hasSlotsForEdgeDates = (
   dates: Array<string>,
   enabledSlots?: Array<{ date: string; times?: Array<string> }>,
-) =>
-  dates.length > 0 &&
-  dates.every((date) => {
+) => {
+  if (dates.length === 0) return true
+  const startDate = dates[0]
+  const endDate = dates[dates.length - 1]
+  const hasSlotsForDate = (date: string) => {
     const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.times ?? []
     return slotsForDate.length > 0
-  })
+  }
+  return hasSlotsForDate(startDate) && hasSlotsForDate(endDate)
+}
 
 export const getStepReady = (
   step: number,
@@ -329,7 +333,7 @@ export const getStepReady = (
     const isValid = step2Schema.safeParse(values).success
     if (!isValid) return false
     if (options?.interviewDates && !options.skipInterviewSlotsValidation) {
-      return hasSlotsForAllDates(
+      return hasSlotsForEdgeDates(
         options.interviewDates,
         (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabledByDate,
       )

@@ -4,22 +4,16 @@ import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { FormPage, FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
 
-import { DEFAULT_RECRUITING_PARTS } from '../domain/constants'
+import { DEFAULT_RECRUITING_PARTS } from '../../domain/constants'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'
-import { findPartQuestion } from './findPartQuestion'
-import { getSelectedPartsFromAnswer } from './getSelectedPartsFromAnswer'
+import { findPartQuestion, getSelectedPartsFromAnswer } from './partSelection'
 
 const PART_ORDER: Array<1 | 2> = [1, 2]
 
 const buildPartQuestions = (
   groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
   part: PartType,
-) =>
-  groups
-    .filter((group) => group.part === part)
-    .flatMap((group) =>
-      Array.isArray(group.questions) ? group.questions : (group.questions as Array<FormQuestion>),
-    )
+) => groups.filter((group) => group.part === part).flatMap((group) => group.questions)
 
 const buildPartGroups = (
   groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
@@ -67,6 +61,9 @@ const applyPartGroupsToPage = (
 const addPageNumbers = (pageList: Array<FormPage>) =>
   pageList.map((page, index) => ({ ...page, page: index + 1 }))
 
+/**
+ * 파트 질문 선택 결과에 따라 페이지의 파트 질문을 재구성합니다.
+ */
 export function resolvePagesWithSlots(
   questionData: RecruitmentApplicationForm,
   formValues: ResumeFormValues,

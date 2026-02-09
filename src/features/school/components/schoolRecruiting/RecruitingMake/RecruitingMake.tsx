@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
+import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
@@ -14,12 +16,16 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { usePostRecruitmentCreate } = useRecruitingMutation()
   const { mutate: postFirstRecruitmentMutate } = usePostRecruitmentCreate()
 
   const handleCreateRecruiting = () => {
     postFirstRecruitmentMutate(undefined, {
       onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }).queryKey,
+        })
         const recruitingId = data.result.recruitmentId
         navigate({
           to: '/school/recruiting/$recruitingId',

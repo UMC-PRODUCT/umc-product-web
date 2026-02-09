@@ -1,10 +1,8 @@
 import dayjs from 'dayjs'
 
-import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type {
   RecruitingForms,
   RecruitingInterviewTimeTable,
-  RecruitingItem,
   RecruitingSchedule,
 } from '@/shared/types/form'
 
@@ -60,28 +58,6 @@ export const buildSchedulePayload = (
     disabledByDate: [],
   },
 })
-
-export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
-  items.map((item) => ({
-    target: {
-      kind: item.target.kind,
-      pageNo: item.target.pageNo,
-      part: item.target.part,
-    },
-    question: {
-      questionId: item.question.questionId,
-      type: item.question.type,
-      questionText: item.question.questionText,
-      required: item.question.required,
-      orderNo: item.question.orderNo,
-      options: item.question.options?.map((option) => ({
-        content: option.content,
-        orderNo: option.orderNo,
-        optionId: option.optionId,
-        isOther: option.isOther ?? isOtherOptionContent(option.content),
-      })),
-    },
-  }))
 
 export function buildRecruitingInitialForm(
   result: GetRecruitmentDraftResponseDTO,
