@@ -1,17 +1,24 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
+import type { PartType } from '@/features/auth/domain'
+import { useGetFinalSelectionApplications } from '@/features/school/hooks/useRecruitingQueries'
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import type { SelectionsSortType } from '@/shared/types/umc'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
+import ServerErrorCard from '../../common/ServerErrorCard'
 import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
 import PassInfoModal from '../../modals/PassInfoModal/PassInfoModal'
 import { SetPassPartModal } from '../../modals/SetPassPartModal/SetPassPartModal'
@@ -20,17 +27,24 @@ import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
 import * as RowS from './FinalEvaluationRow.style'
 
+const sortOptions: Array<Option<string>> = [
+  { label: '점수 높은 순', id: 'SCORE_DESC' },
+  { label: '점수 낮은 순', id: 'SCORE_ASC' },
+  { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
+]
+
 const FinalEvaluation = () => {
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = roleType === 'SCHOOL_PRESIDENT'
-  console.log('roleType', roleType)
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  const [activeRowId, setActiveRowId] = useState<number | null>(null)
-  const [sort, setSort] = useState<Option<string>>({
-    label: '점수 높은 순',
-    id: 1,
-  })
+  const recruitmentId = '40'
 
+  const [selectedPart, setSelectedPart] = useState<Option<string>>({
+    label: '전체 파트',
+    id: 'ALL',
+  })
+  const [sort, setSort] = useState<Option<string>>(sortOptions[0])
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [activeRowId, setActiveRowId] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState<{
     open: boolean
     modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null
@@ -38,34 +52,50 @@ const FinalEvaluation = () => {
     open: false,
     modalName: null,
   })
-  const handleSortChange = (option: Option<unknown>) => {
-    setSort(option as Option<string>)
-  }
 
-  // 임시 데이터
-  const applicants = Array.from({ length: 24 }, (_, i) => ({
-    id: i + 1,
-    name: '닉네임/성이름',
-    parts: ['SpringBoot', 'Node.js'],
-    docScore: '92.0',
-    interviewScore: '94.0',
-    finalScore: '93.0',
-    result: i === 0 ? 'SpringBoot' : 'N/A',
-    isPassed: i === 0 ? 'PASS' : i % 3 === 0 ? 'FAIL' : 'WAIT',
-  }))
+  const { data, isLoading, isError, error, refetch } = useGetFinalSelectionApplications(
+    recruitmentId,
+    {
+      part: selectedPart.id as PartType | 'ALL',
+      sort: sort.id as SelectionsSortType,
+      size: '20',
+    },
+  )
+
+  const pages = useMemo(() => data?.pages ?? [], [data?.pages])
+  const summary = pages[0]?.result.summary ?? {
+    totalCount: '0',
+    selectedCount: '0',
+    byPart: {},
+  }
+  const applicants = useMemo(
+    () => pages.flatMap((page) => page.result.finalSelectionApplications),
+    [pages],
+  )
+  const isInitialLoading = isLoading && pages.length === 0
+  const isInitialError = isError && pages.length === 0
+  const isEmpty = !isInitialLoading && pages.length === 0
+  const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
+  const errorMessage =
+    errorStatus === 500
+      ? '서버 점검중입니다. 잠시후에 다시 시도해주세요.'
+      : error instanceof Error
+        ? error.message
+        : '데이터를 불러오지 못했어요.'
+
   const selectedCount = selectedIds.size
   const allSelected = applicants.length > 0 && selectedCount === applicants.length
   const headerChecked = allSelected ? true : selectedCount > 0 ? 'indeterminate' : false
 
   const handleToggleAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
-      setSelectedIds(new Set(applicants.map((item) => item.id)))
+      setSelectedIds(new Set(applicants.map((item) => item.applicationId)))
       return
     }
     setSelectedIds(new Set())
   }
 
-  const handleToggleRow = (id: number) => (checked: boolean | 'indeterminate') => {
+  const handleToggleRow = (id: string) => (checked: boolean | 'indeterminate') => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
       if (checked === true) {
@@ -76,6 +106,23 @@ const FinalEvaluation = () => {
       return next
     })
   }
+
+  const partOptions = useMemo(() => {
+    const base = [{ label: '전체 파트', id: 'ALL' }]
+    const byPart = summary.byPart
+    const keys = Object.keys(byPart)
+    return base.concat(
+      keys.map((key) => ({
+        label: PART_TYPE_TO_SMALL_PART[key as keyof typeof PART_TYPE_TO_SMALL_PART],
+        id: key,
+      })),
+    )
+  }, [summary.byPart])
+
+  const handleSortChange = (option: Option<unknown>) => {
+    setSort(option as Option<string>)
+  }
+
   return (
     <>
       <Shared.TabHeader alignItems="flex-start">
@@ -88,179 +135,147 @@ const FinalEvaluation = () => {
           leftChild={
             <>
               <Dropdown
-                options={[
-                  {
-                    label: '전체 파트',
-                    id: 0,
-                  },
-                  { label: 'SpringBoot', id: 1 },
-                  { label: 'Node.js', id: 2 },
-                ]}
+                options={partOptions}
+                value={selectedPart}
                 placeholder="전체 파트"
                 css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
+                onChange={(option) => setSelectedPart(option)}
               />
-              <S.SelectionInfo onClick={() => {}}>전체 92명 중 1명 선발</S.SelectionInfo>
+              <S.SelectionInfo onClick={() => {}}>
+                {isEmpty
+                  ? '데이터가 없습니다.'
+                  : `전체 ${summary.totalCount}명 중 ${summary.selectedCount}명 선발`}
+              </S.SelectionInfo>
             </>
           }
           rightChild={
             <>
-              <S.SelectBox
-                value={sort}
-                options={[
-                  {
-                    label: '점수 높은 순',
-                    id: 1,
-                  },
-                  {
-                    label: '점수 낮은 순',
-                    id: 2,
-                  },
-                  { label: '평가 완료 시각 순', id: 3 },
-                ]}
-                onChange={handleSortChange}
-              />
+              <S.SelectBox value={sort} options={sortOptions} onChange={handleSortChange} />
               <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
             </>
           }
         />
 
         {/* 2. 테이블 */}
-        <Section variant="solid" maxHeight={504} gap={0} padding="12px 16px">
-          <Table
-            headerLabels={[
-              '번호',
-              '닉네임/이름',
-              '지원 파트',
-              '서류 점수',
-              '면접 점수',
-              '최종 환산 점수',
-              '선발 결과',
-              '작업',
-            ]}
-            checkbox={{
-              isAllChecked: headerChecked,
-              onToggleAll: handleToggleAll,
-            }}
-            showFooter={false}
-            rows={applicants}
-            getRowId={(row) => row.id}
-            activeRowId={activeRowId}
-            onRowClick={(id) => setActiveRowId(id)}
-            renderRow={(item) => (
-              <>
-                <TableStyles.Td>
-                  <Checkbox
-                    checked={selectedIds.has(item.id)}
-                    onCheckedChange={handleToggleRow(item.id)}
-                    css={{ borderColor: RowS.colors.checkboxBorder }}
-                  />
-                </TableStyles.Td>
-                <TableStyles.Td>{item.id}</TableStyles.Td>
-                <TableStyles.Td>
-                  <S.UserInfo>{item.name}</S.UserInfo>
-                </TableStyles.Td>
-                <TableStyles.Td>
-                  <S.TagGroup>
-                    {item.parts.map((p) => (
-                      <Button
-                        key={`${item.id}-${p}`}
-                        variant="outline"
-                        tone="gray"
-                        label={p}
-                        typo="B4.Md"
-                        css={RowS.tagButtonStyle}
+        <AsyncBoundary
+          fallback={
+            <Section variant="solid" maxHeight={504} gap={0} padding="12px 16px">
+              <SuspenseFallback label="최종 선발 대상자를 불러오는 중입니다." />
+            </Section>
+          }
+        >
+          {isInitialLoading ? (
+            <Section variant="solid" maxHeight={504} gap={0} padding="12px 16px">
+              <SuspenseFallback label="최종 선발 대상자를 불러오는 중입니다." />
+            </Section>
+          ) : isInitialError ? (
+            <ServerErrorCard
+              errorStatus={errorStatus}
+              errorMessage={errorMessage}
+              onRetry={() => refetch()}
+            />
+          ) : isEmpty ? (
+            <ServerErrorCard
+              errorMessage="최종 선발 대상자가 없습니다."
+              message="선발 대상 없음"
+              description="조건에 맞는 최종 선발 대상자가 없습니다."
+            />
+          ) : (
+            <Section variant="solid" maxHeight={504} gap={0} padding="12px 16px">
+              <Table
+                headerLabels={[
+                  '번호',
+                  '닉네임/이름',
+                  '지원 파트',
+                  '서류 점수',
+                  '면접 점수',
+                  '최종 환산 점수',
+                  '선발 결과',
+                  '작업',
+                ]}
+                checkbox={{
+                  isAllChecked: headerChecked,
+                  onToggleAll: handleToggleAll,
+                }}
+                showFooter={false}
+                rows={applicants}
+                getRowId={(row) => row.applicationId}
+                activeRowId={activeRowId}
+                onRowClick={(id) => setActiveRowId(id)}
+                renderRow={(item) => (
+                  <>
+                    <TableStyles.Td>
+                      <Checkbox
+                        checked={selectedIds.has(item.applicationId)}
+                        onCheckedChange={handleToggleRow(item.applicationId)}
+                        css={{ borderColor: RowS.colors.checkboxBorder }}
                       />
-                    ))}
-                  </S.TagGroup>
-                </TableStyles.Td>
-                <TableStyles.Td>{item.docScore}</TableStyles.Td>
-                <TableStyles.Td>{item.interviewScore}</TableStyles.Td>
-                <TableStyles.Td css={{ color: theme.colors.lime, ...theme.typography.B3.Sb }}>
-                  {item.finalScore}
-                </TableStyles.Td>
-                <TableStyles.Td css={RowS.resultTextStyle}>
-                  {item.result === 'N/A' ? (
-                    item.result
-                  ) : (
-                    <Button
-                      variant="outline"
-                      tone="gray"
-                      label={item.result}
-                      typo="B4.Md"
-                      css={RowS.resultButtonStyle}
-                    />
-                  )}
-                </TableStyles.Td>
-                <TableStyles.Td>
-                  {item.isPassed === 'WAIT' ? (
-                    <Flex gap={8}>
-                      <S.ActionButton
-                        variant="outline"
-                        tone="gray"
-                        label="합격"
-                        typo="B4.Sb"
-                        // isLoading={isPassLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onPass()}
-                      />
-                      <S.ActionButton
-                        variant="outline"
-                        tone="gray"
-                        label="불합격"
-                        typo="B4.Sb"
-                        // isLoading={isFailLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onFail()}
-                      />
-                    </Flex>
-                  ) : item.isPassed === 'PASS' ? (
-                    <Flex gap={8}>
-                      <S.ActionButton
-                        variant="outline"
-                        tone="lime"
-                        label="합격"
-                        typo="B4.Sb"
-                        // isLoading={isPassLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onPass()}
-                      />
-                      <S.ActionButton
-                        variant="outline"
-                        tone="gray"
-                        label="불합격"
-                        typo="B4.Sb"
-                        // isLoading={isFailLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onFail()}
-                      />
-                    </Flex>
-                  ) : (
-                    <Flex gap={8}>
-                      <S.ActionButton
-                        variant="outline"
-                        tone="gray"
-                        label="합격"
-                        typo="B4.Sb"
-                        // isLoading={isPassLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onPass()}
-                      />
-                      <S.ActionButton
-                        variant="outline"
-                        tone="necessary"
-                        label="불합격"
-                        typo="B4.Sb"
-                        // isLoading={isFailLoading}
-                        // disabled={isActionDisabled}
-                        // onClick={() => onFail()}
-                      />
-                    </Flex>
-                  )}
-                </TableStyles.Td>
-              </>
-            )}
-          />
-        </Section>
+                    </TableStyles.Td>
+                    <TableStyles.Td>{item.applicationId}</TableStyles.Td>
+                    <TableStyles.Td>
+                      <S.UserInfo>{`${item.applicant.nickname}/${item.applicant.name}`}</S.UserInfo>
+                    </TableStyles.Td>
+                    <TableStyles.Td>
+                      <S.TagGroup>
+                        {item.appliedParts.map((p) => (
+                          <Button
+                            key={`${item.applicationId}-${p.part.key}`}
+                            variant="outline"
+                            tone="gray"
+                            label={p.part.label}
+                            typo="B4.Md"
+                            css={RowS.tagButtonStyle}
+                          />
+                        ))}
+                      </S.TagGroup>
+                    </TableStyles.Td>
+                    <TableStyles.Td>{item.documentScore}</TableStyles.Td>
+                    <TableStyles.Td>{item.interviewScore}</TableStyles.Td>
+                    <TableStyles.Td css={{ color: theme.colors.lime, ...theme.typography.B3.Sb }}>
+                      {item.finalScore}
+                    </TableStyles.Td>
+                    <TableStyles.Td css={RowS.resultTextStyle}>
+                      {item.selection.status === 'WAIT' || !item.selection.selectedPart ? (
+                        'N/A'
+                      ) : (
+                        <Button
+                          variant="outline"
+                          tone="gray"
+                          label={item.selection.selectedPart.label}
+                          typo="B4.Md"
+                          css={RowS.resultButtonStyle}
+                        />
+                      )}
+                    </TableStyles.Td>
+                    <TableStyles.Td>
+                      {item.selection.status === 'WAIT' ? (
+                        <Flex gap={8}>
+                          <S.ActionButton variant="outline" tone="gray" label="합격" typo="B4.Sb" />
+                          <S.ActionButton
+                            variant="outline"
+                            tone="gray"
+                            label="불합격"
+                            typo="B4.Sb"
+                          />
+                        </Flex>
+                      ) : item.selection.status === 'PASS' ? (
+                        <Flex gap={8}>
+                          <S.ActionButton variant="outline" tone="lime" label="합격" typo="B4.Sb" />
+                          <S.ActionButton
+                            variant="outline"
+                            tone="gray"
+                            label="불합격"
+                            typo="B4.Sb"
+                          />
+                        </Flex>
+                      ) : null}
+                    </TableStyles.Td>
+                  </>
+                )}
+              />
+            </Section>
+          )}
+        </AsyncBoundary>
         {/* 3. 하단 선택 관리 바 */}
         <S.BottomBar variant="solid" padding="14px 18px">
           <div className="left">

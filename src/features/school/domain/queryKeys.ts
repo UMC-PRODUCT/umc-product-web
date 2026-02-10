@@ -11,6 +11,13 @@ import {
   getDocumentEvaluationApplicationDetail,
   getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
+  getFinalSelectionApplications,
+  getInterviewAssignments,
+  getInterviewEvaluationMyAnswer,
+  getInterviewEvaluationOptions,
+  getInterviewEvaluationSummary,
+  getInterviewEvaluationView,
+  getInterviewLiveQuestions,
   getInterviewQuestions,
   getInterviewSchedulingSlotApplicants,
   getInterviewSchedulingSummary,
@@ -53,10 +60,10 @@ export const schoolKeys = createQueryKeys('school', {
   getDocumentSelectedApplicants: (
     recruitmentId: string,
     params: {
-      part: PartType | 'ALL'
-      page: string
-      size: string
-      sort: SelectionsSortType
+      part?: PartType | 'ALL'
+      page?: string
+      size?: string
+      sort?: SelectionsSortType
     },
   ) => ({
     queryKey: ['documents', 'selections', 'applicants', { recruitmentId, ...params }],
@@ -81,20 +88,73 @@ export const schoolKeys = createQueryKeys('school', {
   getDocumentEvaluationApplicants: (
     recruitmentId: string,
     params: {
-      part: PartType | 'ALL'
-      keyword: string
-      page: string
-      size: string
+      part?: PartType | 'ALL'
+      keyword?: string
+      page?: string
+      size?: string
     },
   ) => ({
     queryKey: ['documents', 'evaluation', 'applicants', { recruitmentId, ...params }],
     queryFn: () => getDocumentEvaluationApplicants(recruitmentId, params),
   }),
 
+  /** GET /recruitments/{recruitmentId}/applications/final-selections */
+  getFinalSelectionApplications: (
+    recruitmentId: string,
+    params: {
+      part: PartType | 'ALL'
+      sort: SelectionsSortType
+      page: string
+      size: string
+    },
+  ) => ({
+    queryKey: ['finalSelections', 'applications', { recruitmentId, ...params }],
+    queryFn: () => getFinalSelectionApplications(recruitmentId, params),
+  }),
+
   /** GET /recruitments/{recruitmentId}/interview-sheets/questions - 면접 질문지(사전 질문) 조회 */
   getInterviewQuestions: (recruitmentId: string, part: PartType | 'COMMON') => ({
     queryKey: ['interviews', 'questions', { recruitmentId, part }],
     queryFn: () => getInterviewQuestions(recruitmentId, part),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/live-questions - 추가 질문(즉석 질문) 조회 */
+  getInterviewLiveQuestions: (recruitmentId: string, assignmentId: string) => ({
+    queryKey: ['interviews', 'liveQuestions', { recruitmentId, assignmentId }],
+    queryFn: () => getInterviewLiveQuestions(recruitmentId, assignmentId),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/evaluations/summary - 실시간 평가 현황 조회(평균/리스트) */
+  getInterviewEvaluationSummary: (recruitmentId: string, assignmentId: string) => ({
+    queryKey: ['interviews', 'evaluationSummary', { recruitmentId, assignmentId }],
+    queryFn: () => getInterviewEvaluationSummary(recruitmentId, assignmentId),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/view - 실시간 면접 평가 상세 화면 초기 진입 */
+  getInterviewEvaluationView: (recruitmentId: string, assignmentId: string) => ({
+    queryKey: ['interviews', 'evaluationView', { recruitmentId, assignmentId }],
+    queryFn: () => getInterviewEvaluationView(recruitmentId, assignmentId),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/assignments - 실시간 면접 평가 대상 리스트 조회 */
+  getInterviewAssignments: (
+    recruitmentId: string,
+    params?: { date?: string; part?: PartType | 'ALL' },
+  ) => ({
+    queryKey: ['interviews', 'assignments', { recruitmentId, ...params }],
+    queryFn: () => getInterviewAssignments(recruitmentId, params),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/options - 실시간 면접 평가용 드롭다운 옵션 조회 */
+  getInterviewEvaluationOptions: (recruitmentId: string) => ({
+    queryKey: ['interviews', 'options', { recruitmentId }],
+    queryFn: () => getInterviewEvaluationOptions(recruitmentId),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/evaluations/me - 내 면접 평가 조회 */
+  getInterviewEvaluationMyAnswer: (recruitmentId: string, assignmentId: string) => ({
+    queryKey: ['interviews', 'myEvaluation', { recruitmentId, assignmentId }],
+    queryFn: () => getInterviewEvaluationMyAnswer(recruitmentId, assignmentId),
   }),
 
   /** GET /recruitments/{recruitmentId}/interview-sheets/parts - 면접 질문지 작성 가능 파트 조회 */

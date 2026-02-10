@@ -1,6 +1,6 @@
 import { Button } from '@/shared/ui/common/Button'
 
-import * as S from './RealTimeEvaluation.style'
+import * as S from './index.style'
 
 type QuestionItemProps = {
   index: number

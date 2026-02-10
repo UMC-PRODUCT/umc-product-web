@@ -77,7 +77,7 @@ type InterviewSummary = {
 /** 파트별 지원 현황 */
 export interface PartApplyStatus {
   part: PartType | '총 지원자'
-  applyNum: number
+  applyNum: string
 }
 
 /** 파트별 평가 현황 */
@@ -111,7 +111,7 @@ export type GetRecruitmentsResponseDTO = {
     recruitmentName: string
     startDate: string
     endDate: string
-    applicantCount: number
+    applicantCount: string
     phase: Phase
     listBadge: string
     editable: boolean
@@ -121,7 +121,7 @@ export type GetRecruitmentsResponseDTO = {
 }
 
 export type GetRecruitmentNoticesResponseDTO = {
-  recruitmentId: number
+  recruitmentId: string
   title: string
   content: string
   parts: Array<PartType>
@@ -139,8 +139,8 @@ export type PatchRecruitmentDraftRequestDTO = Partial<RecruitingDraft>
 export type PatchRecruitmentDraftResponseDTO = CommonResponseDTO<PatchRecruitmentDraftRequestDTO>
 
 export type PostRecruitmentCreateResponseDTO = {
-  recruitmentId?: number
-  formId?: number
+  recruitmentId?: string
+  formId?: string
 }
 export type PatchRecruitmentApplicationFormDraftRequestDTO = ApplicationFormPayload
 
@@ -291,13 +291,13 @@ export type GetDocumentEvaluationApplicantsResponseDTO = {
     evaluatedCount: string
   }
   applicationSummaries: Array<DocumentEvaluationApplicantSummary>
-  paination: Pagination
+  pagination: Pagination
 }
 export type GetDocumentEvaluationApplicantsRequestDTO = {
-  part: PartType | 'ALL'
-  keyword: string
-  page: string
-  size: string
+  part?: PartType | 'ALL'
+  keyword?: string
+  page?: string
+  size?: string
 }
 export type PatchDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
@@ -306,6 +306,170 @@ export type PatchDocumentEvaluationMyAnswerRequestDTO = {
   score: string
   comments: string
   action: 'DRAFT_SAVE' | 'SUBMIT'
+}
+
+export type PatchInterviewEvaluationMyAnswerRequestDTO = {
+  score: string
+  comments: string
+}
+
+export type InterviewMyEvaluation = {
+  evaluationId: string
+  score: string
+  comments: string
+  submittedAt: string
+}
+
+export type PatchInterviewEvaluationMyAnswerResponseDTO = {
+  myEvaluation: InterviewMyEvaluation
+}
+
+export type GetInterviewEvaluationMyAnswerResponseDTO = {
+  myEvaluation: InterviewMyEvaluation | null
+}
+
+export type InterviewEvaluationSummary = {
+  evaluator: ApplicantMember
+  score: string
+  comments: string
+}
+
+export type GetInterviewEvaluationSummaryResponseDTO = {
+  avgScore: string
+  interviewEvaluationSummaries: Array<InterviewEvaluationSummary>
+}
+
+export type InterviewEvaluationViewQuestion = {
+  questionId: string
+  orderNo: string
+  text: string
+}
+
+export type InterviewEvaluationViewLiveQuestion = {
+  liveQuestionId: string
+  orderNo: string
+  text: string
+  createdBy: ApplicantMember
+  canEdit: boolean
+}
+
+export type InterviewEvaluationViewQuestions = {
+  common: Array<InterviewEvaluationViewQuestion>
+  firstChoice: Array<InterviewEvaluationViewQuestion>
+  secondChoice: Array<InterviewEvaluationViewQuestion>
+  live: Array<InterviewEvaluationViewLiveQuestion>
+}
+
+export type InterviewEvaluationViewAppliedPart = {
+  priority: string
+  key: string
+  label: string
+}
+
+export type InterviewEvaluationViewResponseDTO = {
+  assignmentId: string
+  applicationId: string
+  application: {
+    applicant: PersonName
+    appliedParts: Array<InterviewEvaluationViewAppliedPart>
+  }
+  questions: InterviewEvaluationViewQuestions
+  liveEvaluations: {
+    avgScore: string
+    items: Array<InterviewEvaluationSummary>
+  }
+  myEvaluation: InterviewMyEvaluation | null
+}
+
+export type InterviewAssignmentSlot = {
+  assignmentId: string
+  slot: {
+    slotId: string
+    date: string
+    start: string
+    end: string
+  }
+  applicationId: string
+  applicant: PersonName
+  appliedParts: Array<InterviewEvaluationViewAppliedPart>
+  documentScore: string
+  evaluationProgressStatus: 'WAITING' | 'IN_PROGRESS' | 'COMPLETED'
+}
+
+export type GetInterviewAssignmentsResponseDTO = {
+  serverNow: string
+  selectedDate: string
+  selectedPart: PartType | 'ALL'
+  interviewAssignmentSlots: Array<InterviewAssignmentSlot>
+}
+
+export type GetInterviewEvaluationOptionsResponseDTO = {
+  dates: Array<string>
+  parts: Array<{
+    key: PartType | 'COMMON'
+    label: string
+  }>
+}
+
+export type FinalSelectionSummaryByPart = {
+  total: string
+  selected: string
+}
+
+export type FinalSelectionPartLabel = {
+  key: PartType | 'COMMON'
+  label: string
+}
+
+export type FinalSelectionApplication = {
+  applicationId: string
+  applicant: ApplicantMember
+  appliedParts: Array<{
+    priority: string
+    part: FinalSelectionPartLabel
+  }>
+  documentScore: string
+  interviewScore: string
+  finalScore: string
+  selection: {
+    status: 'PASS' | 'WAIT' | 'FAIL'
+    selectedPart: FinalSelectionPartLabel | null
+  }
+}
+
+export type GetFinalSelectionApplicationsRequestDTO = {
+  part: PartType | 'ALL'
+  sort: SelectionsSortType
+  page: string
+  size: string
+}
+
+export type GetFinalSelectionApplicationsResponseDTO = {
+  summary: {
+    totalCount: string
+    selectedCount: string
+    byPart: Record<string, FinalSelectionSummaryByPart>
+  }
+  finalSelectionApplications: Array<FinalSelectionApplication>
+  pagination: {
+    page: string
+    size: string
+    totalPages: string
+    totalElements: string
+  }
+}
+
+export type PatchFinalSelectionStatusRequestDTO = {
+  decision: 'PASS' | 'WAIT'
+  selectedPart?: PartType | null
+}
+
+export type PatchFinalSelectionStatusResponseDTO = {
+  applicationId: string
+  finalResult: {
+    decision: 'PASS' | 'WAIT'
+    selectedPart: FinalSelectionPartLabel
+  }
 }
 
 export type MyEvaluation = {
@@ -351,10 +515,10 @@ export type GetDocumentSelectedApplicantsResponseDTO = {
   }
 }
 export type GetDocumentSelectedApplicantsRequestDTO = {
-  part: PartType | 'ALL'
-  page: string
-  size: string
-  sort: SelectionsSortType
+  part?: PartType | 'ALL'
+  page?: string
+  size?: string
+  sort?: SelectionsSortType
 }
 export type PatchDocumentSelectionStatusRequestDTO = {
   decision: 'PASS' | 'FAIL' | 'WAIT'
@@ -379,6 +543,18 @@ type InterviewQuestionType = {
   questionText: string
 }
 
+export type InterviewLiveQuestion = {
+  liveQuestionId: string
+  orderNo: string
+  text: string
+  createdBy: ApplicantMember
+  canEdit: boolean
+}
+
+export type GetInterviewLiveQuestionsResponseDTO = {
+  liveQuestionResponses: Array<InterviewLiveQuestion>
+}
+
 export type GetInterviewQuestionsResponseDTO = {
   part: {
     key: PartType | 'COMMON'
@@ -398,6 +574,19 @@ export type GetInterviewAvailablePartsResponseDTO = {
 export type PostInterviewQuestionRequestDTO = {
   partKey: PartType | 'COMMON'
   questionText: string
+}
+
+export type PostInterviewLiveQuestionRequestDTO = {
+  text: string
+}
+
+export type PatchInterviewLiveQuestionRequestDTO = {
+  text: string
+}
+
+export type PatchInterviewLiveQuestionResponseDTO = {
+  liveQuestionId: string
+  text: string
 }
 
 export type PatchInterviewQuestionOrderRequestDTO = {

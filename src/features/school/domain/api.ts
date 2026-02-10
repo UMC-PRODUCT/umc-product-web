@@ -14,7 +14,14 @@ import type {
   GetDocumentEvaluationMyAnswerResponseDTO,
   GetDocumentSelectedApplicantsRequestDTO,
   GetDocumentSelectedApplicantsResponseDTO,
+  GetFinalSelectionApplicationsRequestDTO,
+  GetFinalSelectionApplicationsResponseDTO,
+  GetInterviewAssignmentsResponseDTO,
   GetInterviewAvailablePartsResponseDTO,
+  GetInterviewEvaluationMyAnswerResponseDTO,
+  GetInterviewEvaluationOptionsResponseDTO,
+  GetInterviewEvaluationSummaryResponseDTO,
+  GetInterviewLiveQuestionsResponseDTO,
   GetInterviewQuestionsResponseDTO,
   GetInterviewSchedulingSlotApplicantsResponseDTO,
   GetInterviewSchedulingSummaryResponseDTO,
@@ -25,9 +32,17 @@ import type {
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
+  InterviewEvaluationViewResponseDTO,
+  InterviewLiveQuestion,
   PatchDocumentEvaluationMyAnswerRequestDTO,
   PatchDocumentEvaluationMyAnswerResponseDTO,
   PatchDocumentSelectionStatusRequestDTO,
+  PatchFinalSelectionStatusRequestDTO,
+  PatchFinalSelectionStatusResponseDTO,
+  PatchInterviewEvaluationMyAnswerRequestDTO,
+  PatchInterviewEvaluationMyAnswerResponseDTO,
+  PatchInterviewLiveQuestionRequestDTO,
+  PatchInterviewLiveQuestionResponseDTO,
   PatchInterviewQuestionOrderRequestDTO,
   PatchInterviewQuestionRequestDTO,
   PatchRecruitmentApplicationFormDraftRequestDTO,
@@ -36,6 +51,7 @@ import type {
   PatchRecruitmentDraftResponseDTO,
   PatchRecruitmentPublishedRequestDTO,
   PostInterviewAssignApplicantsResponseDTO,
+  PostInterviewLiveQuestionRequestDTO,
   PostInterviewQuestionRequestDTO,
   PostRecruitmentCreateResponseDTO,
   PostRecruitmentPublishRequestDTO,
@@ -251,6 +267,97 @@ export const patchDocumentSelectionStatus = async (
   return data
 }
 
+/** GET /recruitments/{recruitmentId}/applications/final-selections - 최종 선발 대상 리스트 조회 */
+export const getFinalSelectionApplications = async (
+  recruitmentId: string,
+  params: GetFinalSelectionApplicationsRequestDTO,
+): Promise<CommonResponseDTO<GetFinalSelectionApplicationsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/applications/final-selections`,
+    { params },
+  )
+  return data
+}
+
+/** PATCH /recruitments/{recruitmentId}/applications/{applicationId}/final-status - 최종 선발 단건 합격/합격 취소 */
+export const patchFinalSelectionStatus = async (
+  recruitmentId: string,
+  applicationId: string,
+  requestBody: PatchFinalSelectionStatusRequestDTO,
+): Promise<CommonResponseDTO<PatchFinalSelectionStatusResponseDTO>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/applications/${applicationId}/final-status`,
+    requestBody,
+  )
+  return data
+}
+
+/** PATCH /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/evaluations/me - 내 면접 평가 제출/재제출 */
+export const patchInterviewEvaluationMyAnswer = async (
+  recruitmentId: string,
+  assignmentId: string,
+  requestBody: PatchInterviewEvaluationMyAnswerRequestDTO,
+): Promise<CommonResponseDTO<PatchInterviewEvaluationMyAnswerResponseDTO>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/evaluations/me`,
+    requestBody,
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/evaluations/summary - 실시간 평가 현황 조회(평균/리스트) */
+export const getInterviewEvaluationSummary = async (
+  recruitmentId: string,
+  assignmentId: string,
+): Promise<CommonResponseDTO<GetInterviewEvaluationSummaryResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/evaluations/summary`,
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/view - 실시간 면접 평가 상세 화면 초기 진입 */
+export const getInterviewEvaluationView = async (
+  recruitmentId: string,
+  assignmentId: string,
+): Promise<CommonResponseDTO<InterviewEvaluationViewResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/view`,
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/assignments - 실시간 면접 평가 대상 리스트 조회 */
+export const getInterviewAssignments = async (
+  recruitmentId: string,
+  params?: { date?: string; part?: PartType | 'ALL' },
+): Promise<CommonResponseDTO<GetInterviewAssignmentsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/assignments`,
+    { params },
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/options - 실시간 면접 평가용 드롭다운 옵션 조회 */
+export const getInterviewEvaluationOptions = async (
+  recruitmentId: string,
+): Promise<CommonResponseDTO<GetInterviewEvaluationOptionsResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/recruitments/${recruitmentId}/interviews/options`)
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/evaluations/me - 내 면접 평가 조회 */
+export const getInterviewEvaluationMyAnswer = async (
+  recruitmentId: string,
+  assignmentId: string,
+): Promise<CommonResponseDTO<GetInterviewEvaluationMyAnswerResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/evaluations/me`,
+  )
+  return data
+}
+
 /** GET /recruitments/{recruitmentId}/interview-sheets/questions - 면접 질문지(사전 질문) 조회 */
 export const getInterviewQuestions = async (
   recruitmentId: string,
@@ -261,6 +368,17 @@ export const getInterviewQuestions = async (
     {
       params: { part },
     },
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/live-questions - 추가 질문(즉석 질문) 조회 */
+export const getInterviewLiveQuestions = async (
+  recruitmentId: string,
+  assignmentId: string,
+): Promise<CommonResponseDTO<GetInterviewLiveQuestionsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/live-questions`,
   )
   return data
 }
@@ -285,6 +403,19 @@ export const postInterviewQuestion = async (
   return data
 }
 
+/** POST /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/live-questions - 추가 질문(즉석 질문) 등록 */
+export const postInterviewLiveQuestion = async (
+  recruitmentId: string,
+  assignmentId: string,
+  requestBody: PostInterviewLiveQuestionRequestDTO,
+): Promise<CommonResponseDTO<InterviewLiveQuestion>> => {
+  const { data } = await axiosInstance.post(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/live-questions`,
+    requestBody,
+  )
+  return data
+}
+
 /** PATCH /recruitments/{recruitmentId}/interview-sheets/questions/{questionId} - 면접 질문지 수정 */
 export const patchInterviewQuestion = async (
   recruitmentId: string,
@@ -293,6 +424,20 @@ export const patchInterviewQuestion = async (
 ): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.patch(
     `/recruitments/${recruitmentId}/interview-sheets/questions/${questionId}`,
+    requestBody,
+  )
+  return data
+}
+
+/** PATCH /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/live-questions/{liveQuestionId} - 추가 질문(즉석 질문) 수정 */
+export const patchInterviewLiveQuestion = async (
+  recruitmentId: string,
+  assignmentId: string,
+  liveQuestionId: string,
+  requestBody: PatchInterviewLiveQuestionRequestDTO,
+): Promise<CommonResponseDTO<PatchInterviewLiveQuestionResponseDTO>> => {
+  const { data } = await axiosInstance.patch(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/live-questions/${liveQuestionId}`,
     requestBody,
   )
   return data
@@ -321,6 +466,17 @@ export const deleteInterviewQuestion = async (
   return data
 }
 
+/** DELETE /recruitments/{recruitmentId}/interviews/assignments/{assignmentId}/live-questions/{liveQuestionId} - 추가 질문(즉석 질문) 삭제 */
+export const deleteInterviewLiveQuestion = async (
+  recruitmentId: string,
+  assignmentId: string,
+  liveQuestionId: string,
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.delete(
+    `/recruitments/${recruitmentId}/interviews/assignments/${assignmentId}/live-questions/${liveQuestionId}`,
+  )
+  return data
+}
 /** GET /recruitments/{recruitmentId}/interview-sheets/slot-applicants - 특정 슬롯에 배정 가능한 지원자 / 이미 배정된 지원자 조회 */
 export const getInterviewSchedulingSlotApplicants = async (
   recruitmentId: string,

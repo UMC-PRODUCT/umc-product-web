@@ -18,11 +18,13 @@ export const ApplicantCard = styled(Section)<{ mode?: 'default' | 'assigned' }>`
   cursor: ${(props) => (props.mode === 'default' ? 'grab' : 'default')};
   .info {
     display: flex;
-    gap: 48px;
-    ${media.down(theme.breakPoints.tablet)} {
-      gap: 16px;
-    }
+    justify-content: space-between;
+    width: 100%;
     align-items: center;
+    max-width: 360px;
+    ${media.down(theme.breakPoints.mobile)} {
+      max-width: 100%;
+    }
   }
 
   .name {
@@ -42,6 +44,10 @@ export const ApplicantCard = styled(Section)<{ mode?: 'default' | 'assigned' }>`
   .time {
     color: ${theme.colors.gray[400]};
     ${theme.typography.B5.Md};
+    white-space: nowrap;
+    ${media.down(theme.breakPoints.tablet)} {
+      display: none;
+    }
   }
 `
 

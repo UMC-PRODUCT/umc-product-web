@@ -119,6 +119,7 @@ export const Content = styled.div`
   grid-template-rows: auto auto;
   height: fit-content;
   overflow-y: visible;
+  min-width: 0;
   ${media.down(theme.breakPoints.desktop)} {
     height: fit-content !important;
     grid-template-rows: auto;

@@ -1,9 +1,8 @@
-import { APPLY_PART_STATUS_MOCKS } from '@/features/school/mocks/apply'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
-import ApplyStatusCard from './ApplyStatusCard/ApplyStatusCard'
+// import ApplyStatusCard from './ApplyStatusCard/ApplyStatusCard'
 import * as S from './ApplyStatus.style'
 
 const ApplyStatus = () => {
@@ -12,13 +11,13 @@ const ApplyStatus = () => {
       <PageTitle title="지원 현황" />
       <Section variant="outline" padding={16}>
         <S.Grid>
-          {APPLY_PART_STATUS_MOCKS.map((partStatus) => (
+          {/* {APPLY_PART_STATUS_MOCKS.map((partStatus) => (
             <ApplyStatusCard
               key={partStatus.part}
               part={partStatus.part}
               applyNum={partStatus.applyNum}
             />
-          ))}
+          ))} */}
         </S.Grid>
       </Section>
     </Flex>

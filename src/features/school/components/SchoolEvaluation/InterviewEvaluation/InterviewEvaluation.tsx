@@ -5,9 +5,9 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import InterviewQuestions from './InterviewQuestions/InterviewQuestions'
-import RealTimeEvaluation from './RealTimeEvaluation/RealTimeEvaluation'
 import Scheduling from './Scheduling/Scheduling'
 import * as S from './InterviewEvaluation.style'
+import RealTimeEvaluation from './RealTimeEvaluation'
 
 const TabInfo = {
   scheduling: {

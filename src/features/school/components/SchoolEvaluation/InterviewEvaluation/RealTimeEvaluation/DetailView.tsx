@@ -13,8 +13,8 @@ import ApplicationModal from '../../../modals/ApplicationModal/ApplicationModal'
 import EvaluationStatus from '../../EvaluationStatus/EvaluationStatus'
 import FilterBar from '../../FilterBar/FilterBar'
 import MyEvaluation from '../../MyEvaluation/MyEvaluation'
+import * as S from './index.style'
 import QuestionItem from './QuestionItem'
-import * as S from './RealTimeEvaluation.style'
 
 const DetailView = ({
   selectedUser,

@@ -9,7 +9,11 @@ import {
 } from '@/shared/hooks/customQuery'
 import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
 
-import { getDocumentEvaluationApplicants, getDocumentSelectedApplicants } from '../domain/api'
+import {
+  getDocumentEvaluationApplicants,
+  getDocumentSelectedApplicants,
+  getFinalSelectionApplications,
+} from '../domain/api'
 import { schoolKeys } from '../domain/queryKeys'
 
 /** 모집 임시저장 조회 */
@@ -90,27 +94,55 @@ export const useGetDocumentEvaluationApplicants = (
   )
 }
 
+/** 최종 선발 대상 리스트 조회 */
+export const useGetFinalSelectionApplications = (
+  recruitingId: string,
+  params: {
+    part: PartType | 'ALL'
+    sort: SelectionsSortType
+    size: string
+  },
+) => {
+  const { queryKey } = schoolKeys.getFinalSelectionApplications(recruitingId, {
+    ...params,
+    page: '0',
+  })
+
+  return useCustomInfiniteQuery(
+    queryKey,
+    ({ pageParam = 0 }) =>
+      getFinalSelectionApplications(recruitingId, {
+        ...params,
+        page: String(pageParam),
+      }),
+    {
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) => {
+        const pagination = lastPage.result.pagination
+        const page = Number(pagination.page)
+        const totalPages = Number(pagination.totalPages)
+        if (Number.isNaN(page) || Number.isNaN(totalPages)) return undefined
+        return page + 1 < totalPages ? page + 1 : undefined
+      },
+    },
+  )
+}
+
 /** 서류 합격 대상자 목록 */
 export const useGetDocumentSelectedApplicants = (
   recruitingId: string,
   params: {
-    part: PartType | 'ALL'
-    size: string
-    sort: SelectionsSortType
+    part?: PartType | 'ALL'
+    size?: string
+    sort?: SelectionsSortType
   },
 ) => {
   const { queryKey } = schoolKeys.getDocumentSelectedApplicants(recruitingId, {
     ...params,
     page: '0',
   })
-  type DocumentSelectedApplicantsQueryKey = typeof queryKey
-  return useCustomInfiniteQuery<
-    Awaited<ReturnType<typeof getDocumentSelectedApplicants>>,
-    unknown,
-    InfiniteData<Awaited<ReturnType<typeof getDocumentSelectedApplicants>>, number>,
-    DocumentSelectedApplicantsQueryKey,
-    number
-  >(
+
+  return useCustomInfiniteQuery(
     queryKey,
     ({ pageParam = 0 }) =>
       getDocumentSelectedApplicants(recruitingId, {
@@ -174,6 +206,55 @@ export const useGetDocumentEvaluationMyAnswer = (
 export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
   const { queryKey, queryFn } = schoolKeys.getInterviewQuestions(recruitmentId, part)
   return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+}
+
+/** 추가 질문(즉석 질문) 조회 */
+export const useGetInterviewLiveQuestions = (recruitmentId: string, assignmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewLiveQuestions(recruitmentId, assignmentId)
+  const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
+}
+
+/** 실시간 평가 현황 조회(평균/리스트) */
+export const useGetInterviewEvaluationSummary = (recruitmentId: string, assignmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationSummary(
+    recruitmentId,
+    assignmentId,
+  )
+  const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
+}
+
+/** 실시간 면접 평가 상세 화면 초기 진입 */
+export const useGetInterviewEvaluationView = (recruitmentId: string, assignmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationView(recruitmentId, assignmentId)
+  const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
+}
+
+/** 실시간 면접 평가 대상 리스트 조회 */
+export const useGetInterviewAssignments = (
+  recruitmentId: string,
+  params?: { date?: string; part?: PartType | 'ALL' },
+) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewAssignments(recruitmentId, params)
+  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+}
+
+/** 실시간 면접 평가용 드롭다운 옵션 조회 */
+export const useGetInterviewEvaluationOptions = (recruitmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationOptions(recruitmentId)
+  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+}
+
+/** 내 면접 평가 조회 */
+export const useGetInterviewEvaluationMyAnswer = (recruitmentId: string, assignmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationMyAnswer(
+    recruitmentId,
+    assignmentId,
+  )
+  const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
 }
 
 /** 면접 질문지 작성 가능 파트 조회 */
