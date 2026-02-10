@@ -1,21 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-
-import type { PartType } from '@/features/auth/domain'
-import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
-import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import {
+  useDocsPassModalList,
+  useDocsPassModalMutations,
+  useDocsPassModalSelection,
+  useDocsPassModalUi,
+} from '@/features/school/utils/docsPassModal'
 import Close from '@/shared/assets/icons/close.svg?react'
-import { useCustomMutation } from '@/shared/hooks/customQuery'
-import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
-import type { Option } from '@/shared/types/form'
-import type { SelectionsSortType } from '@/shared/types/umc'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
-// import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
@@ -28,155 +22,53 @@ import SetPassSuccessModal from '../SetPassSuccessModal/SetPassSuccessModal'
 import DocsEvaluationRow from './DocsEvaluationRow/DocsEvaluationRow'
 import * as S from './DocsPassModal.style'
 
-const sortOptions: Array<Option<string>> = [
-  { label: '점수 높은 순', id: 'SCORE_DESC' },
-  { label: '점수 낮은 순', id: 'SCORE_ASC' },
-  { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
-]
-
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
-  const { value: part, Dropdown } = usePartDropdown()
-  const queryClient = useQueryClient()
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = roleType === 'SCHOOL_PRESIDENT'
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  const [pendingDecisionById, setPendingDecisionById] = useState<
-    Record<string, 'PASS' | 'FAIL' | null>
-  >({})
 
-  const [sortId, setSortId] = useState<SelectionsSortType>('SCORE_DESC')
-  const sortValue = sortOptions.find((option) => option.id === sortId)
+  const {
+    Dropdown,
+    sortOptions,
+    sortValue,
+    handleSortChange,
+    part,
+    sortId,
+    modalOpen,
+    setModalOpen,
+  } = useDocsPassModalUi()
 
-  const [modalOpen, setModalOpen] = useState<{
-    open: boolean
-    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null
-  }>({
-    open: false,
-    modalName: null,
+  const {
+    data,
+    pages,
+    items,
+    totalCount,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useDocsPassModalList({
+    recruitingId,
+    part,
+    sortId,
   })
-  const handleSortChange = (option: Option<unknown>) => {
-    const id = option.id
-    if (id === 'SCORE_DESC' || id === 'SCORE_ASC' || id === 'EVALUATED_AT_ASC') {
-      setSortId(id)
-    }
-  }
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useGetDocumentSelectedApplicants(recruitingId, {
-      part: part ? (part.id === '0' ? 'ALL' : (part.id as PartType)) : 'ALL',
-      size: '10',
-      sort: sortId,
-    })
 
-  const pages = data?.pages ?? []
-  const summary =
-    pages.length > 0 ? pages[0].result.summary : { totalCount: '0', selectedCount: '0' }
-  const totalCount = Number(summary.totalCount)
-  const items = useMemo(
-    () => pages.flatMap((page) => page.result.documentSelectionApplications.content),
-    [pages],
-  )
+  const {
+    selectedIds,
+    setSelectedIds,
+    selectedCount,
+    selectedItems,
+    alreadyPassedCount,
+    headerChecked,
+    handleToggleAll,
+    handleToggleRow,
+    clearSelection,
+  } = useDocsPassModalSelection(items, totalCount)
 
-  const selectedCount = selectedIds.size
-  const selectedItems = items.filter((item) => selectedIds.has(Number(item.applicationId)))
-  const alreadyPassedCount = selectedItems.filter(
-    (item) => item.documentResult.decision === 'PASS',
-  ).length
-  const allSelected = totalCount > 0 && selectedCount === totalCount
-  const headerChecked = allSelected ? true : selectedCount > 0 ? 'indeterminate' : false
-
-  const handleToggleAll = (checked: boolean | 'indeterminate') => {
-    if (checked === true) {
-      setSelectedIds(new Set(items.map((item) => Number(item.applicationId))))
-      return
-    }
-    setSelectedIds(new Set())
-  }
-
-  const handleToggleRow = (id: number) => (checked: boolean | 'indeterminate') => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev)
-      if (checked === true) {
-        next.add(id)
-      } else {
-        next.delete(id)
-      }
-      return next
-    })
-  }
-  const { mutate: patchStatus } = useCustomMutation(
-    ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
-      patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
-    {
-      onMutate: async ({ applicationId, decision }) => {
-        await queryClient.cancelQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
-          exact: false,
-        })
-        const previous = queryClient.getQueriesData({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
-          exact: false,
-        })
-        queryClient.setQueriesData(
-          { queryKey: ['school', 'getDocumentSelectedApplicants'], exact: false },
-          (oldData) => {
-            if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData
-            const next = structuredClone(oldData)
-            const nextPages = (next as { pages: Array<any> }).pages
-            nextPages.forEach((page: any) => {
-              const nextItems = page?.result?.documentSelectionApplications?.content ?? []
-              nextItems.forEach((item: any) => {
-                if (String(item.applicationId) === String(applicationId)) {
-                  item.documentResult = { ...(item.documentResult ?? {}), decision }
-                }
-              })
-            })
-            return next
-          },
-        )
-        setPendingDecisionById((prev) => ({ ...prev, [applicationId]: decision }))
-        return { previous }
-      },
-      onError: (_error, _variables, context) => {
-        context?.previous.forEach(([cacheKey, cachedData]: any) => {
-          queryClient.setQueryData(cacheKey, cachedData)
-        })
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
-          exact: false,
-        })
-      },
-      onSettled: (_data, _error, variables) => {
-        setPendingDecisionById((prev) => ({ ...prev, [variables.applicationId]: null }))
-      },
-    },
-  )
-  const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
-    patchStatus({ applicationId, decision })
-  }
-  const { mutate: bulkPass } = useCustomMutation((applicationIds: Array<string>) => {
-    return Promise.all(
-      applicationIds.map((applicationId) =>
-        patchDocumentSelectionStatus(recruitingId, applicationId, { decision: 'PASS' }),
-      ),
-    )
+  const { pendingDecisionById, handlePatchStatus, handleBulkPass } = useDocsPassModalMutations({
+    recruitingId,
+    selectedItems,
+    clearSelection,
   })
-  const handleBulkPass = () => {
-    const targetIds = selectedItems
-      .filter((item) => item.documentResult.decision !== 'PASS')
-      .map((item) => item.applicationId)
-    if (targetIds.length === 0) return
-    bulkPass(targetIds, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
-          exact: false,
-        })
-        setSelectedIds(new Set())
-      },
-    })
-  }
   return (
     <Modal.Body className="body">
       <S.Container>
@@ -230,7 +122,6 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                   <th>닉네임/이름</th>
                   <th>지원 파트</th>
                   <th>서류 점수</th>
-
                   <th>작업</th>
                 </tr>
               </S.TableRowHeader>

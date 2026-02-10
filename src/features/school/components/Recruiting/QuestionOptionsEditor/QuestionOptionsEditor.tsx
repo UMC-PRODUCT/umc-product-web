@@ -2,10 +2,7 @@ import { useEffect } from 'react'
 import type { Control, FieldErrors, FieldPath } from 'react-hook-form'
 import { useController, useFormState } from 'react-hook-form'
 
-import {
-  isOtherOptionContent,
-  OTHER_OPTION_LABEL,
-} from '@/features/school/constants/questionOption'
+import { isOtherOptionContent, OTHER_OPTION_LABEL } from '@/features/school/utils/questionOption'
 import CloseIcon from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms, RecruitingItemOption } from '@/shared/types/form'

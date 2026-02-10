@@ -1,6 +1,6 @@
 import type { PartType } from '@/features/auth/domain'
-import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type { RecruitmentApplicationFormResponseDTO } from '@/features/school/domain/model'
+import { isOtherOptionContent } from '@/features/school/utils/questionOption'
 import type { FormPage, FormQuestion, RecruitingItem } from '@/shared/types/form'
 
 const toRecruitingItemOptions = (
