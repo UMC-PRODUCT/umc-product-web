@@ -379,6 +379,7 @@ export const getInterviewSlotAssignments = async (
   return data
 }
 
+/** POST /recruitments/{recruitmentId}/interviews/scheduling/assignments - 면접 슬롯에 지원자 배정 */
 export const postInterviewAssignApplicants = async (
   recruitmentId: string,
   slotId: string,
@@ -396,6 +397,7 @@ export const postInterviewAssignApplicants = async (
   return data
 }
 
+/** DELETE /recruitments/{recruitmentId}/interviews/scheduling/assignments/{assignmentId} - 면접 슬롯에서 지원자 배정 해제 */
 export const deleteInterviewAssignApplicants = async (
   recruitmentId: string,
   assignmentId: string,

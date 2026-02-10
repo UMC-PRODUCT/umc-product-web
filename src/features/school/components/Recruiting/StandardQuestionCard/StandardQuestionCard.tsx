@@ -69,7 +69,7 @@ const StandardQuestionCard = ({
     control,
     name: `${namePrefix}.question.options` as FieldPath<RecruitingForms>,
   })
-  const { form } = useRecruitingContext()
+  const { recruitmentForm } = useRecruitingContext()
   const queryClient = useQueryClient()
   const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId ?? '')
   const { useDeleteRecruitmentQuestionOption, usePatchRecruitmentApplicationFormDraft } =
@@ -180,16 +180,20 @@ const StandardQuestionCard = ({
           recruitingId && !isLocked
             ? () => {
                 setTimeout(() => {
-                  const items = form.getValues('items')
+                  const items = recruitmentForm.getValues('items')
                   patchTempSavedRecruitQuestionsMutate(
                     { items: buildQuestionsPayload(items) },
                     {
                       onSuccess: (data) => {
-                        form.setValue('items', convertApplicationFormToItems(data.result), {
-                          shouldDirty: false,
-                          shouldTouch: false,
-                          shouldValidate: true,
-                        })
+                        recruitmentForm.setValue(
+                          'items',
+                          convertApplicationFormToItems(data.result),
+                          {
+                            shouldDirty: false,
+                            shouldTouch: false,
+                            shouldValidate: true,
+                          },
+                        )
                         queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
                       },
                     },

@@ -34,7 +34,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const recruitingId =
     (recruitingMatch?.params as Record<string, string> | undefined)?.recruitingId ?? ''
 
-  const { form } = useRecruitingContext()
+  const { recruitmentForm } = useRecruitingContext()
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
@@ -130,7 +130,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
       { items: buildQuestionsPayload([...normalizedItems, newItem]) },
       {
         onSuccess: (data) => {
-          form.setValue('items', convertApplicationFormToItems(data.result), {
+          recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
             shouldDirty: false,
             shouldTouch: false,
             shouldValidate: true,

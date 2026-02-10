@@ -1,6 +1,8 @@
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
 import * as Shared from '@/shared/styles/shared'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import InterviewQuestions from './InterviewQuestions/InterviewQuestions'
 import RealTimeEvaluation from './RealTimeEvaluation/RealTimeEvaluation'
@@ -21,17 +23,35 @@ const TabInfo = {
     subtitle: '지원자들의 면접을 실시간으로 평가합니다.',
   },
 }
-const InterviewEvaluation = () => {
-  const navigate = useNavigate()
-  const search = useSearch({ from: '/(app)/school/evaluation/' })
-  const interviewTab: 'scheduling' | 'questions' | 'evaluations' =
-    search.interviewTab ?? 'scheduling'
-  const setInterviewTab = (next: 'scheduling' | 'questions' | 'evaluations') => {
-    navigate({
-      search: (prev) => ({ ...prev, interviewTab: next }),
-      replace: true,
-    })
+const STORAGE_KEY = 'schoolEvaluationInterviewTab'
+type InterviewTab = 'scheduling' | 'questions' | 'evaluations'
+
+const resolveInitialTab = (): InterviewTab => {
+  const params = new URLSearchParams(window.location.search)
+  const fromQuery = params.get('interviewTab')
+  if (fromQuery === 'scheduling' || fromQuery === 'questions' || fromQuery === 'evaluations') {
+    return fromQuery
   }
+  const fromStorage = window.localStorage.getItem(STORAGE_KEY)
+  if (
+    fromStorage === 'scheduling' ||
+    fromStorage === 'questions' ||
+    fromStorage === 'evaluations'
+  ) {
+    return fromStorage
+  }
+  return 'scheduling'
+}
+
+const InterviewEvaluation = () => {
+  const [interviewTab, setInterviewTab] = useState<InterviewTab>(resolveInitialTab)
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEY, interviewTab)
+    const url = new URL(window.location.href)
+    url.searchParams.set('interviewTab', interviewTab)
+    window.history.replaceState({}, '', url.toString())
+  }, [interviewTab])
   return (
     <>
       <S.Buttons>
@@ -58,7 +78,13 @@ const InterviewEvaluation = () => {
         <Shared.TabTitle>{TabInfo[interviewTab].title}</Shared.TabTitle>
         <Shared.TabSubtitle>{TabInfo[interviewTab].subtitle}</Shared.TabSubtitle>
       </Shared.TabHeader>
-      {interviewTab === 'scheduling' && <Scheduling />}
+      {interviewTab === 'scheduling' && (
+        <div css={{ minHeight: 600, width: '100%' }}>
+          <AsyncBoundary fallback={<SuspenseFallback label="면접 스케줄링을 불러오는 중입니다." />}>
+            <Scheduling />
+          </AsyncBoundary>
+        </div>
+      )}
       {interviewTab === 'questions' && <InterviewQuestions />}
       {interviewTab === 'evaluations' && <RealTimeEvaluation />}
     </>

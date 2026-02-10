@@ -80,19 +80,24 @@ const MyEvaluation = ({
             })
             queryClient.invalidateQueries({
               predicate: (query) => {
-                const [scope, key, params] = query.queryKey as [string?, string?, any?]
-                if (scope === 'documentEvaluationApplicants') {
-                  return String(params?.recruitingId) === String(recruitingId)
-                }
+                const [root, domain, feature, key, params] = query.queryKey as [
+                  string?,
+                  string?,
+                  string?,
+                  string?,
+                  any?,
+                ]
                 return (
-                  scope === 'school' &&
-                  key === 'documentEvaluationApplicants' &&
+                  root === 'school' &&
+                  domain === 'documents' &&
+                  feature === 'evaluation' &&
+                  key === 'applicants' &&
                   String(params?.recruitmentId) === String(recruitingId)
                 )
               },
             })
             queryClient.invalidateQueries({
-              queryKey: ['documentEvaluationApplicants'],
+              queryKey: ['school', 'documents', 'evaluation', 'applicants'],
               exact: false,
             })
           }

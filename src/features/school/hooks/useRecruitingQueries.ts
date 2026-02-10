@@ -7,11 +7,9 @@ import {
   useCustomQuery,
   useCustomSuspenseQuery,
 } from '@/shared/hooks/customQuery'
-import type { CommonResponseDTO } from '@/shared/types/api'
 import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
 
 import { getDocumentEvaluationApplicants, getDocumentSelectedApplicants } from '../domain/api'
-import type { GetInterviewQuestionsResponseDTO } from '../domain/model'
 import { schoolKeys } from '../domain/queryKeys'
 
 /** 모집 임시저장 조회 */
@@ -59,9 +57,11 @@ export const useGetDocumentEvaluationApplicants = (
     size: string
   },
 ) => {
-  type DocumentEvaluationApplicantsQueryKey = Array<
-    string | { recruitingId: string; part: PartType | 'ALL'; keyword: string; size: string }
-  >
+  const { queryKey } = schoolKeys.getDocumentEvaluationApplicants(recruitingId, {
+    ...params,
+    page: '0',
+  })
+  type DocumentEvaluationApplicantsQueryKey = typeof queryKey
   return useCustomInfiniteQuery<
     Awaited<ReturnType<typeof getDocumentEvaluationApplicants>>,
     unknown,
@@ -69,7 +69,7 @@ export const useGetDocumentEvaluationApplicants = (
     DocumentEvaluationApplicantsQueryKey,
     number
   >(
-    ['documentEvaluationApplicants', { recruitingId, ...params }],
+    queryKey,
     ({ pageParam = 0 }) =>
       getDocumentEvaluationApplicants(recruitingId, {
         ...params,
@@ -99,10 +99,11 @@ export const useGetDocumentSelectedApplicants = (
     sort: SelectionsSortType
   },
 ) => {
-  type DocumentSelectedApplicantsQueryKey = Array<
-    | string
-    | { recruitingId: string; part: PartType | 'ALL'; size: string; sort: SelectionsSortType }
-  >
+  const { queryKey } = schoolKeys.getDocumentSelectedApplicants(recruitingId, {
+    ...params,
+    page: '0',
+  })
+  type DocumentSelectedApplicantsQueryKey = typeof queryKey
   return useCustomInfiniteQuery<
     Awaited<ReturnType<typeof getDocumentSelectedApplicants>>,
     unknown,
@@ -110,7 +111,7 @@ export const useGetDocumentSelectedApplicants = (
     DocumentSelectedApplicantsQueryKey,
     number
   >(
-    ['documentSelectedApplicants', { recruitingId, ...params }],
+    queryKey,
     ({ pageParam = 0 }) =>
       getDocumentSelectedApplicants(recruitingId, {
         ...params,
@@ -172,17 +173,42 @@ export const useGetDocumentEvaluationMyAnswer = (
 /** 면접 질문지(사전 질문) 조회 */
 export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
   const { queryKey, queryFn } = schoolKeys.getInterviewQuestions(recruitmentId, part)
-  type InterviewQuestionsQueryKey = typeof queryKey
-  return useCustomQuery<
-    CommonResponseDTO<GetInterviewQuestionsResponseDTO>,
-    unknown,
-    CommonResponseDTO<GetInterviewQuestionsResponseDTO> | undefined,
-    InterviewQuestionsQueryKey
-  >(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
 }
 
 /** 면접 질문지 작성 가능 파트 조회 */
 export const useGetAvailableInterviewParts = (recruitmentId: string) => {
   const { queryKey, queryFn } = schoolKeys.getAvailableInterviewParts(recruitmentId)
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}
+/** 특정 슬롯에 배정 가능한 지원자 / 이미 배정된 지원자 조회 */
+export const useGetInterviewSlotApplicants = (
+  recruitmentId: string,
+  slotId: string | undefined,
+) => {
+  const resolvedSlotId = slotId ?? ''
+  const { queryKey, queryFn } = schoolKeys.getInterviewSlotApplicants(recruitmentId, resolvedSlotId)
+  const enabled = Boolean(resolvedSlotId)
+  return useCustomQuery(queryKey, queryFn, { enabled })
+}
+/** 면접 슬롯 목록 조회 */
+export const useGetInterviewSlots = (
+  recruitmentId: string,
+  date?: string,
+  part?: PartType | 'ALL',
+) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewSlots(recruitmentId, date, part)
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}
+
+/** 면접 스케줄링 요약 조회 */
+export const useGetInterviewSchedulingSummary = (recruitmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewSchedulingSummary(recruitmentId)
+  return useCustomSuspenseQuery(queryKey, queryFn)
+}
+
+/** 특정 면접 슬롯에 배정된 지원자 조회 */
+export const useGetInterviewSlotAssignments = (recruitmentId: string, slotId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewSlotAssignments(recruitmentId, slotId)
   return useCustomSuspenseQuery(queryKey, queryFn)
 }

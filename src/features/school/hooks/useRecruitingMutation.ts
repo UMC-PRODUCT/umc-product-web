@@ -1,6 +1,7 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteInterviewAssignApplicants,
   deleteInterviewQuestion,
   deleteRecruitment,
   deleteRecruitmentQuestion,
@@ -12,6 +13,7 @@ import {
   patchRecruitmentApplicationFormDraft,
   patchRecruitmentDraft,
   patchRecruitmentPublished,
+  postInterviewAssignApplicants,
   postInterviewQuestion,
   postRecruitmentCreate,
   postRecruitmentPublish,
@@ -125,6 +127,27 @@ export function useRecruitingMutation() {
     )
   }
 
+  function usePostInterviewAssignApplicants() {
+    return useCustomMutation(
+      ({
+        recruitmentId,
+        slotId,
+        applicationId,
+      }: {
+        recruitmentId: string
+        slotId: string
+        applicationId: string
+      }) => postInterviewAssignApplicants(recruitmentId, slotId, applicationId),
+    )
+  }
+
+  function useDeleteInterviewAssignApplicants() {
+    return useCustomMutation(
+      ({ recruitmentId, assignmentId }: { recruitmentId: string; assignmentId: string }) =>
+        deleteInterviewAssignApplicants(recruitmentId, assignmentId),
+    )
+  }
+
   return {
     usePostRecruitmentCreate,
     usePatchRecruitmentDraft,
@@ -140,5 +163,7 @@ export function useRecruitingMutation() {
     usePatchInterviewQuestion,
     usePatchInterviewQuestionOrder,
     useDeleteInterviewQuestion,
+    usePostInterviewAssignApplicants,
+    useDeleteInterviewAssignApplicants,
   }
 }

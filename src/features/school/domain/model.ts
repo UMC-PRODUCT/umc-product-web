@@ -23,11 +23,6 @@ type Pagination = {
   totalElements: string
 }
 
-type PaginationWithNext = Pagination & {
-  hasNext: boolean
-  hasPrevious: boolean
-}
-
 type PersonName = {
   name: string
   nickname: string
@@ -104,20 +99,6 @@ export interface RecruitingProgressStep {
   label: string
 }
 
-/** 진행률 정보 */
-export interface ProgressInfo {
-  total: number
-  complete: number
-}
-
-/** 면접 일정 정보 */
-export interface InterviewSchedule {
-  date: string
-  time: string
-  location: string
-  interviewerCount: number
-}
-
 export type GetRecruitmentsRequestDTO = {
   status: RecruitingStatus
 }
@@ -156,11 +137,6 @@ export interface PostRecruitmentPublishRequestDTO {
 export type PatchRecruitmentDraftRequestDTO = Partial<RecruitingDraft>
 
 export type PatchRecruitmentDraftResponseDTO = CommonResponseDTO<PatchRecruitmentDraftRequestDTO>
-
-export type PostRecruitmentCreateRequestDTO = {
-  recruitmentName?: string
-  parts?: Array<PartType>
-}
 
 export type PostRecruitmentCreateResponseDTO = {
   recruitmentId?: number
@@ -205,7 +181,7 @@ export type RecruitmentEditable = {
 
 export type RecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm
 
-export type DocumentEvaluationQuestionOption = {
+type DocumentEvaluationQuestionOption = {
   optionId: string
   content: string
   isOther: boolean
@@ -235,7 +211,7 @@ export type DocumentEvaluationQuestion = {
   answer: DocumentEvaluationAnswer | null
 }
 
-export type DocumentEvaluationFormPage = {
+type DocumentEvaluationFormPage = {
   pageNo: string
   questions: Array<DocumentEvaluationQuestion>
   partQuestions: Array<{
@@ -258,7 +234,7 @@ export type GetDocumentEvaluationAnswersResponseDTO = {
   docEvaluationSummaries: Array<DocEvaluationSummary>
 }
 
-export type DocEvaluationSummary = {
+type DocEvaluationSummary = {
   evaluatorMemberId: string
   evaluatorName: string
   evaluatorNickname: string
@@ -278,7 +254,7 @@ export type ScheduleSummary = {
   }
 }
 
-export type RecruitmentProgress = {
+type RecruitmentProgress = {
   currentStep: string
   steps: Array<{
     step: string
@@ -345,7 +321,7 @@ export type GetDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
 }
 
-export type DocumentEvaluationApplicantSummary = {
+type DocumentEvaluationApplicantSummary = {
   applicationId: string
   applicantMemberId: string
   applicantName: string
@@ -397,7 +373,7 @@ export type DocumentSelectionApplication = {
   }
 }
 
-export type InterviewQuestionType = {
+type InterviewQuestionType = {
   questionId: string
   orderNo: string
   questionText: string
@@ -447,7 +423,7 @@ export type Assignment = {
   documentScore: string
 }
 
-export type InterviewProgress = {
+type InterviewProgress = {
   scope: string
   part: PartType | 'ALL'
   total: string
@@ -477,7 +453,16 @@ export type GetInterviewSlotsResponseDTO = {
 }
 
 export type GetInterviewSchedulingSlotApplicantsResponseDTO = {
-  assignments: Array<Assignment>
+  available: Array<Assignment>
+  alreadyScheduled: Array<
+    Assignment & {
+      scheduledSlot: {
+        date: string
+        start: string
+        end: string
+      }
+    }
+  >
 }
 
 export type PostInterviewAssignApplicantsResponseDTO = {

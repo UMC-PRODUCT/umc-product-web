@@ -28,6 +28,12 @@ import SetPassSuccessModal from '../SetPassSuccessModal/SetPassSuccessModal'
 import DocsEvaluationRow from './DocsEvaluationRow/DocsEvaluationRow'
 import * as S from './DocsPassModal.style'
 
+const sortOptions: Array<Option<string>> = [
+  { label: '점수 높은 순', id: 'SCORE_DESC' },
+  { label: '점수 낮은 순', id: 'SCORE_ASC' },
+  { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
+]
+
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const { value: part, Dropdown } = usePartDropdown()
   const queryClient = useQueryClient()
@@ -37,11 +43,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const [pendingDecisionById, setPendingDecisionById] = useState<
     Record<string, 'PASS' | 'FAIL' | null>
   >({})
-  const sortOptions: Array<Option<string>> = [
-    { label: '점수 높은 순', id: 'SCORE_DESC' },
-    { label: '점수 낮은 순', id: 'SCORE_ASC' },
-    { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
-  ]
+
   const [sortId, setSortId] = useState<SelectionsSortType>('SCORE_DESC')
   const sortValue = sortOptions.find((option) => option.id === sortId)
 
@@ -105,12 +107,43 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
     ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
       patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
     {
-      onMutate: ({ applicationId, decision }) => {
+      onMutate: async ({ applicationId, decision }) => {
+        await queryClient.cancelQueries({
+          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          exact: false,
+        })
+        const previous = queryClient.getQueriesData({
+          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          exact: false,
+        })
+        queryClient.setQueriesData(
+          { queryKey: ['school', 'getDocumentSelectedApplicants'], exact: false },
+          (oldData) => {
+            if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData
+            const next = structuredClone(oldData)
+            const nextPages = (next as { pages: Array<any> }).pages
+            nextPages.forEach((page: any) => {
+              const nextItems = page?.result?.documentSelectionApplications?.content ?? []
+              nextItems.forEach((item: any) => {
+                if (String(item.applicationId) === String(applicationId)) {
+                  item.documentResult = { ...(item.documentResult ?? {}), decision }
+                }
+              })
+            })
+            return next
+          },
+        )
         setPendingDecisionById((prev) => ({ ...prev, [applicationId]: decision }))
+        return { previous }
+      },
+      onError: (_error, _variables, context) => {
+        context?.previous.forEach(([cacheKey, cachedData]: any) => {
+          queryClient.setQueryData(cacheKey, cachedData)
+        })
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['documentSelectedApplicants'],
+          queryKey: ['school', 'getDocumentSelectedApplicants'],
           exact: false,
         })
       },
@@ -137,7 +170,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
     bulkPass(targetIds, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['documentSelectedApplicants'],
+          queryKey: ['school', 'getDocumentSelectedApplicants'],
           exact: false,
         })
         setSelectedIds(new Set())
@@ -155,7 +188,9 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
           leftChild={
             <>
               <Flex css={{ width: '200px', height: '36px' }}>{Dropdown}</Flex>
-              <S.SelectionInfo onClick={() => {}}>전체 {totalCount}명 중 1명 선발</S.SelectionInfo>
+              <S.SelectionInfo onClick={() => {}}>
+                전체 {totalCount}명 중 {data?.pages[0].result.summary.selectedCount}명 선발
+              </S.SelectionInfo>
             </>
           }
           rightChild={

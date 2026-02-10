@@ -5,13 +5,15 @@ import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
 export const Wrapper = styled.div`
-  height: 600px;
+  height: fit-content;
+  max-height: 685px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 100%;
   ${media.down(theme.breakPoints.desktop)} {
     height: fit-content;
+    max-height: fit-content;
   }
 `
 
@@ -26,7 +28,8 @@ export const Container = styled.div`
 export const MainLayout = styled.div`
   display: flex;
   gap: 20px;
-  height: 100%;
+  height: 614px;
+  min-height: fit-content;
   width: 100%;
   overflow: hidden;
   ${media.down(theme.breakPoints.desktop)} {
@@ -39,6 +42,9 @@ export const MainLayout = styled.div`
 /* 좌측 사이드바 */
 export const Sidebar = styled(Section)`
   width: 360px !important;
+  max-height: 100%;
+  min-height: 100%;
+  height: 100%;
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
@@ -61,7 +67,10 @@ export const TimeSlotList = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  overflow-y: scroll;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
 `
 
 export const TimeSlotItem = styled.div<{ isActive?: boolean }>`
@@ -107,12 +116,12 @@ export const Content = styled.div`
   flex: 1;
   display: grid;
   gap: 20px;
-  grid-template-rows: 1fr 1fr;
-  height: 100%;
-  overflow-y: auto;
+  grid-template-rows: auto auto;
+  height: fit-content;
+  overflow-y: visible;
   ${media.down(theme.breakPoints.desktop)} {
     height: fit-content !important;
-    grid-template-rows: 1fr;
+    grid-template-rows: auto;
   }
 `
 
@@ -134,6 +143,7 @@ export const SearchInput = styled.input`
 `
 
 export const ApplicantList = styled(Section)`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -143,6 +153,17 @@ export const ApplicantList = styled(Section)`
   ${media.down(theme.breakPoints.desktop)} {
     height: fit-content !important;
   }
+`
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+  width: 100%;
 `
 
 export const DragHandle = styled.div`
@@ -166,6 +187,8 @@ export const DropZone = styled(Section)`
   justify-content: flex-start;
   padding: 12px;
   height: fit-content;
+  max-height: 196px;
+  overflow-y: scroll;
   color: ${theme.colors.gray[500]};
   ${theme.typography.B4.Rg};
 

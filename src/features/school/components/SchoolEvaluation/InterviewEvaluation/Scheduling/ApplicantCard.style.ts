@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -13,10 +14,15 @@ export const ApplicantCard = styled(Section)<{ mode?: 'default' | 'assigned' }>`
   height: fit-content;
   gap: 16px;
   min-height: 50px;
+  user-select: none;
   cursor: ${(props) => (props.mode === 'default' ? 'grab' : 'default')};
   .info {
     display: flex;
     gap: 48px;
+    ${media.down(theme.breakPoints.tablet)} {
+      gap: 16px;
+    }
+    align-items: center;
   }
 
   .name {
