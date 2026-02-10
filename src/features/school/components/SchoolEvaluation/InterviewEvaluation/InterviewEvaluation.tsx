@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 
 import * as Shared from '@/shared/styles/shared'
 
@@ -22,9 +22,16 @@ const TabInfo = {
   },
 }
 const InterviewEvaluation = () => {
-  const [interviewTab, setInterviewTab] = useState<'scheduling' | 'questions' | 'evaluations'>(
-    'scheduling',
-  )
+  const navigate = useNavigate()
+  const search = useSearch({ from: '/(app)/school/evaluation/' })
+  const interviewTab: 'scheduling' | 'questions' | 'evaluations' =
+    search.interviewTab ?? 'scheduling'
+  const setInterviewTab = (next: 'scheduling' | 'questions' | 'evaluations') => {
+    navigate({
+      search: (prev) => ({ ...prev, interviewTab: next }),
+      replace: true,
+    })
+  }
   return (
     <>
       <S.Buttons>
