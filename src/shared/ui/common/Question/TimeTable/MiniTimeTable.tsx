@@ -3,7 +3,7 @@ import type { ForwardedRef } from 'react'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 
-import type { QuestionMode } from '@/shared/types/form'
+import type { DateRange, QuestionMode } from '@/shared/types/form'
 
 import * as S from './MiniTimeTable.style'
 import {
@@ -15,14 +15,8 @@ import {
 import { useTimeTableSelection } from './useTimeTableSelection'
 
 interface ScheduleSelectorProps {
-  dateRange: {
-    start: string
-    end: string
-  }
-  timeRange: {
-    start: string
-    end: string
-  }
+  dateRange: DateRange
+  timeRange: DateRange
   disabledSlots: Array<{
     date: string
     times: Array<string>

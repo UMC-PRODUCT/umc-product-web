@@ -5,11 +5,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { PartType } from '@/features/auth/domain'
 import { PART_CONFIG } from '@/features/auth/domain/constants'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import {
   useGetAvailableInterviewParts,
   useGetInterviewQuestions,
-} from '@/features/school/hooks/useGetRecruitingData'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+} from '@/features/school/hooks/useRecruitingQueries'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'

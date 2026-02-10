@@ -1,4 +1,4 @@
-import { useGetDocumentEvaluationAnswers } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetDocumentEvaluationAnswers } from '@/features/school/hooks/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'

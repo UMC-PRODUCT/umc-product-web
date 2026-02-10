@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import type { RecruitingTab } from '@/features/school/domain'
-import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetRecruitmentsList } from '@/features/school/hooks/useRecruitingQueries'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'

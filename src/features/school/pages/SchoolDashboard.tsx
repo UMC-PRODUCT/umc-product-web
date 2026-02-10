@@ -10,7 +10,7 @@ import ApplyStatus from '../components/schoolDashboard/ApplyStatus/ApplyStatus'
 import EvaluationStatus from '../components/schoolDashboard/EvaluationStatus/EvaluationStatus'
 import { ProgressSteps } from '../components/schoolDashboard/ProgressSteps/ProgressSteps'
 import ScheduleSummary from '../components/schoolDashboard/ScheduleSummary/ScheduleSummary'
-import { useGetRecruitmentDashboardSummary } from '../hooks/useGetRecruitingData'
+import { useGetRecruitmentDashboardSummary } from '../hooks/useRecruitingQueries'
 
 export const SchoolDashboardContent = () => {
   const { data } = useGetActiveRecruitmentId()

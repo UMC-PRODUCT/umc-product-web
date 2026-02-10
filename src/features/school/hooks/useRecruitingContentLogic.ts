@@ -17,10 +17,6 @@ import type {
 } from '@/shared/types/form'
 
 import { schoolKeys } from '../domain/queryKeys'
-import {
-  useGetRecruitmentApplicationFormDraft,
-  useGetRecruitmentDraft,
-} from '../hooks/useGetRecruitingData'
 import { useRecruitingMutation } from '../hooks/useRecruitingMutation'
 import { convertApplicationFormToItems } from '../utils/recruiting/applicationFormMapper'
 import {
@@ -31,6 +27,10 @@ import {
   buildPublishedSchedulePayload,
   buildQuestionsPayload,
 } from '../utils/recruiting/recruitingPayload'
+import {
+  useGetRecruitmentApplicationFormDraft,
+  useGetRecruitmentDraft,
+} from './useRecruitingQueries'
 
 export type RecruitingProps = {
   recruitingId?: string

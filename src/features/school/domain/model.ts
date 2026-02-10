@@ -7,10 +7,77 @@ import type { PartType } from '@features/auth/domain'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
 
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
+import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import type { ApplicationFormPayload, Phase, RecruitingDraft } from './types'
+
+// ============================================
+// Shared building blocks
+// ============================================
+
+type Pagination = {
+  page: string
+  size: string
+  totalPages: string
+  totalElements: string
+}
+
+type PaginationWithNext = Pagination & {
+  hasNext: boolean
+  hasPrevious: boolean
+}
+
+type PersonName = {
+  name: string
+  nickname: string
+}
+
+type ApplicantMember = PersonName & {
+  memberId: string
+}
+
+type PartKeyLabel = {
+  key: PartType
+  label: string
+}
+
+type PartLabel = {
+  part: PartType
+  label: string
+}
+
+type DecisionStatus = 'WAIT' | 'PASS' | 'FAIL'
+
+type ProgressRate = {
+  progressRate: string
+  completed: string
+  total: string
+}
+
+type InterviewRules = {
+  slotMinutes: string
+  timeRange: DateRange
+}
+
+type InterviewPartOption = {
+  part: PartType | 'ALL'
+  label: string
+  done: boolean
+}
+
+type InterviewScheduleContext = {
+  date: string
+  part: PartType | 'ALL'
+}
+
+type InterviewSummary = {
+  progress: InterviewProgress
+  dateOptions: Array<string>
+  partOptions: Array<InterviewPartOption>
+  rules: InterviewRules
+  context: InterviewScheduleContext
+}
 
 /** 파트별 지원 현황 */
 export interface PartApplyStatus {
@@ -122,7 +189,7 @@ export type PatchRecruitmentPublishedRequestDTO = {
 export type GetRecruitmentDashboardResponseDTO = {
   recruitmentId: string
   scheduleSummary: ScheduleSummary
-  progress: Progress
+  progress: RecruitmentProgress
   applicationStatus: ApplicationStatus
   evaluationStatus: EvaluationStatus
 }
@@ -180,11 +247,7 @@ export type DocumentEvaluationFormPage = {
 export type GetDocumentEvaluationApplicationResponseDTO = {
   applicationId: string
   status: string
-  applicant: {
-    memberId: string
-    name: string
-    nickname: string
-  }
+  applicant: ApplicantMember
   formPages: Array<DocumentEvaluationFormPage>
 }
 
@@ -206,10 +269,7 @@ export type DocEvaluationSummary = {
 export type ScheduleSummary = {
   phaseTitle: string
   dDay: string
-  dateRange: {
-    start: string
-    end: string
-  }
+  dateRange: DateRange
   todayInterview: {
     interviewTime: string
     nickname: string
@@ -218,7 +278,7 @@ export type ScheduleSummary = {
   }
 }
 
-export type Progress = {
+export type RecruitmentProgress = {
   currentStep: string
   steps: Array<{
     step: string
@@ -237,16 +297,8 @@ export type ApplicationStatus = {
   }>
 }
 export type EvaluationStatus = {
-  documentEvaluation: {
-    progressRate: string
-    completed: string
-    total: string
-  }
-  interviewEvaluation: {
-    progressRate: string
-    completed: string
-    total: string
-  }
+  documentEvaluation: ProgressRate
+  interviewEvaluation: ProgressRate
   partStatuses: Array<{
     part: PartType
     documentStatusText: string
@@ -263,12 +315,7 @@ export type GetDocumentEvaluationApplicantsResponseDTO = {
     evaluatedCount: string
   }
   applicationSummaries: Array<DocumentEvaluationApplicantSummary>
-  paination: {
-    page: string
-    size: string
-    totalPages: string
-    totalElements: string
-  }
+  paination: Pagination
 }
 export type GetDocumentEvaluationApplicantsRequestDTO = {
   part: PartType | 'ALL'
@@ -339,20 +386,14 @@ export type PatchDocumentSelectionStatusRequestDTO = {
 
 export type DocumentSelectionApplication = {
   applicationId: string
-  applicant: {
-    nickname: string
-    name: string
-  }
+  applicant: PersonName
   appliedParts: Array<{
     priority: string
-    part: {
-      key: PartType
-      label: string
-    }
+    part: PartKeyLabel
   }>
   documentScore: string
   documentResult: {
-    decision: 'WAIT' | 'PASS' | 'FAIL'
+    decision: DecisionStatus
   }
 }
 
@@ -390,4 +431,72 @@ export type PatchInterviewQuestionOrderRequestDTO = {
 
 export type PatchInterviewQuestionRequestDTO = {
   questionText: string
+}
+
+export type GetInterviewSlotAssignmentsResponseDTO = {
+  assignments: Array<Assignment>
+}
+
+export type Assignment = {
+  assignmentId: string
+  applicationId: string
+  nickname: string
+  name: string
+  firstPart: PartLabel
+  secondPart: PartLabel | null
+  documentScore: string
+}
+
+export type InterviewProgress = {
+  scope: string
+  part: PartType | 'ALL'
+  total: string
+  scheduled: string
+}
+
+export type GetInterviewSchedulingSummaryResponseDTO = {
+  progress: InterviewProgress
+  dateOptions: Array<string>
+  partOptions: Array<InterviewPartOption>
+  rules: InterviewRules
+  context: InterviewScheduleContext
+}
+
+export type Slot = {
+  slotId: string
+  start: string
+  end: string
+  availableCount: string
+  done: boolean
+}
+
+export type GetInterviewSlotsResponseDTO = {
+  date: string
+  part: PartType | 'ALL'
+  slots: Array<Slot>
+}
+
+export type GetInterviewSchedulingSlotApplicantsResponseDTO = {
+  assignments: Array<Assignment>
+}
+
+export type PostInterviewAssignApplicantsResponseDTO = {
+  assigned: {
+    assignmentId: string
+    applicationId: string
+    slot: {
+      slotId: string
+      start: string
+      end: string
+      date: string
+    }
+  }
+  summary: InterviewSummary
+}
+
+export type DeleteInterviewAssignApplicantsResponseDTO = {
+  unassigned: {
+    applicationId: string
+  }
+  summary: InterviewSummary
 }

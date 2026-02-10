@@ -9,7 +9,7 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
-import { useGetRecruitmentApplicationForm } from '../../../hooks/useGetRecruitingData'
+import { useGetRecruitmentApplicationForm } from '../../../hooks/useRecruitingQueries'
 import * as S from './RecruitingPreview.style'
 
 export const RecruitingPreviewContent = ({

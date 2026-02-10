@@ -3,7 +3,7 @@ import type { ForwardedRef } from 'react'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 
-import type { QuestionMode } from '@/shared/types/form'
+import type { DateRange, QuestionMode } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 
 import {
@@ -16,14 +16,8 @@ import * as S from './TimeTable.style'
 import { useTimeTableSelection } from './useTimeTableSelection'
 
 interface ScheduleSelectorProps {
-  dateRange: {
-    start: string
-    end: string
-  }
-  timeRange: {
-    start: string
-    end: string
-  }
+  dateRange: DateRange
+  timeRange: DateRange
   disabledSlots: Array<{
     date: string
     times: Array<string>

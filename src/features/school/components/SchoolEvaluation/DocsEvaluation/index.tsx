@@ -1,6 +1,6 @@
 import * as Shared from '@shared/styles/shared'
 
-import { useGetRecruitmentsList } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetRecruitmentsList } from '@/features/school/hooks/useRecruitingQueries'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'

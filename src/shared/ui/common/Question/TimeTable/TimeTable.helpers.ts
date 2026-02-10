@@ -1,11 +1,12 @@
 import type { TimeTableSlots } from '@/shared/types/apply'
+import type { DateRange } from '@/shared/types/form'
 
 export const timeToMinutes = (time: string) => {
   const [h, m] = time.split(':').map(Number)
   return h * 60 + m
 }
 
-export const buildVisualRange = (timeRange: { start: string; end: string }) => {
+export const buildVisualRange = (timeRange: DateRange) => {
   const actualStartMin = timeToMinutes(timeRange.start)
   const actualEndMin = timeToMinutes(timeRange.end)
   const visualStartMin = Math.floor(actualStartMin / 60) * 60
@@ -35,10 +36,7 @@ export const buildDisabledIndexMap = ({
     date: string
     times: Array<string>
   }>
-  timeRange: {
-    start: string
-    end: string
-  }
+  timeRange: DateRange
 }) => {
   const { actualStartMin, actualEndMin, visualStartMin, visualEndMin } = buildVisualRange(timeRange)
   const totalSlots = Math.floor((visualEndMin - visualStartMin) / 30)

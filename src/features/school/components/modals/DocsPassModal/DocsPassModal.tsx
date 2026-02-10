@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import type { PartType } from '@/features/auth/domain'
 import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
-import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useRecruitingQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'

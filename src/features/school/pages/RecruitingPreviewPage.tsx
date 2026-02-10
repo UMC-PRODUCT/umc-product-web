@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import ResumeContent from '@/features/apply/components/ResumeContent'
 import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
-import { useGetRecruitmentApplicationForm } from '@/features/school/hooks/useGetRecruitingData'
+import { useGetRecruitmentApplicationForm } from '@/features/school/hooks/useRecruitingQueries'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'

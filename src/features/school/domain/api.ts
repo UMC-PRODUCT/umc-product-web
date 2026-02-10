@@ -3,6 +3,7 @@ import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type {
+  DeleteInterviewAssignApplicantsResponseDTO,
   DeleteRecruitmentQuestionOptionRequestDTO,
   DeleteRecruitmentQuestionRequestDTO,
   DeleteRecruitmentQuestionResponseDTO,
@@ -15,6 +16,10 @@ import type {
   GetDocumentSelectedApplicantsResponseDTO,
   GetInterviewAvailablePartsResponseDTO,
   GetInterviewQuestionsResponseDTO,
+  GetInterviewSchedulingSlotApplicantsResponseDTO,
+  GetInterviewSchedulingSummaryResponseDTO,
+  GetInterviewSlotAssignmentsResponseDTO,
+  GetInterviewSlotsResponseDTO,
   GetRecruitmentDashboardResponseDTO,
   GetRecruitmentDraftResponseDTO,
   GetRecruitmentNoticesResponseDTO,
@@ -30,6 +35,7 @@ import type {
   PatchRecruitmentDraftRequestDTO,
   PatchRecruitmentDraftResponseDTO,
   PatchRecruitmentPublishedRequestDTO,
+  PostInterviewAssignApplicantsResponseDTO,
   PostInterviewQuestionRequestDTO,
   PostRecruitmentCreateResponseDTO,
   PostRecruitmentPublishRequestDTO,
@@ -311,6 +317,91 @@ export const deleteInterviewQuestion = async (
 ): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.delete(
     `/recruitments/${recruitmentId}/interview-sheets/questions/${questionId}`,
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interview-sheets/slot-applicants - 특정 슬롯에 배정 가능한 지원자 / 이미 배정된 지원자 조회 */
+export const getInterviewSchedulingSlotApplicants = async (
+  recruitmentId: string,
+  slotId: string,
+  part?: PartType | 'ALL',
+  keyword?: string,
+): Promise<CommonResponseDTO<GetInterviewSchedulingSlotApplicantsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/scheduling/applicants`,
+    { params: { slotId, part, keyword } },
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/scheduling/slots - 면접 슬롯 목록 조회 */
+export const getInterviewSlots = async (
+  recruitmentId: string,
+  date?: string,
+  part?: PartType | 'ALL',
+): Promise<CommonResponseDTO<GetInterviewSlotsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/scheduling/slots`,
+    {
+      params: { date, part },
+    },
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/scheduling/summary - 면접 스케줄링 요약 조회 */
+export const getInterviewSchedulingSummary = async (
+  recruitmentId: string,
+  date?: string,
+  part?: PartType | 'ALL',
+): Promise<CommonResponseDTO<GetInterviewSchedulingSummaryResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/scheduling/summary`,
+    {
+      params: { date, part },
+    },
+  )
+  return data
+}
+
+/** GET /recruitments/{recruitmentId}/interviews/scheduling/assignments - 특정 면접 슬롯에 배정된 지원자 조회 */
+export const getInterviewSlotAssignments = async (
+  recruitmentId: string,
+  slotId: string,
+): Promise<CommonResponseDTO<GetInterviewSlotAssignmentsResponseDTO>> => {
+  const { data } = await axiosInstance.get(
+    `/recruitments/${recruitmentId}/interviews/scheduling/assignments`,
+    {
+      params: { slotId },
+    },
+  )
+  return data
+}
+
+export const postInterviewAssignApplicants = async (
+  recruitmentId: string,
+  slotId: string,
+  applicationId: string,
+): Promise<CommonResponseDTO<PostInterviewAssignApplicantsResponseDTO>> => {
+  const { data } = await axiosInstance.post(
+    `/recruitments/${recruitmentId}/interviews/scheduling/assignments`,
+    {
+      applicationId,
+      to: {
+        slotId,
+      },
+    },
+  )
+  return data
+}
+
+export const deleteInterviewAssignApplicants = async (
+  recruitmentId: string,
+  assignmentId: string,
+): Promise<CommonResponseDTO<DeleteInterviewAssignApplicantsResponseDTO>> => {
+  const { data } = await axiosInstance.delete(
+    `/recruitments/${recruitmentId}/interviews/scheduling/assignments/${assignmentId}`,
   )
   return data
 }
