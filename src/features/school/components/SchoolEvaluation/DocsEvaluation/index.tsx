@@ -23,7 +23,7 @@ const DocsEvaluationContent = () => {
             key={recruitment.recruitmentId}
             start={recruitment.startDate}
             end={recruitment.endDate}
-            applicants={recruitment.applicantCount}
+            applicants={Number(recruitment.applicantCount)}
             title={recruitment.recruitmentName}
             parts={['PLAN', 'DESIGN', 'ANDROID', 'IOS', 'WEB', 'SPRINGBOOT', 'NODEJS']}
             recruitmentId={recruitment.recruitmentId}

@@ -47,7 +47,7 @@ const RecruitingListBody = ({ tab }: { tab: RecruitingTab }) => {
             title={recruitment.recruitmentName}
             startDate={recruitment.startDate}
             endDate={recruitment.endDate}
-            applicants={recruitment.applicantCount}
+            applicants={Number(recruitment.applicantCount)}
             state={recruitment.phase}
             editable={recruitment.editable}
             listBadge={recruitment.listBadge}
