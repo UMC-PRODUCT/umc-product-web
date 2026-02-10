@@ -1,20 +1,27 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteInterviewQuestion,
   deleteRecruitment,
   deleteRecruitmentQuestion,
   deleteRecruitmentQuestionOption,
   patchDocumentEvaluationMyAnswer,
   patchDocumentSelectionStatus,
+  patchInterviewQuestion,
+  patchInterviewQuestionOrder,
   patchRecruitmentApplicationFormDraft,
   patchRecruitmentDraft,
   patchRecruitmentPublished,
+  postInterviewQuestion,
   postRecruitmentCreate,
   postRecruitmentPublish,
 } from '../domain/api'
 import type {
+  PatchInterviewQuestionOrderRequestDTO,
+  PatchInterviewQuestionRequestDTO,
   PatchRecruitmentApplicationFormDraftRequestDTO,
   PatchRecruitmentDraftRequestDTO,
+  PostInterviewQuestionRequestDTO,
   PostRecruitmentPublishRequestDTO,
   RecruitmentEditable,
 } from '../domain/model'
@@ -72,6 +79,52 @@ export function useRecruitingMutation() {
       patchDocumentSelectionStatus(recruitmentId, applicantId, status),
     )
   }
+
+  function usePostInterviewQuestion() {
+    return useCustomMutation(
+      ({
+        recruitmentId,
+        requestBody,
+      }: {
+        recruitmentId: string
+        requestBody: PostInterviewQuestionRequestDTO
+      }) => postInterviewQuestion(recruitmentId, requestBody),
+    )
+  }
+
+  function usePatchInterviewQuestion() {
+    return useCustomMutation(
+      ({
+        recruitmentId,
+        questionId,
+        requestBody,
+      }: {
+        recruitmentId: string
+        questionId: string
+        requestBody: PatchInterviewQuestionRequestDTO
+      }) => patchInterviewQuestion(recruitmentId, questionId, requestBody),
+    )
+  }
+
+  function usePatchInterviewQuestionOrder() {
+    return useCustomMutation(
+      ({
+        recruitmentId,
+        requestBody,
+      }: {
+        recruitmentId: string
+        requestBody: PatchInterviewQuestionOrderRequestDTO
+      }) => patchInterviewQuestionOrder(recruitmentId, requestBody),
+    )
+  }
+
+  function useDeleteInterviewQuestion() {
+    return useCustomMutation(
+      ({ recruitmentId, questionId }: { recruitmentId: string; questionId: string }) =>
+        deleteInterviewQuestion(recruitmentId, questionId),
+    )
+  }
+
   return {
     usePostRecruitmentCreate,
     usePatchRecruitmentDraft,
@@ -83,5 +136,9 @@ export function useRecruitingMutation() {
     useDeleteRecruitmentQuestionOption,
     usePatchDocumentEvaluationMyAnswer,
     usePatchDocumentSelectionStatus,
+    usePostInterviewQuestion,
+    usePatchInterviewQuestion,
+    usePatchInterviewQuestionOrder,
+    useDeleteInterviewQuestion,
   }
 }

@@ -1,103 +1,102 @@
 import type { DragEvent } from 'react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 import type { PartType } from '@/features/auth/domain'
-import { PART_CONFIG, PART_LIST } from '@/features/auth/domain/constants'
+import { PART_CONFIG } from '@/features/auth/domain/constants'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import {
+  useGetAvailableInterviewParts,
+  useGetInterviewQuestions,
+} from '@/features/school/hooks/useGetRecruitingData'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Label from '@/shared/ui/common/Label'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
+import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import LabelLongTextField from '@/shared/ui/form/LabelLongTextField/LabelLongTextField'
 
 import FilterBar from '../../FilterBar/FilterBar'
 import QuestionCard from '../../QuestionCard/QuestionCard'
 import * as S from './InterviewQuestions.style'
 
-type PartKey = PartType | 'common'
+type PartKey = PartType | 'COMMON'
 type QuestionItem = { id: string; text: string }
-type PartState = { status: 'draft' | 'done'; items: Array<QuestionItem> }
 
-const buildInitialQuestions = (): Record<PartKey, PartState> => {
-  const base = PART_LIST.reduce<Record<PartType, PartState>>(
-    (acc, part) => {
-      acc[part] = {
-        status: 'draft',
-        items: [],
-      }
-      return acc
-    },
-    {} as Record<PartType, PartState>,
-  )
+const InterviewQuestionsContent = () => {
+  const recruitmentId = '40' // TODO: 추후 수정 예정
+  const queryClient = useQueryClient()
+  const {
+    usePostInterviewQuestion,
+    usePatchInterviewQuestion,
+    usePatchInterviewQuestionOrder,
+    useDeleteInterviewQuestion,
+  } = useRecruitingMutation()
+  const { mutate: postQuestion } = usePostInterviewQuestion()
+  const { mutate: patchQuestion } = usePatchInterviewQuestion()
+  const { mutate: patchOrder } = usePatchInterviewQuestionOrder()
+  const { mutate: deleteQuestion } = useDeleteInterviewQuestion()
 
-  return {
-    common: {
-      status: 'draft',
-      items: [
-        { id: 'c-1', text: '팀 내에서 갈등이 발생했을 때 어떻게 해결했나요?' },
-        { id: 'c-2', text: '최근에 몰입했던 프로젝트를 소개해주세요.' },
-        { id: 'c-3', text: 'UMC에 지원한 이유와 기대하는 점을 알려주세요.' },
-      ],
-    },
-    ...base,
-  }
-}
-
-const PART_OPTIONS = [
-  { id: 'common', label: '공통' },
-  ...PART_LIST.map((part) => ({ id: part, label: PART_CONFIG[part].label })),
-]
-
-const InterviewQuestions = () => {
-  const [selectedPart, setSelectedPart] = useState<PartKey>('common')
-  const [questionByPart, setQuestionByPart] =
-    useState<Record<PartKey, PartState>>(buildInitialQuestions())
+  const [selectedPart, setSelectedPart] = useState<PartKey>('COMMON')
   const [draftQuestion, setDraftQuestion] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingText, setEditingText] = useState('')
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null)
 
-  const selectedState = questionByPart[selectedPart]
-  const isSelectedPartComplete = selectedState.status === 'done'
-  const isCompletionToggleDisabled = selectedState.items.length === 0
-  const selectedLabel = selectedPart === 'common' ? '공통' : PART_CONFIG[selectedPart].label
+  const selectedLabel = selectedPart === 'COMMON' ? '공통' : PART_CONFIG[selectedPart].label
+  const { data: availablePartsData } = useGetAvailableInterviewParts(recruitmentId)
+  const { data: interviewQuestionData, isLoading: isInterviewQuestionsLoading } =
+    useGetInterviewQuestions(recruitmentId, selectedPart)
+  const availableOptions = useMemo(
+    () =>
+      availablePartsData.result.parts.map((part) => ({
+        id: part.key,
+        label: part.key === 'COMMON' ? '공통' : PART_CONFIG[part.key].label,
+      })),
+    [availablePartsData.result.parts],
+  )
+  const serverItems = useMemo(() => {
+    const questions = interviewQuestionData?.result.questions ?? []
+    if (questions.length === 0) return []
+    return questions
+      .slice()
+      .sort((a, b) => Number(a.orderNo) - Number(b.orderNo))
+      .map((question) => ({
+        id: question.questionId,
+        text: question.questionText,
+      }))
+  }, [interviewQuestionData?.result.questions])
 
-  const onChangeStatus = (isComplete: boolean) => {
-    setQuestionByPart((prev) => ({
-      ...prev,
-      [selectedPart]: {
-        ...prev[selectedPart],
-        status: isComplete ? 'done' : 'draft',
-      },
-    }))
+  const selectedItems = serverItems
+  const [isSelectedPartComplete, setIsSelectedPartComplete] = useState(false)
+  const isCompletionToggleDisabled = selectedItems.length === 0
+
+  const invalidateQuestions = () => {
+    queryClient.invalidateQueries({
+      queryKey: schoolKeys.getInterviewQuestions(recruitmentId, selectedPart).queryKey,
+    })
   }
 
   const handleAddQuestion = () => {
     const trimmed = draftQuestion.trim()
     if (!trimmed) return
-    const newItem: QuestionItem = {
-      id: `${selectedPart}-${Date.now()}`,
-      text: trimmed,
-    }
-    setQuestionByPart((prev) => ({
-      ...prev,
-      [selectedPart]: {
-        ...prev[selectedPart],
-        items: [...prev[selectedPart].items, newItem],
+    postQuestion(
+      {
+        recruitmentId,
+        requestBody: { partKey: selectedPart, questionText: trimmed },
       },
-    }))
+      { onSuccess: invalidateQuestions },
+    )
     setDraftQuestion('')
   }
 
   const handleRemoveQuestion = (id: string) => {
-    setQuestionByPart((prev) => ({
-      ...prev,
-      [selectedPart]: {
-        ...prev[selectedPart],
-        items: prev[selectedPart].items.filter((item) => item.id !== id),
-      },
-    }))
+    deleteQuestion({ recruitmentId, questionId: id }, { onSuccess: invalidateQuestions })
   }
 
   const handleStartEdit = (question: QuestionItem) => {
@@ -114,15 +113,14 @@ const InterviewQuestions = () => {
     if (!editingId) return
     const trimmed = editingText.trim()
     if (!trimmed) return
-    setQuestionByPart((prev) => ({
-      ...prev,
-      [selectedPart]: {
-        ...prev[selectedPart],
-        items: prev[selectedPart].items.map((item) =>
-          item.id === editingId ? { ...item, text: trimmed } : item,
-        ),
+    patchQuestion(
+      {
+        recruitmentId,
+        questionId: editingId,
+        requestBody: { questionText: trimmed },
       },
-    }))
+      { onSuccess: invalidateQuestions },
+    )
     setEditingId(null)
     setEditingText('')
   }
@@ -155,18 +153,19 @@ const InterviewQuestions = () => {
     event.preventDefault()
     const sourceIndex = Number(event.dataTransfer.getData('text/plain'))
     if (Number.isNaN(sourceIndex) || sourceIndex === targetIndex) return
-    setQuestionByPart((prev) => {
-      const items = [...prev[selectedPart].items]
-      const [moved] = items.splice(sourceIndex, 1)
-      items.splice(targetIndex, 0, moved)
-      return {
-        ...prev,
-        [selectedPart]: {
-          ...prev[selectedPart],
-          items,
+    const currentItems = [...selectedItems]
+    const [moved] = currentItems.splice(sourceIndex, 1)
+    currentItems.splice(targetIndex, 0, moved)
+    patchOrder(
+      {
+        recruitmentId,
+        requestBody: {
+          partKey: selectedPart,
+          orderedQuestionIds: currentItems.map((item) => item.id),
         },
-      }
-    })
+      },
+      { onSuccess: invalidateQuestions },
+    )
     setDraggingIndex(null)
     setPlaceholderIndex(null)
   }
@@ -177,14 +176,14 @@ const InterviewQuestions = () => {
         leftChild={
           <>
             <Dropdown
-              options={PART_OPTIONS}
-              value={PART_OPTIONS.find((option) => option.id === selectedPart)}
+              options={availableOptions}
+              value={availableOptions.find((option) => option.id === selectedPart)}
               onChange={(option) => setSelectedPart(option.id as PartKey)}
               placeholder="파트 선택"
               css={{ height: '40px' }}
             />
             <S.SelectionInfo>
-              {selectedLabel} 질문 총 {selectedState.items.length}개
+              {selectedLabel} 질문 총 {selectedItems.length}개
             </S.SelectionInfo>
           </>
         }
@@ -198,7 +197,9 @@ const InterviewQuestions = () => {
                 padding: '4px 14px',
                 cursor: !isCompletionToggleDisabled ? 'pointer' : 'default',
               }}
-              onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(false)}
+              onClick={
+                isCompletionToggleDisabled ? undefined : () => setIsSelectedPartComplete(false)
+              }
             >
               작성 중
             </Badge>
@@ -210,7 +211,9 @@ const InterviewQuestions = () => {
                 padding: '4px 14px',
                 cursor: !isCompletionToggleDisabled ? 'pointer' : 'default',
               }}
-              onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(true)}
+              onClick={
+                isCompletionToggleDisabled ? undefined : () => setIsSelectedPartComplete(true)
+              }
             >
               작성 완료
             </Badge>
@@ -220,11 +223,15 @@ const InterviewQuestions = () => {
       <S.GridWrapper>
         <Section variant="outline" padding={'15px 17px'} gap={14} alignItems="flex-start">
           <Label label="등록된 질문 목록" />
-          {selectedState.items.length === 0 ? (
+          {isInterviewQuestionsLoading && selectedItems.length === 0 ? (
+            <S.EmptyState>
+              <Loading size={20} label="불러오는 중" labelPlacement="right" />
+            </S.EmptyState>
+          ) : selectedItems.length === 0 ? (
             <S.EmptyState>등록된 질문이 없습니다.</S.EmptyState>
           ) : (
             <S.QuestionList>
-              {selectedState.items.map((question, index) => (
+              {selectedItems.map((question, index) => (
                 <QuestionCard
                   key={question.id}
                   question={question}
@@ -265,6 +272,14 @@ const InterviewQuestions = () => {
         </Section>
       </S.GridWrapper>
     </S.Wrapper>
+  )
+}
+
+const InterviewQuestions = () => {
+  return (
+    <AsyncBoundary fallback={<SuspenseFallback label="면접 질문을 불러오는 중입니다." />}>
+      <InterviewQuestionsContent />
+    </AsyncBoundary>
   )
 }
 

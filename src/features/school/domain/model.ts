@@ -104,6 +104,15 @@ export type PatchRecruitmentApplicationFormDraftRequestDTO = ApplicationFormPayl
 export type PatchRecruitmentApplicationFormDraftResponseDTO = RecruitmentApplicationFormResponseDTO
 
 export type DeleteRecruitmentQuestionResponseDTO = RecruitmentApplicationFormResponseDTO
+export type DeleteRecruitmentQuestionRequestDTO = {
+  recruitmentId: string
+  questionId: string
+}
+export type DeleteRecruitmentQuestionOptionRequestDTO = {
+  recruitmentId: string
+  questionId: string
+  optionId: string
+}
 
 export type PatchRecruitmentPublishedRequestDTO = {
   recruitmentId: string
@@ -261,8 +270,19 @@ export type GetDocumentEvaluationApplicantsResponseDTO = {
     totalElements: string
   }
 }
+export type GetDocumentEvaluationApplicantsRequestDTO = {
+  part: PartType | 'ALL'
+  keyword: string
+  page: string
+  size: string
+}
 export type PatchDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
+}
+export type PatchDocumentEvaluationMyAnswerRequestDTO = {
+  score: string
+  comments: string
+  action: 'DRAFT_SAVE' | 'SUBMIT'
 }
 
 export type MyEvaluation = {
@@ -307,6 +327,15 @@ export type GetDocumentSelectedApplicantsResponseDTO = {
     hasPrevious: boolean
   }
 }
+export type GetDocumentSelectedApplicantsRequestDTO = {
+  part: PartType | 'ALL'
+  page: string
+  size: string
+  sort: SelectionsSortType
+}
+export type PatchDocumentSelectionStatusRequestDTO = {
+  decision: 'PASS' | 'FAIL' | 'WAIT'
+}
 
 export type DocumentSelectionApplication = {
   applicationId: string
@@ -325,4 +354,40 @@ export type DocumentSelectionApplication = {
   documentResult: {
     decision: 'WAIT' | 'PASS' | 'FAIL'
   }
+}
+
+export type InterviewQuestionType = {
+  questionId: string
+  orderNo: string
+  questionText: string
+}
+
+export type GetInterviewQuestionsResponseDTO = {
+  part: {
+    key: PartType | 'COMMON'
+    label: string
+    questionCount: string
+  }
+  questions: Array<InterviewQuestionType>
+}
+
+export type GetInterviewAvailablePartsResponseDTO = {
+  parts: Array<{
+    key: PartType | 'COMMON'
+    label: string
+  }>
+}
+
+export type PostInterviewQuestionRequestDTO = {
+  partKey: PartType | 'COMMON'
+  questionText: string
+}
+
+export type PatchInterviewQuestionOrderRequestDTO = {
+  partKey: PartType | 'COMMON'
+  orderedQuestionIds: Array<string>
+}
+
+export type PatchInterviewQuestionRequestDTO = {
+  questionText: string
 }

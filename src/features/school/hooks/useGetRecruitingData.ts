@@ -7,9 +7,11 @@ import {
   useCustomQuery,
   useCustomSuspenseQuery,
 } from '@/shared/hooks/customQuery'
+import type { CommonResponseDTO } from '@/shared/types/api'
 import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
 
 import { getDocumentEvaluationApplicants, getDocumentSelectedApplicants } from '../domain/api'
+import type { GetInterviewQuestionsResponseDTO } from '../domain/model'
 import { schoolKeys } from '../domain/queryKeys'
 
 /** 모집 임시저장 조회 */
@@ -165,4 +167,22 @@ export const useGetDocumentEvaluationMyAnswer = (
   )
   const enabled = Boolean(recruitingId) && Boolean(applicantId)
   return useCustomQuery(queryKey, queryFn, { enabled })
+}
+
+/** 면접 질문지(사전 질문) 조회 */
+export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
+  const { queryKey, queryFn } = schoolKeys.getInterviewQuestions(recruitmentId, part)
+  type InterviewQuestionsQueryKey = typeof queryKey
+  return useCustomQuery<
+    CommonResponseDTO<GetInterviewQuestionsResponseDTO>,
+    unknown,
+    CommonResponseDTO<GetInterviewQuestionsResponseDTO> | undefined,
+    InterviewQuestionsQueryKey
+  >(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+}
+
+/** 면접 질문지 작성 가능 파트 조회 */
+export const useGetAvailableInterviewParts = (recruitmentId: string) => {
+  const { queryKey, queryFn } = schoolKeys.getAvailableInterviewParts(recruitmentId)
+  return useCustomSuspenseQuery(queryKey, queryFn)
 }

@@ -5,11 +5,13 @@ import type { PartType } from '@/features/auth/domain'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import {
+  getAvailableInterviewParts,
   getDocumentEvaluationAnswers,
   getDocumentEvaluationApplicants,
   getDocumentEvaluationApplicationDetail,
   getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
+  getInterviewQuestions,
   getRecruitmentApplicationFormDraft,
   getRecruitmentDashboardSummary,
   getRecruitmentDraft,
@@ -83,5 +85,17 @@ export const schoolKeys = createQueryKeys('school', {
   ) => ({
     queryKey: ['documentEvaluationApplicants', { recruitmentId, ...params }],
     queryFn: () => getDocumentEvaluationApplicants(recruitmentId, params),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interview-sheets/questions - 면접 질문지(사전 질문) 조회 */
+  getInterviewQuestions: (recruitmentId: string, part: PartType | 'COMMON') => ({
+    queryKey: ['interviewQuestions', { recruitmentId, part }],
+    queryFn: () => getInterviewQuestions(recruitmentId, part),
+  }),
+
+  /** GET /recruitments/{recruitmentId}/interview-sheets/parts - 면접 질문지 작성 가능 파트 조회 */
+  getAvailableInterviewParts: (recruitmentId: string) => ({
+    queryKey: ['interviewSheetApplicants', { recruitmentId }],
+    queryFn: () => getAvailableInterviewParts(recruitmentId),
   }),
 })
