@@ -7,6 +7,7 @@ import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
+import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
@@ -50,7 +51,7 @@ const FinalEvaluation = () => {
     interviewScore: '94.0',
     finalScore: '93.0',
     result: i === 0 ? 'SpringBoot' : 'N/A',
-    isPassed: i === 0,
+    isPassed: i === 0 ? 'PASS' : i % 3 === 0 ? 'FAIL' : 'WAIT',
   }))
   const selectedCount = selectedIds.size
   const allSelected = applicants.length > 0 && selectedCount === applicants.length
@@ -191,28 +192,69 @@ const FinalEvaluation = () => {
                   )}
                 </TableStyles.Td>
                 <TableStyles.Td>
-                  {item.isPassed ? (
-                    <S.ActionButton
-                      variant="solid"
-                      tone="necessary"
-                      label="합격 취소"
-                      typo="B4.Sb"
-                      disabled={!canEdit}
-                      onClick={() => setModalOpen({ open: true, modalName: 'setFail' })}
-                    />
+                  {item.isPassed === 'WAIT' ? (
+                    <Flex gap={8}>
+                      <S.ActionButton
+                        variant="outline"
+                        tone="gray"
+                        label="합격"
+                        typo="B4.Sb"
+                        // isLoading={isPassLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onPass()}
+                      />
+                      <S.ActionButton
+                        variant="outline"
+                        tone="gray"
+                        label="불합격"
+                        typo="B4.Sb"
+                        // isLoading={isFailLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onFail()}
+                      />
+                    </Flex>
+                  ) : item.isPassed === 'PASS' ? (
+                    <Flex gap={8}>
+                      <S.ActionButton
+                        variant="outline"
+                        tone="lime"
+                        label="합격"
+                        typo="B4.Sb"
+                        // isLoading={isPassLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onPass()}
+                      />
+                      <S.ActionButton
+                        variant="outline"
+                        tone="gray"
+                        label="불합격"
+                        typo="B4.Sb"
+                        // isLoading={isFailLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onFail()}
+                      />
+                    </Flex>
                   ) : (
-                    <S.ActionButton
-                      variant="solid"
-                      tone="lime"
-                      label="합격 처리"
-                      typo="B4.Sb"
-                      disabled={!canEdit}
-                      onClick={() =>
-                        item.parts.length > 1
-                          ? setModalOpen({ open: true, modalName: 'setPassPart' })
-                          : setModalOpen({ open: true, modalName: 'setPassSuccess' })
-                      }
-                    />
+                    <Flex gap={8}>
+                      <S.ActionButton
+                        variant="outline"
+                        tone="gray"
+                        label="합격"
+                        typo="B4.Sb"
+                        // isLoading={isPassLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onPass()}
+                      />
+                      <S.ActionButton
+                        variant="outline"
+                        tone="necessary"
+                        label="불합격"
+                        typo="B4.Sb"
+                        // isLoading={isFailLoading}
+                        // disabled={isActionDisabled}
+                        // onClick={() => onFail()}
+                      />
+                    </Flex>
                   )}
                 </TableStyles.Td>
               </>
