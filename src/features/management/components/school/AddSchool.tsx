@@ -51,7 +51,7 @@ const AddSchool = () => {
   const [profileFileId, setProfileFileId] = useState<string | null>(null)
   const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
-  const [linkType, setLinkType] = useState<LinkType | null>(null)
+  const [linkType, setLinkType] = useState<Option<string> | null>(null)
   const [links, setLinks] = useState<Array<ExternalLink>>([])
   const [linkTitle, setLinkTitle] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
@@ -150,7 +150,14 @@ const AddSchool = () => {
     const trimmedUrl = linkUrl.trim()
     if (!trimmedTitle || !trimmedUrl || !linkType) return
 
-    setLinks((prev) => [...prev, { title: trimmedTitle, url: trimmedUrl, type: linkType }])
+    setLinks((prev) => [
+      ...prev,
+      {
+        title: trimmedTitle,
+        url: trimmedUrl,
+        type: linkType.id as LinkType,
+      },
+    ])
     setLinkTitle('')
     setLinkUrl('')
     setLinkType(null)
@@ -310,8 +317,8 @@ const AddSchool = () => {
                       <Dropdown
                         placeholder="Type"
                         options={linkTypeOptions}
-                        value={newLinkType ?? undefined}
-                        onChange={(option) => setNewLinkType(option)}
+                        value={linkType ?? undefined}
+                        onChange={(option) => setLinkType(option)}
                         css={{
                           maxWidth: '50px',
                           height: '50px',
