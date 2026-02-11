@@ -11,6 +11,7 @@ type UseTimeTableSelectionArgs = {
   visualStartMin: number
   disabledIdxMap: Record<string, Set<number>>
   onChange?: (selected: Record<string, Array<string>>) => void
+  slotMinutes?: number
 }
 
 export const useTimeTableSelection = ({
@@ -20,6 +21,7 @@ export const useTimeTableSelection = ({
   visualStartMin,
   disabledIdxMap,
   onChange,
+  slotMinutes: _slotMinutes,
 }: UseTimeTableSelectionArgs) => {
   // 현재 선택 상태를 내부 Set으로 관리.
   const [selectedIndices, setSelectedIndices] = useState<Record<string, Set<number>>>(() =>

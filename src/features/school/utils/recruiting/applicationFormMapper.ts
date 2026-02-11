@@ -62,7 +62,7 @@ export const convertApplicationFormToItems = (formData: RecruitmentApplicationFo
         ? [...questions, page.scheduleQuestion]
         : questions
 
-    sortByOrderNo(commonQuestions).forEach((question: FormQuestion, index: number) =>
+    sortByOrderNo(commonQuestions).forEach((question, index) =>
       items.push(
         buildRecruitingItemFromQuestion(
           question,
@@ -77,7 +77,7 @@ export const convertApplicationFormToItems = (formData: RecruitmentApplicationFo
       const groupQuestions: Array<FormQuestion> = Array.isArray(partGroup.questions)
         ? partGroup.questions
         : []
-      sortByOrderNo(groupQuestions).forEach((question: FormQuestion, index: number) =>
+      sortByOrderNo(groupQuestions).forEach((question, index) =>
         items.push(
           buildRecruitingItemFromQuestion(
             question,

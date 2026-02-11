@@ -30,6 +30,7 @@ export const buildDisabledIndexMap = ({
   dates,
   disabledSlots,
   timeRange,
+  slotMinutes: _slotMinutes,
 }: {
   dates: Array<string>
   disabledSlots: Array<{
@@ -37,6 +38,7 @@ export const buildDisabledIndexMap = ({
     times: Array<string>
   }>
   timeRange: DateRange
+  slotMinutes?: number
 }) => {
   const { actualStartMin, actualEndMin, visualStartMin, visualEndMin } = buildVisualRange(timeRange)
   const totalSlots = Math.floor((visualEndMin - visualStartMin) / 30)
@@ -116,9 +118,11 @@ export const isSameSelection = (a: Record<string, Set<number>>, b: Record<string
 export const buildTimeLabels = ({
   visualStartMin,
   visualEndMin,
+  slotMinutes: _slotMinutes,
 }: {
   visualStartMin: number
   visualEndMin: number
+  slotMinutes?: number
 }) => {
   const labels = []
   for (let min = visualStartMin; min <= visualEndMin; min += 60) {
@@ -138,9 +142,11 @@ export const buildTimeLabels = ({
 export const miniBuildTimeLabels = ({
   visualStartMin,
   visualEndMin,
+  slotMinutes: _slotMinutes,
 }: {
   visualStartMin: number
   visualEndMin: number
+  slotMinutes?: number
 }) => {
   const labels = []
   for (let min = visualStartMin; min <= visualEndMin; min += 60) {
