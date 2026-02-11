@@ -59,10 +59,11 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
     const isValuePropProvided = value !== undefined
     const [internalValue, setInternalValue] = useState<Date | null>(null)
     const [isOpen, setIsOpen] = useState(false)
+    const effectiveIsOpen = isOpen && !disabled
     const selectedValue = isValuePropProvided ? (value ?? null) : internalValue
 
     useEffect(() => {
-      if (!isOpen) return
+      if (!effectiveIsOpen) return
       const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
         if (!wrapperRef.current) return
         if (wrapperRef.current.contains(event.target as Node)) return
@@ -76,7 +77,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
         document.removeEventListener('mousedown', handleOutsideClick)
         document.removeEventListener('touchstart', handleOutsideClick)
       }
-    }, [isOpen, onBlur])
+    }, [effectiveIsOpen, onBlur])
 
     const handleDateChange = useCallback(
       (nextValue: Date) => {
@@ -117,10 +118,10 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             type="button"
             aria-labelledby={labelId}
             aria-haspopup="dialog"
-            aria-expanded={isOpen}
+            aria-expanded={effectiveIsOpen}
             className={className}
             css={css}
-            $open={isOpen}
+            $open={effectiveIsOpen}
             onClick={() => {
               if (disabled) return
               setIsOpen(!isOpen)
@@ -130,8 +131,8 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             <S.Value $placeholder={!selectedValue}>{displayValue}</S.Value>
             <CalendarIcon color={theme.colors.gray[400]} width={26} height={26} aria-hidden />
           </S.Trigger>
-          {isOpen && (
-            <S.CalendarPopover $open={isOpen} role="dialog" aria-labelledby={labelId}>
+          {effectiveIsOpen && (
+            <S.CalendarPopover $open={effectiveIsOpen} role="dialog" aria-labelledby={labelId}>
               <Section
                 variant="both"
                 padding={'18px 20px'}
