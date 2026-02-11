@@ -18,6 +18,7 @@ const Title = styled.div`
 const Subtitle = styled.div`
   ${theme.typography.B5.Rg}
   color: ${theme.colors.gray[400]};
+  white-space: pre-wrap;
 `
 
 const ModalButton = styled.button`
