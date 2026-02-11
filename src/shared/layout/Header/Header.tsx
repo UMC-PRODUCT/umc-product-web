@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getActiveGisu, getMemberMe, getSchoolLink } from '@/features/auth/domain/api'
+import { getSchoolLink } from '@/features/auth/domain/api'
+import { useActiveGisuQuery, useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
-import { authKeys, gisuKeys, schoolKeys } from '@/shared/queryKeys'
+import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 
 import * as S from './Header.style'
@@ -27,8 +28,8 @@ const Header = ({
   const navigate = useNavigate()
   const { schoolId, setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } =
     useUserProfileStore()
-  const { data: profileData } = useCustomQuery(authKeys.getMemberMe, getMemberMe)
-  const { data: gisuData } = useCustomQuery(gisuKeys.active, getActiveGisu, {
+  const { data: profileData } = useMemberMeQuery()
+  const { data: gisuData } = useActiveGisuQuery({
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24 * 7,
   })

@@ -2,10 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { clearTokens } from '@/api/tokenManager'
-import { getActiveGisu, getMemberMe } from '@/features/auth/domain/api'
+import { useActiveGisuQuery, useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
-import { useCustomQuery } from '@/shared/hooks/customQuery'
-import { authKeys, gisuKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { Badge } from '@/shared/ui/common/Badge/Badge'
 import Flex from '@/shared/ui/common/Flex/Flex'
@@ -39,9 +37,9 @@ const ProfileMenuContent = ({
     isLoading: isProfileLoading,
     error: profileError,
     refetch: refetchProfile,
-  } = useCustomQuery(authKeys.getMemberMe, getMemberMe)
+  } = useMemberMeQuery()
 
-  const { data: gisu } = useCustomQuery(gisuKeys.active, getActiveGisu, {
+  const { data: gisu } = useActiveGisuQuery({
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24 * 7,
   })
@@ -58,10 +56,11 @@ const ProfileMenuContent = ({
   useEffect(() => {
     if (!data || !gisuId) return
     setGisu(gisuId)
-    const activeRole = data.roles.find((role) => role.gisuId === gisuId)
-    if (activeRole) {
-      setRoles(activeRole)
-    }
+    // TODO: 역할 추후에 다시 주석 해제 예정
+    // const activeRole = data.roles.find((role) => role.gisuId === gisuId)
+    // if (activeRole) {
+    //   setRoles(activeRole)
+    // }
   }, [data, gisuId, setGisu, setRoles])
 
   if (isProfileLoading) {
