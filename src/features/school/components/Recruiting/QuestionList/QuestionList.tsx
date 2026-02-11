@@ -48,6 +48,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     usePatchRecruitmentApplicationFormDraft(recruitingId)
   const queryClient = useQueryClient()
   const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
+  // 폼 문항 리스트 필드 배열 제어
   const { fields, append, remove, move, update } = useFieldArray({
     control,
     name: 'items' as never,
@@ -57,11 +58,13 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     control,
     name: 'items' as never,
   }) as RecruitingForms['items'] | undefined
+  // watch 결과가 undefined일 수 있어서 안전하게 배열로 정규화
   const normalizedItems = useMemo<RecruitingForms['items']>(
     () => (Array.isArray(watchedItems) ? watchedItems : []),
     [watchedItems],
   )
 
+  // 현재 페이지(공통/파트)에 해당하는 문항 인덱스만 추려서 orderNo 기준 정렬
   const filteredIndices = useMemo(
     () =>
       normalizedItems
@@ -72,10 +75,17 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
           }
           return item.target.kind === 'PART' && item.target.part === target.part
         })
+        .sort((a, b) => {
+          const aOrder = Number(a.item.question.orderNo)
+          const bOrder = Number(b.item.question.orderNo)
+          if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+          return aOrder - bOrder
+        })
         .map(({ index }) => index),
     [normalizedItems, target],
   )
 
+  // 공통 고정 문항(희망파트/면접시간)은 삭제/타입변경 불가
   const fixedIndices = useMemo(() => {
     const next = new Set<number>()
     if (target.kind === 'COMMON_PAGE' && target.pageNo === 1) {
@@ -97,6 +107,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     return next
   }, [filteredIndices, normalizedItems, target])
 
+  // 화면에 보이는 순서대로 orderNo를 동기화 (드래그/추가/삭제 대응)
   useEffect(() => {
     filteredIndices.forEach((itemIndex, orderIndex) => {
       const item = normalizedItems[itemIndex]
@@ -111,6 +122,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     })
   }, [filteredIndices, normalizedItems, update])
 
+  // 문항 추가 + 임시저장(있을 때만)
   const handleAddQuestion = () => {
     if (isLocked) return
     const orderNo = String(filteredIndices.length + 1)
@@ -141,6 +153,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     )
   }
 
+  // 문항 삭제 (고정 문항은 막음)
   const handleDeleteQuestion = (index: number, isFixed: boolean) => {
     if (isLocked || isFixed) return
     const item = normalizedItems[index]
@@ -153,6 +166,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     })
   }
 
+  // 드래그 시작 시 placeholder 높이 계산
   const handleDragStart = (index: number) => (event: DragEvent<HTMLDivElement>) => {
     if (isLocked) return
     draggingId.current = index
@@ -176,6 +190,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderHeight(0)
   }
 
+  // 드래그 중 위치 계산
   const handleDragOver = (index: number) => (event: DragEvent<HTMLDivElement>) => {
     if (isLocked) return
     event.preventDefault()
@@ -190,6 +205,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderIndex(index)
   }
 
+  // 드롭 시 순서 변경
   const handleDrop = (targetIndex: number) => (event: DragEvent<HTMLDivElement>) => {
     if (isLocked) return
     event.preventDefault()
@@ -200,6 +216,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     setPlaceholderIndex(null)
   }
 
+  // 현재 페이지에 보여줄 문항 렌더링 순서 계산
   const visibleQuestions = useMemo(() => {
     const base = filteredIndices
       .map((itemIndex, orderIndex) => {
@@ -216,10 +233,10 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
         } => Boolean(entry.questionField),
       )
     return base.sort((a, b) => {
-      const aType = normalizedItems[a.itemIndex]?.question.type
-      const bType = normalizedItems[b.itemIndex]?.question.type
-      if (aType === 'SCHEDULE' && bType !== 'SCHEDULE') return -1
-      if (aType !== 'SCHEDULE' && bType === 'SCHEDULE') return 1
+      const aOrder = Number(normalizedItems[a.itemIndex]?.question.orderNo)
+      const bOrder = Number(normalizedItems[b.itemIndex]?.question.orderNo)
+      if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return a.orderIndex - b.orderIndex
+      if (aOrder !== bOrder) return aOrder - bOrder
       return a.orderIndex - b.orderIndex
     })
   }, [filteredIndices, fields, normalizedItems])

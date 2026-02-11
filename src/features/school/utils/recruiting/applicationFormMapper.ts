@@ -22,6 +22,7 @@ const buildRecruitingItemFromQuestion = (
     type: string
     questionText: string
     required: boolean
+    orderNo?: string
     options?: Array<{ content: string; orderNo?: string; optionId?: string }>
   },
   target:
@@ -35,10 +36,18 @@ const buildRecruitingItemFromQuestion = (
     type: question.type as RecruitingItem['question']['type'],
     questionText: question.questionText,
     required: question.required,
-    orderNo: String(orderIndex + 1),
+    orderNo: String(question.orderNo ?? orderIndex + 1),
     options: toRecruitingItemOptions(question.options, orderIndex),
   },
 })
+
+const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
+  [...items].sort((a, b) => {
+    const aOrder = Number(a.orderNo)
+    const bOrder = Number(b.orderNo)
+    if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+    return aOrder - bOrder
+  })
 
 export const convertApplicationFormToItems = (formData: RecruitmentApplicationFormResponseDTO) => {
   const items: Array<RecruitingItem> = []
@@ -46,7 +55,14 @@ export const convertApplicationFormToItems = (formData: RecruitmentApplicationFo
 
   pages.forEach((page: FormPage) => {
     const questions: Array<FormQuestion> = Array.isArray(page.questions) ? page.questions : []
-    questions.forEach((question: FormQuestion, index: number) =>
+    const hasScheduleInQuestions = questions.some((question) => question.type === 'SCHEDULE')
+    const commonQuestions = hasScheduleInQuestions
+      ? questions
+      : page.scheduleQuestion
+        ? [...questions, page.scheduleQuestion]
+        : questions
+
+    sortByOrderNo(commonQuestions).forEach((question: FormQuestion, index: number) =>
       items.push(
         buildRecruitingItemFromQuestion(
           question,
@@ -56,22 +72,12 @@ export const convertApplicationFormToItems = (formData: RecruitmentApplicationFo
       ),
     )
 
-    if (page.scheduleQuestion) {
-      items.push(
-        buildRecruitingItemFromQuestion(
-          page.scheduleQuestion,
-          { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
-          questions.length,
-        ),
-      )
-    }
-
     const partGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
     partGroups.forEach((partGroup) => {
       const groupQuestions: Array<FormQuestion> = Array.isArray(partGroup.questions)
         ? partGroup.questions
         : []
-      groupQuestions.forEach((question: FormQuestion, index: number) =>
+      sortByOrderNo(groupQuestions).forEach((question: FormQuestion, index: number) =>
         items.push(
           buildRecruitingItemFromQuestion(
             question,

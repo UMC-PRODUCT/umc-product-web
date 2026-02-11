@@ -67,6 +67,10 @@ export const ensureRequiredItems = (
   items: Array<RecruitingItem>,
   recruitmentParts: Array<PartType>,
 ) => {
+  const uniqueParts = Array.from(new Set(recruitmentParts))
+  let hasPreferred = false
+  let hasSchedule = false
+
   const next = items
     .map((item) => {
       if (item.question.type === 'PREFERRED_PART') {
@@ -77,7 +81,20 @@ export const ensureRequiredItems = (
       }
       return item
     })
-    .filter((item) => item.target.kind !== 'PART' || recruitmentParts.includes(item.target.part!))
+    .filter((item) => {
+      if (item.question.type === 'PREFERRED_PART') {
+        if (hasPreferred) return false
+        hasPreferred = true
+        return true
+      }
+      if (item.question.type === 'SCHEDULE') {
+        if (hasSchedule) return false
+        hasSchedule = true
+        return true
+      }
+      return true
+    })
+    .filter((item) => item.target.kind !== 'PART' || uniqueParts.includes(item.target.part!))
 
   if (!hasPreferredPartItem(next)) {
     next.push(buildPreferredPartItem())
@@ -89,7 +106,7 @@ export const ensureRequiredItems = (
     next.push(buildDefaultPage2Item())
   }
 
-  recruitmentParts.forEach((part) => {
+  uniqueParts.forEach((part) => {
     const hasPartQuestions = next.some(
       (item) => item.target.kind === 'PART' && item.target.part === part,
     )

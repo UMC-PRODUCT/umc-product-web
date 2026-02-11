@@ -52,5 +52,13 @@ const InputHeader = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 10px;
+  height: 21px;
 `
-export { IconBox, Input, InputHeader, InputWrapper }
+const ErrorSlot = styled.div`
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+`
+export { ErrorSlot, IconBox, Input, InputHeader, InputWrapper }

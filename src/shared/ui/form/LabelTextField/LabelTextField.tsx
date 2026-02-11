@@ -35,14 +35,15 @@ export const LabelTextField = forwardRef<HTMLInputElement, LabelTextFieldProps>(
       <Field className={className}>
         <S.InputHeader>
           <Label label={label} necessary={necessary} htmlFor={id} />
-
-          {error?.error && (
-            <ErrorMessage
-              typo="B4.Md"
-              responsiveTypo={{ tablet: 'B4.Md' }}
-              errorMessage={error.errorMessage}
-            />
-          )}
+          <S.ErrorSlot>
+            {error?.error && (
+              <ErrorMessage
+                typo="B4.Md"
+                responsiveTypo={{ tablet: 'B4.Md' }}
+                errorMessage={error.errorMessage}
+              />
+            )}
+          </S.ErrorSlot>
         </S.InputHeader>
         <TextField
           id={id}

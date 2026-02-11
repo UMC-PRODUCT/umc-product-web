@@ -11,11 +11,11 @@ import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
 import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
-import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
+import GrabButton from '@/shared/ui/common/GrabButton/GrabButton'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
@@ -96,10 +96,7 @@ const StandardQuestionCard = ({
   return (
     <Section variant="solid" gap={22} {...containerProps}>
       <S.Header>
-        <S.QuestionInfo data-drag-handle="true" {...dragHandleProps}>
-          <Hamburger />
-          문항 {index + 1}
-        </S.QuestionInfo>
+        <GrabButton dragHandleProps={dragHandleProps} index={index} typo="B5.Md" />
         {canDelete ? (
           <Button
             tone="necessary"
