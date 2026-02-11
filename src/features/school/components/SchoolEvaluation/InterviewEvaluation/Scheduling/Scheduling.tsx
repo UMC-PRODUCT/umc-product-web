@@ -3,6 +3,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import type { PartType } from '@/features/auth/domain'
+import {
+  getInterviewSchedulingSummary,
+  getInterviewSlotAssignments,
+  getInterviewSlots,
+} from '@/features/school/domain/api'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { useGetInterviewSlotApplicants } from '@/features/school/hooks/useRecruitingQueries'
@@ -41,26 +46,27 @@ const Scheduling = () => {
     e.dataTransfer.setData('text/plain', id)
     e.dataTransfer.effectAllowed = 'move'
   }
-  const { queryKey: summaryKey, queryFn: summaryFn } =
-    schoolKeys.getInterviewSchedulingSummary('40')
-  const { data: summaryData, isLoading: isSummaryLoading } = useCustomQuery(summaryKey, summaryFn, {
-    placeholderData: (previous) => previous,
-  }) // TODO: 추후 수정 예정
+  const { data: summaryData, isLoading: isSummaryLoading } = useCustomQuery(
+    schoolKeys.getInterviewSchedulingSummary('40'),
+    () => getInterviewSchedulingSummary('40'),
+    {
+      placeholderData: (previous) => previous,
+    },
+  ) // TODO: 추후 수정 예정
 
   const dateFallback = summaryData?.result.dateOptions[0]
   const partFallback = summaryData?.result.partOptions[0]?.part
   const dateParam = selectedDateOption?.id ? String(selectedDateOption.id) : dateFallback
   const partParam = (selectedPartOption?.id ?? partFallback) as PartType | 'ALL' | undefined
 
-  const { queryKey: slotsKey, queryFn: slotsFn } = schoolKeys.getInterviewSlots(
-    '40',
-    dateParam,
-    partParam,
-  )
-  const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(slotsKey, slotsFn, {
-    enabled: Boolean(dateParam) && Boolean(partParam),
-    placeholderData: (previous) => previous,
-  }) // TODO: 추후 수정 예정
+  const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(
+    schoolKeys.getInterviewSlots('40', dateParam, partParam),
+    () => getInterviewSlots('40', dateParam ?? '', partParam ?? 'ALL'),
+    {
+      enabled: Boolean(dateParam) && Boolean(partParam),
+      placeholderData: (previous) => previous,
+    },
+  ) // TODO: 추후 수정 예정
 
   const resolvedSlotId = selectedTimeSlot ?? slotData?.result.slots[0]?.slotId
   const {
@@ -68,11 +74,9 @@ const Scheduling = () => {
     isLoading: isSlotApplicantsLoading,
     isFetching,
   } = useGetInterviewSlotApplicants('40', resolvedSlotId) // TODO: 추후 수정 예정
-  const { queryKey: assignmentsKey, queryFn: assignmentsFn } =
-    schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId ?? '')
   const { data: assignedData, isLoading: isAssignmentsLoading } = useCustomQuery(
-    assignmentsKey,
-    assignmentsFn,
+    schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId ?? ''),
+    () => getInterviewSlotAssignments('40', resolvedSlotId ?? ''),
     { enabled: Boolean(resolvedSlotId), placeholderData: (previous) => previous },
   ) // TODO: 추후 수정 예정
 
@@ -126,18 +130,18 @@ const Scheduling = () => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId).queryKey,
+            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId).queryKey,
+            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam).queryKey,
+              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSchedulingSummary('40').queryKey,
+            queryKey: schoolKeys.getInterviewSchedulingSummary('40'),
           })
         },
       },
@@ -151,18 +155,18 @@ const Scheduling = () => {
         onSuccess: () => {
           if (!resolvedSlotId) return
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId).queryKey,
+            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId).queryKey,
+            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam).queryKey,
+              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSchedulingSummary('40').queryKey,
+            queryKey: schoolKeys.getInterviewSchedulingSummary('40'),
           })
         },
       },

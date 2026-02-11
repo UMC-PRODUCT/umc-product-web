@@ -9,7 +9,7 @@ import Section from '@/shared/ui/common/Section/Section'
 import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
 
-const GenerationCard = () => {
+const GenerationCard = ({ gisuId, gisuName }: { gisuId: string; gisuName: string }) => {
   const [modalOpen, setModalOpen] = useState<{
     isOpen: boolean
     modalName: 'delete' | 'exist' | null
@@ -30,7 +30,7 @@ const GenerationCard = () => {
         ...theme.typography.C2.Rg,
       }}
     >
-      10기
+      {gisuName}기
       <Button
         Icon={Trash}
         iconSize={15}
@@ -44,7 +44,7 @@ const GenerationCard = () => {
       {modalOpen.isOpen && modalOpen.modalName === 'delete' && (
         <DeleteGenerationConfirm
           onClose={() => setModalOpen({ isOpen: false, modalName: null })}
-          gisuId={'10'} // TODO: 기수 ID로 변경 필요
+          gisuId={gisuId}
         />
       )}
       {modalOpen.isOpen && modalOpen.modalName === 'exist' && (

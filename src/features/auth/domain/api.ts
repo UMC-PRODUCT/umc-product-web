@@ -5,7 +5,6 @@ import type { TermsType } from '@/shared/types/umc'
 
 import type {
   GetActiveGisuResponseDTO,
-  GetGisuListResponseDTO,
   GetMemberMeResponseDTO,
   GetMemberOAuthMeResponseDTO,
   GetSchoolLinkResponseDTO,
@@ -82,12 +81,6 @@ export async function getTermsByType({
   const { data } = await axiosInstance.get(`/terms/type/${termsType}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
   })
-  return data
-}
-
-/** GET /gisu/all - 기수 목록 */
-export const getGisuList = async (): Promise<CommonResponseDTO<GetGisuListResponseDTO>> => {
-  const { data } = await axiosInstance.get('/gisu/all')
   return data
 }
 

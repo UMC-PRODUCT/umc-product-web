@@ -10,6 +10,7 @@ import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { applyKeys } from '@/shared/queryKeys'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -17,7 +18,6 @@ import { formatDateTimeKorean, scrollToTop } from '@/shared/utils'
 
 import ResumeContent from '../components/ResumeContent'
 import type { QuestionAnswerValue } from '../domain/model'
-import { applyKeys } from '../domain/queryKeys'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
   useGetRecruitmentApplicationAnswer,
@@ -84,7 +84,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
+              queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
             })
           },
         },
@@ -113,7 +113,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
         },
       },
@@ -159,7 +159,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
           setIsSubmitModalOpen(false)
         },

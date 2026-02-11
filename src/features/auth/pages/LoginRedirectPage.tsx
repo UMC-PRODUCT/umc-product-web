@@ -4,12 +4,13 @@ import { useNavigate } from '@tanstack/react-router'
 import { getMemberMe } from '@/features/auth/domain/api'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import { gisuKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
 
-import { gisuKeys } from '../domain/queryKeys'
+import { getActiveGisu } from '../domain/api'
 import { useAuthMutation } from '../hooks/useAuthMutations'
 
 type LoginCallbackParams = {
@@ -47,7 +48,7 @@ export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { data: gisu } = useCustomQuery(gisuKeys.active.queryKey, gisuKeys.active.queryFn, {
+  const { data: gisu } = useCustomQuery(gisuKeys.active, getActiveGisu, {
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24 * 7,
   })

@@ -71,12 +71,10 @@ const MyEvaluation = ({
         onSuccess: () => {
           if (recruitingId && selectedUserId) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getDocumentEvaluationAnswers(recruitingId, selectedUserId)
-                .queryKey,
+              queryKey: schoolKeys.getDocumentEvaluationAnswers(recruitingId, selectedUserId),
             })
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getDocumentEvaluationMyAnswer(recruitingId, selectedUserId)
-                .queryKey,
+              queryKey: schoolKeys.getDocumentEvaluationMyAnswer(recruitingId, selectedUserId),
             })
             queryClient.invalidateQueries({
               predicate: (query) => {

@@ -9,6 +9,7 @@ import {
   patchSchoolAssign,
   patchSchoolUnAssign,
   postChapter,
+  postGisu,
   postSchool,
 } from '../domain/api'
 
@@ -74,6 +75,10 @@ export function useManagementMutations() {
       },
     })
   }
+
+  function usePostGisu() {
+    return useCustomMutation(postGisu)
+  }
   return {
     usePostSchool,
     usePostChapter,
@@ -82,5 +87,6 @@ export function useManagementMutations() {
     usePatchSchool,
     useDeleteBranch,
     useDeleteGeneration,
+    usePostGisu,
   }
 }

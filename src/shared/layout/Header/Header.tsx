@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { authKeys, gisuKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
+import { getActiveGisu, getMemberMe, getSchoolLink } from '@/features/auth/domain/api'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
+import { authKeys, gisuKeys, schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 
 import * as S from './Header.style'
@@ -26,11 +27,8 @@ const Header = ({
   const navigate = useNavigate()
   const { schoolId, setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } =
     useUserProfileStore()
-  const { data: profileData } = useCustomQuery(
-    authKeys.getMemberMe().queryKey,
-    authKeys.getMemberMe().queryFn,
-  )
-  const { data: gisuData } = useCustomQuery(gisuKeys.active.queryKey, gisuKeys.active.queryFn, {
+  const { data: profileData } = useCustomQuery(authKeys.getMemberMe, getMemberMe)
+  const { data: gisuData } = useCustomQuery(gisuKeys.active, getActiveGisu, {
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24 * 7,
   })
@@ -54,8 +52,8 @@ const Header = ({
   }, [profileData, gisuId, setGisu, setRoles])
 
   const { data: schoolLinkData } = useCustomQuery(
-    schoolKeys.getSchoolLink(schoolId).queryKey,
-    schoolKeys.getSchoolLink(schoolId).queryFn,
+    schoolKeys.getSchoolLink(schoolId),
+    () => getSchoolLink(schoolId),
     {
       enabled: !!schoolId,
     },

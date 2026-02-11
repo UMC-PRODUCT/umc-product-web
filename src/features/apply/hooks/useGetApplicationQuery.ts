@@ -1,24 +1,32 @@
-import { schoolKeys } from '@/features/school/domain'
+import { getDocumentEvaluationApplicationDetail } from '@/features/school/domain/api'
 import type { GetDocumentEvaluationApplicationResponseDTO } from '@/features/school/domain/model'
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import { applyKeys, schoolKeys } from '@/shared/queryKeys'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
-import { getActiveRecruitmentId } from '../domain/api'
-import { applyKeys } from '../domain/queryKeys'
+import {
+  getActiveRecruitmentId,
+  getMyApplicationStatus,
+  getRecruitmentApplicationAnswer,
+  getRecruitmentApplicationForm,
+  getRecruitmentNotice,
+  getRecruitmentParts,
+  getRecruitmentSchedules,
+} from '../domain/api'
 
 /** 활성 모집 ID 조회 */
 export function useGetActiveRecruitmentId() {
-  return useCustomSuspenseQuery(applyKeys.getActiveRecruitmentId().queryKey, getActiveRecruitmentId)
+  return useCustomSuspenseQuery(applyKeys.getActiveRecruitmentId, getActiveRecruitmentId)
 }
 
 /** 지원서 폼 조회 */
 export function useGetRecruitmentApplicationForm(recruitmentId: string) {
   type RecruitmentApplicationFormResponse = CommonResponseDTO<RecruitmentApplicationForm>
   return useCustomSuspenseQuery(
-    applyKeys.getRecruitmentApplicationForm(recruitmentId).queryKey,
-    applyKeys.getRecruitmentApplicationForm(recruitmentId).queryFn,
+    applyKeys.getRecruitmentApplicationForm(recruitmentId),
+    () => getRecruitmentApplicationForm(recruitmentId),
     {
       select: (data: RecruitmentApplicationFormResponse) => {
         const pages: Array<FormPage> = data.result.pages
@@ -59,45 +67,44 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
 
 /** 지원서 답변 조회 */
 export function useGetRecruitmentApplicationAnswer(recruitmentId: string, formId: string) {
-  return useCustomQuery(
-    applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId).queryKey,
-    applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId).queryFn,
+  return useCustomQuery(applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId), () =>
+    getRecruitmentApplicationAnswer(recruitmentId, formId),
   )
 }
 
 /** 모집 파트 목록 조회 */
 export function useGetRecruitmentParts(recruitmentId: string) {
-  return useCustomSuspenseQuery(
-    applyKeys.getRecruitmentParts(recruitmentId).queryKey,
-    applyKeys.getRecruitmentParts(recruitmentId).queryFn,
+  return useCustomSuspenseQuery(applyKeys.getRecruitmentParts(recruitmentId), () =>
+    getRecruitmentParts(recruitmentId),
   )
 }
 
 /** 모집 일정 조회 */
 export function useGetRecruitmentSchedules(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
-  const query = applyKeys.getRecruitmentSchedules(queryId)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(applyKeys.getRecruitmentSchedules(queryId), () =>
+    getRecruitmentSchedules(queryId),
+  )
 }
 
 /** 모집 공지 조회 */
 export function useGetRecruitmentNotice(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
-  const query = applyKeys.getRecruitmentNotice(queryId)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(applyKeys.getRecruitmentNotice(queryId), () =>
+    getRecruitmentNotice(queryId),
+  )
 }
 
 /** 내 지원 상태 조회 */
 export function useGetMyApplicationStatus(recruitmentId: string) {
-  return useCustomSuspenseQuery(
-    applyKeys.getMyApplicationStatus(recruitmentId).queryKey,
-    applyKeys.getMyApplicationStatus(recruitmentId).queryFn,
+  return useCustomSuspenseQuery(applyKeys.getMyApplicationStatus(recruitmentId), () =>
+    getMyApplicationStatus(recruitmentId),
   )
 }
 
 type DocumentEvaluationApplicationQueryKey = ReturnType<
   typeof schoolKeys.getDocumentEvaluationApplicationDetail
->['queryKey']
+>
 type DocumentEvaluationApplicationResponse =
   CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>
 type DocumentEvaluationApplicationOptions = Parameters<
@@ -116,7 +123,7 @@ export function useGetDocumentEvaluationApplicationDetail(
   options?: DocumentEvaluationApplicationOptions,
 ) {
   const resolvedApplicantId = applicantId ?? ''
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplicationDetail(
+  const queryKey = schoolKeys.getDocumentEvaluationApplicationDetail(
     recruitmentId,
     resolvedApplicantId,
   )
@@ -126,5 +133,8 @@ export function useGetDocumentEvaluationApplicationDetail(
     unknown,
     DocumentEvaluationApplicationResponse,
     DocumentEvaluationApplicationQueryKey
-  >(queryKey, queryFn, { ...options, enabled })
+  >(queryKey, () => getDocumentEvaluationApplicationDetail(recruitmentId, resolvedApplicantId), {
+    ...options,
+    enabled,
+  })
 }

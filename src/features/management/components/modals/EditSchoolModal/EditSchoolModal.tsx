@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
+import { getSchoolDetails } from '@/features/management/domain/api'
 import type { ExternalLink } from '@/features/management/domain/model'
 import { managementKeys } from '@/features/management/domain/queryKeys'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
@@ -43,10 +44,9 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
   const { useUploadFile, useConfirmUpload } = useFile()
   const uploadFileMutation = useUploadFile()
   const confirmUploadMutation = useConfirmUpload()
-  const schoolQuery = managementKeys.getSchoolDetails(schoolId)
   const { data: schoolDetails, isLoading } = useCustomQuery(
-    schoolQuery.queryKey,
-    schoolQuery.queryFn,
+    managementKeys.getSchoolDetails(schoolId),
+    () => getSchoolDetails(schoolId),
   )
   const { usePatchSchool } = useManagementMutations()
   const { mutate: patchSchool, isPending: isPatchLoading } = usePatchSchool()
@@ -178,10 +178,10 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['schoolsPaging'] })
           queryClient.invalidateQueries({
-            queryKey: managementKeys.getAllSchools().queryKey,
+            queryKey: managementKeys.getAllSchools,
           })
           queryClient.invalidateQueries({
-            queryKey: managementKeys.getSchoolDetails(schoolId).queryKey,
+            queryKey: managementKeys.getSchoolDetails(schoolId),
           })
           onClose()
         },

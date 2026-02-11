@@ -86,16 +86,6 @@ export type GetSchoolLinkResponseDTO = {
   links: Array<ExternalLink>
 }
 
-export type GetGisuListResponseDTO = {
-  gisuList: Array<{
-    gisuId: string
-    generation: string
-    startsAt: string
-    endsAt: string
-    isActive: boolean
-  }>
-}
-
 export type GetActiveGisuResponseDTO = {
   gisuId: string
   generation: string

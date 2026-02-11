@@ -61,7 +61,7 @@ const Step3 = ({
   const { usePatchRecruitmentApplicationFormDraft } = useRecruitingMutation()
   const { mutate: patchTempSavedRecruitQuestionsMutate } =
     usePatchRecruitmentApplicationFormDraft(recruitingId)
-  const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
+  const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
       recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
@@ -119,7 +119,7 @@ const Step3 = ({
             shouldTouch: false,
             shouldValidate: true,
           })
-          queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
         },
       },
     )

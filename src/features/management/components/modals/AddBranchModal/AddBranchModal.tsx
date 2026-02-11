@@ -64,7 +64,7 @@ const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: stri
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: managementKeys.getGisuChapterWithSchools(gisuId).queryKey,
+            queryKey: managementKeys.getGisuChapterWithSchools(gisuId),
           })
           onClose()
         },

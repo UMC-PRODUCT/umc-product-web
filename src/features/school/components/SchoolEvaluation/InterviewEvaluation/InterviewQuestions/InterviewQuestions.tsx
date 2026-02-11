@@ -78,7 +78,7 @@ const InterviewQuestionsContent = () => {
 
   const invalidateQuestions = () => {
     queryClient.invalidateQueries({
-      queryKey: schoolKeys.getInterviewQuestions(recruitmentId, selectedPart).queryKey,
+      queryKey: schoolKeys.getInterviewQuestions(recruitmentId, selectedPart),
     })
   }
 

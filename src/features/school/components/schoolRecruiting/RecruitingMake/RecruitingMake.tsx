@@ -27,7 +27,7 @@ const RecruitingMake = () => {
     postFirstRecruitmentMutate(undefined, {
       onSuccess: (data) => {
         queryClient.invalidateQueries({
-          queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }).queryKey,
+          queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }),
         })
         const recruitingId = data.result.recruitmentId
         const requiredItems = ensureRequiredItems([], [], {
@@ -40,7 +40,7 @@ const RecruitingMake = () => {
           items: buildQuestionsPayload(requiredItems),
         }).then(() => {
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getRecruitmentApplicationFormDraft(String(recruitingId)).queryKey,
+            queryKey: schoolKeys.getRecruitmentApplicationFormDraft(String(recruitingId)),
           })
         })
         navigate({

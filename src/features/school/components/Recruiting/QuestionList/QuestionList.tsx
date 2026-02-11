@@ -47,7 +47,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const { mutate: patchTempSavedRecruitQuestionsMutate } =
     usePatchRecruitmentApplicationFormDraft(recruitingId)
   const queryClient = useQueryClient()
-  const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
+  const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   // 폼 문항 리스트 필드 배열 제어
   const { fields, append, remove, move, update, replace } = useFieldArray<RecruitingForms, 'items'>(
     {
@@ -186,7 +186,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
             shouldTouch: false,
             shouldValidate: true,
           })
-          queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
         },
       },
     )
@@ -205,7 +205,7 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
           shouldTouch: false,
           shouldValidate: true,
         })
-        queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+        queryClient.invalidateQueries({ queryKey: applicationQueryKey })
       },
     })
   }

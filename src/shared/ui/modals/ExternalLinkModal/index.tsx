@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { schoolKeys } from '@/features/auth/domain/queryKeys'
+import { getSchoolLink } from '@/features/auth/domain/api'
 import type { ExternalLink } from '@/features/auth/domain/types'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
 import Close from '@/shared/assets/icons/close.svg?react'
@@ -11,6 +11,7 @@ import KakaoIcon from '@/shared/assets/social/kakao-talk.svg?react'
 import YoutubeIcon from '@/shared/assets/social/youtube.svg?react'
 import type { LinkType } from '@/shared/constants/umc'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
@@ -49,10 +50,13 @@ const ExternalModalContent = () => {
   const { usePatchSchool } = useManagementMutations()
   const { mutate: patchSchool, isPending } = usePatchSchool()
 
-  const queryConfig = schoolKeys.getSchoolLink(schoolId)
-  const { data } = useCustomQuery(queryConfig.queryKey, queryConfig.queryFn, {
-    enabled: Boolean(schoolId),
-  })
+  const { data } = useCustomQuery(
+    schoolKeys.getSchoolLink(schoolId),
+    () => getSchoolLink(schoolId),
+    {
+      enabled: Boolean(schoolId),
+    },
+  )
 
   const initialLinks = useMemo<Array<LocalExternalLink>>(() => {
     const links = data?.result ? data.result.links : []
@@ -103,7 +107,7 @@ const ExternalModalContent = () => {
       { schoolId, body: { links: payload } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: schoolKeys.getSchoolLink(schoolId).queryKey })
+          queryClient.invalidateQueries({ queryKey: schoolKeys.getSchoolLink(schoolId) })
         },
       },
     )

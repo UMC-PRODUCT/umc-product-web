@@ -1,31 +1,41 @@
-import type { PartType } from '@/features/auth/domain'
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import { managementKeys } from '@/shared/queryKeys'
+import type { PartType } from '@/shared/types/umc'
 
-import { managementKeys } from '../domain/queryKeys'
+import {
+  getAllGisu,
+  getAllSchools,
+  getChapter,
+  getCurriculums,
+  getGisuChapterWithSchools,
+  getGisuList,
+  getSchoolDetails,
+  getSchoolsPaging,
+  getUnassignedSchools,
+} from '../domain/api'
 
 export function useGetCurriculums(part: PartType) {
-  const query = managementKeys.getCurriculums(part)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(managementKeys.getCurriculums(part), () => getCurriculums({ part }))
 }
 
 export function useGetAllGisu() {
-  const query = managementKeys.getAllGisu()
-  return useCustomQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(managementKeys.getAllGisu, getAllGisu)
 }
 
 export function useGetAllSchools() {
-  const query = managementKeys.getAllSchools()
-  return useCustomQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
 }
 
 export function useGetGisuChapterWithSchools(gisuId: string) {
-  const query = managementKeys.getGisuChapterWithSchools(gisuId)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(managementKeys.getGisuChapterWithSchools(gisuId), () =>
+    getGisuChapterWithSchools({ gisuId }),
+  )
 }
 
 export function useGetUnassignedSchools(gisuId: string) {
-  const query = managementKeys.getUnassignedSchools(gisuId)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(managementKeys.getUnassignedSchools(gisuId), () =>
+    getUnassignedSchools({ gisuId }),
+  )
 }
 
 export function useGetSchoolsPaging(params: {
@@ -35,21 +45,27 @@ export function useGetSchoolsPaging(params: {
   chapterId?: string
   keyword?: string
 }) {
-  const query = managementKeys.getSchoolsPaging(params)
-  return useCustomQuery(query.queryKey, query.queryFn, { placeholderData: (prev) => prev })
+  return useCustomQuery(managementKeys.getSchoolsPaging(params), () => getSchoolsPaging(params), {
+    placeholderData: (prev) => prev,
+  })
 }
 
 export function useGetSchoolDetails(schoolId: string) {
-  const query = managementKeys.getSchoolDetails(schoolId)
-  return useCustomSuspenseQuery(query.queryKey, query.queryFn)
+  return useCustomSuspenseQuery(managementKeys.getSchoolDetails(schoolId), () =>
+    getSchoolDetails({ schoolId }),
+  )
 }
 
 export function useGetChapters() {
-  const query = managementKeys.getChapters()
-  return useCustomQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(managementKeys.getChapters, getChapter)
 }
 
 export function useGetAllSchoolsList() {
-  const query = managementKeys.getAllSchools()
-  return useCustomQuery(query.queryKey, query.queryFn)
+  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
+}
+
+export function useGetGisuList(params: { page?: string; size?: string }) {
+  return useCustomQuery(managementKeys.getGisuList(params), () =>
+    getGisuList(params.page || '0', params.size || '10'),
+  )
 }

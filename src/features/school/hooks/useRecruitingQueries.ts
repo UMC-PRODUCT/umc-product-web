@@ -1,66 +1,96 @@
 import type { InfiniteData } from '@tanstack/react-query'
 
-import { applyKeys } from '@/features/apply/domain/queryKeys'
-import type { PartType } from '@/features/auth/domain'
+import { getRecruitmentApplicationAnswer } from '@/features/apply/domain/api'
 import {
   useCustomInfiniteQuery,
   useCustomQuery,
   useCustomSuspenseQuery,
 } from '@/shared/hooks/customQuery'
-import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
+import { applyKeys, schoolKeys } from '@/shared/queryKeys'
+import type { PartType, RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
 import {
+  getAvailableInterviewParts,
+  getDocumentEvaluationAnswers,
   getDocumentEvaluationApplicants,
+  getDocumentEvaluationApplicationDetail,
+  getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
   getFinalSelectionApplications,
+  getInterviewAssignments,
+  getInterviewEvaluationMyAnswer,
+  getInterviewEvaluationOptions,
+  getInterviewEvaluationSummary,
+  getInterviewEvaluationView,
+  getInterviewLiveQuestions,
+  getInterviewQuestions,
+  getInterviewSchedulingSummary,
+  getInterviewSlotApplicants,
+  getInterviewSlotAssignments,
+  getInterviewSlots,
+  getRecruitmentApplicationForm,
+  getRecruitmentApplicationFormDraft,
+  getRecruitmentDashboardSummary,
+  getRecruitmentDraft,
+  getRecruitments,
 } from '../domain/api'
-import { schoolKeys } from '../domain/queryKeys'
 
 /** 모집 임시저장 조회 */
 export const useGetRecruitmentDraft = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitmentDraft(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getRecruitmentDraft(recruitingId), () =>
+    getRecruitmentDraft(recruitingId),
+  )
 }
 
 /** 지원서 폼 조회 */
 export const useGetRecruitmentApplicationForm = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationForm(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn, {
-    select: (data) => ({
-      ...data,
-      result: normalizeRecruitmentApplicationForm(data.result),
-    }),
-  })
+  return useCustomSuspenseQuery(
+    schoolKeys.getRecruitmentApplicationForm(recruitingId),
+    () => getRecruitmentApplicationForm(recruitingId),
+    {
+      select: (data) => ({
+        ...data,
+        result: normalizeRecruitmentApplicationForm(data.result),
+      }),
+    },
+  )
 }
 
 /** 지원서 폼 임시저장 조회 */
 export const useGetRecruitmentApplicationFormDraft = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn, {
-    select: (data) => ({
-      ...data,
-      result: normalizeRecruitmentApplicationForm(data.result),
-    }),
-  })
+  return useCustomSuspenseQuery(
+    schoolKeys.getRecruitmentApplicationFormDraft(recruitingId),
+    () => getRecruitmentApplicationFormDraft(recruitingId),
+    {
+      select: (data) => ({
+        ...data,
+        result: normalizeRecruitmentApplicationForm(data.result),
+      }),
+    },
+  )
 }
 
 /** 모집 리스트 조회 */
 export const useGetRecruitmentsList = (status: RecruitmentStatusType) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitments({ status })
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getRecruitments({ status }), () =>
+    getRecruitments({ status }),
+  )
 }
 
 /** 지원서 답변 조회 */
 export const useGetRecruitmentApplicationAnswer = (recruitmentId: string, formId: string) => {
-  const { queryKey, queryFn } = applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(
+    applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId),
+    () => getRecruitmentApplicationAnswer(recruitmentId, formId),
+  )
 }
 
 /** 모집 대시보드 요약 조회 */
 export const useGetRecruitmentDashboardSummary = (recruitingId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getRecruitmentDashboardSummary(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getRecruitmentDashboardSummary(recruitingId), () =>
+    getRecruitmentDashboardSummary(recruitingId),
+  )
 }
 
 /** 서류 평가 대상자 목록 */
@@ -72,7 +102,7 @@ export const useGetDocumentEvaluationApplicants = (
     size: string
   },
 ) => {
-  const { queryKey } = schoolKeys.getDocumentEvaluationApplicants(recruitingId, {
+  const queryKey = schoolKeys.getDocumentEvaluationApplicants(recruitingId, {
     ...params,
     page: '0',
   })
@@ -114,7 +144,7 @@ export const useGetFinalSelectionApplications = (
     size: string
   },
 ) => {
-  const { queryKey } = schoolKeys.getFinalSelectionApplications(recruitingId, {
+  const queryKey = schoolKeys.getFinalSelectionApplications(recruitingId, {
     ...params,
     page: '0',
   })
@@ -147,7 +177,7 @@ export const useGetDocumentSelectedApplicants = (
     sort?: SelectionsSortType
   },
 ) => {
-  const { queryKey } = schoolKeys.getDocumentSelectedApplicants(recruitingId, {
+  const queryKey = schoolKeys.getDocumentSelectedApplicants(recruitingId, {
     ...params,
     page: '0',
   })
@@ -175,11 +205,10 @@ export const useGetDocumentEvaluationApplicationDetail = (
   recruitingId: string,
   applicantId: string,
 ) => {
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationApplicationDetail(
-    recruitingId,
-    applicantId,
+  return useCustomSuspenseQuery(
+    schoolKeys.getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
+    () => getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
   )
-  return useCustomSuspenseQuery(queryKey, queryFn)
 }
 
 /** 서류 평가 답변 목록 */
@@ -189,12 +218,16 @@ export const useGetDocumentEvaluationAnswers = (
 ) => {
   const resolvedRecruitingId = recruitingId ?? ''
   const resolvedApplicantId = applicantId ?? ''
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationAnswers(
+  const queryKey = schoolKeys.getDocumentEvaluationAnswers(
     resolvedRecruitingId,
     resolvedApplicantId,
   )
   const enabled = Boolean(recruitingId) && Boolean(applicantId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(
+    queryKey,
+    () => getDocumentEvaluationAnswers(resolvedRecruitingId, resolvedApplicantId),
+    { enabled },
+  )
 }
 
 /** 내 서류 평가 조회 */
@@ -204,42 +237,54 @@ export const useGetDocumentEvaluationMyAnswer = (
 ) => {
   const resolvedRecruitingId = recruitingId ?? ''
   const resolvedApplicantId = applicantId ?? ''
-  const { queryKey, queryFn } = schoolKeys.getDocumentEvaluationMyAnswer(
+  const queryKey = schoolKeys.getDocumentEvaluationMyAnswer(
     resolvedRecruitingId,
     resolvedApplicantId,
   )
   const enabled = Boolean(recruitingId) && Boolean(applicantId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(
+    queryKey,
+    () => getDocumentEvaluationMyAnswer(resolvedRecruitingId, resolvedApplicantId),
+    { enabled },
+  )
 }
 
 /** 면접 질문지(사전 질문) 조회 */
 export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewQuestions(recruitmentId, part)
-  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+  return useCustomQuery(
+    schoolKeys.getInterviewQuestions(recruitmentId, part),
+    () => getInterviewQuestions(recruitmentId, part),
+    { enabled: Boolean(recruitmentId) },
+  )
 }
 
 /** 추가 질문(즉석 질문) 조회 */
 export const useGetInterviewLiveQuestions = (recruitmentId: string, assignmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewLiveQuestions(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.getInterviewLiveQuestions(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(queryKey, () => getInterviewLiveQuestions(recruitmentId, assignmentId), {
+    enabled,
+  })
 }
 
 /** 실시간 평가 현황 조회(평균/리스트) */
 export const useGetInterviewEvaluationSummary = (recruitmentId: string, assignmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationSummary(
-    recruitmentId,
-    assignmentId,
-  )
+  const queryKey = schoolKeys.getInterviewEvaluationSummary(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(
+    queryKey,
+    () => getInterviewEvaluationSummary(recruitmentId, assignmentId),
+    { enabled },
+  )
 }
 
 /** 실시간 면접 평가 상세 화면 초기 진입 */
 export const useGetInterviewEvaluationView = (recruitmentId: string, assignmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationView(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.getInterviewEvaluationView(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(queryKey, () => getInterviewEvaluationView(recruitmentId, assignmentId), {
+    enabled,
+  })
 }
 
 /** 실시간 면접 평가 대상 리스트 조회 */
@@ -247,30 +292,38 @@ export const useGetInterviewAssignments = (
   recruitmentId: string,
   params?: { date?: string; part?: PartType | 'ALL' },
 ) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewAssignments(recruitmentId, params)
-  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+  return useCustomQuery(
+    schoolKeys.getInterviewAssignments(recruitmentId, params ?? {}),
+    () => getInterviewAssignments(recruitmentId, params ?? {}),
+    { enabled: Boolean(recruitmentId) },
+  )
 }
 
 /** 실시간 면접 평가용 드롭다운 옵션 조회 */
 export const useGetInterviewEvaluationOptions = (recruitmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationOptions(recruitmentId)
-  return useCustomQuery(queryKey, queryFn, { enabled: Boolean(recruitmentId) })
+  return useCustomQuery(
+    schoolKeys.getInterviewEvaluationOptions(recruitmentId),
+    () => getInterviewEvaluationOptions(recruitmentId),
+    { enabled: Boolean(recruitmentId) },
+  )
 }
 
 /** 내 면접 평가 조회 */
 export const useGetInterviewEvaluationMyAnswer = (recruitmentId: string, assignmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewEvaluationMyAnswer(
-    recruitmentId,
-    assignmentId,
-  )
+  const queryKey = schoolKeys.getInterviewEvaluationMyAnswer(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(
+    queryKey,
+    () => getInterviewEvaluationMyAnswer(recruitmentId, assignmentId),
+    { enabled },
+  )
 }
 
 /** 면접 질문지 작성 가능 파트 조회 */
 export const useGetAvailableInterviewParts = (recruitmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getAvailableInterviewParts(recruitmentId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getAvailableInterviewParts(recruitmentId), () =>
+    getAvailableInterviewParts(recruitmentId),
+  )
 }
 /** 특정 슬롯에 배정 가능한 지원자 / 이미 배정된 지원자 조회 */
 export const useGetInterviewSlotApplicants = (
@@ -278,9 +331,11 @@ export const useGetInterviewSlotApplicants = (
   slotId: string | undefined,
 ) => {
   const resolvedSlotId = slotId ?? ''
-  const { queryKey, queryFn } = schoolKeys.getInterviewSlotApplicants(recruitmentId, resolvedSlotId)
+  const queryKey = schoolKeys.getInterviewSlotApplicants(recruitmentId, resolvedSlotId)
   const enabled = Boolean(resolvedSlotId)
-  return useCustomQuery(queryKey, queryFn, { enabled })
+  return useCustomQuery(queryKey, () => getInterviewSlotApplicants(recruitmentId, resolvedSlotId), {
+    enabled,
+  })
 }
 /** 면접 슬롯 목록 조회 */
 export const useGetInterviewSlots = (
@@ -288,18 +343,24 @@ export const useGetInterviewSlots = (
   date?: string,
   part?: PartType | 'ALL',
 ) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewSlots(recruitmentId, date, part)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  const resolvedDate = date ?? ''
+  const resolvedPart = part ?? 'ALL'
+  return useCustomSuspenseQuery(
+    schoolKeys.getInterviewSlots(recruitmentId, resolvedDate, resolvedPart),
+    () => getInterviewSlots(recruitmentId, resolvedDate, resolvedPart),
+  )
 }
 
 /** 면접 스케줄링 요약 조회 */
 export const useGetInterviewSchedulingSummary = (recruitmentId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewSchedulingSummary(recruitmentId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getInterviewSchedulingSummary(recruitmentId), () =>
+    getInterviewSchedulingSummary(recruitmentId),
+  )
 }
 
 /** 특정 면접 슬롯에 배정된 지원자 조회 */
 export const useGetInterviewSlotAssignments = (recruitmentId: string, slotId: string) => {
-  const { queryKey, queryFn } = schoolKeys.getInterviewSlotAssignments(recruitmentId, slotId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(schoolKeys.getInterviewSlotAssignments(recruitmentId, slotId), () =>
+    getInterviewSlotAssignments(recruitmentId, slotId),
+  )
 }

@@ -62,6 +62,28 @@ export const getAllGisu = async (): Promise<
   const { data } = await axiosInstance.get('/gisu/all')
   return data
 }
+
+/** GET /gisu - 기수 목록 페이징 조회*/
+export const getGisuList = async (
+  page: string,
+  size: string,
+): Promise<
+  CommonResponseDTO<{
+    content: Array<GisuType>
+    page: string
+    size: string
+    totalElements: string
+    totalPages: string
+    hasNext: boolean
+    hasPrevious: boolean
+  }>
+> => {
+  const { data } = await axiosInstance.get('/gisu', {
+    params: { page, size },
+  })
+  return data
+}
+
 /** GET /schools/{schoolId} - 학교 상세 조회 */
 export const getSchoolDetails = async ({
   schoolId,
@@ -71,6 +93,7 @@ export const getSchoolDetails = async ({
   const { data } = await axiosInstance.get(`/schools/${schoolId}`)
   return data
 }
+
 /** GET /chapters/with-schools - 기수별 챕터+학교 조회 */
 export const getGisuChapterWithSchools = async ({
   gisuId,

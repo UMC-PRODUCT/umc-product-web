@@ -4,9 +4,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
+import { schoolKeys } from '@/shared/queryKeys'
 import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 
-import { schoolKeys } from '../../domain/queryKeys'
 import { useRecruitingMutation } from '../../hooks/useRecruitingMutation'
 import { convertApplicationFormToItems } from '../../utils/recruiting/applicationFormMapper'
 import { buildSchedulePayload } from '../../utils/recruiting/buildInitialForm'
@@ -98,7 +98,7 @@ export const useRecruitingContentActions = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getRecruitmentDraft(recruitingId).queryKey,
+              queryKey: schoolKeys.getRecruitmentDraft(recruitingId),
             })
           },
           onError: (error) => {
@@ -127,7 +127,7 @@ export const useRecruitingContentActions = ({
               hasRequestedRequiredQuestionCreationRef.current = false
             }
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId).queryKey,
+              queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId),
             })
           },
           onError: (error) => {
@@ -164,7 +164,7 @@ export const useRecruitingContentActions = ({
                 shouldValidate: true,
               })
               queryClient.invalidateQueries({
-                queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId).queryKey,
+                queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId),
               })
             },
             onError: () => {
@@ -234,7 +234,7 @@ export const useRecruitingContentActions = ({
         onSuccess: () => {
           navigationBlocker.allowNextNavigationOnce()
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getRecruitmentDraft(recruitingId).queryKey,
+            queryKey: schoolKeys.getRecruitmentDraft(recruitingId),
           })
           navigate({ to: '/school/recruiting', replace: true })
         },
@@ -281,7 +281,7 @@ export const useRecruitingContentActions = ({
   // 미리보기 모달
   const openPreview = useCallback(() => {
     queryClient.invalidateQueries({
-      queryKey: schoolKeys.getRecruitmentApplicationForm(recruitingId).queryKey,
+      queryKey: schoolKeys.getRecruitmentApplicationForm(recruitingId),
     })
     setModal({ isOpen: true, modalName: 'recruitingPreview' })
   }, [queryClient, recruitingId, setModal])

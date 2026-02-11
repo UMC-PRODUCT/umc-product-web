@@ -17,9 +17,11 @@ const AddBranchContent = ({ baseGisu }: { baseGisu: Option<string> }) => {
   const [isModalOpen, setIsModalOpen] = useState<{
     isOpen: boolean
     modalName: 'create' | 'delete' | null
+    deleteBranchId?: string | null
   }>({
     isOpen: false,
     modalName: null,
+    deleteBranchId: null,
   })
 
   const handleCreate = () => setIsModalOpen({ isOpen: true, modalName: 'create' })
@@ -43,7 +45,15 @@ const AddBranchContent = ({ baseGisu }: { baseGisu: Option<string> }) => {
         >
           <S.CardHeader>
             <S.BranchName>{branch.chapterName}</S.BranchName>
-            <S.CloseButton onClick={() => setIsModalOpen({ isOpen: true, modalName: 'delete' })}>
+            <S.CloseButton
+              onClick={() =>
+                setIsModalOpen({
+                  isOpen: true,
+                  modalName: 'delete',
+                  deleteBranchId: branch.chapterId,
+                })
+              }
+            >
               ✕
             </S.CloseButton>
           </S.CardHeader>
@@ -61,10 +71,10 @@ const AddBranchContent = ({ baseGisu }: { baseGisu: Option<string> }) => {
           gisuId={baseGisu.id as string}
         />
       )}
-      {isModalOpen.isOpen && isModalOpen.modalName === 'delete' && (
+      {isModalOpen.deleteBranchId && isModalOpen.isOpen && isModalOpen.modalName === 'delete' && (
         <DeleteBranchConfirm
-          branchId="1"
           onClose={() => setIsModalOpen({ isOpen: false, modalName: null })}
+          branchId={isModalOpen.deleteBranchId}
         />
       )}
     </S.GridContainer>

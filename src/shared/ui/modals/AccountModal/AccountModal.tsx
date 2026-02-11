@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
 
-import { authKeys } from '@/features/auth/domain'
 import { useAuthMutation } from '@/features/auth/hooks/useAuthMutations'
 import { useGetMemberOAuthMe } from '@/features/auth/hooks/useAuthQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
@@ -8,6 +7,7 @@ import AppleIcon from '@/shared/assets/social/apple.svg?react'
 import GoogleIcon from '@/shared/assets/social/google.svg?react'
 import KakaoIcon from '@/shared/assets/social/kakao.svg?react'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import { authKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
@@ -54,7 +54,7 @@ const AccountModalContent = () => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: authKeys.getMemberOAuthMe().queryKey,
+            queryKey: authKeys.getMemberOAuthMe,
           })
         },
       },

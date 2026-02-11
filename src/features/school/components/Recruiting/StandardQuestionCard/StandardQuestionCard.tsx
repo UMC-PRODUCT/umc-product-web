@@ -71,7 +71,7 @@ const StandardQuestionCard = ({
   })
   const { recruitmentForm } = useRecruitingContext()
   const queryClient = useQueryClient()
-  const applicationQuery = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId ?? '')
+  const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId ?? '')
   const { useDeleteRecruitmentQuestionOption, usePatchRecruitmentApplicationFormDraft } =
     useRecruitingMutation()
   const { mutate: deleteOptionMutate } = useDeleteRecruitmentQuestionOption(recruitingId ?? '')
@@ -191,7 +191,7 @@ const StandardQuestionCard = ({
                             shouldValidate: true,
                           },
                         )
-                        queryClient.invalidateQueries({ queryKey: applicationQuery.queryKey })
+                        queryClient.invalidateQueries({ queryKey: applicationQueryKey })
                       },
                     },
                   )
