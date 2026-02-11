@@ -3,6 +3,7 @@ import type { GetDocumentEvaluationApplicationResponseDTO } from '@/features/sch
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
+import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
 import { getActiveRecruitmentId } from '../domain/api'
 import { applyKeys } from '../domain/queryKeys'
@@ -45,8 +46,10 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
         return {
           ...data,
           result: {
-            ...data.result,
-            pages: normalizedPages,
+            ...normalizeRecruitmentApplicationForm({
+              ...data.result,
+              pages: normalizedPages,
+            }),
           },
         }
       },

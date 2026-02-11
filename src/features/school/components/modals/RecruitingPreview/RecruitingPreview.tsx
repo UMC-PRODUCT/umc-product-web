@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useResumeForm } from '@features/apply/pages/resume/useResumeForm'
 
@@ -25,8 +25,32 @@ export const RecruitingPreviewContent = ({
   const questionData = data.result
   const [currentPage, setCurrentPage] = useState(1)
 
+  const orderedQuestionData = useMemo(() => {
+    const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
+      [...items].sort((a, b) => {
+        const aOrder = Number(a.orderNo)
+        const bOrder = Number(b.orderNo)
+        if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+        return aOrder - bOrder
+      })
+    const sortedPages = [...questionData.pages]
+      .sort((a, b) => Number(a.page) - Number(b.page))
+      .map((page) => ({
+        ...page,
+        questions: sortByOrderNo(page.questions ?? []),
+        partQuestions: (page.partQuestions ?? []).map((partGroup) => ({
+          ...partGroup,
+          questions: sortByOrderNo(partGroup.questions),
+        })),
+      }))
+    return {
+      ...questionData,
+      pages: sortedPages,
+    }
+  }, [questionData])
+
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
-    questionData,
+    orderedQuestionData,
     undefined,
     { labelMode: 'part', showAllParts: true },
   )
@@ -75,7 +99,7 @@ export const RecruitingPreviewContent = ({
             isFormIncomplete={isFormIncomplete}
             openSubmitModal={() => {}}
             handlePageNavigation={handlePageNavigation}
-            formData={questionData}
+            formData={orderedQuestionData}
           />
         </S.ContentWrapper>
       </Modal.Body>

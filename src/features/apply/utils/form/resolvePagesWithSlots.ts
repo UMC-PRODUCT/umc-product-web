@@ -10,10 +10,19 @@ import { findPartQuestion, getSelectedPartsFromAnswer } from './partSelection'
 
 const PART_ORDER: Array<1 | 2> = [1, 2]
 
+const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
+  [...items].sort((a, b) => {
+    const aOrder = Number(a.orderNo)
+    const bOrder = Number(b.orderNo)
+    if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+    return aOrder - bOrder
+  })
+
 const buildPartQuestions = (
   groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
   part: PartType,
-) => groups.filter((group) => group.part === part).flatMap((group) => group.questions)
+) =>
+  sortByOrderNo(groups.filter((group) => group.part === part).flatMap((group) => group.questions))
 
 const buildPartGroups = (
   groups: Array<{ part: PartType; questions: Array<FormQuestion> }>,
@@ -56,7 +65,10 @@ const applyPartGroupsToPage = (
         partQuestions: groups,
         questions: flattenPartGroups(groups),
       }
-    : page
+    : {
+        ...page,
+        questions: sortByOrderNo(page.questions ?? []),
+      }
 
 const addPageNumbers = (pageList: Array<FormPage>) =>
   pageList.map((page, index) => ({ ...page, page: index + 1 }))

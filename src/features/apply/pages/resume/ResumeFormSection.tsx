@@ -25,6 +25,11 @@ const buildDisabledSlotsFromSchedule = (
   const disabledByDate = Array.isArray(schedule.disabledByDate) ? schedule.disabledByDate : []
   const enabledByDate = Array.isArray(schedule.enabledByDate) ? schedule.enabledByDate : []
 
+  // 백엔드 데이터가 enabledByDate/disabledByDate가 뒤바뀌어 내려오는 케이스 대응
+  if (enabledByDate.length > 0 && disabledByDate.length === 0) {
+    return enabledByDate
+  }
+
   if (enabledByDate.length === 0) return disabledByDate
 
   const enabledMap = enabledByDate.reduce<Record<string, Set<string>>>((acc, slot) => {
@@ -206,12 +211,19 @@ const ResumeFormSection = ({
     if (!activeScheduleQuestion) return []
     return buildDisabledSlotsFromSchedule(activeScheduleQuestion.schedule)
   }, [activeScheduleQuestion])
+  const resolveQuestionNumber = (orderNo: string | null | undefined, fallback: number) => {
+    const parsed = Number(orderNo)
+    return Number.isNaN(parsed) ? fallback : parsed
+  }
   return (
     <form onSubmit={handleFormSubmit} method="POST">
       <Flex key={activePage.page} flexDirection="column" gap={24}>
         {activeScheduleQuestion && (
           <QuestionLayout
-            questionNumber={activePageQuestions.length + 1}
+            questionNumber={resolveQuestionNumber(
+              activeScheduleQuestion.orderNo,
+              activePageQuestions.length + 1,
+            )}
             questionText={activeScheduleQuestion.questionText}
             isRequired={activeScheduleQuestion.required}
             errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
@@ -223,6 +235,8 @@ const ResumeFormSection = ({
                 <TimeTable
                   dateRange={activeScheduleQuestion.schedule.dateRange}
                   timeRange={activeScheduleQuestion.schedule.timeRange}
+                  slotMinutes={activeScheduleQuestion.schedule.slotMinutes}
+                  selectionMinutes={30}
                   value={field.value as Record<string, Array<string>>}
                   disabledSlots={scheduleDisabledSlots}
                   onChange={field.onChange}
@@ -248,7 +262,7 @@ const ResumeFormSection = ({
                   <Question
                     questionId={question.questionId}
                     question={question.questionText}
-                    questionNumber={idx + 1}
+                    questionNumber={resolveQuestionNumber(question.orderNo, idx + 1)}
                     required={question.required}
                     type={question.type}
                     options={question.options}
@@ -274,7 +288,7 @@ const ResumeFormSection = ({
               <Question
                 questionId={question.questionId}
                 question={question.questionText}
-                questionNumber={idx + 1}
+                questionNumber={resolveQuestionNumber(question.orderNo, idx + 1)}
                 required={question.required}
                 type={question.type}
                 options={question.options}
