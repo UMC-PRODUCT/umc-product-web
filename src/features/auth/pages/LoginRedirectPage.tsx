@@ -86,7 +86,6 @@ export const LoginRedirectPage = () => {
       const search: Record<string, string> = {}
       if (oAuthVerificationToken) {
         search.oAuthVerificationToken = oAuthVerificationToken
-        console.log(oAuthVerificationToken)
       }
 
       if (email) {
