@@ -96,13 +96,6 @@ export type Workbook = {
   isReleased: boolean
 }
 
-export type LinkTypeOption = Option<LinkType>
-export type LinkItem = {
-  title: string
-  url: string
-  type?: LinkTypeOption | null
-}
-
 export type GisuType = {
   gisuId: string
   generation: string

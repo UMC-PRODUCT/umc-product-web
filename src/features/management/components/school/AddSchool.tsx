@@ -7,9 +7,11 @@ import { realUploadFile } from '@/shared/api/file/api'
 import Upload from '@/shared/assets/icons/arrow_up_circle.svg?react'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Plus from '@/shared/assets/icons/plus.svg?react'
+import type { LinkType } from '@/shared/constants/umc'
 import { useFile } from '@/shared/hooks/useFile'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -17,7 +19,7 @@ import Label from '@/shared/ui/common/Label/Label'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
-import type { LinkItem, LinkTypeOption } from '../../domain/model'
+import type { ExternalLink } from '../../domain/model'
 import { useManagementMutations } from '../../hooks/useManagementMutations'
 import type { SchoolRegisterForm } from '../../schemas/management'
 import { schoolRegisterSchema } from '../../schemas/management'
@@ -29,12 +31,6 @@ type ModalState = {
   schoolName: string
   link: string
 }
-
-const linkTypeOptions: Array<LinkTypeOption> = [
-  { id: '1', label: 'KAKAO' },
-  { id: '2', label: 'YOUTUBE' },
-  { id: '3', label: 'INSTAGRAM' },
-]
 
 const MAX_PROFILE_SIZE = 5 * 1024 * 1024
 const PROFILE_CATEGORY = 'SCHOOL_LOGO'
@@ -55,12 +51,16 @@ const AddSchool = () => {
   const [profileFileId, setProfileFileId] = useState<string | null>(null)
   const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
-  const [linkType, setLinkType] = useState<LinkTypeOption | null>(null)
-  const [links, setLinks] = useState<Array<LinkItem>>([])
+  const [linkType, setLinkType] = useState<LinkType | null>(null)
+  const [links, setLinks] = useState<Array<ExternalLink>>([])
   const [linkTitle, setLinkTitle] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [openAddLink, setOpenAddLink] = useState(false)
-
+  const linkTypeOptions: Array<Option<string>> = [
+    { id: 'KAKAO', label: '카카오' },
+    { id: 'INSTAGRAM', label: '인스타그램' },
+    { id: 'YOUTUBE', label: '유튜브' },
+  ]
   const handleFileInputChange = async (files: FileList | null) => {
     if (!files || files.length === 0) return
     const file = files[0]
@@ -126,9 +126,7 @@ const AddSchool = () => {
         schoolName: data.schoolName,
         remark: data.remark,
         logoImageId: profileFileId || undefined,
-        kakaoLink: links.find((link) => link.type?.label === 'KAKAO')?.url || undefined,
-        instagramLink: links.find((link) => link.type?.label === 'INSTAGRAM')?.url || undefined,
-        youtubeLink: links.find((link) => link.type?.label === 'YOUTUBE')?.url || undefined,
+        links: links,
       },
       {
         onSuccess: () => {
@@ -312,8 +310,8 @@ const AddSchool = () => {
                       <Dropdown
                         placeholder="Type"
                         options={linkTypeOptions}
-                        value={linkType ?? undefined}
-                        onChange={setLinkType}
+                        value={newLinkType ?? undefined}
+                        onChange={(option) => setNewLinkType(option)}
                         css={{
                           maxWidth: '50px',
                           height: '50px',
