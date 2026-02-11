@@ -35,6 +35,40 @@ const toDateOnly = (value: string | null) =>
 // TODO: 추후 API 수정시 삭제
 const toDateLast = (value: string | null) =>
   value ? dayjs(value).format('YYYY-MM-DDT23:59:59+09:00') : null
+
+const timeToMinutes = (time: string) => {
+  const [h, m] = time.split(':').map(Number)
+  return h * 60 + m
+}
+
+const minutesToTime = (minutes: number) => {
+  const safeMinutes = Math.max(0, Math.min(1439, minutes))
+  const h = Math.floor(safeMinutes / 60)
+  const m = safeMinutes % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+const expandEnabledByDate = (
+  enabledByDate: RecruitingForms['schedule']['interviewTimeTable']['enabledByDate'],
+  slotMinutesValue: string,
+  selectionMinutes = 30,
+) => {
+  const slotMinutes = Number(slotMinutesValue)
+  if (Number.isNaN(slotMinutes) || slotMinutes <= 0) return enabledByDate
+  if (selectionMinutes % slotMinutes !== 0) return enabledByDate
+  const repeatCount = selectionMinutes / slotMinutes
+  return enabledByDate.map((slot) => {
+    const expanded = slot.times.flatMap((time) => {
+      const base = timeToMinutes(time)
+      return Array.from({ length: repeatCount }, (_, idx) =>
+        minutesToTime(base + idx * slotMinutes),
+      )
+    })
+    const unique = Array.from(new Set(expanded))
+    unique.sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+    return { ...slot, times: unique }
+  })
+}
 export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
 ): PatchRecruitmentDraftRequestDTO['schedule'] => ({
@@ -54,7 +88,10 @@ export const buildSchedulePayload = (
       end: schedule.interviewTimeTable.timeRange.end,
     },
     slotMinutes: schedule.interviewTimeTable.slotMinutes || '30',
-    enabledByDate: schedule.interviewTimeTable.enabledByDate,
+    enabledByDate: expandEnabledByDate(
+      schedule.interviewTimeTable.enabledByDate,
+      schedule.interviewTimeTable.slotMinutes || '30',
+    ),
     disabledByDate: [],
   },
 })

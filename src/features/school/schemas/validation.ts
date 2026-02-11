@@ -250,60 +250,60 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.applyStartAt &&
       values.applyEndAt &&
-      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt))
+      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'applyEndAt'],
-        message: '서류 모집 시작 이후로 선택해 주세요.',
+        message: '서류 모집 시작일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.applyEndAt &&
       values.docResultAt &&
-      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt))
+      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'docResultAt'],
-        message: '서류 모집 종료일과 같거나 이후로 선택해 주세요.',
+        message: '서류 모집 종료일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.docResultAt &&
       values.interviewStartAt &&
-      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt))
+      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'interviewStartAt'],
-        message: '서류 결과 발표 이후로 선택해 주세요.',
+        message: '서류 결과 발표일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.interviewStartAt &&
       values.interviewEndAt &&
-      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt))
+      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'interviewEndAt'],
-        message: '면접 평가 시작 이후로 선택해 주세요.',
+        message: '면접 평가 시작일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.interviewEndAt &&
       values.finalResultAt &&
-      dayjs(values.finalResultAt).isBefore(dayjs(values.interviewEndAt))
+      dayjs(values.finalResultAt).isBefore(dayjs(values.interviewEndAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'finalResultAt'],
-        message: '면접 평가 종료 이후로 선택해 주세요.',
+        message: '면접 평가 종료일과 같거나 이후로 선택해 주세요.',
       })
     }
   })

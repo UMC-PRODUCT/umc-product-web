@@ -177,6 +177,13 @@ export type RecruitmentEditable = {
   interviewStartAt?: string
   interviewEndAt?: string
   finalResultAt?: string
+  interviewTimeTable?: {
+    dateRange: { start: string; end: string }
+    timeRange: { start: string; end: string }
+    slotMinutes: string
+    enabledByDate: Array<{ date: string; times: Array<string> }>
+    disabledByDate: Array<{ date: string; times: Array<string> }>
+  }
 }
 
 export type RecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm

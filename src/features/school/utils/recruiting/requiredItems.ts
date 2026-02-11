@@ -63,11 +63,29 @@ export const hasScheduleItem = (items: Array<RecruitingItem>) =>
 export const hasPage2CommonItem = (items: Array<RecruitingItem>) =>
   items.some((item) => item.target.kind === 'COMMON_PAGE' && item.target.pageNo === 2)
 
-export const ensureRequiredItems = (
-  items: Array<RecruitingItem>,
-  recruitmentParts: Array<PartType>,
-) => {
+export type EnsureRequiredItemsOptions = {
+  requirePreferred?: boolean
+  requireSchedule?: boolean
+  requirePage2?: boolean
+  requireParts?: Array<PartType>
+}
+
+export const normalizeItems = (items: Array<RecruitingItem>, recruitmentParts: Array<PartType>) => {
   const uniqueParts = Array.from(new Set(recruitmentParts))
+  const existingPartSet = new Set(
+    items
+      .filter((item) => item.target.kind === 'PART' && item.target.part)
+      .map((item) => item.target.part as PartType),
+  )
+  const hasRealPartItem = (part: PartType, targetItems: Array<RecruitingItem>) =>
+    targetItems.some(
+      (item) =>
+        item.target.kind === 'PART' &&
+        item.target.part === part &&
+        (Boolean(item.question.questionId) ||
+          (typeof item.question.questionText === 'string' &&
+            item.question.questionText.trim().length > 0)),
+    )
   let hasPreferred = false
   let hasSchedule = false
 
@@ -94,26 +112,55 @@ export const ensureRequiredItems = (
       }
       return true
     })
+    .filter((item) => {
+      if (item.target.kind !== 'PART' || !item.target.part) return true
+      const partKey = item.target.part
+      const shouldDropPlaceholder =
+        !item.question.questionId &&
+        (typeof item.question.questionText !== 'string' ||
+          item.question.questionText.trim().length === 0) &&
+        hasRealPartItem(partKey, items)
+      return !shouldDropPlaceholder
+    })
     .filter((item) => item.target.kind !== 'PART' || uniqueParts.includes(item.target.part!))
 
-  if (!hasPreferredPartItem(next)) {
+  return { next, uniqueParts, existingPartSet }
+}
+
+export const ensureRequiredItems = (
+  items: Array<RecruitingItem>,
+  recruitmentParts: Array<PartType>,
+  options: EnsureRequiredItemsOptions = {},
+) => {
+  const {
+    requirePreferred = false,
+    requireSchedule = false,
+    requirePage2 = false,
+    requireParts = [],
+  } = options
+
+  const { next, uniqueParts, existingPartSet } = normalizeItems(items, recruitmentParts)
+
+  if (requirePreferred && !hasPreferredPartItem(next)) {
     next.push(buildPreferredPartItem())
   }
-  if (!hasScheduleItem(next)) {
+  if (requireSchedule && !hasScheduleItem(next)) {
     next.push(buildScheduleItem())
   }
-  if (!hasPage2CommonItem(next)) {
+  if (requirePage2 && !hasPage2CommonItem(next)) {
     next.push(buildDefaultPage2Item())
   }
 
-  uniqueParts.forEach((part) => {
-    const hasPartQuestions = next.some(
-      (item) => item.target.kind === 'PART' && item.target.part === part,
-    )
-    if (!hasPartQuestions) {
-      next.push(buildDefaultPartItem(part))
-    }
-  })
+  requireParts
+    .filter((part) => uniqueParts.includes(part))
+    .forEach((part) => {
+      const hasPartQuestions =
+        existingPartSet.has(part) ||
+        next.some((item) => item.target.kind === 'PART' && item.target.part === part)
+      if (!hasPartQuestions) {
+        next.push(buildDefaultPartItem(part))
+      }
+    })
 
   return next
 }

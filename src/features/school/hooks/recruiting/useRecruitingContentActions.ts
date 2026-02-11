@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
@@ -14,6 +14,7 @@ import {
   buildPublishedSchedulePayload,
   buildQuestionsPayload,
 } from '../../utils/recruiting/recruitingPayload'
+import { ensureRequiredItems } from '../../utils/recruiting/requiredItems'
 
 type RecruitingContentActionsParams = {
   recruitingId: string
@@ -30,6 +31,7 @@ type RecruitingContentActionsParams = {
     allowNextNavigationOnce: () => void
   }
   goToNextStep: () => Promise<boolean>
+  currentStep: number
 }
 
 export const useRecruitingContentActions = ({
@@ -45,6 +47,7 @@ export const useRecruitingContentActions = ({
   setIsBackConfirmOpen,
   navigationBlocker,
   goToNextStep,
+  currentStep,
 }: RecruitingContentActionsParams) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -55,10 +58,28 @@ export const useRecruitingContentActions = ({
     usePatchRecruitmentPublished,
   } = useRecruitingMutation()
   const { mutate: patchTempSaveRecruitmentMutate } = usePatchRecruitmentDraft(recruitingId)
-  const { mutate: patchTempSavedRecruitQuestionsMutate } =
+  const { mutate: patchTempSavedRecruitQuestionsMutate, isPending: isQuestionsPatchPending } =
     usePatchRecruitmentApplicationFormDraft(recruitingId)
   const { mutate: postPublishRecruitmentMutate } = usePostRecruitmentPublish(recruitingId)
   const { mutate: patchPublishedRecruitmentMutate } = usePatchRecruitmentPublished(recruitingId)
+
+  const hasInjectedPartDefaultsRef = useRef(false)
+  const hasRequestedRequiredQuestionCreationRef = useRef(false)
+
+  const hasMissingRequiredQuestionId = (items: RecruitingForms['items']) =>
+    items.some(
+      (item) =>
+        (item.question.type === 'PREFERRED_PART' || item.question.type === 'SCHEDULE') &&
+        !item.question.questionId,
+    )
+
+  const hasMissingPartDefaults = (
+    items: RecruitingForms['items'],
+    parts: RecruitingForms['recruitmentParts'],
+  ) =>
+    parts.some(
+      (part) => !items.some((item) => item.target.kind === 'PART' && item.target.part === part),
+    )
 
   // 자동 저장 (편집 가능일 때만)
   const { handleSave } = useAutoSave({
@@ -85,15 +106,26 @@ export const useRecruitingContentActions = ({
           },
         },
       )
+      if (isQuestionsPatchPending) return
+      const missingRequiredId = hasMissingRequiredQuestionId(values.items)
+      if (missingRequiredId && hasRequestedRequiredQuestionCreationRef.current) return
+      if (missingRequiredId) {
+        hasRequestedRequiredQuestionCreationRef.current = true
+      }
+
       patchTempSavedRecruitQuestionsMutate(
         { items: buildQuestionsPayload(values.items) },
         {
           onSuccess: (data) => {
-            form.setValue('items', convertApplicationFormToItems(data.result), {
+            const nextItems = convertApplicationFormToItems(data.result)
+            form.setValue('items', nextItems, {
               shouldDirty: false,
               shouldTouch: false,
               shouldValidate: true,
             })
+            if (!hasMissingRequiredQuestionId(nextItems)) {
+              hasRequestedRequiredQuestionCreationRef.current = false
+            }
             queryClient.invalidateQueries({
               queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId).queryKey,
             })
@@ -111,6 +143,36 @@ export const useRecruitingContentActions = ({
   const handleNextStep = useCallback(async () => {
     const moved = await goToNextStep()
     if (moved) {
+      if (
+        !isEditLocked &&
+        currentStep === 1 &&
+        values.recruitmentParts.length > 0 &&
+        !hasInjectedPartDefaultsRef.current &&
+        hasMissingPartDefaults(values.items, values.recruitmentParts)
+      ) {
+        const withPartDefaults = ensureRequiredItems(values.items, values.recruitmentParts, {
+          requireParts: values.recruitmentParts,
+        })
+        hasInjectedPartDefaultsRef.current = true
+        patchTempSavedRecruitQuestionsMutate(
+          { items: buildQuestionsPayload(withPartDefaults) },
+          {
+            onSuccess: (data) => {
+              form.setValue('items', convertApplicationFormToItems(data.result), {
+                shouldDirty: false,
+                shouldTouch: false,
+                shouldValidate: true,
+              })
+              queryClient.invalidateQueries({
+                queryKey: schoolKeys.getRecruitmentApplicationFormDraft(recruitingId).queryKey,
+              })
+            },
+            onError: () => {
+              hasInjectedPartDefaultsRef.current = false
+            },
+          },
+        )
+      }
       if (isEditLocked) {
         const payload = buildPublishedSchedulePayload(values.schedule, initialSchedule)
         if (Object.keys(payload).length > 0) {
@@ -127,6 +189,13 @@ export const useRecruitingContentActions = ({
     isEditLocked,
     patchPublishedRecruitmentMutate,
     values.schedule,
+    values.items,
+    values.recruitmentParts,
+    currentStep,
+    form,
+    patchTempSavedRecruitQuestionsMutate,
+    queryClient,
+    recruitingId,
   ])
 
   // 상단 임시저장 버튼

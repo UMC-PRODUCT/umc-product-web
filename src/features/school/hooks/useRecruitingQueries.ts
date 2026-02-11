@@ -8,6 +8,7 @@ import {
   useCustomSuspenseQuery,
 } from '@/shared/hooks/customQuery'
 import type { RecruitmentStatusType, SelectionsSortType } from '@/shared/types/umc'
+import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
 import {
   getDocumentEvaluationApplicants,
@@ -25,13 +26,23 @@ export const useGetRecruitmentDraft = (recruitingId: string) => {
 /** 지원서 폼 조회 */
 export const useGetRecruitmentApplicationForm = (recruitingId: string) => {
   const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationForm(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(queryKey, queryFn, {
+    select: (data) => ({
+      ...data,
+      result: normalizeRecruitmentApplicationForm(data.result),
+    }),
+  })
 }
 
 /** 지원서 폼 임시저장 조회 */
 export const useGetRecruitmentApplicationFormDraft = (recruitingId: string) => {
   const { queryKey, queryFn } = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
-  return useCustomSuspenseQuery(queryKey, queryFn)
+  return useCustomSuspenseQuery(queryKey, queryFn, {
+    select: (data) => ({
+      ...data,
+      result: normalizeRecruitmentApplicationForm(data.result),
+    }),
+  })
 }
 
 /** 모집 리스트 조회 */

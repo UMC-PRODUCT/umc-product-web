@@ -44,6 +44,7 @@ export const useRecruitingContentLogic = ({
     setIsBackConfirmOpen: state.setIsBackConfirmOpen,
     navigationBlocker: state.navigationBlocker,
     goToNextStep: state.goToNextStep,
+    currentStep: state.currentStep,
   })
 
   return {

@@ -17,7 +17,8 @@ type Step3PartHeaderProps = {
   partCompletion: Partial<Record<PartType, boolean>>
   onChangePart: (part: PartType) => void
   onChangeStatus: (isComplete: boolean) => void
-  disabled?: boolean
+  disablePartSelect?: boolean
+  disableStatusToggle?: boolean
 }
 
 const Step3PartHeader = ({
@@ -27,9 +28,10 @@ const Step3PartHeader = ({
   partCompletion,
   onChangePart,
   onChangeStatus,
-  disabled = false,
+  disablePartSelect = false,
+  disableStatusToggle = false,
 }: Step3PartHeaderProps) => {
-  const isCompletionToggleDisabled = disabled
+  const isCompletionToggleDisabled = disableStatusToggle
   return (
     <Section
       variant="solid"
@@ -52,7 +54,8 @@ const Step3PartHeader = ({
               }
             : undefined
         }
-        onChange={(option) => onChangePart(option.id as PartType)}
+        onChange={disablePartSelect ? undefined : (option) => onChangePart(option.id as PartType)}
+        disabled={disablePartSelect}
         css={{ width: 300, maxWidth: '100%' }}
         optionSuffix={(option) =>
           partCompletion[option.id as PartType] ? (

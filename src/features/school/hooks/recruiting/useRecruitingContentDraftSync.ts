@@ -31,7 +31,12 @@ export const useRecruitingContentDraftSync = ({
   useEffect(() => {
     const result = recruitingData.result
     const initialForm = buildRecruitingInitialForm(result)
-    form.reset(initialForm)
+    const currentItems = form.getValues('items')
+    const hasCurrentItems = Array.isArray(currentItems) && currentItems.length > 0
+    form.reset({
+      ...initialForm,
+      items: hasCurrentItems ? currentItems : initialForm.items,
+    })
     setInitialSchedule(initialForm.schedule)
     setScheduleValidationContext({
       initialSchedule: initialForm.schedule,

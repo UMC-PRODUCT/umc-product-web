@@ -10,7 +10,7 @@ import {
   buildDefaultPage2Item,
   buildPreferredPartItem,
   buildScheduleItem,
-  ensureRequiredItems,
+  normalizeItems,
 } from '../utils/recruiting/requiredItems'
 
 const defaultValues: RecruitingForms = {
@@ -85,9 +85,9 @@ export const useRecruitingForm = () => {
 
   useEffect(() => {
     const currentItems = Array.isArray(items) ? items : []
-    const nextItems = ensureRequiredItems(currentItems, recruitmentParts)
-    if (JSON.stringify(currentItems) === JSON.stringify(nextItems)) return
-    form.setValue('items', nextItems, { shouldDirty: true })
+    const { next } = normalizeItems(currentItems, recruitmentParts)
+    if (JSON.stringify(currentItems) === JSON.stringify(next)) return
+    form.setValue('items', next, { shouldDirty: true })
   }, [form, items, recruitmentParts])
 
   const interviewDates = useMemo(() => {
