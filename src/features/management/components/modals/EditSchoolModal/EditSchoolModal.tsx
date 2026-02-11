@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import type { LinkItem, LinkTypeOption } from '@/features/management/domain/model'
+import type { ExternalLink, LinkTypeOption } from '@/features/management/domain/model'
 import { managementKeys } from '@/features/management/domain/queryKeys'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Plus from '@/shared/assets/icons/plus.svg?react'
@@ -32,7 +32,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     schoolQuery.queryFn,
   )
   const [openAddLink, setOpenAddLink] = useState(false)
-  const [_links, setLinks] = useState<Array<LinkItem>>([])
+  const [_links, setLinks] = useState<Array<ExternalLink>>([])
   const [linkTitle, setLinkTitle] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [linkType, setLinkType] = useState<LinkTypeOption | null>(null)
@@ -42,7 +42,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     const trimmedUrl = linkUrl.trim()
     if (!trimmedTitle || !trimmedUrl || !linkType) return
 
-    setLinks((prev) => [...prev, { title: trimmedTitle, url: trimmedUrl, type: linkType }])
+    setLinks((prev) => [...prev, { title: trimmedTitle, url: trimmedUrl, type: linkType.label }])
     setLinkTitle('')
     setLinkUrl('')
     setLinkType(null)

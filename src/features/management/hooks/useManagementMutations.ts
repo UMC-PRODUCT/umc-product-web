@@ -1,6 +1,12 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
-import { patchSchoolAssign, patchSchoolUnAssign, postChapter, postSchool } from '../domain/api'
+import {
+  patchSchool,
+  patchSchoolAssign,
+  patchSchoolUnAssign,
+  postChapter,
+  postSchool,
+} from '../domain/api'
 
 export function useManagementMutations() {
   function usePostSchool() {
@@ -19,5 +25,31 @@ export function useManagementMutations() {
       patchSchoolUnAssign(schoolId, { gisuId }),
     )
   }
-  return { usePostSchool, usePostChapter, usePatchAssignSchools, usePatchUnassignSchools }
+  function usePatchSchool() {
+    return useCustomMutation(
+      ({
+        schoolId,
+        body,
+      }: {
+        schoolId: string
+        body: {
+          schoolName?: string
+          remark?: string
+          logoImageId?: string
+          links?: Array<{
+            title: string
+            type: 'KAKAO' | 'INSTAGRAM' | 'YOUTUBE'
+            url: string
+          }>
+        }
+      }) => patchSchool(schoolId, body),
+    )
+  }
+  return {
+    usePostSchool,
+    usePostChapter,
+    usePatchAssignSchools,
+    usePatchUnassignSchools,
+    usePatchSchool,
+  }
 }

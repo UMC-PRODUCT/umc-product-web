@@ -146,3 +146,9 @@ export type CandidateType = {
     part: PartType
   }
 }
+
+export type ExternalLink = {
+  title: string
+  type: LinkType
+  url: string
+}

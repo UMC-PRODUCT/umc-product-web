@@ -6,6 +6,7 @@ import type {
   ChapterMiniType,
   ChapterType,
   Curriculum,
+  ExternalLink,
   GisuType,
   University,
   UniversityFullType,
@@ -96,9 +97,7 @@ export const postSchool = async (body: {
   schoolName: string
   remark?: string
   logoImageId?: string
-  kakaoLink?: string
-  instagramLink?: string
-  youtubeLink?: string
+  links: Array<ExternalLink>
 }): Promise<CommonResponseDTO<null>> => {
   /** POST /schools - 학교 생성 */
   const { data } = await axiosInstance.post('/schools', body)
@@ -136,10 +135,8 @@ export const patchSchool = async (
   body: {
     schoolName?: string
     remark?: string
-    logoImageId?: string | null
-    kakaoLink?: string | null
-    instagramLink?: string | null
-    youtubeLink?: string | null
+    logoImageId?: string
+    links?: Array<ExternalLink>
   },
 ): Promise<CommonResponseDTO<null>> => {
   /** PATCH /schools/{schoolId} - 학교 수정 */
