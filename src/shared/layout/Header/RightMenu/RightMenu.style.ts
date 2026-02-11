@@ -12,6 +12,7 @@ const navLinkStyle = {
   gap: '6px',
   color: theme.colors.white,
   textDecoration: 'none',
+  whiteSpace: 'nowrap',
   ...theme.typography.B3.Md,
   [media.down('1120px')]: {
     ...theme.typography.B5.Rg,
@@ -19,9 +20,13 @@ const navLinkStyle = {
   svg: {
     width: '22px',
     height: '22px',
+    minWidth: '22px',
+    minHeight: '22px',
     [media.down('1120px')]: {
       width: '16px',
       height: '16px',
+      minWidth: '16px',
+      minHeight: '16px',
     },
   },
 } as const
