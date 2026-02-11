@@ -85,7 +85,7 @@ const EditSchool = () => {
                 </Flex>
               </TableStyles.Td>
               {/* TODO:  추후 remark로 변경 */}
-              <TableStyles.Td>{row.schoolId}</TableStyles.Td>
+              <TableStyles.Td>{row.remark}</TableStyles.Td>
               <TableStyles.Td>
                 <Flex justifyContent="space-between" alignItems="center">
                   <SchoolStateButton

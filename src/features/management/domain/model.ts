@@ -5,7 +5,6 @@
 
 import type { PartType } from '@/features/auth/domain'
 import type { LinkType } from '@/shared/constants/umc'
-import type { Option } from '@/shared/types/form'
 
 import type {
   EVALUATION_DOCUMENT_CONFIG,
@@ -34,6 +33,9 @@ export interface University {
   schoolId: string
   schoolName: string
   chapterId: string | null
+  chapterName: string | null
+  logoImageUrl: string | null
+  remark: string | null
   createdAt: string
   isActive: boolean
 }
@@ -106,9 +108,7 @@ export type UniversityFullType = University & {
   chapterId: string | null
   chapterName: string | null
   remark: string | null
-  kakaoLink: string | null
-  instagramLink: string | null
-  youtubeLink: string | null
+  links: Array<ExternalLink>
   createdAt: string
   updatedAt: string
 }

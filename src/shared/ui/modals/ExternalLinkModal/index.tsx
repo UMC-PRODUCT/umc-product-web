@@ -222,6 +222,7 @@ const ExternalModalContent = () => {
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
+                        width: '100%',
                       }}
                     >
                       {link.url}
