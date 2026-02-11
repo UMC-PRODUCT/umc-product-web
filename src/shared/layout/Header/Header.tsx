@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
+import { authKeys, gisuKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
@@ -31,8 +31,8 @@ const Header = ({
     authKeys.getMemberMe().queryFn,
   )
   const { data: gisuData } = useCustomQuery(
-    schoolKeys.getActiveGisu().queryKey,
-    schoolKeys.getActiveGisu().queryFn,
+    gisuKeys.getActiveGisu().queryKey,
+    gisuKeys.getActiveGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
@@ -64,6 +64,7 @@ const Header = ({
       enabled: !!schoolId,
     },
   )
+  const links = schoolLinkData?.result.links ?? []
   return (
     <header css={{ minWidth: '100vw', maxWidth: '100vw' }}>
       <S.Nav aria-label="Main Navigation">
@@ -82,7 +83,7 @@ const Header = ({
           <LeftMenu>{leftChildren}</LeftMenu>
         </S.LeftWrapper>
         <S.RightWrapper>
-          <RightMenu social={schoolLinkData?.result} nav={nav} />
+          <RightMenu links={links} nav={nav} />
         </S.RightWrapper>
       </S.Nav>
     </header>

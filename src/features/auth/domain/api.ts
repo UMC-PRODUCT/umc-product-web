@@ -34,7 +34,7 @@ export const getSchoolLink = async (
   schoolId: string,
 ): Promise<CommonResponseDTO<GetSchoolLinkResponseDTO>> => {
   const { data } = await axiosInstance.get(`/schools/link/${schoolId}`)
-  return data.result
+  return data
 }
 
 /** POST /auth/token/renew - 토큰 갱신 */

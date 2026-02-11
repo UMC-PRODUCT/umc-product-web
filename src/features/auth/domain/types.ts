@@ -1,3 +1,4 @@
+import type { LinkType } from '@/shared/constants/umc'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
@@ -75,10 +76,14 @@ export type PatchTermsRequestDTO = {
   content: string
 }
 
+export type ExternalLink = {
+  title: string
+  type: LinkType
+  url: string
+}
+
 export type GetSchoolLinkResponseDTO = {
-  kakaoLink?: string
-  instagramLink?: string
-  youtubeLink?: string
+  links: Array<ExternalLink>
 }
 
 export type GetGisuListResponseDTO = {

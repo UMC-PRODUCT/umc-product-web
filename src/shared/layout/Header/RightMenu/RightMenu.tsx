@@ -1,3 +1,4 @@
+import type { ExternalLink as ExternalLinkType } from '@/features/auth/domain/types'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import ExternalLink from '@/shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
 import Profile from '@/shared/layout/Header/RightMenu/Profile/Profile'
@@ -5,21 +6,15 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 
 import * as S from './RightMenu.style'
 
-type SocialLink = {
-  kakaoLink?: string
-  instagramLink?: string
-  youtubeLink?: string
-}
-
 const RightMenu = ({
   nav,
-  social,
+  links,
 }: {
   nav?: {
     label: string
     link: string
   }
-  social?: SocialLink
+  links?: Array<ExternalLinkType>
 }) => {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
@@ -34,7 +29,7 @@ const RightMenu = ({
           </S.NavAnchor>
         ))}
 
-      <ExternalLink subLinks={social || {}} />
+      <ExternalLink subLinks={links ?? []} />
     </S.MenuWrapper>
   )
 

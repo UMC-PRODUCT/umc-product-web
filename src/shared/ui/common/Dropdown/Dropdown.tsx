@@ -21,6 +21,7 @@ type DropdownProps<T> = {
   className?: string
   optionSuffix?: (option: Option<T>) => ReactNode
   onScrollEnd?: () => void
+  portal?: boolean
 }
 
 const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((props, ref) => {
@@ -37,6 +38,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     css,
     optionSuffix,
     onScrollEnd,
+    portal = true,
   } = props
   const isValuePropProvided = Object.prototype.hasOwnProperty.call(props, 'value')
   const controlledValue = value ? String(value.id) : ''
@@ -77,7 +79,24 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         </S.StyledIcon>
       </S.StyledTrigger>
 
-      <SelectPrimitive.Portal>
+      {portal ? (
+        <SelectPrimitive.Portal>
+          <S.StyledContent position="popper" sideOffset={4}>
+            <S.StyledViewport onScroll={handleScroll}>
+              {options.map((option) => (
+                <S.StyledItem key={option.id} value={String(option.id)}>
+                  <SelectPrimitive.ItemText asChild>
+                    <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      {option.label}
+                      {optionSuffix ? optionSuffix(option) : null}
+                    </span>
+                  </SelectPrimitive.ItemText>
+                </S.StyledItem>
+              ))}
+            </S.StyledViewport>
+          </S.StyledContent>
+        </SelectPrimitive.Portal>
+      ) : (
         <S.StyledContent position="popper" sideOffset={4}>
           <S.StyledViewport onScroll={handleScroll}>
             {options.map((option) => (
@@ -92,7 +111,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
             ))}
           </S.StyledViewport>
         </S.StyledContent>
-      </SelectPrimitive.Portal>
+      )}
     </SelectPrimitive.Root>
   )
 })
