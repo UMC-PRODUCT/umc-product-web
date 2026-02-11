@@ -22,6 +22,7 @@ export type FormQuestion = {
   type: QuestionType
   questionText: string
   required: boolean
+  orderNo: string
   options: Array<FormOption>
   maxSelectCount: string | null
   preferredPartOptions: Array<{
@@ -39,6 +40,7 @@ export type FormPage = {
     type: QuestionType
     questionText: string
     required: boolean
+    orderNo: string
     schedule: {
       dateRange: DateRange
       timeRange: DateRange
