@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { clearTokens } from '@/api/tokenManager'
-import { authKeys, schoolKeys } from '@/features/auth/domain/queryKeys'
+import { authKeys, gisuKeys } from '@/features/auth/domain/queryKeys'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
@@ -41,8 +41,8 @@ const ProfileMenuContent = ({
   } = useCustomQuery(authKeys.getMemberMe().queryKey, authKeys.getMemberMe().queryFn)
 
   const { data: gisu } = useCustomQuery(
-    schoolKeys.getActiveGisu().queryKey,
-    schoolKeys.getActiveGisu().queryFn,
+    gisuKeys.getActiveGisu().queryKey,
+    gisuKeys.getActiveGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,

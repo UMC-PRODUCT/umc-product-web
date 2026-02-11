@@ -41,6 +41,9 @@ export const schoolKeys = createQueryKeys('school', {
     queryKey: [schoolId, 'link'],
     queryFn: () => getSchoolLink(schoolId),
   }),
+})
+
+export const gisuKeys = createQueryKeys('gisu', {
   /** GET /gisu/all */
   getGisuList: () => ({
     queryKey: ['gisu'],

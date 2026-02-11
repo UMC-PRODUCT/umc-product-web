@@ -9,7 +9,7 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
 
-import { schoolKeys } from '../domain/queryKeys'
+import { gisuKeys } from '../domain/queryKeys'
 import { useAuthMutation } from '../hooks/useAuthMutations'
 
 type LoginCallbackParams = {
@@ -48,8 +48,8 @@ export const LoginRedirectPage = () => {
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
   const { data: gisu } = useCustomQuery(
-    schoolKeys.getActiveGisu().queryKey,
-    schoolKeys.getActiveGisu().queryFn,
+    gisuKeys.getActiveGisu().queryKey,
+    gisuKeys.getActiveGisu().queryFn,
     {
       staleTime: 1000 * 60 * 60 * 24,
       gcTime: 1000 * 60 * 60 * 24 * 7,
