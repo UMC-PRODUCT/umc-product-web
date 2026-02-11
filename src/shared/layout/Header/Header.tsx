@@ -30,14 +30,10 @@ const Header = ({
     authKeys.getMemberMe().queryKey,
     authKeys.getMemberMe().queryFn,
   )
-  const { data: gisuData } = useCustomQuery(
-    gisuKeys.getActiveGisu().queryKey,
-    gisuKeys.getActiveGisu().queryFn,
-    {
-      staleTime: 1000 * 60 * 60 * 24,
-      gcTime: 1000 * 60 * 60 * 24 * 7,
-    },
-  )
+  const { data: gisuData } = useCustomQuery(gisuKeys.active.queryKey, gisuKeys.active.queryFn, {
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24 * 7,
+  })
   const gisuId = gisuData?.result.gisuId
 
   useEffect(() => {

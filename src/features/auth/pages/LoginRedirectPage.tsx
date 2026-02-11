@@ -47,14 +47,10 @@ export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { data: gisu } = useCustomQuery(
-    gisuKeys.getActiveGisu().queryKey,
-    gisuKeys.getActiveGisu().queryFn,
-    {
-      staleTime: 1000 * 60 * 60 * 24,
-      gcTime: 1000 * 60 * 60 * 24 * 7,
-    },
-  )
+  const { data: gisu } = useCustomQuery(gisuKeys.active.queryKey, gisuKeys.active.queryFn, {
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24 * 7,
+  })
   const { setName, setNickname, setEmail, setRoles } = useUserProfileStore()
   const { usePostMemberOAuth } = useAuthMutation()
   const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()

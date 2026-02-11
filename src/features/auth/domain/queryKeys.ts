@@ -45,13 +45,13 @@ export const schoolKeys = createQueryKeys('school', {
 
 export const gisuKeys = createQueryKeys('gisu', {
   /** GET /gisu/all */
-  getGisuList: () => ({
-    queryKey: ['gisu'],
+  all: {
+    queryKey: null,
     queryFn: () => getGisuList(),
-  }),
+  },
   /** GET /gisu/active */
-  getActiveGisu: () => ({
-    queryKey: ['gisu', 'active'],
+  active: {
+    queryKey: null,
     queryFn: () => getActiveGisu(),
-  }),
+  },
 })

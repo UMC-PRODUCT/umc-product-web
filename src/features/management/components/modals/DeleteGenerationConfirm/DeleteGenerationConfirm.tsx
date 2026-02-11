@@ -3,10 +3,12 @@ import { Button } from '@shared/ui/common/Button/Button'
 import Flex from '@shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
+import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
+
 const DeleteGenerationConfirm = ({ onClose, gisuId }: { gisuId: string; onClose: () => void }) => {
   const content = `삭제된 기수에 대한 모든 데이터는 복구할 수 없습니다.\n삭제하시겠습니까?`
-  // TODO: 기수 삭제 API 연동
-  console.log('삭제할 기수 ID:', gisuId)
+  const { useDeleteGeneration } = useManagementMutations()
+  const { mutate: deleteGenerationMutate } = useDeleteGeneration()
   return (
     <AlertModalLayout
       mode={'warning'}
@@ -31,8 +33,11 @@ const DeleteGenerationConfirm = ({ onClose, gisuId }: { gisuId: string; onClose:
           tone="lime"
           typo="C3.Md"
           onClick={() => {
-            // TODO: 기수 삭제 API 연동
-            onClose()
+            deleteGenerationMutate(gisuId, {
+              onSuccess: () => {
+                onClose()
+              },
+            })
           }}
         />
       </Flex>

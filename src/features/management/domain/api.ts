@@ -159,3 +159,9 @@ export const deleteGisu = async (gisuId: string): Promise<CommonResponseDTO<null
   const { data } = await axiosInstance.delete(`/gisu/${gisuId}`)
   return data
 }
+
+/** DELETE /chapters/{chapterId} - 지부 삭제 */
+export const deleteBranch = async (chapterId: string): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.delete(`/chapters/${chapterId}`)
+  return data
+}

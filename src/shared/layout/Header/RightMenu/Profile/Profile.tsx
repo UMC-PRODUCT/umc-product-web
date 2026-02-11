@@ -40,14 +40,10 @@ const ProfileMenuContent = ({
     refetch: refetchProfile,
   } = useCustomQuery(authKeys.getMemberMe().queryKey, authKeys.getMemberMe().queryFn)
 
-  const { data: gisu } = useCustomQuery(
-    gisuKeys.getActiveGisu().queryKey,
-    gisuKeys.getActiveGisu().queryFn,
-    {
-      staleTime: 1000 * 60 * 60 * 24,
-      gcTime: 1000 * 60 * 60 * 24 * 7,
-    },
-  )
+  const { data: gisu } = useCustomQuery(gisuKeys.active.queryKey, gisuKeys.active.queryFn, {
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24 * 7,
+  })
   const gisuId = gisu?.result.gisuId
 
   useEffect(() => {

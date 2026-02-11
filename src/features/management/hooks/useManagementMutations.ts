@@ -1,6 +1,10 @@
+import { useQueryClient } from '@tanstack/react-query'
+
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteBranch,
+  deleteGisu,
   patchSchool,
   patchSchoolAssign,
   patchSchoolUnAssign,
@@ -9,6 +13,7 @@ import {
 } from '../domain/api'
 
 export function useManagementMutations() {
+  const queryClient = useQueryClient()
   function usePostSchool() {
     return useCustomMutation(postSchool)
   }
@@ -45,11 +50,31 @@ export function useManagementMutations() {
       }) => patchSchool(schoolId, body),
     )
   }
+  function useDeleteGeneration() {
+    return useCustomMutation((gisuId: string) => deleteGisu(gisuId), {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['gisu'],
+        })
+      },
+    })
+  }
+  function useDeleteBranch() {
+    return useCustomMutation((chapterId: string) => deleteBranch(chapterId), {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['management', 'getChapters'],
+        })
+      },
+    })
+  }
   return {
     usePostSchool,
     usePostChapter,
     usePatchAssignSchools,
     usePatchUnassignSchools,
     usePatchSchool,
+    useDeleteBranch,
+    useDeleteGeneration,
   }
 }
