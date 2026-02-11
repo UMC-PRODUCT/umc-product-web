@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import type { ExternalLink } from '@/features/management/domain/model'
 import { managementKeys } from '@/features/management/domain/queryKeys'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
+import { realUploadFile } from '@/shared/api/file/api'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import DefaultSchool from '@/shared/assets/icons/school.svg'
 import type { LinkType } from '@/shared/constants/umc'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { useFile } from '@/shared/hooks/useFile'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
@@ -28,9 +30,19 @@ const linkTypeOptions: Array<Option<string>> = [
   { id: 'YOUTUBE', label: '유튜브' },
 ]
 
+const MAX_PROFILE_SIZE = 5 * 1024 * 1024
+const PROFILE_CATEGORY = 'SCHOOL_LOGO'
+const FALLBACK_CONTENT_TYPE = 'application/octet-stream'
+const ALLOWED_PROFILE_TYPES = new Set(['image/png', 'image/jpeg', 'image/jpg'])
+
 const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId: string }) => {
   const [isOpen, setIsOpen] = useState(true)
   const queryClient = useQueryClient()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const previewUrlRef = useRef<string | null>(null)
+  const { useUploadFile, useConfirmUpload } = useFile()
+  const uploadFileMutation = useUploadFile()
+  const confirmUploadMutation = useConfirmUpload()
   const schoolQuery = managementKeys.getSchoolDetails(schoolId)
   const { data: schoolDetails, isLoading } = useCustomQuery(
     schoolQuery.queryKey,
@@ -48,6 +60,9 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
   const [initialSchoolName, setInitialSchoolName] = useState('')
   const [initialRemark, setInitialRemark] = useState('')
   const [initialLinks, setInitialLinks] = useState<Array<ExternalLink>>([])
+  const [profilePreview, setProfilePreview] = useState<string | null>(null)
+  const [profileFileId, setProfileFileId] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     if (!schoolDetails?.result) return
@@ -63,6 +78,44 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     setLinks(resolvedLinks)
     setInitialLinks(resolvedLinks)
   }, [schoolDetails])
+
+  const handleFileInputChange = async (files: FileList | null) => {
+    if (!files || files.length === 0) return
+    const file = files[0]
+    if (!ALLOWED_PROFILE_TYPES.has(file.type)) return
+    if (file.size > MAX_PROFILE_SIZE) return
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+    }
+    const previewUrl = URL.createObjectURL(file)
+    previewUrlRef.current = previewUrl
+    setProfilePreview(previewUrl)
+    setIsUploading(true)
+
+    try {
+      const prepare = await uploadFileMutation.mutateAsync({
+        fileName: file.name,
+        contentType: file.type || FALLBACK_CONTENT_TYPE,
+        fileSize: file.size,
+        category: PROFILE_CATEGORY,
+      })
+
+      await realUploadFile(prepare.result.uploadUrl, file, file.type || FALLBACK_CONTENT_TYPE)
+      await confirmUploadMutation.mutateAsync(prepare.result.fileId)
+      setProfileFileId(prepare.result.fileId)
+    } catch (error) {
+      setProfileFileId(null)
+      setProfilePreview(null)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleFileWrapperClick = () => {
+    if (isUploading) return
+    fileInputRef.current?.click()
+  }
 
   const handleAddLink = () => {
     const trimmedTitle = linkTitle.trim()
@@ -95,8 +148,9 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
       )
     })
     const linksChanged = addedLinks.length > 0
+    const imageChanged = Boolean(profileFileId)
 
-    if (!nameChanged && !remarkChanged && !linksChanged) {
+    if (!nameChanged && !remarkChanged && !linksChanged && !imageChanged) {
       onClose()
       return
     }
@@ -105,11 +159,13 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
       schoolName?: string
       remark?: string
       links?: Array<ExternalLink>
+      logoImageId?: string
     } = {}
 
     if (nameChanged) body.schoolName = trimmedName
     if (remarkChanged) body.remark = trimmedRemark || undefined
     if (linksChanged) body.links = addedLinks
+    if (imageChanged) body.logoImageId = profileFileId ?? undefined
 
     patchSchool(
       {
@@ -121,6 +177,9 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['schoolsPaging'] })
+          queryClient.invalidateQueries({
+            queryKey: managementKeys.getAllSchools().queryKey,
+          })
           queryClient.invalidateQueries({
             queryKey: managementKeys.getSchoolDetails(schoolId).queryKey,
           })
@@ -170,10 +229,27 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
               <>
                 <Section height="fit-content" variant="solid" css={{ marginTop: '32px' }}>
                   <Flex alignItems="center" justifyContent="center" gap={25}>
-                    <img
-                      src={DefaultSchool}
-                      alt="학교 이미지"
-                      css={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                    <S.ModalButton type="button" onClick={handleFileWrapperClick}>
+                      <img
+                        src={profilePreview ?? schoolDetails.result.logoImageLink ?? DefaultSchool}
+                        alt="학교 이미지"
+                        css={{
+                          borderRadius: '50%',
+                          width: '100px',
+                          height: '100px',
+                          objectFit: 'cover',
+                          maxWidth: '100px',
+                          maxHeight: '100px',
+                          cursor: isUploading ? 'not-allowed' : 'pointer',
+                        }}
+                      />
+                    </S.ModalButton>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg"
+                      hidden
+                      onChange={(event) => handleFileInputChange(event.target.files)}
                     />
                     <Flex flexDirection="column" alignItems="flex-start">
                       <Flex alignItems="center" gap={20}>
@@ -284,16 +360,19 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
 
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
-                <Button
-                  tone="lime"
-                  typo="C3.Md"
-                  variant="solid"
-                  label="저장하기"
-                  css={{ width: 'fit-content', padding: '6px 18px' }}
-                  disabled={isPatchLoading}
-                  onClick={handleSave}
-                />
+                <Button typo="C3.Md" tone="necessary" label="계정 비활성화" />
+                <Flex width={'fit-content'} gap={10}>
+                  <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
+                  <Button
+                    tone="lime"
+                    typo="C3.Md"
+                    variant="solid"
+                    label="저장하기"
+                    css={{ width: 'fit-content', padding: '6px 18px' }}
+                    disabled={isPatchLoading}
+                    onClick={handleSave}
+                  />
+                </Flex>
               </S.FooterWrapper>
             </Modal.Footer>
           </S.ModalContentWrapper>

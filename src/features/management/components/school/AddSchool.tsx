@@ -215,26 +215,28 @@ const AddSchool = () => {
                   hidden
                 />
                 {profilePreview ? (
-                  <Flex alignItems="center" gap={8} width="fit-content" flexDirection="column">
+                  <Flex alignItems="center" gap={20} width="fit-content" flexDirection="row">
                     <img
                       src={profilePreview}
                       alt="학교 프로필 미리보기"
                       css={{ width: '120px', height: '120px', borderRadius: '50%' }}
                     />
-                    {uploadProgress !== null && (
-                      <span className="file-notification">업로드 {uploadProgress}%</span>
-                    )}
-                    <Button
-                      tone="gray"
-                      variant="outline"
-                      typo="C4.Md"
-                      label="삭제"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        void handleRemoveProfile()
-                      }}
-                      css={{ height: '28px', padding: '0 10px' }}
-                    />
+                    <Flex flexDirection="column" gap={8}>
+                      {uploadProgress !== null && (
+                        <span className="file-notification">업로드 {uploadProgress}%</span>
+                      )}
+                      <Button
+                        tone="gray"
+                        variant="outline"
+                        typo="C4.Md"
+                        label="삭제"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          void handleRemoveProfile()
+                        }}
+                        css={{ height: '28px', padding: '0 10px' }}
+                      />
+                    </Flex>
                   </Flex>
                 ) : (
                   <>
@@ -297,8 +299,8 @@ const AddSchool = () => {
                   <Flex flexDirection="column" gap={8}>
                     <Flex
                       gap={8}
-                      alignItems="flex-end"
-                      margin={'16px 0 2px 0'}
+                      alignItems="flex-start"
+                      margin={'16px 0 0 0'}
                       css={{
                         [media.down(theme.breakPoints.desktop)]: {
                           flexDirection: 'column',
@@ -322,8 +324,10 @@ const AddSchool = () => {
                         css={{
                           maxWidth: '50px',
                           height: '50px',
+                          marginTop: '26px',
                           [media.down(theme.breakPoints.desktop)]: {
                             maxWidth: '100%',
+                            marginTop: '0',
                           },
                         }}
                       />

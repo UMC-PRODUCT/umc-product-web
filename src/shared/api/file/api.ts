@@ -2,12 +2,13 @@ import axios from 'axios'
 
 import { axiosInstance } from '@/api/axiosInstance'
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { PostFileType } from '@/shared/types/umc'
 
 export type PostUploadFileRequestDTO = {
   fileName: string
   contentType: string
   fileSize: number
-  category: string
+  category: PostFileType
 }
 
 export type PostUploadFileResponseDTO = {

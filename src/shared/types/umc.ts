@@ -42,7 +42,14 @@ export type RecruitmentStatusType = 'ONGOING' | 'SCHEDULED' | 'CLOSED' | 'DRAFT'
 
 export type SelectionsSortType = 'SCORE_DESC' | 'SCORE_ASC' | 'EVALUATED_AT_ASC'
 
-export type PostFileType = 'PROFILE_IMAGE' | 'SCHOOL_LOGO' | 'PORTFOLIO' | 'ETC'
+export type PostFileType =
+  | 'PROFILE_IMAGE'
+  | 'POST_IMAGE'
+  | 'POST_ATTACHMENT'
+  | 'WORKBOOK_SUBMISSION'
+  | 'SCHOOL_LOGO'
+  | 'PORTFOLIO'
+  | 'ETC'
 
 export type FinalStatusType = 'PASS' | 'WAIT'
 

@@ -31,7 +31,7 @@ export const Grid = styled.div`
 export const FooterWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 13px;
   align-items: center;
   gap: 18px;
