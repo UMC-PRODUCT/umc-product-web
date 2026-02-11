@@ -15,7 +15,13 @@ import {
 export function useManagementMutations() {
   const queryClient = useQueryClient()
   function usePostSchool() {
-    return useCustomMutation(postSchool)
+    return useCustomMutation(postSchool, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['management', 'getGisuChapterWithSchools'],
+        })
+      },
+    })
   }
   function usePostChapter() {
     return useCustomMutation(postChapter)
