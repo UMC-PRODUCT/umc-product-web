@@ -75,16 +75,14 @@ const EditSchool = () => {
             <>
               <TableStyles.Td>
                 <Flex alignItems="center" gap="12px">
-                  {/* TODO: 추후 학교 로고 이미지로 변경 */}
                   <img
-                    src={DefaultSchool}
+                    src={row.logoImageUrl ?? DefaultSchool}
                     alt="학교 로고"
                     css={{ width: '50px', height: '50px', borderRadius: '50%' }}
                   />
                   {row.schoolName}
                 </Flex>
               </TableStyles.Td>
-              {/* TODO:  추후 remark로 변경 */}
               <TableStyles.Td>{row.remark}</TableStyles.Td>
               <TableStyles.Td>
                 <Flex justifyContent="space-between" alignItems="center">
