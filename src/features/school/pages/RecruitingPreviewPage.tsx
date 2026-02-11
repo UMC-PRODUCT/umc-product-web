@@ -11,6 +11,8 @@ import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import ServerErrorCard from '../components/common/ServerErrorCard'
+
 const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
@@ -68,7 +70,16 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
 }
 
 export const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
-  <AsyncBoundary fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}>
+  <AsyncBoundary
+    fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}
+    errorFallback={(error, reset) => (
+      <ServerErrorCard
+        errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
+        errorMessage={error.message || '데이터를 불러오지 못했어요.'}
+        onRetry={reset}
+      />
+    )}
+  >
     <RecruitingPreviewPageContent recruitingId={recruitingId} />
   </AsyncBoundary>
 )

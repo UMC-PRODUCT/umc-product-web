@@ -99,8 +99,8 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   )
 
   const handleFormSubmit = (formData: RegisterForm) => {
-    const hasSchoolId = selectedSchool.id !== ''
-    const schoolId = hasSchoolId ? Number(selectedSchool.id) : undefined
+    const hasSchoolId = selectedSchool.schoolId !== ''
+    const schoolId = hasSchoolId ? Number(selectedSchool.schoolId) : undefined
 
     handleRegisterSubmit(formData, schoolId, termsAgreement)
   }
@@ -125,7 +125,6 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   const emailButtonLabel = emailRequestState.isSent ? '발송 완료' : '메일 인증'
   const verificationButtonLabel = verificationState.isVerified ? '인증 완료' : '번호 확인'
   const canSubmit = isValid && verificationState.isVerified && !isRegistering && areTermsAgreed
-
   const registerFieldsConfig = {
     register,
     errors,

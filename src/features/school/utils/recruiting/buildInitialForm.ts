@@ -53,7 +53,7 @@ export const buildSchedulePayload = (
       start: schedule.interviewTimeTable.timeRange.start,
       end: schedule.interviewTimeTable.timeRange.end,
     },
-    slotMinutes: '30',
+    slotMinutes: schedule.interviewTimeTable.slotMinutes || '30',
     enabledByDate: schedule.interviewTimeTable.enabledByDate,
     disabledByDate: [],
   },

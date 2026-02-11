@@ -150,6 +150,7 @@ export const useRecruitingStepNavigation = ({
           'schedule.interviewStartAt',
           'schedule.interviewEndAt',
           'schedule.finalResultAt',
+          'schedule.interviewTimeTable.slotMinutes',
           'schedule.interviewTimeTable.enabledByDate',
         ])
         return false

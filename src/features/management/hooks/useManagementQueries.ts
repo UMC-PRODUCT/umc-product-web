@@ -48,3 +48,8 @@ export function useGetChapters() {
   const query = managementKeys.getChapters()
   return useCustomQuery(query.queryKey, query.queryFn)
 }
+
+export function useGetAllSchoolsList() {
+  const query = managementKeys.getAllSchools()
+  return useCustomQuery(query.queryKey, query.queryFn)
+}

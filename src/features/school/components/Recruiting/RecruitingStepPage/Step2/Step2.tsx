@@ -9,6 +9,8 @@ import type {
 import { Controller, useWatch } from 'react-hook-form'
 import dayjs from 'dayjs'
 
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -16,6 +18,7 @@ import Label from '@/shared/ui/common/Label'
 import { TimeTable } from '@/shared/ui/common/Question/TimeTable/TimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 import LabelCalendar from '@/shared/ui/form/LabelCalendar/LabelCalendar'
+import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import * as S from '../common'
 
@@ -347,6 +350,40 @@ const Step2 = ({
                     errorMessage: fieldState.error?.message || '',
                   }}
                   disabled={!canEdit.interviewEndAt}
+                />
+              )}
+            />
+          </Flex>
+          <Flex
+            css={{
+              width: '100%',
+              maxWidth: '400px',
+              [media.down(theme.breakPoints.tablet)]: { maxWidth: '100%' },
+            }}
+          >
+            <Controller
+              name="schedule.interviewTimeTable.slotMinutes"
+              control={control}
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  type="text"
+                  autoComplete="none"
+                  label="면접 진행 시간(분)"
+                  placeholder="예: 30"
+                  value={field.value}
+                  onChange={(event) => {
+                    const nextValue = event.target.value.replace(/\D/g, '')
+                    field.onChange(nextValue)
+                  }}
+                  onBlur={field.onBlur}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  css={{ width: '100%' }}
+                  disabled={!canEdit.interviewTimeTable}
+                  error={{
+                    error: !!fieldState.error,
+                    errorMessage: fieldState.error?.message || '',
+                  }}
                 />
               )}
             />

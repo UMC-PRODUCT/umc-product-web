@@ -5,6 +5,7 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import ServerErrorCard from '../../common/ServerErrorCard'
 import RecruitmentCard from './RecruitmentCard/RecruitmentCard'
 
 const DocsEvaluationContent = () => {
@@ -36,7 +37,16 @@ const DocsEvaluationContent = () => {
 
 const DocsEvaluation = () => {
   return (
-    <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
+    <AsyncBoundary
+      fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}
+      errorFallback={(error, reset) => (
+        <ServerErrorCard
+          errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
+          errorMessage={error.message || '데이터를 불러오지 못했어요.'}
+          onRetry={reset}
+        />
+      )}
+    >
       <DocsEvaluationContent />
     </AsyncBoundary>
   )

@@ -11,6 +11,7 @@ import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
+import ServerErrorCard from '../../../common/ServerErrorCard'
 import * as S from './ApplicationList.style'
 
 const ApplicantListContent = ({
@@ -138,7 +139,16 @@ const ApplicantList = ({
   onSummaryChange?: (summary: { totalCount: string; evaluatedCount: string }) => void
 }) => {
   return (
-    <AsyncBoundary fallback={null}>
+    <AsyncBoundary
+      fallback={null}
+      errorFallback={(error, reset) => (
+        <ServerErrorCard
+          errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
+          errorMessage={error.message || '데이터를 불러오지 못했어요.'}
+          onRetry={reset}
+        />
+      )}
+    >
       <ApplicantListContent
         recruitmentId={recruitmentId}
         selectedUserId={selectedUserId}

@@ -448,15 +448,18 @@ export type GetFinalSelectionApplicationsResponseDTO = {
   summary: {
     totalCount: string
     selectedCount: string
-    byPart: Record<string, FinalSelectionSummaryByPart>
   }
-  finalSelectionApplications: Array<FinalSelectionApplication>
-  pagination: {
-    page: string
-    size: string
-    totalPages: string
-    totalElements: string
+  sort: SelectionsSortType
+  finalSelectionApplications: {
+    content: Array<FinalSelectionApplication>
   }
+
+  page: string
+  size: string
+  totalPages: string
+  totalElements: string
+  hasNext: boolean
+  hasPrevious: boolean
 }
 
 export type PatchFinalSelectionStatusRequestDTO = {

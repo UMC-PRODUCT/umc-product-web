@@ -66,10 +66,9 @@ const FinalEvaluation = () => {
   const summary = pages[0]?.result.summary ?? {
     totalCount: '0',
     selectedCount: '0',
-    byPart: {},
   }
   const applicants = useMemo(
-    () => pages.flatMap((page) => page.result.finalSelectionApplications),
+    () => pages.flatMap((page) => page.result.finalSelectionApplications.content),
     [pages],
   )
   const isInitialLoading = isLoading && pages.length === 0
@@ -109,15 +108,13 @@ const FinalEvaluation = () => {
 
   const partOptions = useMemo(() => {
     const base = [{ label: '전체 파트', id: 'ALL' }]
-    const byPart = summary.byPart
-    const keys = Object.keys(byPart)
     return base.concat(
-      keys.map((key) => ({
-        label: PART_TYPE_TO_SMALL_PART[key as keyof typeof PART_TYPE_TO_SMALL_PART],
+      Object.entries(PART_TYPE_TO_SMALL_PART).map(([key, label]) => ({
+        label,
         id: key,
       })),
     )
-  }, [summary.byPart])
+  }, [])
 
   const handleSortChange = (option: Option<unknown>) => {
     setSort(option as Option<string>)

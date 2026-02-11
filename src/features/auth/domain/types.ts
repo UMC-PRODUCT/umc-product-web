@@ -3,7 +3,12 @@ import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 import type { PartType } from './model'
 
-export type PostRegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
+export type PostRegisterResponseDTO = CommonResponseDTO<{
+  memberId: string
+  accessToken: string
+  refreshToken: string
+}>
+
 export type PostRegisterRequestDTO = {
   oAuthVerificationToken?: string
   name?: string

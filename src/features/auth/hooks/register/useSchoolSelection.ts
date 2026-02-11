@@ -5,11 +5,11 @@ import type { UseFormSetValue } from 'react-hook-form'
 import type { RegisterForm } from '../../schemas/register'
 
 export interface SchoolOption {
-  id: string | number
-  label: string
+  schoolId: string
+  schoolName: string
 }
 
-const EMPTY_SCHOOL: SchoolOption = { id: '', label: '' }
+const EMPTY_SCHOOL: SchoolOption = { schoolId: '', schoolName: '' }
 
 /**
  * 학교 선택 상태를 관리하는 훅
@@ -17,9 +17,9 @@ const EMPTY_SCHOOL: SchoolOption = { id: '', label: '' }
 export function useSchoolSelection(setValue: UseFormSetValue<RegisterForm>) {
   const [selectedSchool, setSelectedSchool] = useState<SchoolOption>(EMPTY_SCHOOL)
 
-  const handleSchoolSelect = ({ id, label }: SchoolOption) => {
-    setSelectedSchool({ id, label })
-    setValue('school', label, {
+  const handleSchoolSelect = ({ schoolId, schoolName }: SchoolOption) => {
+    setSelectedSchool({ schoolId, schoolName })
+    setValue('school', schoolName, {
       shouldValidate: true,
       shouldDirty: true,
     })

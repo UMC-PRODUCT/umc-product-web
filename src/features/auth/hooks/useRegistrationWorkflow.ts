@@ -3,6 +3,7 @@ import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react
 import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type { GetTermsResponseDTO } from '../domain/types'
@@ -44,6 +45,9 @@ export const useRegistrationWorkflow = ({
   const [isVerifyingCode, setIsVerifyingCode] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
   const [registrationError, setRegistrationError] = useState<string | null>(null)
+
+  const { setItem: setAccessToken } = useLocalStorage('accessToken')
+  const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
 
   const getApiErrorMessage = useCallback((error: unknown, fallback: string) => {
     if (isAxiosError(error)) {
@@ -167,9 +171,10 @@ export const useRegistrationWorkflow = ({
             : {}),
         },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             setRegistrationError(null)
-
+            setAccessToken(data.result.accessToken)
+            setRefreshToken(data.result.refreshToken)
             navigate({
               to: '/auth/login',
             })

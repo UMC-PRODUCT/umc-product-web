@@ -118,11 +118,10 @@ export const useGetFinalSelectionApplications = (
     {
       initialPageParam: 0,
       getNextPageParam: (lastPage) => {
-        const pagination = lastPage.result.pagination
-        const page = Number(pagination.page)
-        const totalPages = Number(pagination.totalPages)
+        const page = Number(lastPage.result.page)
+        const totalPages = Number(lastPage.result.totalPages)
         if (Number.isNaN(page) || Number.isNaN(totalPages)) return undefined
-        return page + 1 < totalPages ? page + 1 : undefined
+        return lastPage.result.hasNext ? page + 1 : undefined
       },
     },
   )
