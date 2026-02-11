@@ -13,11 +13,13 @@ import SectionTitle from '@/shared/ui/common/SectionTitles/SectionTitle'
 import LabelCalendar from '@/shared/ui/form/LabelCalendar/LabelCalendar'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
+import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
 import * as S from './GenerationCreate.style'
 
 const GenerationCreate = () => {
   const queryClient = useQueryClient()
   const { usePostGisu } = useManagementMutations()
+  const [modalOpen, setModalOpen] = useState(false)
   const { mutate: postGisuMutation } = usePostGisu()
   const [gisuNumber, setGisuNumber] = useState('')
   const [startAt, setStartAt] = useState<Date | null>(null)
@@ -40,6 +42,15 @@ const GenerationCreate = () => {
           setEndAt(null)
           queryClient.invalidateQueries({ queryKey: managementKeys.getAllGisu })
           queryClient.invalidateQueries({ queryKey: ['management', 'gisuList'] })
+        },
+        onError: (error) => {
+          const status = (error as { response?: { status?: number } } | null)?.response?.status
+          if (status === 409) {
+            setModalOpen(true)
+          }
+          setGisuNumber('')
+          setStartAt(null)
+          setEndAt(null)
         },
       },
     )
@@ -99,13 +110,14 @@ const GenerationCreate = () => {
             width: 'fit-content',
             height: '40px',
             padding: '7px 17px',
-
+            marginTop: '10px',
             alignSelf: 'flex-end',
           }}
           onClick={handleSubmit}
           disabled={!gisuNumber.trim() || !startAt || !endAt}
         />
       </S.ButtonWrapper>
+      {modalOpen && <ExistGeneration onClose={() => setModalOpen(false)} />}
     </Section>
   )
 }
