@@ -29,7 +29,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
   const documentEvaluationStatus: DocumentStatusType | undefined =
     current?.documentEvaluation.status
   const finalEvaluationStatus: FinalStatusType | undefined = current?.finalEvaluation.status
-
+  console.log(documentEvaluationStatus)
   return (
     <Section
       variant="solid"

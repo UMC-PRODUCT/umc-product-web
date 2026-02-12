@@ -1,4 +1,4 @@
-import type { EvaluationDocumentType, EvaluationFinalType } from '../types/umc'
+import type { EvaluationStatusType } from '../types/umc'
 
 export function mappingRecruitingColor(status: string | null | undefined) {
   switch (status) {
@@ -19,23 +19,13 @@ export function mappingRecruitingColor(status: string | null | undefined) {
   }
 }
 
-export function mappingEvaluationColor(status: EvaluationDocumentType | EvaluationFinalType) {
+export function mappingEvaluationColor(status: EvaluationStatusType) {
   switch (status) {
-    case '서류 평가 전':
+    case 'NOT_STARTED':
       return 'gray[400]'
-    case '서류 평가 예정':
-      return 'gray[400]'
-    case '서류 평가 중':
+    case 'IN_PROGRESS':
       return 'white'
-    case '서류 평가 완료':
-      return 'lime'
-    case '면접 평가 전':
-      return 'gray[400]'
-    case '면접 평가 예정':
-      return 'gray[400]'
-    case '면접 평가 중':
-      return 'white'
-    case '면접 평가 완료':
+    case 'COMPLETED':
       return 'lime'
     default:
       return 'gray[400]'

@@ -6,9 +6,10 @@
 import type { PartType } from '@features/auth/domain'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
 
+import type { FinalStatusType } from '@/features/apply/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
-import type { SelectionsSortType } from '@/shared/types/umc'
+import type { EvaluationStatusType, SelectionsSortType } from '@/shared/types/umc'
 
 import type { ApplicationFormPayload, Phase, RecruitingDraft } from './types'
 
@@ -44,7 +45,7 @@ type PartLabel = {
 
 type DecisionStatus = 'WAIT' | 'PASS' | 'FAIL'
 
-type ProgressRate = {
+export type ProgressRate = {
   progressRate: string
   completed: string
   total: string
@@ -165,9 +166,21 @@ export type PatchRecruitmentPublishedRequestDTO = {
 export type GetRecruitmentDashboardResponseDTO = {
   recruitmentId: string
   scheduleSummary: ScheduleSummary
-  progress: RecruitmentProgress
+  progress: SchoolLeaderProgressType
   applicationStatus: ApplicationStatus
   evaluationStatus: EvaluationStatus
+}
+
+export type SchoolLeaderProgressType = {
+  currentStep: string
+  steps: Array<{
+    step: Phase
+    label: string
+    done: boolean
+    active: boolean
+  }>
+  noticeType: string
+  noticeDate: string
 }
 
 export type RecruitmentEditable = {
@@ -253,15 +266,15 @@ export type ScheduleSummary = {
   phaseTitle: string
   dDay: string
   dateRange: DateRange
-  todayInterview: {
+  todayInterviews: Array<{
     interviewTime: string
     nickname: string
     name: string
     message: string
-  }
+  }>
 }
 
-type RecruitmentProgress = {
+export type RecruitmentProgress = {
   currentStep: string
   steps: Array<{
     step: string
@@ -282,11 +295,13 @@ export type ApplicationStatus = {
 export type EvaluationStatus = {
   documentEvaluation: ProgressRate
   interviewEvaluation: ProgressRate
-  partStatuses: Array<{
-    part: PartType
-    documentStatusText: string
-    interviewStatusText: string
-  }>
+  partStatuses: Array<PartStatus>
+}
+
+export type PartStatus = {
+  part: PartType
+  documentStatus: EvaluationStatusType
+  interviewStatus: EvaluationStatusType
 }
 
 export type RecruitingTab = 'ONGOING' | 'CLOSED' | 'SCHEDULED'
@@ -369,7 +384,7 @@ export type InterviewEvaluationViewQuestions = {
 
 export type InterviewEvaluationViewAppliedPart = {
   priority: string
-  key: string
+  key: PartType
   label: string
 }
 
@@ -407,7 +422,31 @@ export type GetInterviewAssignmentsResponseDTO = {
   serverNow: string
   selectedDate: string
   selectedPart: PartType | 'ALL'
-  interviewAssignmentSlots: Array<InterviewAssignmentSlot>
+  interviewAssignmentTimeGroups: Array<{
+    start: string
+    end: string
+    interviewAssignmentSlots: Array<{
+      assignmentId: string
+      slot: {
+        slotId: string
+        date: string
+        start: string
+        end: string
+      }
+      applicationId: string
+      applicant: {
+        nickname: string
+        name: string
+      }
+      appliedParts: Array<{
+        priority: string
+        key: PartType
+        label: string
+      }>
+      documentScore: string
+      evaluationProgressStatus: FinalStatusType
+    }>
+  }>
 }
 
 export type GetInterviewEvaluationOptionsResponseDTO = {

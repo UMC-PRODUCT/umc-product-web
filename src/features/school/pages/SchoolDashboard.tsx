@@ -28,9 +28,9 @@ export const SchoolDashboardContent = () => {
         }}
       >
         <ScheduleSummary scheduleSummary={dashboardData.result.scheduleSummary} />
-        <ProgressSteps />
-        <ApplyStatus />
-        <EvaluationStatus />
+        <ProgressSteps progress={dashboardData.result.progress} />
+        <ApplyStatus applicationStatus={dashboardData.result.applicationStatus} />
+        <EvaluationStatus evaluationStatus={dashboardData.result.evaluationStatus} />
       </Flex>
     </PageLayout>
   )

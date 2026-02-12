@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ScheduleSummary as ScheduleSummaryType } from '@/features/school/domain'
-import { INTERVIEW_MOCKS } from '@/features/school/mocks/interview'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
 import InterviewInfo from './InterviewInfo/InterviewInfo'
 import * as S from './ScheduleSummary.style'
+
+const formatDateDots = (value: string) => value.replace(/-/g, '.')
 
 const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummaryType }) => {
   const gridRef = useRef<HTMLDivElement | null>(null)
@@ -47,23 +48,23 @@ const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummary
           <Section variant="solid" alignItems="flex-start" gap={20}>
             <S.ScheduleTitle>{scheduleSummary.phaseTitle}</S.ScheduleTitle>
             <Flex gap={9} flexDirection="column" alignItems="flex-start">
-              <S.ScheduleCount>{scheduleSummary.dDay}</S.ScheduleCount>
-              <S.ScheduleInfo>{`${scheduleSummary.dateRange.start} ~ ${scheduleSummary.dateRange.end}`}</S.ScheduleInfo>
+              <S.ScheduleCount>D-{scheduleSummary.dDay}</S.ScheduleCount>
+              <S.ScheduleInfo>{`${formatDateDots(scheduleSummary.dateRange.start)} ~ ${formatDateDots(scheduleSummary.dateRange.end)}`}</S.ScheduleInfo>
             </Flex>
           </Section>
           <Section variant="solid" alignItems="flex-start" gap={18} css={{ position: 'relative' }}>
             <S.InterviewTitle>오늘 면접 예정자</S.InterviewTitle>
             <S.Grid
-              notProgress={INTERVIEW_MOCKS.length === 0}
+              notProgress={scheduleSummary.todayInterviews.length === 0}
               ref={setGridRef}
               onScroll={handleScroll}
             >
-              {showBlur && INTERVIEW_MOCKS.length !== 0 ? <S.Blur /> : null}
-              {INTERVIEW_MOCKS.length !== 0 ? (
-                INTERVIEW_MOCKS.map((interview, index) => (
+              {showBlur && scheduleSummary.todayInterviews.length !== 0 ? <S.Blur /> : null}
+              {scheduleSummary.todayInterviews.length !== 0 ? (
+                scheduleSummary.todayInterviews.map((interview, index) => (
                   <InterviewInfo
                     key={index}
-                    time={interview.time}
+                    time={interview.interviewTime}
                     name={interview.name}
                     nickname={interview.nickname}
                   />

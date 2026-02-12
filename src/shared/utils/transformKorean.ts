@@ -4,6 +4,7 @@ import type { QuestionType } from '@/shared/types/apply'
 
 import { PART_TYPE_TO_SMALL_PART } from '../constants/part'
 import type { PartSmallType } from '../types/part'
+import type { EvaluationStatusType } from '../types/umc'
 
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
@@ -113,6 +114,16 @@ export const transformUserRecruitmentBadgeToKorean = (input: UserApplicationBadg
     DRAFT: '임시 저장',
     SUBMITTED: '제출 완료',
     PREVIOUS: '지난 모집',
+  }
+
+  return mapping[input] || input
+}
+
+export const transformEvaluationStatusTypeKorean = (input: EvaluationStatusType): string => {
+  const mapping: { [key: string]: string } = {
+    NOT_STARTED: '평가 전',
+    IN_PROGRESS: '평가 중',
+    COMPLETED: '평가 완료',
   }
 
   return mapping[input] || input

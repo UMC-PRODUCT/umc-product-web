@@ -65,3 +65,5 @@ export type DocumentStatusType =
   | 'WITHDRAWN'
 
 export type MyEvaluationStatusType = 'DRAFT_SAVE' | 'SUBMIT'
+
+export type EvaluationStatusType = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'

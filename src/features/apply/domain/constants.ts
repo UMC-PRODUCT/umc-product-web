@@ -3,7 +3,7 @@ import type { PartType } from '@/features/auth/domain/model'
 import type { DocumentStatusType, FinalStatusType } from './model'
 
 const createStatusConfig = <T extends string>(
-  values: Record<T, { label: string; color: string }>,
+  values: Record<T, { label: string; color: 'lime' | 'gray' | 'white' | 'caution' | 'necessary' }>,
 ) => values
 
 /** Apply 도메인 상수 */
@@ -37,18 +37,17 @@ export const RESUME_STATUS_CONFIG = {
 /** 서류 평가 상태 */
 export const DOCUMENT_STATUS_CONFIG = createStatusConfig<DocumentStatusType>({
   PENDING: { label: '미정', color: 'gray' },
-  EVALUATING: { label: '평가 중', color: 'yellow' },
-  PASSED: { label: '서류 합격', color: 'green' },
-  FAILED: { label: '불합격', color: 'red' },
+  EVALUATING: { label: '평가 중', color: 'caution' },
+  PASS: { label: '서류 합격', color: 'lime' },
+  FAIL: { label: '불합격', color: 'necessary' },
 })
 
 /** 최종 평가 상태 */
 export const FINAL_STATUS_CONFIG = createStatusConfig<FinalStatusType>({
-  PENDING: { label: '미정', color: 'gray' },
-  SCHEDULED: { label: '예정', color: 'blue' },
-  EVALUATING: { label: '평가 중', color: 'yellow' },
-  PASSED: { label: '최종 합격', color: 'green' },
-  FAILED: { label: '불합격', color: 'red' },
+  WAITING: { label: '미정', color: 'gray' },
+  IN_PROGRESS: { label: '예정', color: 'white' },
+  EVALUATING: { label: '평가 중', color: 'lime' },
+  PENDING: { label: '평가 대기 중', color: 'white' },
 })
 
 /** 모집 파트 목록 / 매핑 */
