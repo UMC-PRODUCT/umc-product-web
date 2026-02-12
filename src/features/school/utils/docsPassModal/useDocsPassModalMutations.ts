@@ -13,12 +13,14 @@ type UseDocsPassModalMutationsParams = {
   recruitingId: string
   selectedItems: Array<SelectionItem>
   clearSelection: () => void
+  onBulkPassSuccess?: () => void
 }
 
 export const useDocsPassModalMutations = ({
   recruitingId,
   selectedItems,
   clearSelection,
+  onBulkPassSuccess,
 }: UseDocsPassModalMutationsParams) => {
   const queryClient = useQueryClient()
   const [pendingDecisionById, setPendingDecisionById] = useState<
@@ -99,6 +101,7 @@ export const useDocsPassModalMutations = ({
           exact: false,
         })
         clearSelection()
+        onBulkPassSuccess?.()
       },
     })
   }

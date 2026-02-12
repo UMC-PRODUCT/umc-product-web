@@ -23,8 +23,16 @@ export const useDocsPassModalUi = () => {
   const [modalOpen, setModalOpen] = useState<{
     open: boolean
     modalName: ModalName
+    data?: {
+      id: string
+      name: string
+      nickname: string
+      score: string
+      recruitmentId: string
+    }
   }>({
     open: false,
+    data: undefined,
     modalName: null,
   })
 

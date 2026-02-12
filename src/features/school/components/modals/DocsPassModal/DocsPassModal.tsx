@@ -16,7 +16,7 @@ import { Modal } from '@/shared/ui/common/Modal/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import FilterBar from '../../SchoolEvaluation/FilterBar/FilterBar'
-import PassCancleCautionModal from '../PassCancleCautionModal/PassCancleCautionModal'
+import DocsPassCancleCautionModal from '../DocsPassCancleCautionModal/DocsPassCancleCautionModal'
 import PassInfoModal from '../PassInfoModal/PassInfoModal'
 import SetPassSuccessModal from '../SetPassSuccessModal/SetPassSuccessModal'
 import DocsEvaluationRow from './DocsEvaluationRow/DocsEvaluationRow'
@@ -68,6 +68,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
     recruitingId,
     selectedItems,
     clearSelection,
+    onBulkPassSuccess: () => setModalOpen({ open: true, modalName: 'setPassSuccess' }),
   })
   return (
     <Modal.Body className="body">
@@ -135,7 +136,24 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
                       checked={selectedIds.has(Number(item.applicationId))}
                       onToggle={handleToggleRow(Number(item.applicationId))}
                       onPass={() => canEdit && handlePatchStatus(item.applicationId, 'PASS')}
-                      onFail={() => canEdit && handlePatchStatus(item.applicationId, 'FAIL')}
+                      onFail={() => {
+                        if (!canEdit) return
+                        if (item.documentResult.decision === 'PASS') {
+                          setModalOpen({
+                            open: true,
+                            modalName: 'setFail',
+                            data: {
+                              id: String(item.applicationId),
+                              name: item.applicant.name,
+                              nickname: item.applicant.nickname,
+                              score: String(item.documentScore),
+                              recruitmentId: recruitingId,
+                            },
+                          })
+                          return
+                        }
+                        handlePatchStatus(item.applicationId, 'FAIL')
+                      }}
                       isPassLoading={pendingDecision === 'PASS'}
                       isFailLoading={pendingDecision === 'FAIL'}
                       isActionDisabled={!canEdit}
@@ -188,8 +206,15 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
       {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
         <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
       )}
-      {modalOpen.open && modalOpen.modalName === 'setFail' && (
-        <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      {modalOpen.data && modalOpen.open && modalOpen.modalName === 'setFail' && (
+        <DocsPassCancleCautionModal
+          id={modalOpen.data.id}
+          name={modalOpen.data.name}
+          nickname={modalOpen.data.nickname}
+          score={modalOpen.data.score}
+          recruitmentId={modalOpen.data.recruitmentId}
+          onClose={() => setModalOpen({ open: false, modalName: null })}
+        />
       )}
       {modalOpen.open && modalOpen.modalName === 'inform' && (
         <PassInfoModal
