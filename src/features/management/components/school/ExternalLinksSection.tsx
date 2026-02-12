@@ -114,7 +114,12 @@ const ExternalLinksSection = ({
                 placeholder="Type"
                 options={LINK_TYPE_OPTIONS}
                 value={linkType ?? undefined}
-                onChange={(option) => setValue('linkType', option)}
+                onChange={(option) =>
+                  setValue('linkType', {
+                    id: String(option.id),
+                    label: String(option.label),
+                  })
+                }
                 css={{
                   maxWidth: '50px',
                   height: '50px',
