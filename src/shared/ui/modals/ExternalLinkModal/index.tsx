@@ -1,14 +1,17 @@
-import type { ReactNode } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+
+import Cancle from '@shared/assets/icons/close.svg?react'
 
 import { getSchoolLink } from '@/features/auth/domain/api'
 import type { ExternalLink } from '@/features/auth/domain/types'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
 import Close from '@/shared/assets/icons/close.svg?react'
-import InstagramIcon from '@/shared/assets/social/instagram.svg?react'
-import KakaoIcon from '@/shared/assets/social/kakao-talk.svg?react'
-import YoutubeIcon from '@/shared/assets/social/youtube.svg?react'
+import Edit from '@/shared/assets/icons/edit.svg?react'
+import InstagramIcon from '@/shared/assets/social/instagram_color.svg?react'
+import KakaoIcon from '@/shared/assets/social/kakao.svg?react'
+import YoutubeIcon from '@/shared/assets/social/youtube_color.svg?react'
 import type { LinkType } from '@/shared/constants/umc'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
@@ -16,12 +19,12 @@ import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
+import LinkDropdown from '@/shared/ui/form/LinkDropdown/LinkDropdown'
+import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 import * as S from '@/shared/ui/modals/AccountModal/AccountModal.style'
 
 import { Button } from '../../common/Button'
@@ -33,9 +36,9 @@ type AccountModalProps = {
 type LocalExternalLink = ExternalLink & { id: string }
 
 const externalLinkIcons: Record<LinkType, ReactNode> = {
-  KAKAO: <KakaoIcon width={20} height={20} />,
-  INSTAGRAM: <InstagramIcon width={20} height={20} />,
-  YOUTUBE: <YoutubeIcon width={20} height={20} />,
+  KAKAO: <KakaoIcon width={30} height={30} />,
+  INSTAGRAM: <InstagramIcon width={52} height={52} />,
+  YOUTUBE: <YoutubeIcon width={52} height={52} />,
 }
 
 const linkTypeOptions: Array<Option<string>> = [
@@ -130,6 +133,14 @@ const ExternalModalContent = () => {
     setIsAddOpen(false)
   }
 
+  const buildRegister = (name: string, value: string, onChange: (next: string) => void) => ({
+    name,
+    value,
+    onChange: (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value),
+    onBlur: () => undefined,
+    ref: () => undefined,
+  })
+
   return (
     <S.ContentWrapper flexDirection="column" gap="16px" width="100%" css={{ overflow: 'hidden' }}>
       <Flex flexDirection="column" gap="12px" width="100%">
@@ -147,38 +158,42 @@ const ExternalModalContent = () => {
           >
             {editingIds.has(link.id) ? (
               <Flex flexDirection="column" gap="12px" width="100%">
-                <Flex gap="8px" width="100%">
+                <Flex gap="18px" width="100%">
                   <Flex
                     alignItems="center"
                     justifyContent="center"
-                    width={40}
+                    width={52}
                     css={{
-                      width: '40px',
-                      height: '40px',
-                      backgroundColor: theme.colors.gray[800],
+                      width: '52px',
+                      height: '52px',
+                      backgroundColor:
+                        link.type === 'KAKAO'
+                          ? theme.colors.kakao
+                          : link.type === 'INSTAGRAM'
+                            ? 'transparent'
+                            : theme.colors.white,
                       borderRadius: '8px',
                       flexShrink: 0,
                     }}
                   >
                     {externalLinkIcons[link.type]}
                   </Flex>
-                  <TextField
-                    type="text"
-                    autoComplete="off"
-                    value={link.title}
-                    onChange={(e) => handleChange(link.id, 'title', e.target.value)}
-                    placeholder="타이틀"
-                    css={{ flex: 1, minWidth: 0, '& input': { height: '40px', minWidth: 0 } }}
-                  />
+                  <Flex flexDirection="column" css={{ flex: 1, minWidth: 0 }} gap="10px">
+                    <LinkInput
+                      inputTypo="B2.Md"
+                      placeholder="타이틀"
+                      {...buildRegister(`edit-title-${link.id}`, link.title, (next) =>
+                        handleChange(link.id, 'title', next),
+                      )}
+                    />
+                    <LinkInput
+                      placeholder="URL 주소를 입력하세요"
+                      {...buildRegister(`edit-url-${link.id}`, link.url, (next) =>
+                        handleChange(link.id, 'url', next),
+                      )}
+                    />
+                  </Flex>
                 </Flex>
-                <TextField
-                  type="text"
-                  autoComplete="off"
-                  value={link.url}
-                  onChange={(e) => handleChange(link.id, 'url', e.target.value)}
-                  placeholder="URL 주소를 입력하세요"
-                  css={{ width: '100%', '& input': { height: '40px', minWidth: 0 } }}
-                />
                 <Flex gap="8px" justifyContent="flex-end">
                   <Button
                     label="완료"
@@ -211,10 +226,11 @@ const ExternalModalContent = () => {
                     <S.Subtitle
                       css={{
                         color: theme.colors.white,
-                        fontWeight: 600,
+
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
+                        ...theme.typography.B3.Md,
                       }}
                     >
                       {link.title}
@@ -233,22 +249,12 @@ const ExternalModalContent = () => {
                     </S.Subtitle>
                   </Flex>
                 </Flex>
-                <Flex gap="6px" css={{ flexShrink: 0 }} width={'fit-content'}>
-                  <Button
-                    label="수정"
-                    variant="outline"
-                    tone="gray"
-                    onClick={() => handleEditToggle(link.id)}
-                    css={{ width: '48px', height: '28px' }}
-                    typo="B4.Md"
-                  />
-                  <Button
-                    label="삭제"
-                    variant="outline"
-                    tone="necessary"
+                <Flex gap="12px" width={'fit-content'}>
+                  <Edit color={theme.colors.gray[300]} onClick={() => handleEditToggle(link.id)} />
+                  <Cancle
+                    color={theme.colors.gray[300]}
+                    width={24}
                     onClick={() => handleDelete(link.id)}
-                    css={{ width: '48px', height: '28px' }}
-                    typo="B4.Md"
                   />
                 </Flex>
               </Flex>
@@ -269,52 +275,40 @@ const ExternalModalContent = () => {
             border: `1px solid ${theme.colors.gray[700]}`,
           }}
         >
-          <Flex gap="8px" width="100%">
-            <Dropdown
-              options={linkTypeOptions}
-              value={newLinkType ?? undefined}
-              onChange={(option) => setNewLinkType(option)}
-              placeholder="타입"
-              css={{ width: '100px', flexShrink: 0, height: '40px' }}
-              portal={false}
-            />
-            <TextField
-              type="text"
-              autoComplete="off"
-              value={newLinkTitle}
-              onChange={(e) => setNewLinkTitle(e.target.value)}
-              placeholder="링크 제목"
-              css={{
-                flex: 1,
-                minWidth: 0,
-                height: '40px',
-                '& input': { minWidth: 0 },
-              }}
+          <Flex gap="8px" width="100%" flexDirection="column">
+            <Flex css={{ flex: 1, minWidth: 0 }} gap="10px">
+              <LinkInput
+                label="링크 제목"
+                placeholder="링크 제목"
+                {...buildRegister('new-link-title', newLinkTitle, setNewLinkTitle)}
+              />
+              <LinkDropdown
+                options={linkTypeOptions}
+                value={newLinkType}
+                onChange={(option) => setNewLinkType(option)}
+              />
+            </Flex>
+            <LinkInput
+              label="URL"
+              placeholder="URL (https://...)"
+              {...buildRegister('new-link-url', newLinkUrl, setNewLinkUrl)}
             />
           </Flex>
-          <TextField
-            type="text"
-            autoComplete="off"
-            value={newLinkUrl}
-            onChange={(e) => setNewLinkUrl(e.target.value)}
-            placeholder="URL (https://...)"
-            css={{ width: '100%', height: '40px', '& input': { minWidth: 0 } }}
-          />
           <Flex gap="8px" justifyContent="flex-end">
             <Button
-              label="취소"
-              variant="outline"
+              label="취소하기"
+              variant="solid"
               tone="gray"
               onClick={() => setIsAddOpen(false)}
               css={{ width: '60px', height: '32px' }}
-              typo="B4.Md"
+              typo="C5.Rg"
             />
             <Button
-              label="추가"
+              label="저장하기"
               tone="lime"
               onClick={handleAddLink}
               css={{ width: '60px', height: '32px' }}
-              typo="B4.Md"
+              typo="C5.Rg"
             />
           </Flex>
         </Flex>

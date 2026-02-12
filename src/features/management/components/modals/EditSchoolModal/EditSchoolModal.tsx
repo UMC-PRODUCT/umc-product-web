@@ -295,7 +295,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
               </Flex>
             ) : (
               <>
-                <Section height="fit-content" variant="solid" css={{ marginTop: '32px' }}>
+                <Section height="fit-content" variant="solid" css={{ marginTop: '16px' }}>
                   <Flex alignItems="center" justifyContent="center" gap={25}>
                     <S.ModalButton type="button" onClick={handleFileWrapperClick}>
                       <img
@@ -332,7 +332,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
                     </Flex>
                   </Flex>
                 </Section>
-                <Flex flexDirection="column" gap={10}>
+                <Flex flexDirection="column">
                   <Flex flexDirection="column" gap={8}>
                     <S.Title>학교명</S.Title>
                     <TextField

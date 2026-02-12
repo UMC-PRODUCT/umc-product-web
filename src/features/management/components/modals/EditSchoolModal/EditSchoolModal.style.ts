@@ -136,7 +136,7 @@ export const Circle = styled.div`
 `
 export const Title = styled.h3`
   ${theme.typography.H3.Sb};
-  margin: 30px 0 0 0;
+  margin: 15px 0 0 0;
   color: ${theme.colors.white};
   text-align: start;
   width: 100%;
