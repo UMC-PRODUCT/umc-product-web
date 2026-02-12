@@ -85,7 +85,9 @@ export const EmailText = styled.span({
   color: theme.colors.gray[300],
   ...theme.typography.B4.Rg,
   whiteSpace: 'wrap',
-  maxWidth: '100%',
+  maxWidth: '120px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B5.Rg,
   },

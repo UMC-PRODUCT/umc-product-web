@@ -38,7 +38,7 @@ type LocalExternalLink = ExternalLink & { id: string }
 const externalLinkIcons: Record<LinkType, ReactNode> = {
   KAKAO: <KakaoIcon width={30} height={30} />,
   INSTAGRAM: <InstagramIcon width={52} height={52} />,
-  YOUTUBE: <YoutubeIcon width={52} height={52} />,
+  YOUTUBE: <YoutubeIcon width={30} height={30} />,
 }
 
 const linkTypeOptions: Array<Option<string>> = [
@@ -209,9 +209,19 @@ const ExternalModalContent = () => {
                 <Flex gap="12px" alignItems="center" css={{ flex: 1, minWidth: 0 }}>
                   <Flex
                     width={'fit-content'}
+                    alignItems="center"
+                    justifyContent="center"
                     css={{
-                      padding: '8px',
-                      backgroundColor: theme.colors.gray[800],
+                      width: '52px',
+                      height: '52px',
+                      minWidth: '52px',
+
+                      backgroundColor:
+                        link.type === 'KAKAO'
+                          ? theme.colors.kakao
+                          : link.type === 'INSTAGRAM'
+                            ? 'transparent'
+                            : theme.colors.white,
                       borderRadius: '8px',
                       flexShrink: 0,
                     }}
@@ -243,6 +253,7 @@ const ExternalModalContent = () => {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         width: '100%',
+                        maxWidth: '264px',
                       }}
                     >
                       {link.url}
