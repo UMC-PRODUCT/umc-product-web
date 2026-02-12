@@ -46,7 +46,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
   const confirmUploadMutation = useConfirmUpload()
   const { data: schoolDetails, isLoading } = useCustomQuery(
     managementKeys.getSchoolDetails(schoolId),
-    () => getSchoolDetails(schoolId),
+    () => getSchoolDetails({ schoolId }),
   )
   const { usePatchSchool } = useManagementMutations()
   const { mutate: patchSchool, isPending: isPatchLoading } = usePatchSchool()

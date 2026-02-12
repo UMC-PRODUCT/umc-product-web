@@ -76,7 +76,7 @@ const EditSchool = () => {
               <TableStyles.Td>
                 <Flex alignItems="center" gap="12px">
                   <img
-                    src={row.logoImageUrl ?? DefaultSchool}
+                    src={row.logoImageLink ?? DefaultSchool}
                     alt="학교 로고"
                     css={{ width: '50px', height: '50px', borderRadius: '50%' }}
                   />
