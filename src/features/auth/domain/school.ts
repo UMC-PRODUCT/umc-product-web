@@ -1,33 +1,15 @@
 import { axiosInstance } from '@/api/axiosInstance'
-
-export interface SchoolSearchParams {
-  keyword?: string
-  page?: number
-  size?: number
-}
+import type { CommonResponseDTO } from '@/shared/types/api'
 
 export interface SchoolSearchPage {
-  content: Array<{
+  schools: Array<{
     schoolId: string
     schoolName: string
   }>
-  page: string
-  size: string
-  totalPages: string
-  totalElements: string
-  hasNext: boolean
-  hasPrevious: boolean
-}
-
-interface SchoolSearchResponse {
-  success: boolean
-  code: string
-  message: string
-  result: SchoolSearchPage
 }
 
 export const searchSchools = async () => {
-  const response = await axiosInstance.get<SchoolSearchResponse>('/schools/all')
+  const response = await axiosInstance.get<CommonResponseDTO<SchoolSearchPage>>('/schools/all')
 
   return response.data.result
 }

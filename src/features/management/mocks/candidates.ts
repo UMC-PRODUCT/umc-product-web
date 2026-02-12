@@ -1,16 +1,4 @@
-import type { PartType } from '@/features/auth/domain'
-
-export type CandidateType = {
-  id: number
-  nickname: string
-  name: string
-  school: string
-  part: Array<PartType>
-  finalResult: {
-    status: '합격' | '불합격' | '대기'
-    part: PartType
-  }
-}
+import type { CandidateType } from '../domain/model'
 
 export const CANDIDATE: Array<CandidateType> = [
   {

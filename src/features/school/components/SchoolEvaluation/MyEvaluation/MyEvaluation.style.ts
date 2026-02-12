@@ -8,6 +8,23 @@ export const FormContainer = styled.form`
   gap: 18px;
   width: 100%;
 `
+
+export const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${theme.colors.gray[700]};
+  backdrop-filter: blur(2px);
+  z-index: 1;
+`
 export const SubTitle = styled.div`
   ${theme.typography.B4.Sb};
   color: ${theme.colors.white};
@@ -45,6 +62,7 @@ export const ScoreInputBox = styled.div`
   .total {
     ${theme.typography.B5.Md};
     color: ${theme.colors.gray[300]};
+    width: 50%;
   }
 `
 
@@ -56,9 +74,10 @@ export const ScoreInput = styled.input`
   font-weight: 600;
   text-align: right;
   line-height: 1;
-  width: 40px;
+  flex: 1;
   outline: none;
   padding: 0;
+
   /* Chrome, Safari, Edge, Opera에서 스핀 버튼 제거 */
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

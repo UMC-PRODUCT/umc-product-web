@@ -25,6 +25,7 @@ const FileList = ({ files, mode, onRetry, onRemove }: FileListProps) => {
           fileSize={formatFileSize(file.size)}
           status={file.status}
           progress={file.progress}
+          errorMessage={file.errorMessage}
           onRetry={() => onRetry(file)}
           removeFile={() => onRemove(file.id)}
         />

@@ -1,6 +1,6 @@
 import { Button } from '@/shared/ui/common/Button'
 
-import * as S from './RealTimeEvaluation.style'
+import * as S from './index.style'
 
 type QuestionItemProps = {
   index: number
@@ -8,7 +8,7 @@ type QuestionItemProps = {
   ownerName?: string
   onStartEdit: () => void
   onRemove: () => void
-  type: 'common' | 'firstChoice' | 'secondChoice' | 'additional'
+  type: 'common' | 'firstChoice' | 'secondChoice' | 'live'
   editable: boolean
 }
 
@@ -26,13 +26,13 @@ const QuestionItem = ({
       <S.QuestionCardHeader>
         <S.QuestionHeaderLeft>
           <label>질문 {index}</label>
-          {type === 'additional' && (
+          {type === 'live' && (
             <S.QuestionUserBadge tone="gray" typo="C5.Md" variant="outline">
               {ownerName}
             </S.QuestionUserBadge>
           )}
         </S.QuestionHeaderLeft>
-        <S.ButtonWrapper isHidden={type !== 'additional' || !editable}>
+        <S.ButtonWrapper isHidden={type !== 'live' || !editable}>
           <Button
             variant="outline"
             typo="C5.Md"

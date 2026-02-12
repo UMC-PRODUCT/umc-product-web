@@ -4,6 +4,7 @@
  */
 
 import type { PartType } from '@/features/auth/domain'
+import type { LinkType } from '@/shared/constants/umc'
 
 import type {
   EVALUATION_DOCUMENT_CONFIG,
@@ -29,11 +30,19 @@ export type EvaluationFinalType =
 
 /** 대학교 정보 */
 export interface University {
-  id: number
-  name: string
-  state: SchoolStateType
+  schoolId: string
+  schoolName: string
+  chapterId: string | null
+  chapterName: string | null
+  logoImageLink: string | null
+  remark: string | null
   createdAt: string
-  updatedAt: string
+  isActive: boolean
+}
+
+export interface UniversitySimple {
+  schoolId: string
+  schoolName: string
 }
 
 /** 대학교 지부 정보 */
@@ -87,4 +96,52 @@ export type Workbook = {
   missionType: string
   releasedAt: string
   isReleased: boolean
+}
+
+export type GisuType = {
+  gisuId: string
+  generation: string
+  isActive: boolean
+}
+
+export type UniversityFullType = University & {
+  chapterId: string | null
+  chapterName: string | null
+  remark: string | null
+  links: Array<ExternalLink>
+  createdAt: string
+  updatedAt: string
+}
+export type ChapterType = {
+  chapterId: string
+  chapterName: string
+  schools: Array<UniversitySimple>
+}
+
+export type ChapterMiniType = {
+  id: string
+  name: string
+}
+
+export interface Branch {
+  id: string
+  name: string
+  schools: Array<UniversitySimple>
+}
+export type CandidateType = {
+  id: number
+  nickname: string
+  name: string
+  school: string
+  part: Array<PartType>
+  finalResult: {
+    status: '합격' | '불합격' | '대기'
+    part: PartType
+  }
+}
+
+export type ExternalLink = {
+  title: string
+  type: LinkType
+  url: string
 }

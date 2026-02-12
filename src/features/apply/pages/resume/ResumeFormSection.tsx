@@ -25,6 +25,11 @@ const buildDisabledSlotsFromSchedule = (
   const disabledByDate = Array.isArray(schedule.disabledByDate) ? schedule.disabledByDate : []
   const enabledByDate = Array.isArray(schedule.enabledByDate) ? schedule.enabledByDate : []
 
+  // 백엔드 데이터가 enabledByDate/disabledByDate가 뒤바뀌어 내려오는 케이스 대응
+  if (enabledByDate.length > 0 && disabledByDate.length === 0) {
+    return enabledByDate
+  }
+
   if (enabledByDate.length === 0) return disabledByDate
 
   const enabledMap = enabledByDate.reduce<Record<string, Set<string>>>((acc, slot) => {
@@ -87,6 +92,7 @@ const ResumeFormSection = ({
   isSubmitDisabled,
   onOpenSubmitModal,
   onPageChange,
+  onPortfolioImmediateSave,
   isEdit,
 }: ResumeFormSectionProps) => {
   const normalizedPages = useMemo(() => (Array.isArray(pages) ? pages : []), [pages])
@@ -111,15 +117,13 @@ const ResumeFormSection = ({
 
   const partQuestionIds = useMemo(() => {
     return normalizedPages
-      .flatMap((page) => {
-        const baseQuestions = Array.isArray(page.questions) ? page.questions : []
-        const partQuestions = Array.isArray(page.partQuestions)
+      .flatMap((page) =>
+        Array.isArray(page.partQuestions)
           ? page.partQuestions.flatMap((partGroup) =>
               Array.isArray(partGroup.questions) ? partGroup.questions : [],
             )
-          : []
-        return [...baseQuestions, ...partQuestions]
-      })
+          : [],
+      )
       .map((question) => question.questionId)
   }, [normalizedPages])
 
@@ -131,13 +135,12 @@ const ResumeFormSection = ({
   const hasPartAnswers = useMemo(() => {
     if (partQuestionIds.length === 0) return false
     return normalizedPages.some((page) => {
-      const pageQuestions = Array.isArray(page.questions) ? page.questions : []
       const pagePartQuestions = Array.isArray(page.partQuestions)
         ? page.partQuestions.flatMap((partGroup) =>
             Array.isArray(partGroup.questions) ? partGroup.questions : [],
           )
         : []
-      return [...pageQuestions, ...pagePartQuestions].some((question) => {
+      return pagePartQuestions.some((question) => {
         const index = partQuestionIds.indexOf(question.questionId)
         const answerValue = partQuestionValues[index]
         return !isAnswerEmpty(question, answerValue)
@@ -163,6 +166,24 @@ const ResumeFormSection = ({
     field: ControllerRenderProps<Record<string, unknown>, string>,
     newValue: QuestionAnswerValue,
   ) => {
+    if (isEdit && question.type === 'PORTFOLIO' && onPortfolioImmediateSave) {
+      const prevValue = field.value as {
+        files?: Array<{ status?: unknown }>
+        links?: Array<unknown>
+      } | null
+      const nextValue = newValue as { files?: Array<{ status?: unknown }>; links?: Array<unknown> }
+      const prevFilesCount = Array.isArray(prevValue?.files)
+        ? prevValue.files.filter((file) => file.status === 'success').length
+        : 0
+      const prevLinksCount = Array.isArray(prevValue?.links) ? prevValue.links.length : 0
+      const nextFilesCount = Array.isArray(nextValue.files)
+        ? nextValue.files.filter((file) => file.status === 'success').length
+        : 0
+      const nextLinksCount = Array.isArray(nextValue.links) ? nextValue.links.length : 0
+      if (nextFilesCount > prevFilesCount || nextLinksCount > prevLinksCount) {
+        onPortfolioImmediateSave(question.questionId, newValue)
+      }
+    }
     requestPartChange({
       questionId: question.questionId,
       currentValue: field.value as QuestionAnswerValue,
@@ -190,16 +211,48 @@ const ResumeFormSection = ({
     if (!activeScheduleQuestion) return []
     return buildDisabledSlotsFromSchedule(activeScheduleQuestion.schedule)
   }, [activeScheduleQuestion])
+  const resolveQuestionNumber = (orderNo: string | null | undefined, fallback: number) => {
+    const parsed = Number(orderNo)
+    return Number.isNaN(parsed) ? fallback : parsed
+  }
   return (
     <form onSubmit={handleFormSubmit} method="POST">
       <Flex key={activePage.page} flexDirection="column" gap={24}>
+        {activeScheduleQuestion && (
+          <QuestionLayout
+            questionNumber={resolveQuestionNumber(
+              activeScheduleQuestion.orderNo,
+              activePageQuestions.length + 1,
+            )}
+            questionText={activeScheduleQuestion.questionText}
+            isRequired={activeScheduleQuestion.required}
+            errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
+          >
+            <Controller
+              name={String(activeScheduleQuestion.questionId)}
+              control={control}
+              render={({ field }) => (
+                <TimeTable
+                  dateRange={activeScheduleQuestion.schedule.dateRange}
+                  timeRange={activeScheduleQuestion.schedule.timeRange}
+                  slotMinutes={activeScheduleQuestion.schedule.slotMinutes}
+                  selectionMinutes={30}
+                  value={field.value as Record<string, Array<string>>}
+                  disabledSlots={scheduleDisabledSlots}
+                  onChange={field.onChange}
+                  mode={isEdit ? 'edit' : 'view'}
+                />
+              )}
+            />
+          </QuestionLayout>
+        )}
         {activePagePartQuestions.map((partQuestion, index) => (
           <Flex
             key={`${activePage.page}-${partQuestion.part}-${index}`}
             flexDirection="column"
             gap={12}
           >
-            <PartDivider label={partQuestion.label ?? partQuestion.part} />
+            <PartDivider label={partQuestion.part} />
             {partQuestion.questions.map((question, idx) => (
               <Controller
                 key={question.questionId}
@@ -209,7 +262,7 @@ const ResumeFormSection = ({
                   <Question
                     questionId={question.questionId}
                     question={question.questionText}
-                    questionNumber={idx + 1}
+                    questionNumber={resolveQuestionNumber(question.orderNo, idx + 1)}
                     required={question.required}
                     type={question.type}
                     options={question.options}
@@ -235,7 +288,7 @@ const ResumeFormSection = ({
               <Question
                 questionId={question.questionId}
                 question={question.questionText}
-                questionNumber={idx + 1}
+                questionNumber={resolveQuestionNumber(question.orderNo, idx + 1)}
                 required={question.required}
                 type={question.type}
                 options={question.options}
@@ -249,29 +302,6 @@ const ResumeFormSection = ({
             )}
           />
         ))}
-        {activeScheduleQuestion && (
-          <QuestionLayout
-            questionNumber={activePageQuestions.length + 1}
-            questionText={activeScheduleQuestion.questionText}
-            isRequired={activeScheduleQuestion.required}
-            errorMessage={getFieldErrorMessage(activeScheduleQuestion.questionId)}
-          >
-            <Controller
-              name={String(activeScheduleQuestion.questionId)}
-              control={control}
-              render={({ field }) => (
-                <TimeTable
-                  dateRange={activeScheduleQuestion.schedule.dateRange}
-                  timeRange={activeScheduleQuestion.schedule.timeRange}
-                  value={field.value as Record<string, Array<string>>}
-                  disabledSlots={scheduleDisabledSlots}
-                  onChange={field.onChange}
-                  mode={isEdit ? 'edit' : 'view'}
-                />
-              )}
-            />
-          </QuestionLayout>
-        )}
       </Flex>
 
       <ResumeNavigation

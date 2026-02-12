@@ -1,7 +1,21 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
+
+export const Wrapper = styled.div`
+  height: fit-content;
+  max-height: 685px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content;
+    max-height: fit-content;
+  }
+`
 
 export const Container = styled.div`
   display: flex;
@@ -14,17 +28,30 @@ export const Container = styled.div`
 export const MainLayout = styled.div`
   display: flex;
   gap: 20px;
-  height: 100%;
+  height: 614px;
+  min-height: fit-content;
   width: 100%;
   overflow: hidden;
+  ${media.down(theme.breakPoints.desktop)} {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: fit-content;
+  }
 `
 
 /* 좌측 사이드바 */
 export const Sidebar = styled(Section)`
+  width: 360px !important;
+  max-height: 100%;
+  min-height: 100%;
+  height: 100%;
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
   border-radius: 6px;
+  ${media.down(theme.breakPoints.desktop)} {
+    width: 100% !important;
+  }
 `
 
 export const SectionTitle = styled.h3`
@@ -32,6 +59,7 @@ export const SectionTitle = styled.h3`
   width: 100%;
   ${theme.typography.B3.Sb};
   margin: 0;
+  white-space: nowrap;
 `
 
 export const TimeSlotList = styled.div`
@@ -39,7 +67,10 @@ export const TimeSlotList = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  overflow-y: scroll;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
 `
 
 export const TimeSlotItem = styled.div<{ isActive?: boolean }>`
@@ -50,6 +81,7 @@ export const TimeSlotItem = styled.div<{ isActive?: boolean }>`
   border-radius: 8px;
   border: 1px solid ${(props) => (props.isActive ? theme.colors.lime : theme.colors.gray[700])};
   background-color: ${theme.colors.black};
+  cursor: pointer;
   .time {
     color: #fff;
     ${theme.typography.B3.Md};
@@ -84,9 +116,14 @@ export const Content = styled.div`
   flex: 1;
   display: grid;
   gap: 20px;
-  grid-template-rows: 1fr 1fr;
-  height: 100%;
-  overflow-y: auto;
+  grid-template-rows: auto auto;
+  height: fit-content;
+  overflow-y: visible;
+  min-width: 0;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content !important;
+    grid-template-rows: auto;
+  }
 `
 
 export const ContentHeader = styled.div`
@@ -94,6 +131,7 @@ export const ContentHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  user-select: none;
   height: 40px;
 `
 
@@ -107,10 +145,35 @@ export const SearchInput = styled.input`
 `
 
 export const ApplicantList = styled(Section)`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
   background-color: ${theme.colors.black};
+  width: 100%;
+  height: 320px !important;
+  ${media.down(theme.breakPoints.desktop)} {
+    height: fit-content !important;
+  }
+  .not-progress {
+    color: ${theme.colors.gray[300]};
+    ${theme.typography.B4.Rg};
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  z-index: 1;
   width: 100%;
 `
 
@@ -124,6 +187,7 @@ export const InterviewerSection = styled(Section)`
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  height: fit-content;
 `
 
 export const DropZone = styled(Section)`
@@ -134,6 +198,8 @@ export const DropZone = styled(Section)`
   justify-content: flex-start;
   padding: 12px;
   height: fit-content;
+  max-height: 196px;
+  overflow-y: scroll;
   color: ${theme.colors.gray[500]};
   ${theme.typography.B4.Rg};
 

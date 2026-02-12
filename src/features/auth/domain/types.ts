@@ -1,10 +1,16 @@
+import type { LinkType } from '@/shared/constants/umc'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 import type { PartType } from './model'
 
-export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
-export type RegisterRequestDTO = {
+export type PostRegisterResponseDTO = CommonResponseDTO<{
+  memberId: string
+  accessToken: string
+  refreshToken: string
+}>
+
+export type PostRegisterRequestDTO = {
   oAuthVerificationToken?: string
   name?: string
   nickname?: string
@@ -16,22 +22,25 @@ export type RegisterRequestDTO = {
     isAgreed?: boolean
   }>
 }
-export type RefreshResponseDTO = CommonResponseDTO<{ accessToken: string; refreshToken: string }>
-export type RefreshRequestDTO = {
+export type PostRefreshTokenResponseDTO = CommonResponseDTO<{
+  accessToken: string
+  refreshToken: string
+}>
+export type PostRefreshTokenRequestDTO = {
   refreshToken?: string
 }
-export type EmailVerificationRequestDTO = {
+export type PostEmailVerificationRequestDTO = {
   email?: string
 }
-export type EmailVerificationResponseDTO = { emailVerificationId?: string }
+export type PostEmailVerificationResponseDTO = { emailVerificationId?: string }
 
-export type VerificationCodeRequestDTO = {
+export type PostEmailVerificationCodeRequestDTO = {
   emailVerificationId?: string
   verificationCode?: string
 }
-export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
+export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
 
-export type MyInfoResponseDTO = {
+export type GetMemberMeResponseDTO = {
   id?: number
   name?: string
   nickname?: string
@@ -50,6 +59,12 @@ export type MyInfoResponseDTO = {
   }>
 }
 
+export type GetMemberOAuthMeResponseDTO = Array<{
+  memberOAuthId: string
+  memberId: string
+  provider: 'KAKAO' | 'GOOGLE' | 'APPLE'
+}>
+
 export type GetTermsResponseDTO = {
   id: string
   title: string
@@ -57,20 +72,18 @@ export type GetTermsResponseDTO = {
   isMandatory: boolean
 }
 
-export type GetSchoolLinkResponseDTO = {
-  kakaoLink?: string
-  instagramLink?: string
-  youtubeLink?: string
+export type PatchTermsRequestDTO = {
+  content: string
 }
 
-export type GetGisuListResponseDTO = {
-  gisuList: Array<{
-    gisuId: string
-    generation: string
-    startsAt: string
-    endsAt: string
-    isActive: boolean
-  }>
+export type ExternalLink = {
+  title: string
+  type: LinkType
+  url: string
+}
+
+export type GetSchoolLinkResponseDTO = {
+  links: Array<ExternalLink>
 }
 
 export type GetActiveGisuResponseDTO = {

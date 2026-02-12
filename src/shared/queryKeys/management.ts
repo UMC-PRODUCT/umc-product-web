@@ -1,0 +1,53 @@
+import { createQueryKeys } from '@lukemorales/query-key-factory'
+
+import type { PartType } from '@/shared/types/umc'
+
+type SchoolsPagingParams = {
+  page?: string
+  size?: string
+  sort?: 'asc' | 'desc'
+  chapterId?: string
+  keyword?: string
+}
+
+const managementKeyFactory = createQueryKeys('management', {
+  curriculums: (part: PartType) => [part],
+  schools: {
+    queryKey: null,
+    contextQueries: {
+      all: null,
+      unassigned: (gisuId: string) => [gisuId],
+    },
+  },
+  gisu: {
+    queryKey: null,
+    contextQueries: {
+      all: null,
+    },
+  },
+  gisuList: (params: SchoolsPagingParams) => [params],
+  gisuChapterWithSchools: (gisuId: string) => [gisuId],
+  schoolsPaging: (params: SchoolsPagingParams) => [params],
+  schoolDetail: (schoolId: string) => [schoolId],
+  chapters: {
+    queryKey: null,
+    contextQueries: {
+      all: null,
+    },
+  },
+})
+
+export const managementKeys = {
+  getCurriculums: (part: PartType) => managementKeyFactory.curriculums(part).queryKey,
+  getAllSchools: managementKeyFactory.schools._ctx.all.queryKey,
+  getAllGisu: managementKeyFactory.gisu._ctx.all.queryKey,
+  getGisuList: (params: SchoolsPagingParams) => managementKeyFactory.gisuList(params).queryKey,
+  getGisuChapterWithSchools: (gisuId: string) =>
+    managementKeyFactory.gisuChapterWithSchools(gisuId).queryKey,
+  getUnassignedSchools: (gisuId: string) =>
+    managementKeyFactory.schools._ctx.unassigned(gisuId).queryKey,
+  getSchoolsPaging: (params: SchoolsPagingParams) =>
+    managementKeyFactory.schoolsPaging(params).queryKey,
+  getSchoolDetails: (schoolId: string) => managementKeyFactory.schoolDetail(schoolId).queryKey,
+  getChapters: managementKeyFactory.chapters._ctx.all.queryKey,
+}

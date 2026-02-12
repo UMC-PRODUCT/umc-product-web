@@ -58,7 +58,12 @@ const interviewTimeTableSchema = z.object({
     start: z.string(),
     end: z.string(),
   }),
-  slotMinutes: z.string(),
+  slotMinutes: z
+    .string()
+    .trim()
+    .min(1, '면접 시간을 입력해 주세요.')
+    .regex(/^\d+$/, '숫자만 입력해 주세요.')
+    .refine((value) => Number(value) > 0, '1분 이상 입력해 주세요.'),
   enabledByDate: z.array(
     z.object({
       date: z.string(),
@@ -245,60 +250,60 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.applyStartAt &&
       values.applyEndAt &&
-      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt))
+      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'applyEndAt'],
-        message: '서류 모집 시작 이후로 선택해 주세요.',
+        message: '서류 모집 시작일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.applyEndAt &&
       values.docResultAt &&
-      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt))
+      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'docResultAt'],
-        message: '서류 모집 종료일과 같거나 이후로 선택해 주세요.',
+        message: '서류 모집 종료일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.docResultAt &&
       values.interviewStartAt &&
-      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt))
+      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'interviewStartAt'],
-        message: '서류 결과 발표 이후로 선택해 주세요.',
+        message: '서류 결과 발표일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.interviewStartAt &&
       values.interviewEndAt &&
-      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt))
+      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'interviewEndAt'],
-        message: '면접 평가 시작 이후로 선택해 주세요.',
+        message: '면접 평가 시작일 이후로 선택해 주세요.',
       })
     }
 
     if (
       values.interviewEndAt &&
       values.finalResultAt &&
-      dayjs(values.finalResultAt).isBefore(dayjs(values.interviewEndAt))
+      dayjs(values.finalResultAt).isBefore(dayjs(values.interviewEndAt), 'day')
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['schedule', 'finalResultAt'],
-        message: '면접 평가 종료 이후로 선택해 주세요.',
+        message: '면접 평가 종료일과 같거나 이후로 선택해 주세요.',
       })
     }
   })
@@ -309,15 +314,19 @@ export const step2Schema = withDateOrderRules(
   }),
 )
 
-const hasSlotsForAllDates = (
+const hasSlotsForEdgeDates = (
   dates: Array<string>,
   enabledSlots?: Array<{ date: string; times?: Array<string> }>,
-) =>
-  dates.length > 0 &&
-  dates.every((date) => {
+) => {
+  if (dates.length === 0) return true
+  const startDate = dates[0]
+  const endDate = dates[dates.length - 1]
+  const hasSlotsForDate = (date: string) => {
     const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.times ?? []
     return slotsForDate.length > 0
-  })
+  }
+  return hasSlotsForDate(startDate) && hasSlotsForDate(endDate)
+}
 
 export const getStepReady = (
   step: number,
@@ -329,7 +338,7 @@ export const getStepReady = (
     const isValid = step2Schema.safeParse(values).success
     if (!isValid) return false
     if (options?.interviewDates && !options.skipInterviewSlotsValidation) {
-      return hasSlotsForAllDates(
+      return hasSlotsForEdgeDates(
         options.interviewDates,
         (values.schedule.interviewTimeTable as InterviewTimeTableWithEnabled).enabledByDate,
       )
@@ -358,12 +367,12 @@ const itemQuestionSchema = z.object({
   type: z.string(),
   questionText: z.string(),
   required: z.boolean(),
-  orderNo: z.number(),
+  orderNo: z.string(),
   options: z
     .array(
       z.object({
         content: z.string(),
-        orderNo: z.number(),
+        orderNo: z.string(),
         optionId: z.string().optional(),
       }),
     )
@@ -437,7 +446,7 @@ export const recruitingFormSchema = withDateOrderRules(
   z.object({
     title: step1Schema.shape.title,
     recruitmentParts: step1Schema.shape.recruitmentParts,
-    maxPreferredPartCount: z.number().min(1),
+    maxPreferredPartCount: z.string().min(1),
     schedule: z.object({
       applyStartAt: baseScheduleSchema.shape.applyStartAt.nullable(),
       applyEndAt: baseScheduleSchema.shape.applyEndAt.nullable(),

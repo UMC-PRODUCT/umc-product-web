@@ -92,6 +92,7 @@ export const HomePage = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate')
+            ;(entry.target as HTMLElement).dataset.animated = 'true'
             if ((entry.target as HTMLElement).id === 'stats-section') {
               animateStats()
             }

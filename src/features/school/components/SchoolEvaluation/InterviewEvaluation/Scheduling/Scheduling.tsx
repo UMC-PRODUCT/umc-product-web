@@ -1,10 +1,23 @@
 import type { DragEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { APPLICANTS, TIME_SLOTS } from '@/features/school/mocks/scheduling'
+import type { PartType } from '@/features/auth/domain'
+import {
+  getInterviewSchedulingSummary,
+  getInterviewSlotAssignments,
+  getInterviewSlots,
+} from '@/features/school/domain/api'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useGetInterviewSlotApplicants } from '@/features/school/hooks/useRecruitingQueries'
 import Search from '@/shared/assets/icons/search.svg?react'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { Option } from '@/shared/types/form'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
@@ -13,61 +26,207 @@ import ApplicantCard from './ApplicantCard'
 import * as S from './Scheduling.style'
 
 const Scheduling = () => {
-  const [availableApplicants, setAvailableApplicants] = useState(APPLICANTS.default)
-  const [assignedApplicants, setAssignedApplicants] = useState<typeof APPLICANTS.assigned>([])
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const [contentHeight, setContentHeight] = useState<number | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | undefined>(undefined)
+  const [selectedDateOption, setSelectedDateOption] = useState<Option<string> | undefined>(
+    undefined,
+  )
+  const [selectedPartOption, setSelectedPartOption] = useState<Option<string> | undefined>(
+    undefined,
+  )
+  const queryClient = useQueryClient()
+  const { usePostInterviewAssignApplicants, useDeleteInterviewAssignApplicants } =
+    useRecruitingMutation()
+  const { mutate: assignApplicantsMutate } = usePostInterviewAssignApplicants()
+  const { mutate: deleteAssignmentMutate } = useDeleteInterviewAssignApplicants()
+
+  const recruitmentId = '12' // TODO: 추후 수정 예정
 
   const handleDragStart = (id: string) => (e: DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text/plain', id)
     e.dataTransfer.effectAllowed = 'move'
   }
+  const { data: summaryData, isLoading: isSummaryLoading } = useCustomQuery(
+    schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
+    () => getInterviewSchedulingSummary(recruitmentId),
+    {
+      placeholderData: (previous) => previous,
+    },
+  )
+
+  const dateFallback = summaryData?.result.dateOptions[0]
+  const partFallback = summaryData?.result.partOptions[0]?.part
+  const dateParam = selectedDateOption?.id ? String(selectedDateOption.id) : dateFallback
+  const partParam = (selectedPartOption?.id ?? partFallback) as PartType | 'ALL' | undefined
+
+  const slotDate = dateParam ?? ''
+  const slotPart = partParam ?? 'ALL'
+  const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(
+    schoolKeys.evaluation.interview.getSlots(recruitmentId, slotDate, slotPart),
+    () => getInterviewSlots(recruitmentId, slotDate, slotPart),
+    {
+      enabled: Boolean(dateParam) && Boolean(partParam),
+      placeholderData: (previous) => previous,
+    },
+  )
+
+  const resolvedSlotId = selectedTimeSlot ?? slotData?.result.slots[0]?.slotId
+  const {
+    data: slotApplicantsData,
+    isLoading: isSlotApplicantsLoading,
+    isFetching,
+  } = useGetInterviewSlotApplicants(recruitmentId, resolvedSlotId)
+  const { data: assignedData, isLoading: isAssignmentsLoading } = useCustomQuery(
+    schoolKeys.evaluation.interview.getSlotAssignments(recruitmentId, resolvedSlotId ?? ''),
+    () => getInterviewSlotAssignments(recruitmentId, resolvedSlotId ?? ''),
+    { enabled: Boolean(resolvedSlotId), placeholderData: (previous) => previous },
+  )
+
+  const dateOptions: Array<Option<string>> = (summaryData?.result.dateOptions ?? []).map(
+    (date) => ({
+      label: date,
+      id: date,
+    }),
+  )
+
+  const partOptions: Array<Option<string>> = (summaryData?.result.partOptions ?? []).map(
+    (part) => ({
+      label: part.label,
+      id: part.part,
+    }),
+  )
+  const selectedSlotLabel = useMemo(() => {
+    if (!slotData?.result.slots.length) return ''
+    const selectedSlot =
+      slotData.result.slots.find((slot) => slot.slotId === resolvedSlotId) ??
+      slotData.result.slots[0]
+    return `${selectedSlot.start} ~ ${selectedSlot.end}`
+  }, [resolvedSlotId, slotData?.result.slots])
+
+  useEffect(() => {
+    if (!contentRef.current) return
+    const element = contentRef.current
+    const updateHeight = () => setContentHeight(element.getBoundingClientRect().height)
+    updateHeight()
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(updateHeight)
+      observer.observe(element)
+      return () => observer.disconnect()
+    }
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
+  }, [])
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     const id = e.dataTransfer.getData('text/plain')
     if (!id) return
+    if (!resolvedSlotId) return
 
-    const applicant = availableApplicants.find((item) => item.id === id)
-    if (!applicant) return
-
-    setAvailableApplicants((prev) => prev.filter((item) => item.id !== id))
-    setAssignedApplicants((prev) => [
-      ...prev,
+    assignApplicantsMutate(
       {
-        id: applicant.id,
-        name: applicant.name,
-        nickname: applicant.nickname,
-        tags: applicant.tags,
-        score: applicant.score,
-        time: '2026.02.03 (화) 13:30 - 14:00',
+        recruitmentId: recruitmentId,
+        slotId: resolvedSlotId,
+        applicationId: id,
       },
-    ])
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants(
+              recruitmentId,
+              resolvedSlotId,
+            ),
+          })
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments(
+              recruitmentId,
+              resolvedSlotId,
+            ),
+          })
+          if (dateParam && partParam) {
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.evaluation.interview.getSlots(
+                recruitmentId,
+                dateParam,
+                partParam,
+              ),
+            })
+          }
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
+          })
+        },
+      },
+    )
     setIsDragOver(false)
   }
+  const handleRemoveAssigned = (id: string) => {
+    deleteAssignmentMutate(
+      { recruitmentId, assignmentId: id },
+      {
+        onSuccess: () => {
+          if (!resolvedSlotId) return
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants(
+              recruitmentId,
+              resolvedSlotId,
+            ),
+          })
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments(
+              recruitmentId,
+              resolvedSlotId,
+            ),
+          })
+          if (dateParam && partParam) {
+            queryClient.invalidateQueries({
+              queryKey: schoolKeys.evaluation.interview.getSlots(
+                recruitmentId,
+                dateParam,
+                partParam,
+              ),
+            })
+          }
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
+          })
+        },
+      },
+    )
+  }
   return (
-    <div
-      style={{
-        height: '600px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        width: '100%',
-      }}
-    >
+    <S.Wrapper>
       <FilterBar
         leftChild={
           <>
             <Dropdown
-              options={[{ label: '2026.01.20 (화)', id: 0 }]}
+              options={dateOptions}
               placeholder="면접 일자"
+              value={selectedDateOption ?? dateOptions[0]}
+              onChange={(option) => {
+                setSelectedDateOption(option)
+                setSelectedTimeSlot(undefined)
+              }}
+              disabled={isSummaryLoading}
               css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
             />
             <Dropdown
-              options={[{ label: '전체 파트', id: 0 }]}
+              options={partOptions}
               placeholder="전체 파트"
+              value={selectedPartOption ?? partOptions[0]}
+              onChange={(option) => {
+                setSelectedPartOption(option)
+                setSelectedTimeSlot(undefined)
+              }}
+              disabled={isSummaryLoading}
               css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
             />
-            <S.SelectionInfo>전체 120명 중 32명 완료</S.SelectionInfo>
+            <S.SelectionInfo>
+              전체 {summaryData?.result.progress.total}명 중{' '}
+              {summaryData?.result.progress.scheduled}명 완료
+            </S.SelectionInfo>
           </>
         }
         rightChild={<S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>}
@@ -75,14 +234,32 @@ const Scheduling = () => {
 
       <S.MainLayout>
         {/* 좌측 시간대 리스트 */}
-        <S.Sidebar height={'100%'} width={360} variant="solid" padding={'15px 17px'}>
+        <S.Sidebar
+          height={'100%'}
+          variant="solid"
+          padding={'15px 17px'}
+          css={
+            contentHeight
+              ? {
+                  maxHeight: contentHeight,
+                  height: contentHeight,
+                }
+              : undefined
+          }
+        >
           <S.SectionTitle>시간대별 가능 인원</S.SectionTitle>
           <S.TimeSlotList>
-            {TIME_SLOTS.map((slot) => (
-              <S.TimeSlotItem key={slot.time} isActive={slot.selected}>
-                <span className="time">{slot.time}</span>
-                <S.CountBadge isCompleted={slot.completed}>
-                  {slot.count}명 가능 {slot.completed && <S.Circle>✓</S.Circle>}
+            {(slotData?.result.slots ?? []).map((slot) => (
+              <S.TimeSlotItem
+                key={slot.slotId}
+                isActive={slot.slotId === resolvedSlotId}
+                onClick={() => setSelectedTimeSlot(slot.slotId)}
+              >
+                <span className="time">
+                  {slot.start} ~ {slot.end}
+                </span>
+                <S.CountBadge isCompleted={!slot.done}>
+                  {slot.availableCount}명 가능 {slot.done && <S.Circle>✓</S.Circle>}
                 </S.CountBadge>
               </S.TimeSlotItem>
             ))}
@@ -90,59 +267,82 @@ const Scheduling = () => {
         </S.Sidebar>
 
         {/* 우측 상세 내용 */}
-        <S.Content>
+        <S.Content ref={contentRef}>
           <Section
             variant="solid"
             padding={'12px 17px'}
             gap={20}
-            height={320}
-            css={{ overflow: 'hidden', borderRadius: '6px' }}
+            css={{
+              overflow: 'hidden',
+              borderRadius: '6px',
+              height: '320px',
+              [media.down(theme.breakPoints.desktop)]: { height: 'fit-content' },
+            }}
           >
             <S.ContentHeader>
-              <S.SectionTitle>16:00 - 16:30 지원자 목록</S.SectionTitle>
+              <S.SectionTitle>{selectedSlotLabel} 지원자 목록</S.SectionTitle>
               <TextField
                 type="text"
                 autoComplete="none"
                 placeholder="닉네임, 이름으로 검색"
                 Icon={Search}
-                css={{ width: '320px', height: '36px', padding: '7px 12px' }}
+                css={{ maxWidth: '320px', height: '36px', padding: '7px 12px' }}
               />
             </S.ContentHeader>
 
             <S.ApplicantList
               padding={'14px 16px'}
-              height={320}
-              css={{ overflowY: 'auto', borderRadius: '6px' }}
+              css={{
+                overflowY: 'auto',
+                borderRadius: '6px',
+              }}
             >
-              {availableApplicants.map((app, i) => {
+              {(isSummaryLoading ||
+                isSlotsLoading ||
+                isSlotApplicantsLoading ||
+                isAssignmentsLoading ||
+                isFetching) && (
+                <S.LoadingOverlay>
+                  <Loading size={24} label="불러오는 중" labelPlacement="right" />
+                </S.LoadingOverlay>
+              )}
+              {slotApplicantsData?.result.available.length === 0 &&
+              slotApplicantsData.result.alreadyScheduled.length === 0 ? (
+                <div className="not-progress">배치할 지원자가 없습니다.</div>
+              ) : null}
+              {slotApplicantsData?.result.available.map((app, i) => {
                 return (
                   <ApplicantCard
-                    key={app.id}
+                    key={app.applicationId}
+                    id={app.applicationId}
                     name={app.name}
                     nickname={app.nickname}
-                    tags={app.tags}
-                    score={app.score}
+                    tags={[app.firstPart.part, app.secondPart?.part ?? '']}
+                    score={app.documentScore}
                     i={i}
-                    draggable={!app.time}
-                    onDragStart={!app.time ? handleDragStart(app.id) : undefined}
-                    time={app.time}
+                    draggable={true}
+                    onDragStart={handleDragStart(app.applicationId)}
                     mode="default"
                   />
                 )
               })}
-              <S.Divider />
-              {assignedApplicants.map((app, i) => {
+              {slotApplicantsData?.result.available.length !== 0 &&
+              slotApplicantsData?.result.alreadyScheduled.length !== 0 ? (
+                <S.Divider />
+              ) : null}
+              {slotApplicantsData?.result.alreadyScheduled.map((app, i) => {
                 return (
                   <ApplicantCard
-                    key={app.id}
+                    key={app.applicationId}
+                    id={app.assignmentId}
                     name={app.name}
                     nickname={app.nickname}
-                    tags={app.tags}
-                    score={app.score}
+                    tags={[app.firstPart.part, app.secondPart?.part ?? '']}
+                    score={app.documentScore}
                     i={i}
-                    draggable={!app.time}
-                    onDragStart={!app.time ? handleDragStart(app.id) : undefined}
-                    time={app.time}
+                    draggable={!app.scheduledSlot}
+                    onDragStart={undefined}
+                    time={`${app.scheduledSlot.date} ${app.scheduledSlot.start} - ${app.scheduledSlot.end}`}
                     mode="assigned"
                   />
                 )
@@ -152,7 +352,7 @@ const Scheduling = () => {
 
           <S.InterviewerSection variant="solid" padding={'12px 17px'} css={{ borderRadius: '6px' }}>
             <S.ContentHeader>
-              <S.SectionTitle>16:00 - 16:30 면접자</S.SectionTitle>
+              <S.SectionTitle>{selectedSlotLabel} 면접자</S.SectionTitle>
               <S.Notice>* 위 목록에서 드래그하고 드롭하여 배치하세요.</S.Notice>
             </S.ContentHeader>
             <S.DropZone
@@ -165,19 +365,21 @@ const Scheduling = () => {
               data-active={isDragOver}
               css={{ backgroundColor: theme.colors.black }}
             >
-              {assignedApplicants.length === 0 ? (
+              {(assignedData?.result.assignments.length ?? 0) === 0 ? (
                 <S.DropPlaceholder>드롭하여 배치</S.DropPlaceholder>
               ) : (
                 <S.AssignedList>
-                  {assignedApplicants.map((app, i) => (
+                  {(assignedData?.result.assignments ?? []).map((app, i) => (
                     <ApplicantCard
-                      key={app.id}
+                      key={app.applicationId}
+                      id={app.assignmentId}
                       name={app.name}
-                      tags={app.tags}
+                      tags={[app.firstPart.part, app.secondPart?.part ?? '']}
                       nickname={app.nickname}
-                      score={app.score}
+                      score={app.documentScore}
                       i={i}
                       mode="assigned"
+                      onRemove={handleRemoveAssigned}
                     />
                   ))}
                 </S.AssignedList>
@@ -186,7 +388,7 @@ const Scheduling = () => {
           </S.InterviewerSection>
         </S.Content>
       </S.MainLayout>
-    </div>
+    </S.Wrapper>
   )
 }
 

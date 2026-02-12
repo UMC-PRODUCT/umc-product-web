@@ -1,25 +1,32 @@
 import type { KeyboardEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
+import type { ExternalLink as ExternalLinkType } from '@/features/auth/domain/types'
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
+import Setting from '@/shared/assets/icons/setting.svg?react'
 import InstagramIcon from '@/shared/assets/social/instagram.svg?react'
 import KakaoIcon from '@/shared/assets/social/kakao-talk.svg?react'
 import YoutubeIcon from '@/shared/assets/social/youtube.svg?react'
+import type { LinkType } from '@/shared/constants/umc'
+import { UMC_CENTRAL_LINKS } from '@/shared/constants/umc'
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import { theme } from '@/shared/styles/theme'
 import Flex from '@/shared/ui/common/Flex/Flex'
+import ExternalLinkModal from '@/shared/ui/modals/ExternalLinkModal'
 
 import * as S from './ExternalLink.style'
 
-const ExternalLink = ({
-  subLinks,
-}: {
-  subLinks: {
-    kakaoLink?: string
-    instagramLink?: string
-    youtubeLink?: string
-  }
-}) => {
+const iconByType: Record<LinkType, typeof KakaoIcon> = {
+  KAKAO: KakaoIcon,
+  INSTAGRAM: InstagramIcon,
+  YOUTUBE: YoutubeIcon,
+}
+
+const ExternalLink = ({ subLinks }: { subLinks: Array<ExternalLinkType> }) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const { role } = useUserProfileStore()
   const handleToggle = () => {
     setIsOpen((prev) => !prev)
   }
@@ -44,8 +51,6 @@ const ExternalLink = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
-  const hasAnyLink = Boolean(subLinks.kakaoLink || subLinks.instagramLink || subLinks.youtubeLink)
-
   return (
     <>
       <S.MenuItemWrapper ref={cardRef}>
@@ -65,34 +70,51 @@ const ExternalLink = ({
         {isOpen && (
           <S.SubMenu>
             <S.ChildLinks flexDirection="column" alignItems="flex-start">
-              {!hasAnyLink && <span>연결된 외부 링크가 없습니다.</span>}
-              {subLinks.kakaoLink && (
-                <a href={subLinks.kakaoLink} target="_blank" rel="noreferrer noopener">
+              {UMC_CENTRAL_LINKS.map((link) => (
+                <a key={link.title} href={link.url} target="_blank" rel="noreferrer noopener">
                   <Flex flexDirection="row" gap="6px" alignItems="center">
-                    <KakaoIcon width={24} height={24} aria-hidden="true" />
-                    카카오톡 채널
+                    {(() => {
+                      const Icon = iconByType[link.type as LinkType]
+                      return <Icon width={24} height={24} aria-hidden="true" />
+                    })()}
+                    {link.title}
                   </Flex>
                 </a>
-              )}
-              {subLinks.instagramLink && (
-                <a href={subLinks.instagramLink} target="_blank" rel="noreferrer noopener">
-                  <Flex flexDirection="row" gap="6px" alignItems="center">
-                    <InstagramIcon width={24} height={24} aria-hidden="true" />
-                    인스타그램
-                  </Flex>
-                </a>
-              )}
-              {subLinks.youtubeLink && (
-                <a href={subLinks.youtubeLink} target="_blank" rel="noreferrer noopener">
-                  <Flex flexDirection="row" gap="6px" alignItems="center">
-                    <YoutubeIcon width={24} height={24} aria-hidden="true" />
-                    유튜브
-                  </Flex>
-                </a>
-              )}
+              ))}
+              <hr css={{ width: '100%', border: `0.5px solid ${theme.colors.gray[600]}` }} />
+              {subLinks.map((link) => {
+                const Icon = iconByType[link.type]
+                return (
+                  <a
+                    key={`${link.type}-${link.url}`}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    <Flex flexDirection="row" gap="6px" alignItems="center">
+                      <Icon width={24} height={24} aria-hidden="true" />
+                      {link.title}
+                    </Flex>
+                  </a>
+                )
+              })}
+
+              {role?.roleType === 'SCHOOL_PRESIDENT' ||
+              role?.roleType === 'SCHOOL_VICE_PRESIDENT' ||
+              role?.roleType === 'SCHOOL_PART_LEADER' ||
+              role?.roleType === 'SCHOOL_ETC_ADMIN' ? (
+                <>
+                  <hr css={{ width: '100%', border: `0.5px solid ${theme.colors.gray[600]}` }} />
+                  <S.SettingButton type="button" onClick={() => setModalOpen(true)}>
+                    <Setting />
+                    <span className="setting">외부 링크 관리하기</span>
+                  </S.SettingButton>
+                </>
+              ) : null}
             </S.ChildLinks>
           </S.SubMenu>
         )}
+        {modalOpen && <ExternalLinkModal onClose={() => setModalOpen(false)} />}
       </S.MenuItemWrapper>
     </>
   )

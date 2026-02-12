@@ -40,7 +40,7 @@ export const Modal = styled.div({
   width: 232,
   padding: 16,
   gap: 20,
-  zIndex: 10000000,
+  zIndex: 900,
   display: 'flex',
   flexDirection: 'column',
 
@@ -74,6 +74,7 @@ export const Avatar = styled(Icon)({
 
 export const NameText = styled.span({
   color: theme.colors.white,
+  wordBreak: 'keep-all',
   ...theme.typography.B3.Md,
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B4.Md,
@@ -83,10 +84,10 @@ export const NameText = styled.span({
 export const EmailText = styled.span({
   color: theme.colors.gray[300],
   ...theme.typography.B4.Rg,
+  whiteSpace: 'wrap',
+  maxWidth: '120px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  maxWidth: '100%',
   [media.down(theme.breakPoints.tablet)]: {
     ...theme.typography.B5.Rg,
   },

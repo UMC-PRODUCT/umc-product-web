@@ -48,6 +48,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.69.0",
     "react-markdown": "9.0.3",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "vite-plugin-svgr": "^4.5.0",
     "zod": "^4.3.4",

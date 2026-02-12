@@ -15,20 +15,20 @@ import type { RecruitingContentLogic } from '../hooks/useRecruitingContentLogic'
 
 export const RecruitingContentView = ({
   scrollTopRef,
-  recruitingTitle,
+  recruitmentTitle,
   handleBackClick,
-  form,
-  values,
-  initialSchedule,
-  step,
-  setStep,
-  step3PageNumber,
-  setStep3PageNumber,
-  step3SelectedPart,
-  setStep3SelectedPart,
-  partCompletionMap,
-  setPartCompletionByPart,
-  canProceedStep,
+  recruitmentForm,
+  recruitingFormValues,
+  initialRecruitmentSchedule,
+  currentStep,
+  setCurrentStep,
+  applicationPageNumber,
+  setApplicationPageNumber,
+  selectedQuestionPart,
+  setSelectedQuestionPart,
+  questionPartCompletionMap,
+  setQuestionPartCompletionMap,
+  canProceedToNextStep,
   goToPreviousStep,
   handleNextStep,
   handleTempSave,
@@ -36,21 +36,21 @@ export const RecruitingContentView = ({
   openConfirmModal,
   isEditLocked,
   isSubmitting,
-  modal,
+  activeModal,
   closePreview,
   closeConfirmModal,
-  onConfirmSubmit,
-  recruitingId,
-  isBackConfirmOpen,
+  handleConfirmSubmit,
+  recruitmentId,
+  isBackConfirmModalOpen,
   handleBackStay,
   handleBackLeave,
-  navigationBlocker,
+  unsavedChangesBlocker,
 }: RecruitingContentLogic) => {
   return (
     <PageLayout>
       <div ref={scrollTopRef} />
       <S.Header>
-        <PageTitle title={recruitingTitle} />
+        <PageTitle title={recruitmentTitle} />
         <Button
           typo="B4.Md"
           tone="lime"
@@ -61,17 +61,17 @@ export const RecruitingContentView = ({
       </S.Header>
       <RecruitingProvider
         value={{
-          form,
-          values,
-          initialSchedule,
-          step,
-          setStep,
-          step3PageNumber,
-          setStep3PageNumber,
-          step3SelectedPart,
-          setStep3SelectedPart,
-          partCompletionMap,
-          setPartCompletionByPart,
+          recruitmentForm,
+          recruitingFormValues,
+          initialRecruitmentSchedule,
+          currentStep,
+          setCurrentStep,
+          applicationPageNumber,
+          setApplicationPageNumber,
+          selectedQuestionPart,
+          setSelectedQuestionPart,
+          questionPartCompletionMap,
+          setQuestionPartCompletionMap,
         }}
       >
         <Section
@@ -85,8 +85,8 @@ export const RecruitingContentView = ({
         </Section>
       </RecruitingProvider>
       <RecruitingStepActions
-        step={step}
-        canProceedStep={canProceedStep}
+        step={currentStep}
+        canProceedStep={canProceedToNextStep}
         onPrev={goToPreviousStep}
         onNext={handleNextStep}
         onTempSave={handleTempSave}
@@ -96,17 +96,22 @@ export const RecruitingContentView = ({
         isSubmitting={isSubmitting}
       />
       <RecruitingModals
-        isOpen={modal.isOpen}
-        modalName={modal.modalName}
-        title={values.title}
+        isOpen={activeModal.isOpen}
+        modalName={activeModal.modalName}
+        title={recruitingFormValues.title}
         onClosePreview={closePreview}
         onCloseConfirm={closeConfirmModal}
-        onConfirmSubmit={onConfirmSubmit}
-        recruitingId={recruitingId}
+        onConfirmSubmit={handleConfirmSubmit}
+        recruitingId={recruitmentId}
       />
-      {isBackConfirmOpen && <LeaveConfirmModal onClose={handleBackStay} onMove={handleBackLeave} />}
-      {navigationBlocker.isOpen && (
-        <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
+      {isBackConfirmModalOpen && (
+        <LeaveConfirmModal onClose={handleBackStay} onMove={handleBackLeave} />
+      )}
+      {unsavedChangesBlocker.isOpen && (
+        <LeaveConfirmModal
+          onClose={unsavedChangesBlocker.stay}
+          onMove={unsavedChangesBlocker.leave}
+        />
       )}
     </PageLayout>
   )

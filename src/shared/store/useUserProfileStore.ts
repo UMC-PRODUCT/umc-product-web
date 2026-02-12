@@ -10,7 +10,7 @@ type UserProfileState = {
   role: {
     id: string
     challengerId: string
-    roleType: RoleType
+    roleType: RoleType | null
     organizationType: OrganizationType
     responsiblePart: PartType | null
     gisuId: string
@@ -22,7 +22,7 @@ type UserProfileState = {
     roles: {
       id: string
       challengerId: string
-      roleType: RoleType
+      roleType: RoleType | null
       organizationType: OrganizationType
       responsiblePart: PartType | null
       gisuId: string
@@ -41,15 +41,15 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   role: {
     id: '',
     challengerId: '',
-    roleType: 'SUPER_ADMIN',
+    roleType: 'SCHOOL_PRESIDENT',
     organizationType: 'CENTRAL',
     responsiblePart: null,
-    gisuId: '',
+    gisuId: '1',
   },
   setName: (name) => set({ name }),
   setNickname: (nickname) => set({ nickname }),
   setEmail: (email) => set({ email }),
-  gisu: '',
+  gisu: '1',
   setGisu: (gisu) => set({ gisu }),
   schoolId: '',
   setSchoolId: (schoolId) => set({ schoolId }),

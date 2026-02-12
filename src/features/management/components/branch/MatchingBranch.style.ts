@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 export const Container = styled.div`
@@ -7,16 +8,30 @@ export const Container = styled.div`
   gap: 40px;
   padding: 40px;
   background-color: #000000;
-  min-height: 100vh;
+  min-height: fit-content;
   color: #ffffff;
+  ${media.down(theme.breakPoints.desktop)} {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
 `
 
 export const MainSection = styled.section`
   flex: 1;
+  min-width: 560px;
+  width: 620px;
+  ${media.down(theme.breakPoints.desktop)} {
+    width: 100%;
+    min-width: fit-content;
+    flex: none;
+  }
 `
 
 export const Header = styled.div`
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
 `
 
 export const BranchHeader = styled.div`
@@ -77,6 +92,10 @@ export const SchoolBadge = styled.div`
 
 export const Sidebar = styled.aside`
   width: 320px;
+  ${media.down(theme.breakPoints.desktop)} {
+    position: relative;
+    width: 100%;
+  }
 `
 
 export const WaitingBox = styled.div`
@@ -99,6 +118,12 @@ export const WaitingBox = styled.div`
     color: ${theme.colors.gray[400]};
     font-size: 12px;
     margin-bottom: 24px;
+  }
+  ${media.down(theme.breakPoints.desktop)} {
+    position: relative;
+    height: fit-content;
+    min-height: fit-content;
+    top: 0;
   }
 `
 

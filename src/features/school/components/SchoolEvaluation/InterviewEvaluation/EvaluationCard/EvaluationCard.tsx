@@ -1,10 +1,10 @@
 import type { FinalStatusType } from '@/features/apply/domain'
+import { FINAL_STATUS_CONFIG } from '@/features/apply/domain/constants'
 import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
-import { FINAL_STATUS_CONFIG } from '../../../../../apply/domain/constants'
 import * as S from './EvaluationCard.style'
 
 const EvaluationCard = ({
@@ -15,20 +15,22 @@ const EvaluationCard = ({
   score,
   tags,
   status,
+  canStartEval,
 }: {
-  handleStartEval: (user: { name: string }) => void
+  handleStartEval: () => void
   time: string
   name: string
   nickname: string
   score: number
   tags: Array<PartType>
   status: FinalStatusType
+  canStartEval: boolean
 }) => {
   return (
     <S.ContentBox>
       <S.Header>
         <S.TimeBadge>{time}</S.TimeBadge>
-        <Badge tone="lime" typo="B5.Md" variant="outline">
+        <Badge tone={FINAL_STATUS_CONFIG[status].color} typo="B5.Md" variant="outline">
           {FINAL_STATUS_CONFIG[status].label}
         </Badge>
       </S.Header>
@@ -50,10 +52,11 @@ const EvaluationCard = ({
           ))}
         </S.TagGroup>
         <Button
-          tone={'lime'}
+          tone={canStartEval ? 'lime' : 'gray'}
           variant="solid"
           label="평가하기"
-          onClick={() => handleStartEval({ name: `${nickname}/${name}` })}
+          onClick={handleStartEval}
+          disabled={!canStartEval}
           typo="B4.Sb"
           css={{ width: 'fit-content', padding: '6px 18px' }}
         />

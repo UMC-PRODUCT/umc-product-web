@@ -1,6 +1,9 @@
-import type { GetApplicationAnswerResponseDTO } from '@/features/apply/domain/model'
-import type { RecruitingForms } from '@/features/school/domain'
+import type {
+  DocumentEvaluationQuestion,
+  GetDocumentEvaluationApplicationResponseDTO,
+} from '@/features/school/domain/model'
 import { theme } from '@/shared/styles/theme'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import { MiniTimeTable } from '@/shared/ui/common/Question/TimeTable/MiniTimeTable'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -8,55 +11,87 @@ import * as S from './ApplicationView.style'
 
 const ApplicationView = ({
   data,
-  questions,
   isModal = false,
+  isLoading = false,
 }: {
-  data: GetApplicationAnswerResponseDTO
-  questions: RecruitingForms
+  data: GetDocumentEvaluationApplicationResponseDTO | undefined
   isModal?: boolean
+  isLoading?: boolean
 }) => {
-  const answerMap = new Map(data.answers.map((answer) => [String(answer.questionId), answer]))
   const pageInfo = [
     { page: 1, label: '지원자 정보 및 희망 파트 선택' },
     { page: 2, label: '공통 문항' },
     { page: 3, label: '파트별 문항' },
   ]
-  const renderAnswer = (question: any) => {
-    const answer = answerMap.get(String(question.questionId))
+  const toMinutes = (time: string) => {
+    const [h, m] = time.split(':').map(Number)
+    return h * 60 + m
+  }
+  const toTimeString = (minutes: number) => {
+    const safeMinutes = Math.max(0, Math.min(1439, minutes))
+    const h = Math.floor(safeMinutes / 60)
+    const m = safeMinutes % 60
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+  }
+  const buildScheduleView = (selected: Array<{ date: string; times: Array<string> }>) => {
+    if (selected.length === 0) return null
+    const dates = selected
+      .map((slot) => slot.date)
+      .filter(Boolean)
+      .sort()
+    if (dates.length === 0) return null
+
+    const times = selected.flatMap((slot) => slot.times).filter(Boolean)
+    if (times.length === 0) return null
+
+    const minTime = Math.min(...times.map(toMinutes))
+    const maxTime = Math.max(...times.map(toMinutes))
+    const endTime = maxTime + 30
+
+    return {
+      dateRange: { start: dates[0], end: dates[dates.length - 1] },
+      timeRange: { start: toTimeString(minTime), end: toTimeString(endTime) },
+      value: selected.reduce<Record<string, Array<string>>>((acc, slot) => {
+        acc[slot.date] = slot.times
+        return acc
+      }, {}),
+    }
+  }
+  const renderAnswer = (question: DocumentEvaluationQuestion) => {
+    const answer = question.answer
     if (!answer) return <S.EmptyAnswer>미응답</S.EmptyAnswer>
 
-    const value = answer.value as any
+    const value = answer.rawValue as Record<string, any>
     switch (answer.answeredAsType) {
       case 'SHORT_TEXT':
       case 'LONG_TEXT':
-        return <S.AnswerText>{value?.text ?? '—'}</S.AnswerText>
+        return <S.AnswerText>{value.text ?? answer.displayText ?? '—'}</S.AnswerText>
       case 'RADIO': {
-        const option = question.options?.find(
-          (opt: any) => String(opt.optionId) === String(value?.selectedOptionId),
+        const option = question.options.find(
+          (opt) => String(opt.optionId) === String(value.selectedOptionId),
         )
-        return <S.AnswerText>{option?.content ?? '—'}</S.AnswerText>
+        return <S.AnswerText>{option?.content ?? answer.displayText ?? '—'}</S.AnswerText>
       }
       case 'CHECKBOX': {
-        const ids: Array<string> = value?.selectedOptionIds ?? []
-        const labels = ids
-          .map((id) => {
-            return String(id)
-          })
-          .filter(Boolean)
+        const ids: Array<string> = value.selectedOptionIds ?? []
+        const labels = ids.map((id) => {
+          const option = question.options.find((opt) => String(opt.optionId) === String(id))
+          return option?.content ?? String(id)
+        })
+        if (value.otherText) labels.push(`기타: ${value.otherText}`)
         return (
           <S.AnswerGroup>
-            {labels.length > 0 ? <S.AnswerText>{labels.join(', ')}</S.AnswerText> : '-'}
+            {labels.length > 0 ? (
+              <S.AnswerText>{labels.join(', ')}</S.AnswerText>
+            ) : (
+              <S.AnswerText>{answer.displayText ?? '-'}</S.AnswerText>
+            )}
           </S.AnswerGroup>
         )
       }
       case 'PREFERRED_PART': {
-        const values: Array<string> = value?.preferredParts ?? []
-        const labels = values.map((part) => {
-          const option = question.preferredPartOptions?.find(
-            (opt: any) => String(opt.value) === String(part),
-          )
-          return option?.label ?? String(part)
-        })
+        const values: Array<string> = value.preferredParts ?? []
+        const labels = values.map((part) => String(part))
         return (
           <S.AnswerGroup>
             {labels.length > 0 ? <S.AnswerText>{labels.join(', ')}</S.AnswerText> : '-'}
@@ -64,16 +99,20 @@ const ApplicationView = ({
         )
       }
       case 'SCHEDULE': {
-        const selected: Array<{ date: string; times: Array<string> }> = value?.selected ?? []
+        const selected: Array<{ date: string; times: Array<string> }> = value.selected ?? []
+        const scheduleView = buildScheduleView(selected)
         return (
           <S.AnswerGroup>
-            {selected.length > 0 ? (
-              selected.map((slot) => (
-                <S.ScheduleRow key={slot.date}>
-                  <S.ScheduleDate>{slot.date}</S.ScheduleDate>
-                  <S.ScheduleTimes>{slot.times.join(', ')}</S.ScheduleTimes>
-                </S.ScheduleRow>
-              ))
+            {scheduleView ? (
+              <S.TimetableWrapper>
+                <MiniTimeTable
+                  dateRange={scheduleView.dateRange}
+                  timeRange={scheduleView.timeRange}
+                  disabledSlots={[]}
+                  value={scheduleView.value}
+                  mode="view"
+                />
+              </S.TimetableWrapper>
             ) : (
               <span>—</span>
             )}
@@ -81,35 +120,43 @@ const ApplicationView = ({
         )
       }
       case 'DROPDOWN':
-        return <S.AnswerText>{value?.label}</S.AnswerText>
+        return <S.AnswerText>{value.label ?? answer.displayText ?? '—'}</S.AnswerText>
       case 'PORTFOLIO': {
-        const files = value?.files ?? []
-        const links = value?.links ?? []
+        const files = value.files ?? []
+        const links = value.links ?? []
         return (
           <S.AnswerGroup>
             {files.length > 0 &&
-              files.map((file: any) => (
-                <S.Hyperlink key={file.fileId ?? file.fileName}>{file.fileId}</S.Hyperlink>
-              ))}
+              files.map((file: any) => {
+                const url = file.fileLink
+                return (
+                  <S.Hyperlink
+                    key={file.fileId ?? file.fileName ?? file.id}
+                    href={typeof url === 'string' ? url : undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {file.originalFileName}
+                  </S.Hyperlink>
+                )
+              })}
             {links.length > 0 &&
-              links.map((link: any) => <S.Hyperlink key={link.url}>{link.url}</S.Hyperlink>)}
+              links.map((link: any) => {
+                const href = typeof link === 'string' ? link : link.url
+                const label = typeof link === 'string' ? link : link.url
+                return (
+                  <S.Hyperlink key={label} href={href} target="_blank" rel="noreferrer">
+                    {label}
+                  </S.Hyperlink>
+                )
+              })}
             {files.length === 0 && links.length === 0 ? '—' : null}
           </S.AnswerGroup>
         )
       }
       default:
-        return <S.AnswerText>{JSON.stringify(value)}</S.AnswerText>
+        return <S.AnswerText>{answer.displayText ?? JSON.stringify(value)}</S.AnswerText>
     }
-  }
-
-  const buildScheduleValue = (question: any) => {
-    const answer = answerMap.get(String(question.questionId))
-    if (!answer || answer.answeredAsType !== 'SCHEDULE') return {}
-    const selected: Array<{ date: string; times: Array<string> }> = (answer.value as any)?.selected
-    return selected.reduce<Record<string, Array<string>>>((acc, slot) => {
-      acc[slot.date] = slot.times
-      return acc
-    }, {})
   }
 
   return (
@@ -121,78 +168,73 @@ const ApplicationView = ({
       gap={'14px'}
       css={{ backgroundColor: `${theme.colors.gray[700]}`, flex: 1 }}
     >
-      {!isModal && (
-        <S.Header>
-          <S.Title>닉네임/성이름 님의 지원서</S.Title>
-        </S.Header>
-      )}
+      <S.Container>
+        {isLoading && (
+          <S.LoadingOverlay>
+            <Loading size={24} label="불러오는 중" labelPlacement="bottom" />
+          </S.LoadingOverlay>
+        )}
+        {!isModal && (
+          <S.Header>
+            <S.Title>
+              {data?.applicant
+                ? `${data.applicant.nickname}/${data.applicant.name} 님의 지원서`
+                : ''}
+            </S.Title>
+          </S.Header>
+        )}
 
-      <S.PageList>
-        {questions.pages.map((page) => (
-          <S.PageCard key={page.page}>
-            {(() => {
-              let pageQuestionIndex = 0
-              const nextIndex = () => {
-                pageQuestionIndex += 1
-                return pageQuestionIndex
-              }
+        <S.PageList>
+          {data?.formPages.map((page) => (
+            <S.PageCard key={page.pageNo}>
+              {(() => {
+                let pageQuestionIndex = 0
+                const nextIndex = () => {
+                  pageQuestionIndex += 1
+                  return pageQuestionIndex
+                }
+                const pageNo = Number(page.pageNo)
 
-              return (
-                <>
-                  <S.PageHeader>
-                    <S.Page>Page {page.page}</S.Page>
-                    <S.PageInfo>{pageInfo[page.page - 1]?.label}</S.PageInfo>
-                  </S.PageHeader>
+                return (
+                  <>
+                    <S.PageHeader>
+                      <S.Page>Page {page.pageNo}</S.Page>
+                      <S.PageInfo>{pageInfo[pageNo - 1]?.label}</S.PageInfo>
+                    </S.PageHeader>
 
-                  <S.QuestionsCard>
-                    {page.questions?.map((question) => (
-                      <S.Question key={question.questionId}>
-                        <S.QuestionTitle>
-                          문항 {nextIndex()} - {question.questionText}
-                        </S.QuestionTitle>
-                        {renderAnswer(question)}
-                      </S.Question>
-                    ))}
+                    <S.QuestionsCard>
+                      {page.questions.map((question) => (
+                        <S.Question key={question.questionId}>
+                          <S.QuestionTitle>
+                            문항 {nextIndex()} - {question.questionText}
+                          </S.QuestionTitle>
+                          {renderAnswer(question)}
+                        </S.Question>
+                      ))}
 
-                    {page.scheduleQuestion && (
-                      <S.Question key={page.scheduleQuestion.questionId}>
-                        <S.QuestionTitle>
-                          문항 {nextIndex()} - {page.scheduleQuestion.questionText}
-                        </S.QuestionTitle>
-                        <S.TimetableWrapper>
-                          <MiniTimeTable
-                            dateRange={page.scheduleQuestion.schedule.dateRange}
-                            timeRange={page.scheduleQuestion.schedule.timeRange}
-                            disabledSlots={page.scheduleQuestion.schedule.disabledByDate}
-                            value={buildScheduleValue(page.scheduleQuestion)}
-                            mode="view"
-                          />
-                        </S.TimetableWrapper>
-                      </S.Question>
-                    )}
-
-                    {page.partQuestions?.map((partGroup) => (
-                      <S.QuestionsCard key={partGroup.part}>
-                        <S.AnswerGroup>
-                          <S.Chip>{partGroup.part}</S.Chip>
-                        </S.AnswerGroup>
-                        {partGroup.questions.map((question, idx) => (
-                          <S.Question key={question.questionId}>
-                            <S.QuestionTitle>
-                              문항 {idx + 1} - {question.questionText}
-                            </S.QuestionTitle>
-                            {renderAnswer(question)}
-                          </S.Question>
-                        ))}
-                      </S.QuestionsCard>
-                    ))}
-                  </S.QuestionsCard>
-                </>
-              )
-            })()}
-          </S.PageCard>
-        ))}
-      </S.PageList>
+                      {page.partQuestions.map((partGroup) => (
+                        <S.QuestionsCard key={partGroup.part}>
+                          <S.AnswerGroup>
+                            <S.Chip>{partGroup.part}</S.Chip>
+                          </S.AnswerGroup>
+                          {partGroup.questions.map((question, idx) => (
+                            <S.Question key={question.questionId}>
+                              <S.QuestionTitle>
+                                문항 {idx + 1} - {question.questionText}
+                              </S.QuestionTitle>
+                              {renderAnswer(question)}
+                            </S.Question>
+                          ))}
+                        </S.QuestionsCard>
+                      ))}
+                    </S.QuestionsCard>
+                  </>
+                )
+              })()}
+            </S.PageCard>
+          ))}
+        </S.PageList>
+      </S.Container>
     </Section>
   )
 }

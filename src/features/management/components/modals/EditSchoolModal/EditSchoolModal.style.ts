@@ -31,7 +31,7 @@ export const Grid = styled.div`
 export const FooterWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 13px;
   align-items: center;
   gap: 18px;
@@ -136,7 +136,7 @@ export const Circle = styled.div`
 `
 export const Title = styled.h3`
   ${theme.typography.H3.Sb};
-  margin: 30px 0 0 0;
+  margin: 15px 0 0 0;
   color: ${theme.colors.white};
   text-align: start;
   width: 100%;
@@ -170,4 +170,65 @@ export const ActivityInfo = styled.div<{ isActive: boolean }>`
   span {
     color: ${({ isActive }) => (isActive ? theme.colors.white : theme.colors.gray[300])};
   }
+`
+
+export const AddLink = styled.button`
+  background-color: ${theme.colors.black};
+  color: ${theme.colors.lime};
+  border: 1px dashed ${theme.colors.lime};
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${theme.typography.C5.Rg}
+  span {
+    border-radius: 50%;
+    border: 1px solid ${theme.colors.lime};
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  svg {
+    width: 6px;
+    height: 6px;
+  }
+`
+
+export const LinkPreviewList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+`
+
+export const LinkPreviewItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 4px;
+  padding: 10px 25px;
+  background-color: ${theme.colors.black};
+  border: 1px solid ${theme.colors.gray[600]};
+  border-radius: 8px;
+`
+
+export const LinkTitleText = styled.span`
+  ${theme.typography.C4.Rg};
+  color: ${theme.colors.lime};
+`
+
+export const LinkUrlText = styled.span`
+  ${theme.typography.C5.Rg};
+  color: ${theme.colors.gray[300]};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `

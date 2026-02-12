@@ -24,13 +24,12 @@ export const SelectBox = styled(Dropdown)`
   cursor: pointer;
 `
 
-export const SelectionInfo = styled.button`
+export const SelectionInfo = styled.div`
   color: ${theme.colors.lime};
   background-color: ${theme.colors.gray[700]};
   ${theme.typography.B4.Rg};
   border: 1px solid ${theme.colors.gray[600]};
   padding: 6px 12px;
-  cursor: pointer;
   border-radius: 6px;
 `
 

@@ -13,7 +13,7 @@ const Input = styled.input<{ IconPlaced?: 'left' | 'right' }>`
   }
   flex: 1;
   overflow-x: auto;
-
+  max-height: 100%;
   ${media.down(theme.breakPoints.mobile)} {
     padding: 10px 8px 10px 12px;
   }
@@ -25,8 +25,7 @@ const InputWrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 100%;
-  height: 40px;
-  max-height: 40px;
+  max-height: 50px;
   ${media.down(theme.breakPoints.mobile)} {
     gap: 8px;
   }
@@ -52,5 +51,13 @@ const InputHeader = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 10px;
+  height: 21px;
 `
-export { IconBox, Input, InputHeader, InputWrapper }
+const ErrorSlot = styled.div`
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+`
+export { ErrorSlot, IconBox, Input, InputHeader, InputWrapper }

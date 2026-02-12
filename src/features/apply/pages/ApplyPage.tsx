@@ -9,15 +9,12 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import {
-  useGetActiveRecruitmentId,
-  useGetSpecificPartRecruiting,
-} from '../hooks/useGetApplicationQuery'
+import { useGetActiveRecruitmentId, useGetRecruitmentParts } from '../hooks/useGetApplicationQuery'
 
 const ApplyPageContent = () => {
   const { data: recruitmentIdData } = useGetActiveRecruitmentId()
   const recruitmentId = recruitmentIdData.result.recruitmentId
-  const { data: specificPartRecruitingData } = useGetSpecificPartRecruiting(recruitmentId)
+  const { data: specificPartRecruitingData } = useGetRecruitmentParts(recruitmentId)
 
   const { result } = specificPartRecruitingData
 

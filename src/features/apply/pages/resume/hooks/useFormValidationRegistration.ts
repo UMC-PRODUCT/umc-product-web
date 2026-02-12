@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import type { UseFormRegister } from 'react-hook-form'
 
+import type { ResumeFormValues } from '@/features/apply/utils'
 import type { FormPage, FormQuestion } from '@/shared/types/form'
 
 import { createValidationRules } from '../../../schemas/applySchemas'
-import type { ResumeFormValues } from '../../../utils/buildDefaultValuesFromQuestions'
 
 /**
  * 동적 검증 규칙을 등록하는 훅

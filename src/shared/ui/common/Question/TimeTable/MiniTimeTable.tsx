@@ -3,7 +3,7 @@ import type { ForwardedRef } from 'react'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 
-import type { QuestionMode } from '@/shared/types/form'
+import type { DateRange, QuestionMode } from '@/shared/types/form'
 
 import * as S from './MiniTimeTable.style'
 import {
@@ -15,14 +15,10 @@ import {
 import { useTimeTableSelection } from './useTimeTableSelection'
 
 interface ScheduleSelectorProps {
-  dateRange: {
-    start: string
-    end: string
-  }
-  timeRange: {
-    start: string
-    end: string
-  }
+  dateRange: DateRange
+  timeRange: DateRange
+  slotMinutes?: string | number | null
+  selectionMinutes?: number
   disabledSlots: Array<{
     date: string
     times: Array<string>
@@ -33,12 +29,29 @@ interface ScheduleSelectorProps {
 }
 
 const TimeTableComponent = (
-  { dateRange, timeRange, disabledSlots = [], value = {}, onChange, mode }: ScheduleSelectorProps,
+  {
+    dateRange,
+    timeRange,
+    slotMinutes,
+    selectionMinutes,
+    disabledSlots = [],
+    value = {},
+    onChange,
+    mode,
+  }: ScheduleSelectorProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) => {
   const isEditable = mode === 'edit'
   const mainAreaRef = useRef<HTMLDivElement>(null)
   const [showScrollShadow, setShowScrollShadow] = useState(true)
+  const resolvedSlotMinutes = useMemo(() => {
+    const numeric = Number(slotMinutes)
+    return Number.isNaN(numeric) || numeric <= 0 ? 30 : numeric
+  }, [slotMinutes])
+  const resolvedSelectionMinutes = useMemo(() => {
+    const numeric = Number(selectionMinutes)
+    return Number.isNaN(numeric) || numeric <= 0 ? resolvedSlotMinutes : numeric
+  }, [selectionMinutes, resolvedSlotMinutes])
   const dates = useMemo(() => {
     const start = dayjs(dateRange.start).startOf('day')
     const end = dayjs(dateRange.end).startOf('day')
@@ -57,8 +70,14 @@ const TimeTableComponent = (
     visualStartMin,
     visualEndMin,
   } = useMemo(
-    () => buildDisabledIndexMap({ dates, disabledSlots, timeRange }),
-    [dates, disabledSlots, timeRange],
+    () =>
+      buildDisabledIndexMap({
+        dates,
+        disabledSlots,
+        timeRange,
+        slotMinutes: resolvedSelectionMinutes,
+      }),
+    [dates, disabledSlots, timeRange, resolvedSelectionMinutes],
   )
   const dateCount = dates.length
   const timeRangeStart = timeRange.start
@@ -66,8 +85,13 @@ const TimeTableComponent = (
 
   // 시간 라벨: 무조건 1시간 단위로만 생성
   const timeLabels = useMemo(
-    () => miniBuildTimeLabels({ visualStartMin, visualEndMin }),
-    [visualStartMin, visualEndMin],
+    () =>
+      miniBuildTimeLabels({
+        visualStartMin,
+        visualEndMin,
+        slotMinutes: resolvedSelectionMinutes,
+      }),
+    [visualStartMin, visualEndMin, resolvedSelectionMinutes],
   )
   const { selectedIndices, handleMouseDown, handleMouseEnter, handleStopDrag } =
     useTimeTableSelection({
@@ -76,6 +100,7 @@ const TimeTableComponent = (
       totalSlots,
       visualStartMin,
       disabledIdxMap,
+      slotMinutes: resolvedSelectionMinutes,
       onChange,
     })
 

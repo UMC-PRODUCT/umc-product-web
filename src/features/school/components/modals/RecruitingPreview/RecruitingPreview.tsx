@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useResumeForm } from '@features/apply/pages/resume/useResumeForm'
 
@@ -9,7 +9,7 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
-import { useGetApplicationFormData } from '../../../hooks/useGetRecruitingData'
+import { useGetRecruitmentApplicationForm } from '../../../hooks/useRecruitingQueries'
 import * as S from './RecruitingPreview.style'
 
 export const RecruitingPreviewContent = ({
@@ -21,12 +21,36 @@ export const RecruitingPreviewContent = ({
   title: string
   recruitingId: string
 }) => {
-  const { data } = useGetApplicationFormData(recruitingId)
+  const { data } = useGetRecruitmentApplicationForm(recruitingId)
   const questionData = data.result
   const [currentPage, setCurrentPage] = useState(1)
 
+  const orderedQuestionData = useMemo(() => {
+    const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
+      [...items].sort((a, b) => {
+        const aOrder = Number(a.orderNo)
+        const bOrder = Number(b.orderNo)
+        if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+        return aOrder - bOrder
+      })
+    const sortedPages = [...questionData.pages]
+      .sort((a, b) => Number(a.page) - Number(b.page))
+      .map((page) => ({
+        ...page,
+        questions: sortByOrderNo(page.questions ?? []),
+        partQuestions: (page.partQuestions ?? []).map((partGroup) => ({
+          ...partGroup,
+          questions: sortByOrderNo(partGroup.questions),
+        })),
+      }))
+    return {
+      ...questionData,
+      pages: sortedPages,
+    }
+  }, [questionData])
+
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
-    questionData,
+    orderedQuestionData,
     undefined,
     { labelMode: 'part', showAllParts: true },
   )
@@ -38,14 +62,7 @@ export const RecruitingPreviewContent = ({
   }
 
   return (
-    <S.ModalContentWrapper
-      css={{
-        backgroundColor: theme.colors.black,
-        boxShadow: '0 8px 20px 0 rgba(0, 0, 0, 0.70)',
-      }}
-      flexDirection="column"
-      width={'fit-content'}
-    >
+    <S.ModalContentWrapper>
       <Modal.Header>
         <Flex
           justifyContent="space-between"
@@ -67,12 +84,7 @@ export const RecruitingPreviewContent = ({
         </Flex>
       </Modal.Header>
       <Modal.Body>
-        <S.ContentWrapper
-          flexDirection="column"
-          justifyContent="flex-start"
-          alignItems="center"
-          gap={22}
-        >
+        <S.ContentWrapper>
           <ResumeContent
             pages={resolvedPages}
             displayLastSavedTime={null}
@@ -87,15 +99,7 @@ export const RecruitingPreviewContent = ({
             isFormIncomplete={isFormIncomplete}
             openSubmitModal={() => {}}
             handlePageNavigation={handlePageNavigation}
-            formData={{
-              recruitmentid: 0,
-              formId: 0,
-              status: '',
-              recruitmentFormTitle: title,
-              noticeTitle: title,
-              noticeContent: questionData.noticeContent,
-              pages: [],
-            }}
+            formData={orderedQuestionData}
           />
         </S.ContentWrapper>
       </Modal.Body>

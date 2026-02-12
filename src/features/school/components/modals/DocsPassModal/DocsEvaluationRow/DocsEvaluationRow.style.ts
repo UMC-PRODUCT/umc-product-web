@@ -27,6 +27,10 @@ export const resultButtonStyle: Interpolation<Theme> = {
 export const resultTextStyle: Interpolation<Theme> = {
   color: theme.colors.gray[500],
 }
+export const ResultText = styled.span`
+  ${theme.typography.B4.Md};
+  color: ${theme.colors.gray[500]};
+`
 export const UserInfo = styled.div`
   display: flex;
   align-items: center;

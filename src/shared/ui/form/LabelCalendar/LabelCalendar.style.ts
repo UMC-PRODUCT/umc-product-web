@@ -14,7 +14,6 @@ export const Trigger = styled.button<{ $open: boolean }>`
   justify-content: space-between;
   gap: 12px;
   cursor: pointer;
-  transform: translateY(${({ $open }) => ($open ? '1px' : '0')});
   width: 100%;
   background-color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};

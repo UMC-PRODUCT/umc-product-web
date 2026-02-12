@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
-import { useSchoolPaginator } from '@/features/auth/hooks/register/useSchoolPaginator'
 import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
+import { useGetAllSchoolsList } from '@/features/management/hooks/useManagementQueries'
+import type { Option } from '@/shared/types/form'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
 import * as S from './SchoolSelect.style'
@@ -16,25 +17,33 @@ type SchoolSelectProps = {
 }
 
 const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
-  const { options, isFetching } = useSchoolPaginator()
-
-  const selectedValue = useMemo(
-    () => (value.id ? { id: value.id, label: value.label } : undefined),
+  const { data } = useGetAllSchoolsList()
+  const selectedValue = useMemo<Option<string> | undefined>(
+    () => (value.schoolId ? { id: value.schoolId, label: value.schoolName } : undefined),
     [value],
   )
+
+  const handleChange = (option: Option<string>) => {
+    onChange({ schoolId: String(option.id), schoolName: option.label })
+  }
 
   return (
     <S.Wrapper>
       <LabelDropdown
         label="학교"
-        placeholder={isFetching ? '학교를 불러오는 중입니다...' : '학교를 선택해 주세요.'}
-        options={[...options]} // 임시로 UMC 추가
+        placeholder={data ? '학교를 선택해 주세요.' : '학교를 불러오는 중입니다...'}
+        options={
+          data?.result.schools.map((school) => ({
+            id: school.schoolId,
+            label: school.schoolName,
+          })) ?? []
+        }
         value={selectedValue}
         error={{
           error: error?.error ?? false,
           errorMessage: error?.errorMessage ?? '',
         }}
-        onChange={onChange}
+        onChange={handleChange}
       />
     </S.Wrapper>
   )

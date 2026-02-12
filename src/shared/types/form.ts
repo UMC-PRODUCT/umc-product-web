@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { QuestionType } from '@/shared/types/apply'
+import type { QuestionAnswerValue, QuestionType } from '@/shared/types/apply'
 
 import type { PartType } from './umc'
 
@@ -22,6 +22,7 @@ export type FormQuestion = {
   type: QuestionType
   questionText: string
   required: boolean
+  orderNo: string
   options: Array<FormOption>
   maxSelectCount: string | null
   preferredPartOptions: Array<{
@@ -39,6 +40,7 @@ export type FormPage = {
     type: QuestionType
     questionText: string
     required: boolean
+    orderNo: string
     schedule: {
       dateRange: DateRange
       timeRange: DateRange
@@ -64,16 +66,28 @@ export interface ResumeFormSectionProps {
   isSubmitDisabled: boolean
   onOpenSubmitModal: () => void
   onPageChange: (nextPage: number) => void
+  onPortfolioImmediateSave?: (questionId: number, nextValue: QuestionAnswerValue) => void
   isEdit?: boolean
 }
 export interface RecruitingForms {
   title: string
   recruitmentParts: Array<PartType>
-  maxPreferredPartCount: number
+  maxPreferredPartCount: string
   schedule: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus
   items: Array<RecruitingItem>
+}
+
+export type RecruitmentApplicationForm = {
+  recruitmentId: number
+  formId: number
+  status: string
+  title?: string
+  recruitmentFormTitle?: string
+  noticeTitle: string
+  noticeContent: string
+  pages: Array<FormPage>
 }
 
 export type QuestionMode = 'view' | 'edit'
@@ -86,11 +100,6 @@ export interface RecruitingQuestion {
   options: Array<string>
   partSinglePick: boolean
   isPartQuestion: boolean
-}
-
-export interface RecruitingQuestionPage {
-  page: number
-  questions: Array<RecruitingQuestion>
 }
 
 export type RecruitingStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'ONGOING' | 'SCHEDULED' | 'PUBLISHED'
@@ -128,7 +137,7 @@ export type RecruitingItemTarget = {
 
 export type RecruitingItemOption = {
   content: string
-  orderNo: number
+  orderNo: string
   optionId?: string
   isOther?: boolean
 }
@@ -138,7 +147,7 @@ export type RecruitingItemQuestion = {
   type: RecruitingItemQuestionType
   questionText: string
   required: boolean
-  orderNo: number
+  orderNo: string
   options?: Array<RecruitingItemOption>
 }
 
@@ -149,15 +158,3 @@ export type RecruitingItem = {
 
 export type PartQuestionBank = Partial<Record<string, Array<RecruitingQuestion>>>
 export type PartQuestionBankPayload = Partial<Record<PartType, Array<RecruitingQuestion>>>
-
-export type PartCompletion = '진행 중' | '모집 종료' | '모집 예정'
-
-export type RecruitePhase =
-  | 'BEFORE_APPLY'
-  | 'APPLY_OPEN'
-  | 'DOC_REVIEWING'
-  | 'DOC_RESULT_PUBLISHED'
-  | 'INTERVIEW_WAITING'
-  | 'FINAL_REVIEWING'
-  | 'FINAL_RESULT_PUBLISHED'
-  | 'CLOSED'

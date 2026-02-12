@@ -59,7 +59,7 @@ const RecruitingFormCalendar = ({ value, onChange }: RecruitingCalendarProps) =>
       <S.Header flexDirection="row" justifyContent="center" alignItems="center" width={'100%'}>
         <S.DateNavigator width="fit-content">
           <Arrow width={16} css={{ transform: 'rotate(90deg)' }} onClick={() => handleMonth(-1)} />
-          {dayjs(activeStartDate).format('YYYY년 M월')}
+          <div css={{ userSelect: 'none' }}>{dayjs(activeStartDate).format('YYYY년 M월')}</div>
           <Arrow width={16} css={{ transform: 'rotate(270deg)' }} onClick={() => handleMonth(1)} />
         </S.DateNavigator>
       </S.Header>

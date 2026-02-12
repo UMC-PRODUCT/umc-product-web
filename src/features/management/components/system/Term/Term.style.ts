@@ -5,6 +5,7 @@ import { theme } from '@/shared/styles/theme'
 export const TermCard = styled.div`
   width: 100%;
   padding: 16px 25px;
+  height: 130px;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -3,17 +3,29 @@ import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-const PassInfoModal = ({ onClose }: { onClose: () => void }) => {
-  const handlePass = () => {
-    // TODO: 합격 처리 API 연동
-  }
+const PassInfoModal = ({
+  onClose,
+  onConfirm,
+  selectedCount,
+  alreadyPassedCount,
+}: {
+  onClose: () => void
+  onConfirm: () => void
+  selectedCount: number
+  alreadyPassedCount: number
+}) => {
+  const remainingCount = Math.max(selectedCount - alreadyPassedCount, 0)
+  const content =
+    alreadyPassedCount > 0
+      ? `선택된 지원자 ${selectedCount}명 중 ${alreadyPassedCount}명은 이미 합격 처리되어 있습니다.\n합격자 ${alreadyPassedCount}명을 제외한 나머지 ${remainingCount}명을 합격 처리 하시겠습니까?`
+      : `선택된 지원자 ${selectedCount}명을 합격 처리 하시겠습니까?`
   return (
     <AlertModalLayout
       Icon={Inform}
       mode={'disabled'}
       onClose={onClose}
       title="안내"
-      content={`선택된 지원자 3명 중 1명은 이미 합격 처리되어 있습니다.\n합격자 1명을 제외한 나머지 2명을 합격 처리 하시겠습니까?`}
+      content={content}
     >
       <Flex
         height="32px"
@@ -31,7 +43,7 @@ const PassInfoModal = ({ onClose }: { onClose: () => void }) => {
           tone="lime"
           typo="C3.Md"
           onClick={() => {
-            handlePass()
+            onConfirm()
           }}
         />
       </Flex>

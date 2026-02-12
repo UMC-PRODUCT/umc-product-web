@@ -1,10 +1,17 @@
 import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
 
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
+import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
+import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -41,8 +48,20 @@ const Step3 = ({
   setPartCompletion,
   canEditQuestions,
 }: Step3Props) => {
+  const router = useRouter()
+  const recruitingMatch = router.state.matches.find(
+    (m) => (m.params as Record<string, string>).recruitingId,
+  )
+  const recruitingId =
+    (recruitingMatch?.params as Record<string, string> | undefined)?.recruitingId ?? ''
   const recruitmentParts = useWatch({ control, name: 'recruitmentParts' })
   const items = useWatch({ control, name: 'items' })
+  const { recruitmentForm } = useRecruitingContext()
+  const queryClient = useQueryClient()
+  const { usePatchRecruitmentApplicationFormDraft } = useRecruitingMutation()
+  const { mutate: patchTempSavedRecruitQuestionsMutate } =
+    usePatchRecruitmentApplicationFormDraft(recruitingId)
+  const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
       recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
@@ -59,6 +78,22 @@ const Step3 = ({
   }
   const selectedPart = getSelectedPart()
   const isSelectedPartComplete = selectedPart ? Boolean(partCompletion[selectedPart]) : false
+  const saveQuestionDraft = () => {
+    if (!recruitingId) return
+    patchTempSavedRecruitQuestionsMutate(
+      { items: buildQuestionsPayload(items) },
+      {
+        onSuccess: (data) => {
+          recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
+            shouldDirty: false,
+            shouldTouch: false,
+            shouldValidate: true,
+          })
+          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
+        },
+      },
+    )
+  }
 
   useEffect(() => {
     if (page !== 3) return
@@ -90,6 +125,7 @@ const Step3 = ({
       ...partCompletion,
       [selectedPart]: true,
     })
+    saveQuestionDraft()
   }
 
   return (
@@ -123,7 +159,8 @@ const Step3 = ({
           partCompletion={partCompletion}
           onChangePart={setPart}
           onChangeStatus={handlePartStatusChange}
-          disabled={!canEditQuestions}
+          disablePartSelect={false}
+          disableStatusToggle={!canEditQuestions}
         />
       )}
       <Step3QuestionList

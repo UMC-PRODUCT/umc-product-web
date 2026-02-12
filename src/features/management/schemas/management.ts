@@ -11,10 +11,23 @@ import {
 export const schoolRegisterSchema = z.object({
   schoolName: schoolNameSchema,
   schoolProfile: z.string().url().optional(),
-  note: z.string().optional(),
+  remark: z.string().optional(),
 })
 
 export type SchoolRegisterForm = z.infer<typeof schoolRegisterSchema>
+
+export const addSchoolSchema = schoolRegisterSchema.extend({
+  linkTitle: z.string(),
+  linkUrl: z.string(),
+  linkType: z
+    .object({
+      id: z.string(),
+      label: z.string(),
+    })
+    .nullable(),
+})
+
+export type AddSchoolForm = z.output<typeof addSchoolSchema>
 
 export const accountRegisterSchema = z.object({
   schoolName: schoolNameSchema,

@@ -1,16 +1,22 @@
-export { buildDefaultValuesFromQuestions } from '@/features/apply/utils/buildDefaultValuesFromQuestions'
-export { findPartQuestion } from '@/features/apply/utils/findPartQuestion'
-export { getAllQuestionsFromPages } from '@/features/apply/utils/getAllQuestionsFromPages'
-export { getSelectedPartsFromAnswer } from '@/features/apply/utils/getSelectedPartsFromAnswer'
-export type { ResumeQuestion } from '@/features/apply/utils/isQuestionAnswerEmpty'
-export { isQuestionAnswerEmpty } from '@/features/apply/utils/isQuestionAnswerEmpty'
-export { isOptionAnswerValue } from '@/features/apply/utils/optionAnswer'
-export { resolvePagesWithSlots } from '@/features/apply/utils/resolvePagesWithSlots'
+export type { ResumeQuestion } from '@/features/apply/utils/form/answerUtils'
+export { isOptionAnswerValue, isQuestionAnswerEmpty } from '@/features/apply/utils/form/answerUtils'
+export {
+  buildDefaultValuesFromQuestions,
+  type ResumeFormValues,
+} from '@/features/apply/utils/form/buildDefaultValuesFromQuestions'
+export {
+  findPartQuestion,
+  getSelectedPartsForSubmission,
+  getSelectedPartsFromAnswer,
+} from '@/features/apply/utils/form/partSelection'
 export {
   findFirstErrorPageIndex,
   getAllQuestionFieldIds,
+  getAllQuestionsFromPages,
   getPageRequiredFieldIds,
-  getSelectedPartsForSubmission,
+} from '@/features/apply/utils/form/questionSelectors'
+export { resolvePagesWithSlots } from '@/features/apply/utils/form/resolvePagesWithSlots'
+export {
   getSubmissionFormValues,
   getSubmissionItems,
-} from '@/features/apply/utils/resumeFormHelpers'
+} from '@/features/apply/utils/form/submissionItems'

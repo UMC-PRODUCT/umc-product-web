@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import Notice from '@shared/assets/icons/notice.svg?react'
 
+import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
 import { theme } from '@/shared/styles/theme'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -12,7 +13,8 @@ import SectionTitle from '@/shared/ui/common/SectionTitles/SectionTitle'
 import GenerationCard from '../GenerationCard/GenerationCard'
 
 const GenerationList = () => {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
+  const { data } = useGetGisuList({ page: String(page), size: '20' })
   return (
     <Flex flexDirection="column" gap={16} alignItems="flex-start">
       <Flex flexDirection="column" gap={2} alignItems="flex-start">
@@ -33,17 +35,23 @@ const GenerationList = () => {
           <span>기수</span>
           <span css={{ width: '90px' }}>삭제</span>
         </Section>
-        <GenerationCard />
-        <GenerationCard />
-        <GenerationCard />
-        <GenerationCard />
-        <GenerationCard />
+        {data?.result.content.map((generation) => (
+          <GenerationCard
+            key={generation.gisuId}
+            gisuId={generation.gisuId}
+            gisuName={generation.generation}
+          />
+        ))}
       </Flex>
       <span css={{ color: theme.colors.gray[300], ...theme.typography.C4.Rg }}>
-        총 {10}개의 기수
+        총 {data?.result.totalElements ?? 0}개의 기수
       </span>
       <div css={{ alignSelf: 'center' }}>
-        <Navigation currentPage={page} totalPages={10} onChangePage={setPage} />
+        <Navigation
+          currentPage={page + 1}
+          totalPages={Number(data?.result.totalPages)}
+          onChangePage={setPage}
+        />
       </div>
     </Flex>
   )

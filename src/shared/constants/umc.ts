@@ -19,3 +19,18 @@ export type RECRUITING_SCHEDULE_TYPE =
   | 'FINAL_RESULT_AT'
 
 export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'
+
+export type LinkType = 'KAKAO' | 'YOUTUBE' | 'INSTAGRAM'
+
+export const UMC_CENTRAL_LINKS = [
+  {
+    type: 'INSTAGRAM',
+    url: 'https://www.instagram.com/uni_makeus_challenge/',
+    title: 'UMC 공식 인스타그램',
+  },
+  {
+    type: 'YOUTUBE',
+    url: 'https://www.youtube.com/@UniversityMakeUsChallenge',
+    title: 'UMC 공식 유튜브',
+  },
+]

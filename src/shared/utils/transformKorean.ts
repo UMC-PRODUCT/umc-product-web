@@ -1,5 +1,10 @@
+import type { PartType } from '@/features/auth/domain'
 import type { RECRUITING_SCHEDULE_TYPE, UserApplicationBadgeType } from '@/shared/constants/umc'
 import type { QuestionType } from '@/shared/types/apply'
+
+import { PART_TYPE_TO_SMALL_PART } from '../constants/part'
+import type { PartSmallType } from '../types/part'
+import type { EvaluationStatusType } from '../types/umc'
 
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
@@ -20,6 +25,11 @@ export const transformRoleKorean = (input: string): string => {
   }
 
   return mapping[input] || input
+}
+
+export const transformPart = (input: PartType): PartSmallType => {
+  const mapping = PART_TYPE_TO_SMALL_PART[input]
+  return mapping
 }
 
 export const transformRecruitingKorean = (input: string): string => {
@@ -86,9 +96,9 @@ export const transformRecruitingScheduleTypeKorean = (input: RECRUITING_SCHEDULE
   return mapping[input] || input
 }
 
-// TODO: enum 체크 필요
 export const transformNextRecruitmentMonthKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
+    APPLY_START_ANNOUNCE: '지원 시작 예정일: ',
     APPLY_DEADLINE: '지원 마감 예정일: ',
     DOC_RESULT_ANNOUNCE: '서류 합불 발표 예정일: ',
     FINAL_RESULT_ANNOUNCE: '최종 합불 발표 예정일: ',
@@ -104,6 +114,16 @@ export const transformUserRecruitmentBadgeToKorean = (input: UserApplicationBadg
     DRAFT: '임시 저장',
     SUBMITTED: '제출 완료',
     PREVIOUS: '지난 모집',
+  }
+
+  return mapping[input] || input
+}
+
+export const transformEvaluationStatusTypeKorean = (input: EvaluationStatusType): string => {
+  const mapping: { [key: string]: string } = {
+    NOT_STARTED: '평가 전',
+    IN_PROGRESS: '평가 중',
+    COMPLETED: '평가 완료',
   }
 
   return mapping[input] || input

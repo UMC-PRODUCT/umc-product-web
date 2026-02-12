@@ -1,4 +1,7 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+
+import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import { NotFoundPage } from '@/shared/ui/feedback'
 
 /**
  * 관리자(Management) 라우트 그룹
@@ -9,5 +12,14 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management')({
+  beforeLoad: () => {
+    const { role, gisu } = useUserProfileStore.getState()
+    const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
+
+    if (activeRole?.roleType !== 'SUPER_ADMIN') {
+      throw redirect({ to: '/school/dashboard' })
+    }
+  },
   component: RouteComponent,
+  notFoundComponent: () => <NotFoundPage />,
 })

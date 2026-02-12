@@ -1,10 +1,9 @@
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
+import { dashboardKeys } from '@/shared/queryKeys'
 
-import { dashboardKeys } from '../domain/queryKeys'
+import { getMyApplications } from '../domain/api'
 
-export function useMyApplications() {
-  return useCustomSuspenseQuery(
-    dashboardKeys.getMyApplications().queryKey,
-    dashboardKeys.getMyApplications().queryFn,
-  )
+/** 내 지원 목록 조회 */
+export function useGetMyApplications() {
+  return useCustomSuspenseQuery(dashboardKeys.getMyApplications, getMyApplications)
 }

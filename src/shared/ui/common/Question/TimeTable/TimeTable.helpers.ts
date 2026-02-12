@@ -1,11 +1,12 @@
 import type { TimeTableSlots } from '@/shared/types/apply'
+import type { DateRange } from '@/shared/types/form'
 
 export const timeToMinutes = (time: string) => {
   const [h, m] = time.split(':').map(Number)
   return h * 60 + m
 }
 
-export const buildVisualRange = (timeRange: { start: string; end: string }) => {
+export const buildVisualRange = (timeRange: DateRange) => {
   const actualStartMin = timeToMinutes(timeRange.start)
   const actualEndMin = timeToMinutes(timeRange.end)
   const visualStartMin = Math.floor(actualStartMin / 60) * 60
@@ -29,16 +30,15 @@ export const buildDisabledIndexMap = ({
   dates,
   disabledSlots,
   timeRange,
+  slotMinutes: _slotMinutes,
 }: {
   dates: Array<string>
   disabledSlots: Array<{
     date: string
     times: Array<string>
   }>
-  timeRange: {
-    start: string
-    end: string
-  }
+  timeRange: DateRange
+  slotMinutes?: number
 }) => {
   const { actualStartMin, actualEndMin, visualStartMin, visualEndMin } = buildVisualRange(timeRange)
   const totalSlots = Math.floor((visualEndMin - visualStartMin) / 30)
@@ -118,9 +118,11 @@ export const isSameSelection = (a: Record<string, Set<number>>, b: Record<string
 export const buildTimeLabels = ({
   visualStartMin,
   visualEndMin,
+  slotMinutes: _slotMinutes,
 }: {
   visualStartMin: number
   visualEndMin: number
+  slotMinutes?: number
 }) => {
   const labels = []
   for (let min = visualStartMin; min <= visualEndMin; min += 60) {
@@ -140,9 +142,11 @@ export const buildTimeLabels = ({
 export const miniBuildTimeLabels = ({
   visualStartMin,
   visualEndMin,
+  slotMinutes: _slotMinutes,
 }: {
   visualStartMin: number
   visualEndMin: number
+  slotMinutes?: number
 }) => {
   const labels = []
   for (let min = visualStartMin; min <= visualEndMin; min += 60) {

@@ -13,12 +13,17 @@ type TermProps = {
   label: string
   necessary?: boolean
   checked: boolean
+  disabled?: boolean
 }
 
 export const Term = forwardRef<HTMLButtonElement, TermProps>(
-  ({ onChange, onClick, termTitle, label, necessary, checked, ...props }: TermProps, ref) => {
+  (
+    { onChange, onClick, termTitle, label, necessary, checked, disabled, ...props }: TermProps,
+    ref,
+  ) => {
     const handleTermTitleClick = (event: MouseEvent<HTMLSpanElement>) => {
       event.stopPropagation()
+      if (disabled) return
       onClick?.()
     }
 
@@ -28,9 +33,18 @@ export const Term = forwardRef<HTMLButtonElement, TermProps>(
         alignItems="center"
         gap="2px"
         width="fit-content"
-        css={{ cursor: 'pointer' }}
+        css={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.6 : 1 }}
       >
-        <Checkbox onCheckedChange={() => onChange()} checked={checked} ref={ref} {...props} />
+        <Checkbox
+          onCheckedChange={() => {
+            if (disabled) return
+            onChange()
+          }}
+          checked={checked}
+          disabled={disabled}
+          ref={ref}
+          {...props}
+        />
         {termTitle && <S.TermTitle onClick={handleTermTitleClick}>{termTitle}</S.TermTitle>}
         <S.Title>
           {label}

@@ -16,10 +16,12 @@ const PageLayout = ({
   return (
     <Flex justifyContent="center">
       <S.PageLayout>
-        <S.Header>
-          {title && <PageTitle title={title} />}
-          {subTitle && <PageSubTitle subTitle={subTitle} />}
-        </S.Header>
+        {title && (
+          <S.Header>
+            {title && <PageTitle title={title} />}
+            {subTitle && <PageSubTitle subTitle={subTitle} />}
+          </S.Header>
+        )}
         {children}
       </S.PageLayout>
     </Flex>

@@ -12,6 +12,8 @@ export const Container = styled.div`
   flex-direction: column;
   gap: 14px;
   width: 100%;
+  height: 100%;
+  min-height: 0;
   color: ${theme.colors.white};
 `
 
@@ -26,13 +28,12 @@ export const SelectBox = styled(Dropdown)`
   cursor: pointer;
 `
 
-export const SelectionInfo = styled.button`
+export const SelectionInfo = styled.div`
   color: ${theme.colors.lime};
   background-color: ${theme.colors.gray[700]};
   ${theme.typography.B4.Rg};
   border: 1px solid ${theme.colors.gray[600]};
   padding: 6px 12px;
-  cursor: pointer;
   border-radius: 6px;
 `
 
@@ -46,23 +47,15 @@ export const TableContainer = styled(Section)`
   width: 100%;
   overflow: hidden;
   padding: 0;
+  height: 100%;
 `
 
 export const TableScroll = styled.div`
-  max-height: 450px;
   width: 100%;
   overflow: auto;
   padding: 12px 16px;
   box-sizing: border-box;
-  ${media.down(theme.breakPoints.desktop)} {
-    max-height: 400px;
-  }
-  ${media.down(theme.breakPoints.tablet)} {
-    max-height: 400px;
-  }
-  ${media.down(theme.breakPoints.desktop)} {
-    max-height: 300px;
-  }
+  height: 100%;
 `
 
 export const Table = styled.table`
@@ -122,6 +115,7 @@ export const BottomBar = styled(Section)`
   align-items: center;
   white-space: nowrap;
   overflow-x: scroll;
+  margin-top: auto;
 `
 
 export const CountBadge = styled.span`
@@ -156,11 +150,24 @@ export const ModalContentWrapper = styled(Flex)`
   overflow: hidden;
   max-width: 90vw;
   max-height: 90vh;
+  min-height: 500px;
+  height: 100%;
+  .body {
+    flex: 1;
+    min-height: 0;
+  }
   .body {
     ${media.down(theme.breakPoints.desktop)} {
       height: fit-content;
     }
   }
+`
+
+export const BodyPlaceholder = styled.div`
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 export const Title = styled.div`
   ${theme.typography.H3.Sb}

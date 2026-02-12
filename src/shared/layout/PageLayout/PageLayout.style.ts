@@ -12,6 +12,7 @@ export const PageLayout = styled(Flex)`
     padding: 20px 20px;
   }
   max-width: 1200px;
+  height: 100%;
   width: 100%;
 `
 export const Header = styled.div`

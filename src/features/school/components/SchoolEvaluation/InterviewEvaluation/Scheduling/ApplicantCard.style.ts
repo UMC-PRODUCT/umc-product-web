@@ -1,9 +1,10 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
-export const ApplicantCard = styled(Section)`
+export const ApplicantCard = styled(Section)<{ mode?: 'default' | 'assigned' }>`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
@@ -12,9 +13,18 @@ export const ApplicantCard = styled(Section)`
   border-radius: 8px;
   height: fit-content;
   gap: 16px;
+  min-height: 50px;
+  user-select: none;
+  cursor: ${(props) => (props.mode === 'default' ? 'grab' : 'default')};
   .info {
     display: flex;
-    gap: 48px;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    max-width: 360px;
+    ${media.down(theme.breakPoints.mobile)} {
+      max-width: 100%;
+    }
   }
 
   .name {
@@ -29,10 +39,15 @@ export const ApplicantCard = styled(Section)`
   .score {
     color: ${theme.colors.white};
     ${theme.typography.B4.Rg};
+    white-space: nowrap;
   }
   .time {
     color: ${theme.colors.gray[400]};
     ${theme.typography.B5.Md};
+    white-space: nowrap;
+    ${media.down(theme.breakPoints.tablet)} {
+      display: none;
+    }
   }
 `
 
@@ -43,7 +58,17 @@ export const Tag = styled.span`
   border-radius: 4px;
   ${theme.typography.B5.Rg};
   width: fit-content;
+  height: fit-content;
   padding: 3px 8px;
   background-color: ${theme.colors.gray[600]};
   border: 1px solid ${theme.colors.gray[500]};
+`
+
+export const CloseButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
 `

@@ -1,17 +1,17 @@
 import type { PartType } from '@/features/auth/domain'
-import { isOtherOptionContent } from '@/features/school/constants/questionOption'
-import type { GetApplicationFormResponseDTO } from '@/features/school/domain'
-import type { RecruitingItem } from '@/shared/types/form'
+import type { RecruitmentApplicationFormResponseDTO } from '@/features/school/domain/model'
+import { isOtherOptionContent } from '@/features/school/utils/questionOption'
+import type { FormPage, FormQuestion, RecruitingItem } from '@/shared/types/form'
 
 const toRecruitingItemOptions = (
   options:
-    | Array<{ content: string; orderNo?: number; optionId?: string; isOther?: boolean }>
+    | Array<{ content: string; orderNo?: string; optionId?: string; isOther?: boolean }>
     | undefined,
   fallbackOrder: number,
 ) =>
   options?.map((option, index) => ({
     content: option.content,
-    orderNo: option.orderNo ?? fallbackOrder + index + 1,
+    orderNo: String(option.orderNo ?? fallbackOrder + index + 1),
     optionId: option.optionId,
     isOther: option.isOther ?? isOtherOptionContent(option.content),
   })) ?? []
@@ -22,7 +22,8 @@ const buildRecruitingItemFromQuestion = (
     type: string
     questionText: string
     required: boolean
-    options?: Array<{ content: string; orderNo?: number; optionId?: string }>
+    orderNo?: string
+    options?: Array<{ content: string; orderNo?: string; optionId?: string }>
   },
   target:
     | { kind: 'COMMON_PAGE'; pageNo: number }
@@ -35,18 +36,36 @@ const buildRecruitingItemFromQuestion = (
     type: question.type as RecruitingItem['question']['type'],
     questionText: question.questionText,
     required: question.required,
-    orderNo: orderIndex + 1,
+    orderNo: String(question.orderNo ?? orderIndex + 1),
     options: toRecruitingItemOptions(question.options, orderIndex),
   },
 })
 
-export const convertApplicationFormToItems = (formData: GetApplicationFormResponseDTO) => {
+type RecruitingQuestionSource = Parameters<typeof buildRecruitingItemFromQuestion>[0]
+
+const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
+  [...items].sort((a, b) => {
+    const aOrder = Number(a.orderNo)
+    const bOrder = Number(b.orderNo)
+    if (Number.isNaN(aOrder) || Number.isNaN(bOrder)) return 0
+    return aOrder - bOrder
+  })
+
+export const convertApplicationFormToItems = (formData: RecruitmentApplicationFormResponseDTO) => {
   const items: Array<RecruitingItem> = []
   const pages = formData.pages
 
-  pages.forEach((page) => {
-    const questions = Array.isArray(page.questions) ? page.questions : []
-    questions.forEach((question, index) =>
+  pages.forEach((page: FormPage) => {
+    const questions: Array<RecruitingQuestionSource> = Array.isArray(page.questions)
+      ? page.questions
+      : []
+    const hasScheduleInQuestions = questions.some((question) => question.type === 'SCHEDULE')
+    let commonQuestions = questions
+    if (!hasScheduleInQuestions && page.scheduleQuestion) {
+      commonQuestions = [...questions, page.scheduleQuestion]
+    }
+
+    sortByOrderNo(commonQuestions).forEach((question, index) =>
       items.push(
         buildRecruitingItemFromQuestion(
           question,
@@ -56,20 +75,12 @@ export const convertApplicationFormToItems = (formData: GetApplicationFormRespon
       ),
     )
 
-    if (page.scheduleQuestion) {
-      items.push(
-        buildRecruitingItemFromQuestion(
-          page.scheduleQuestion,
-          { kind: 'COMMON_PAGE', pageNo: Number(page.page) },
-          questions.length,
-        ),
-      )
-    }
-
     const partGroups = Array.isArray(page.partQuestions) ? page.partQuestions : []
     partGroups.forEach((partGroup) => {
-      const groupQuestions = Array.isArray(partGroup.questions) ? partGroup.questions : []
-      groupQuestions.forEach((question, index) =>
+      const groupQuestions: Array<FormQuestion> = Array.isArray(partGroup.questions)
+        ? partGroup.questions
+        : []
+      sortByOrderNo(groupQuestions).forEach((question, index) =>
         items.push(
           buildRecruitingItemFromQuestion(
             question,

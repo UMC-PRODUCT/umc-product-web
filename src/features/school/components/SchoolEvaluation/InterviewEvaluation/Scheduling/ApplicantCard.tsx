@@ -7,6 +7,7 @@ import { theme } from '@/shared/styles/theme'
 import * as S from './ApplicantCard.style'
 
 interface ApplicantCardProps {
+  id: string
   name: string
   tags: Array<string>
   score: string
@@ -16,8 +17,10 @@ interface ApplicantCardProps {
   time?: string
   nickname: string
   mode?: 'default' | 'assigned'
+  onRemove?: (id: string) => void
 }
 const ApplicantCard = ({
+  id,
   name,
   tags,
   score,
@@ -27,10 +30,12 @@ const ApplicantCard = ({
   mode,
   onDragStart,
   time,
+  onRemove,
 }: ApplicantCardProps) => {
   return (
     <S.ApplicantCard
       variant="both"
+      mode={mode}
       width={'100%'}
       key={i}
       draggable={draggable}
@@ -42,16 +47,16 @@ const ApplicantCard = ({
           {name}/{nickname}
         </span>
 
-        <div className="tags">
-          {tags.map((tag) => (
-            <S.Tag key={tag}>{tag}</S.Tag>
-          ))}
-        </div>
-        <span className="score">{score}</span>
+        <div className="tags">{tags.map((tag) => tag && <S.Tag key={tag}>{tag}</S.Tag>)}</div>
+        <span className="score">서류 {score}</span>
       </div>
       {time && <span className="time">{time}</span>}
-      {mode === 'default' && <Drag />}
-      {mode === 'assigned' && !time && <Close width={22} color={theme.colors.gray[400]} />}
+      {mode === 'default' && <Drag color={theme.colors.gray[400]} />}
+      {mode === 'assigned' && !time && (
+        <S.CloseButton type="button" aria-label="지원자 제거" onClick={() => onRemove?.(id)}>
+          <Close width={22} color={theme.colors.gray[400]} />
+        </S.CloseButton>
+      )}
     </S.ApplicantCard>
   )
 }

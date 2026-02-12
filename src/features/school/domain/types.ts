@@ -1,7 +1,6 @@
 import type { QuestionType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
 import type {
-  FormPage,
   RecruitingInterviewTimeTable,
   RecruitingItem,
   RecruitingSchedule,
@@ -10,7 +9,7 @@ import type {
 
 export type QuestionOption = {
   content: string
-  orderNo: number
+  orderNo: string
   isOther?: boolean
 }
 
@@ -26,7 +25,7 @@ export type InterviewTimeTableWithDisabled = RecruitingInterviewTimeTable & {
 export type RecruitingDraft = {
   title: string
   recruitmentParts: Array<PartType>
-  maxPreferredPartCount: number
+  maxPreferredPartCount: string
   schedule?: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus
@@ -37,7 +36,7 @@ export interface ApplicationFormQuestion {
   type: QuestionType
   questionText: string
   required: boolean
-  orderNo: number
+  orderNo: string
   options?: Array<QuestionOption>
 }
 
@@ -59,16 +58,6 @@ export type RequiredSchedule = RecruitingSchedule & {
 
 export type RequiredScheduleWithDisabled = RecruitingSchedule & {
   interviewTimeTable: InterviewTimeTableWithDisabled
-}
-
-export type RecruitingForms = {
-  recruitmentid: number
-  formId: number
-  status: string
-  recruitmentFormTitle: string
-  noticeTitle: string
-  noticeContent: string
-  pages: Array<FormPage>
 }
 
 export type Phase =

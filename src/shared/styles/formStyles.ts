@@ -8,6 +8,7 @@ export const Field = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 73px;
 `
 
 export const inputShell = css`

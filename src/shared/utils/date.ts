@@ -8,6 +8,10 @@ dayjs.locale('ko')
 export const formatDateTimeKorean = (date: Date | string | number): string =>
   dayjs(date).format('YYYY년 M월 D일 HH:mm')
 
+/** 점 구분 날짜+시간 포맷: "2024.01.15 14:30" */
+export const formatDateTimeDot = (date: Date | string | number): string =>
+  dayjs(date).format('YYYY.MM.DD HH:mm')
+
 /** 한국어 날짜 포맷: "2024년 1월 15일" */
 export const formatDateKorean = (date: Date | string | number): string =>
   dayjs(date).format('YYYY년 M월 D일')

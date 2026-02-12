@@ -11,10 +11,10 @@ import ApplyResumeCard from '../components/ApplyResumeCard/ApplyResumeCard'
 import ApplyStatement from '../components/ApplyStatement/ApplyStatement'
 import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
 import ProgressStage from '../components/ProgressStage/ProgressStage'
-import { useMyApplications } from '../hooks/useDashboardQueries'
+import { useGetMyApplications } from '../hooks/useDashboardQueries'
 
 const DashboardPageContent = () => {
-  const { data } = useMyApplications()
+  const { data } = useGetMyApplications()
   const dashboardData = data.result
   const current = dashboardData.current
   const applications = dashboardData.applications

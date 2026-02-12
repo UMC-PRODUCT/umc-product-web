@@ -1,7 +1,12 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
+import { patchRecruitmentApplicationFormDraft } from '@/features/school/domain/api'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
+import { ensureRequiredItems } from '@/features/school/utils/recruiting/requiredItems'
 import Create from '@/shared/assets/icons/create.svg?react'
 import Load from '@/shared/assets/icons/load.svg?react'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -14,13 +19,30 @@ import * as S from './RecruitingMake.style'
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
   const navigate = useNavigate()
-  const { usePostFirstRecruitment } = useRecruitingMutation()
-  const { mutate: postFirstRecruitmentMutate } = usePostFirstRecruitment()
+  const queryClient = useQueryClient()
+  const { usePostRecruitmentCreate } = useRecruitingMutation()
+  const { mutate: postFirstRecruitmentMutate } = usePostRecruitmentCreate()
 
   const handleCreateRecruiting = () => {
     postFirstRecruitmentMutate(undefined, {
       onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }),
+        })
         const recruitingId = data.result.recruitmentId
+        const requiredItems = ensureRequiredItems([], [], {
+          requirePreferred: true,
+          requireSchedule: true,
+          requirePage2: true,
+          requireParts: [],
+        })
+        patchRecruitmentApplicationFormDraft(String(recruitingId), {
+          items: buildQuestionsPayload(requiredItems),
+        }).then(() => {
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.getRecruitmentApplicationFormDraft(String(recruitingId)),
+          })
+        })
         navigate({
           to: '/school/recruiting/$recruitingId',
           params: { recruitingId: String(recruitingId) },

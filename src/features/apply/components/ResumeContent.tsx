@@ -1,7 +1,10 @@
-import type { RecruitingForms } from '@/features/school/domain'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import type { FormPage, ResumeFormSectionProps } from '@/shared/types/form'
+import type {
+  FormPage,
+  RecruitmentApplicationForm,
+  ResumeFormSectionProps,
+} from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -10,9 +13,10 @@ import * as S from './ResumeContent.style'
 
 interface ResumeContentProps {
   pages: Array<FormPage>
-  formData: RecruitingForms
+  formData: RecruitmentApplicationForm
   displayLastSavedTime: string | null
   handleSave: () => void
+  onPortfolioImmediateSave?: ResumeFormSectionProps['onPortfolioImmediateSave']
   control: ResumeFormSectionProps['control']
   setValue: ResumeFormSectionProps['setValue']
   clearErrors: ResumeFormSectionProps['clearErrors']
@@ -29,6 +33,7 @@ const ResumeContent = ({
   pages,
   displayLastSavedTime,
   handleSave,
+  onPortfolioImmediateSave,
   control,
   setValue,
   clearErrors,
@@ -81,6 +86,7 @@ const ResumeContent = ({
           onOpenSubmitModal={openSubmitModal}
           onPageChange={handlePageNavigation}
           isEdit={isEdit}
+          onPortfolioImmediateSave={onPortfolioImmediateSave}
         />
       </S.BorderedSection>
     </>

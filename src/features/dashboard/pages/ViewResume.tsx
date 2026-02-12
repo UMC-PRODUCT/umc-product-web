@@ -4,8 +4,8 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import PartDivider from '@/features/apply/components/PartDivider'
 import type { QuestionAnswerValue } from '@/features/apply/domain'
 import {
-  useGetApplicationAnswer,
-  useGetApplicationQuestions,
+  useGetRecruitmentApplicationAnswer,
+  useGetRecruitmentApplicationForm,
 } from '@/features/apply/hooks/useGetApplicationQuery'
 import { buildDefaultValuesFromQuestions } from '@/features/apply/utils'
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
@@ -30,31 +30,29 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
     from: '/(app)/dashboard/$recruitmentId/$resumeId/',
   })
   const navigate = useNavigate()
-  const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
-  const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const { data: questionsData } = useGetRecruitmentApplicationForm(recruitmentId)
+  const { data: answerData } = useGetRecruitmentApplicationAnswer(recruitmentId, resumeId)
   const normalizedAnswers = useMemo(
-    () => buildDefaultValuesFromQuestions(questionsData.result, answerData.result),
+    () => buildDefaultValuesFromQuestions(questionsData.result, answerData?.result),
     [questionsData, answerData],
   )
 
   const answeredQuestionIds = useMemo(() => {
-    const answers = Array.isArray(answerData.result.answers) ? answerData.result.answers : []
+    const answers = answerData?.result.answers ?? []
     return new Set(answers.map((entry) => String(entry.questionId)))
   }, [answerData])
 
   const pages = questionsData.result.pages
   const answerOnlyPages = useMemo(() => {
     return pages.filter((page) => {
-      const questions = Array.isArray(page.questions) ? page.questions : []
+      const questions = page.questions ?? []
       const hasQuestionAnswer = questions.some((q) => answeredQuestionIds.has(String(q.questionId)))
       const hasScheduleAnswer = page.scheduleQuestion
         ? answeredQuestionIds.has(String(page.scheduleQuestion.questionId))
         : false
-      const hasPartAnswer = Array.isArray(page.partQuestions)
-        ? page.partQuestions.some((group) =>
-            group.questions.some((q) => answeredQuestionIds.has(String(q.questionId))),
-          )
-        : false
+      const hasPartAnswer = (page.partQuestions ?? []).some((group) =>
+        group.questions.some((q) => answeredQuestionIds.has(String(q.questionId))),
+      )
       return hasQuestionAnswer || hasScheduleAnswer || hasPartAnswer
     })
   }, [pages, answeredQuestionIds])
@@ -88,22 +86,20 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
 
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = answerOnlyPages[currentPageIndex]
-  const currentQuestions = Array.isArray(currentPageData.questions)
-    ? currentPageData.questions.filter((q) => answeredQuestionIds.has(String(q.questionId)))
-    : []
+  const currentQuestions = (currentPageData.questions ?? []).filter((q) =>
+    answeredQuestionIds.has(String(q.questionId)),
+  )
   const currentScheduleQuestion =
     currentPageData.scheduleQuestion &&
     answeredQuestionIds.has(String(currentPageData.scheduleQuestion.questionId))
       ? currentPageData.scheduleQuestion
       : null
-  const currentPartQuestions = Array.isArray(currentPageData.partQuestions)
-    ? currentPageData.partQuestions
-        .map((group) => ({
-          ...group,
-          questions: group.questions.filter((q) => answeredQuestionIds.has(String(q.questionId))),
-        }))
-        .filter((group) => group.questions.length > 0)
-    : []
+  const currentPartQuestions = (currentPageData.partQuestions ?? [])
+    .map((group) => ({
+      ...group,
+      questions: group.questions.filter((q) => answeredQuestionIds.has(String(q.questionId))),
+    }))
+    .filter((group) => group.questions.length > 0)
   const baseQuestionCount = currentQuestions.length
   const scheduleQuestionCount = currentScheduleQuestion ? 1 : 0
   const flatPartQuestions = currentPartQuestions.flatMap((group) =>
@@ -111,13 +107,21 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   )
 
   const pageTitle = `${questionsData.result.noticeTitle}`
-  const submitAt = new Date(answerData.result.submittedAt!)
-  const submittedTimeText = `${submitAt.getFullYear()}년 ${(submitAt.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}월 ${submitAt.getDate().toString().padStart(2, '0')}일 ${submitAt
-    .getHours()
-    .toString()
-    .padStart(2, '0')}:${submitAt.getMinutes().toString().padStart(2, '0')}에 제출됨.`
+  const submittedAt = answerData?.result.submittedAt
+  const submittedTimeText = submittedAt
+    ? `${new Date(submittedAt).getFullYear()}년 ${(new Date(submittedAt).getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}월 ${new Date(submittedAt)
+        .getDate()
+        .toString()
+        .padStart(2, '0')}일 ${new Date(submittedAt)
+        .getHours()
+        .toString()
+        .padStart(2, '0')}:${new Date(submittedAt)
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}에 제출됨.`
+    : ''
 
   const onBack = () => {
     navigate({
@@ -151,22 +155,6 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
       </S.BorderSection>
 
       <S.BorderSection>
-        {currentQuestions.map((question, idx) => (
-          <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
-            <Question
-              questionId={question.questionId}
-              questionNumber={idx + 1}
-              type={question.type}
-              question={question.questionText}
-              options={question.options}
-              required={question.required}
-              maxSelectCount={question.maxSelectCount}
-              preferredPartOptions={question.preferredPartOptions}
-              mode="view"
-              value={normalizedAnswers[String(question.questionId)] as QuestionAnswerValue}
-            />
-          </Flex>
-        ))}
         {currentScheduleQuestion && (
           <QuestionLayout
             questionNumber={baseQuestionCount + 1}
@@ -201,6 +189,23 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
             />
           </QuestionLayout>
         )}
+        {currentQuestions.map((question, idx) => (
+          <Flex key={question.questionId} flexDirection="column" gap={8} width="100%">
+            <Question
+              questionId={question.questionId}
+              questionNumber={idx + 1}
+              type={question.type}
+              question={question.questionText}
+              options={question.options}
+              required={question.required}
+              maxSelectCount={question.maxSelectCount}
+              preferredPartOptions={question.preferredPartOptions}
+              mode="view"
+              value={normalizedAnswers[String(question.questionId)] as QuestionAnswerValue}
+            />
+          </Flex>
+        ))}
+
         {currentPartQuestions.map((partGroup, groupIndex) => {
           const groupQuestions = flatPartQuestions.filter((item) => item.group === partGroup)
           return (
@@ -210,7 +215,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
               gap={12}
               width="100%"
             >
-              <PartDivider label={partGroup.label ?? partGroup.part} />
+              <PartDivider label={partGroup.part} />
               {groupQuestions.map((item) => {
                 const partIndex = flatPartQuestions.indexOf(item)
                 return (

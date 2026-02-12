@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import { Flex } from '@/shared/ui/common/Flex'
 
 export const Title = styled.div`
   ${theme.typography.H1.Sb}
@@ -22,56 +21,49 @@ export const ModalButton = styled.button`
   height: 28px;
   cursor: pointer;
 `
-export const ContentWrapper = styled(Flex)`
+export const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 22px;
   white-space: pre-wrap;
   word-break: keep-all;
   overflow-y: auto;
   color: ${(props) => props.theme.colors.white};
   ${(props) => props.theme.typography.B3.Md}
   width: 100%;
-  height: 390px;
-  ${media.up(theme.breakPoints.mobile)} {
-    height: 360px;
-  }
-  ${media.up(theme.breakPoints.tablet)} {
-    ${(props) => props.theme.typography.B4.Md}
-    height: 530px;
-  }
-  ${media.up(theme.breakPoints.desktop)} {
-    height: 670px;
-  }
+  height: 100%;
+  min-height: 0;
 `
 
-export const ModalContentWrapper = styled(Flex)`
+export const ModalContentWrapper = styled.div`
   flex-direction: column;
+  display: flex;
   gap: 16px;
   background-color: ${(props) => props.theme.colors.gray[700]};
   border-radius: 8px;
-  width: 600px;
-  max-width: 90vw;
-  height: 500px;
+  max-width: 1080px;
+  width: 80vw;
+  max-height: 80vh;
+  height: 700px;
   padding: 20px;
   overflow: hidden;
-
-  ${media.up(theme.breakPoints.mobile)} {
-    width: 400px;
-    min-width: 400px;
-    max-width: 400px;
-  }
-
-  ${media.up(theme.breakPoints.tablet)} {
-    width: 800px;
-    max-width: 90vw;
-    min-width: 90vw;
+  background-color: ${theme.colors.black};
+  box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.7);
+  ${media.down(theme.breakPoints.desktop)} {
+    max-width: 80vw;
     height: 700px;
     padding: 39px 58px;
   }
-
-  ${media.up(theme.breakPoints.desktop)} {
-    width: 1080px;
-    min-width: 90vw;
-    max-width: 90vw;
-    height: 840px;
+  ${media.down(theme.breakPoints.tablet)} {
+    max-width: 80vw;
+    height: 700px;
     padding: 39px 58px;
+  }
+  ${media.down(theme.breakPoints.mobile)} {
+    max-width: 90vw;
+    height: 500px;
+    padding: 10px;
   }
 `

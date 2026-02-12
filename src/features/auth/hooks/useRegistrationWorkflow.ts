@@ -3,12 +3,13 @@ import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react
 import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type { GetTermsResponseDTO } from '../domain/types'
 import type { RegisterForm } from '../schemas/register'
-import { useAuth } from './register/useAuthMutations'
 import type { TermsAgreementKey } from './register/useTermsAgreement'
+import { useAuthMutation } from './useAuthMutations'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
@@ -31,10 +32,11 @@ export const useRegistrationWorkflow = ({
   onEmailSent,
   terms,
 }: RegistrationWorkflowProps) => {
-  const { useSendEmail, useVerifyCode, useRegister } = useAuth()
-  const { mutate: sendEmailMutate } = useSendEmail()
-  const { mutate: verifyCodeMutate } = useVerifyCode()
-  const { mutate: registerMutate } = useRegister()
+  const { usePostEmailVerification, usePostEmailVerificationCode, usePostRegister } =
+    useAuthMutation()
+  const { mutate: sendEmailMutate } = usePostEmailVerification()
+  const { mutate: verifyCodeMutate } = usePostEmailVerificationCode()
+  const { mutate: registerMutate } = usePostRegister()
 
   const [emailVerificationId, setEmailVerificationId] = useState<string | null>(null)
   const [hasEmailBeenSent, setHasEmailBeenSent] = useState(false)
@@ -43,6 +45,9 @@ export const useRegistrationWorkflow = ({
   const [isVerifyingCode, setIsVerifyingCode] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
   const [registrationError, setRegistrationError] = useState<string | null>(null)
+
+  const { setItem: setAccessToken } = useLocalStorage('accessToken')
+  const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
 
   const getApiErrorMessage = useCallback((error: unknown, fallback: string) => {
     if (isAxiosError(error)) {
@@ -166,9 +171,10 @@ export const useRegistrationWorkflow = ({
             : {}),
         },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             setRegistrationError(null)
-
+            setAccessToken(data.result.accessToken)
+            setRefreshToken(data.result.refreshToken)
             navigate({
               to: '/auth/login',
             })

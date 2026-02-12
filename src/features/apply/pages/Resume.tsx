@@ -10,17 +10,18 @@ import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { applyKeys } from '@/shared/queryKeys'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import { formatDateTimeKorean, scrollToTop } from '@/shared/utils'
 
 import ResumeContent from '../components/ResumeContent'
-import { applyKeys } from '../domain/queryKeys'
+import type { QuestionAnswerValue } from '../domain/model'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
-  useGetApplicationAnswer,
-  useGetApplicationQuestions,
+  useGetRecruitmentApplicationAnswer,
+  useGetRecruitmentApplicationForm,
 } from '../hooks/useGetApplicationQuery'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
 import { findFirstErrorPageIndex, getPageRequiredFieldIds, getSubmissionItems } from '../utils'
@@ -38,14 +39,14 @@ interface ResumeProps {
 const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { schoolName, generation } = RECRUITMENT_INFO
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
-  const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
-  const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const { data: questionsData } = useGetRecruitmentApplicationForm(recruitmentId)
+  const { data: answerData } = useGetRecruitmentApplicationAnswer(recruitmentId, resumeId)
   const { usePatchApplication, useSubmitApplication } = useApplyMutation()
   const { mutate: patchApplication } = usePatchApplication()
   const { mutate: submitApplication } = useSubmitApplication()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
-  const resumeForm = useResumeForm(questionDataForForm, answerData.result)
+  const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
 
   const {
     control,
@@ -64,7 +65,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
   const displayLastSavedTime = (() => {
-    const raw = answerData.result.lastSavedAt
+    const raw = answerData?.result.lastSavedAt
     if (!raw) return null
     const savedDate = new Date(raw)
     if (Number.isNaN(savedDate.getTime())) return null
@@ -83,7 +84,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+              queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
             })
           },
         },
@@ -91,6 +92,33 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     },
     interval: AUTO_SAVE_INTERVAL_MS,
   })
+
+  const handlePortfolioImmediateSave = (questionId: number, nextValue: QuestionAnswerValue) => {
+    const currentValues = getValues()
+    const sanitizedValue =
+      nextValue && typeof nextValue === 'object'
+        ? {
+            ...nextValue,
+            files: Array.isArray((nextValue as { files?: Array<{ status?: unknown }> }).files)
+              ? (nextValue as { files: Array<{ status?: unknown }> }).files.filter(
+                  (file) => file.status === 'success',
+                )
+              : [],
+          }
+        : nextValue
+    const mergedValues = { ...currentValues, [String(questionId)]: sanitizedValue }
+    const answers = getSubmissionItems(resolvedPages, mergedValues, defaultValues)
+    patchApplication(
+      { recruitmentId, formResponseId: resumeId, items: answers },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
+          })
+        },
+      },
+    )
+  }
 
   const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
     const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
@@ -131,7 +159,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: applyKeys.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
           setIsSubmitModalOpen(false)
         },
@@ -153,6 +181,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         formData={questionDataForForm}
         displayLastSavedTime={displayLastSavedTime}
         handleSave={handleSave}
+        onPortfolioImmediateSave={handlePortfolioImmediateSave}
         control={control}
         setValue={setValue}
         clearErrors={clearErrors}

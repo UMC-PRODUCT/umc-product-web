@@ -1,17 +1,15 @@
 import dayjs from 'dayjs'
 
-import { isOtherOptionContent } from '@/features/school/constants/questionOption'
 import type {
   RecruitingForms,
   RecruitingInterviewTimeTable,
-  RecruitingItem,
   RecruitingSchedule,
 } from '@/shared/types/form'
 
 import type {
-  GetTempSavedRecruitmentResponseDTO,
-  PatchTempSaveRecruitmentRequestDTO,
-} from '../../domain/apiTypes'
+  GetRecruitmentDraftResponseDTO,
+  PatchRecruitmentDraftRequestDTO,
+} from '../../domain/model'
 import { normalizeTempRecruitingForm } from './tempDraft'
 
 const defaultInterviewTimeTable: RecruitingInterviewTimeTable = {
@@ -37,9 +35,43 @@ const toDateOnly = (value: string | null) =>
 // TODO: 추후 API 수정시 삭제
 const toDateLast = (value: string | null) =>
   value ? dayjs(value).format('YYYY-MM-DDT23:59:59+09:00') : null
+
+const timeToMinutes = (time: string) => {
+  const [h, m] = time.split(':').map(Number)
+  return h * 60 + m
+}
+
+const minutesToTime = (minutes: number) => {
+  const safeMinutes = Math.max(0, Math.min(1439, minutes))
+  const h = Math.floor(safeMinutes / 60)
+  const m = safeMinutes % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+const expandEnabledByDate = (
+  enabledByDate: RecruitingForms['schedule']['interviewTimeTable']['enabledByDate'],
+  slotMinutesValue: string,
+  selectionMinutes = 30,
+) => {
+  const slotMinutes = Number(slotMinutesValue)
+  if (Number.isNaN(slotMinutes) || slotMinutes <= 0) return enabledByDate
+  if (selectionMinutes % slotMinutes !== 0) return enabledByDate
+  const repeatCount = selectionMinutes / slotMinutes
+  return enabledByDate.map((slot) => {
+    const expanded = slot.times.flatMap((time) => {
+      const base = timeToMinutes(time)
+      return Array.from({ length: repeatCount }, (_, idx) =>
+        minutesToTime(base + idx * slotMinutes),
+      )
+    })
+    const unique = Array.from(new Set(expanded))
+    unique.sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+    return { ...slot, times: unique }
+  })
+}
 export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
-): PatchTempSaveRecruitmentRequestDTO['schedule'] => ({
+): PatchRecruitmentDraftRequestDTO['schedule'] => ({
   applyStartAt: toDateOnly(schedule.applyStartAt),
   applyEndAt: toDateLast(schedule.applyEndAt),
   docResultAt: toDateOnly(schedule.docResultAt),
@@ -55,36 +87,17 @@ export const buildSchedulePayload = (
       start: schedule.interviewTimeTable.timeRange.start,
       end: schedule.interviewTimeTable.timeRange.end,
     },
-    slotMinutes: '30',
-    enabledByDate: schedule.interviewTimeTable.enabledByDate,
+    slotMinutes: schedule.interviewTimeTable.slotMinutes || '30',
+    enabledByDate: expandEnabledByDate(
+      schedule.interviewTimeTable.enabledByDate,
+      schedule.interviewTimeTable.slotMinutes || '30',
+    ),
     disabledByDate: [],
   },
 })
 
-export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
-  items.map((item) => ({
-    target: {
-      kind: item.target.kind,
-      pageNo: item.target.pageNo,
-      part: item.target.part,
-    },
-    question: {
-      questionId: item.question.questionId,
-      type: item.question.type,
-      questionText: item.question.questionText,
-      required: item.question.required,
-      orderNo: item.question.orderNo,
-      options: item.question.options?.map((option) => ({
-        content: option.content,
-        orderNo: option.orderNo,
-        optionId: option.optionId,
-        isOther: option.isOther ?? isOtherOptionContent(option.content),
-      })),
-    },
-  }))
-
 export function buildRecruitingInitialForm(
-  result: GetTempSavedRecruitmentResponseDTO,
+  result: GetRecruitmentDraftResponseDTO,
 ): RecruitingForms {
   const schedule = result.schedule ?? defaultRecruitingSchedule
   const interviewTimeTable = schedule.interviewTimeTable

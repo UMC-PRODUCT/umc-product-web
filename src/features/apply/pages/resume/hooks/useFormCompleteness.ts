@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { ResumeFormValues } from '@/features/apply/utils/buildDefaultValuesFromQuestions'
+import type { ResumeFormValues } from '@/features/apply/utils'
 import type { FormPage } from '@/shared/types/form'
 
 import { getAllQuestionsFromPages, isQuestionAnswerEmpty } from '../../../utils'
@@ -17,7 +17,6 @@ export function useFormCompleteness(
     const allQuestions = getAllQuestionsFromPages(resolvedPages)
 
     return allQuestions.some((question) => {
-      if (!question) return false
       const answerValue = currentFormValues[String(question.questionId)]
       return isQuestionAnswerEmpty(question, answerValue)
     })

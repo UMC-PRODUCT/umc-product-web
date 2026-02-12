@@ -18,9 +18,8 @@ export const RecruitingPreviewSkeletonContent = ({
     css={{
       backgroundColor: theme.colors.black,
       boxShadow: '0 8px 20px 0 rgba(0, 0, 0, 0.70)',
+      width: 'fit-content',
     }}
-    flexDirection="column"
-    width={'fit-content'}
   >
     <Modal.Header>
       <Flex
