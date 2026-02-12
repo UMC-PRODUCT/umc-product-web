@@ -78,6 +78,22 @@ const Step3 = ({
   }
   const selectedPart = getSelectedPart()
   const isSelectedPartComplete = selectedPart ? Boolean(partCompletion[selectedPart]) : false
+  const saveQuestionDraft = () => {
+    if (!recruitingId) return
+    patchTempSavedRecruitQuestionsMutate(
+      { items: buildQuestionsPayload(items) },
+      {
+        onSuccess: (data) => {
+          recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
+            shouldDirty: false,
+            shouldTouch: false,
+            shouldValidate: true,
+          })
+          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
+        },
+      },
+    )
+  }
 
   useEffect(() => {
     if (page !== 3) return
@@ -109,20 +125,7 @@ const Step3 = ({
       ...partCompletion,
       [selectedPart]: true,
     })
-    if (!recruitingId) return
-    patchTempSavedRecruitQuestionsMutate(
-      { items: buildQuestionsPayload(items) },
-      {
-        onSuccess: (data) => {
-          recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
-            shouldDirty: false,
-            shouldTouch: false,
-            shouldValidate: true,
-          })
-          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
-        },
-      },
-    )
+    saveQuestionDraft()
   }
 
   return (

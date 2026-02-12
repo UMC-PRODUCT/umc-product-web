@@ -9,6 +9,12 @@ import InterviewInfo from './InterviewInfo/InterviewInfo'
 import * as S from './ScheduleSummary.style'
 
 const formatDateDots = (value: string) => value.replace(/-/g, '.')
+const formatDday = (dDay: string) => {
+  const numericDay = Number(dDay)
+  if (Number.isNaN(numericDay)) return `D-${dDay}`
+  if (numericDay < 0) return `D+${Math.abs(numericDay)}`
+  return `D-${numericDay}`
+}
 
 const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummaryType }) => {
   const gridRef = useRef<HTMLDivElement | null>(null)
@@ -48,7 +54,7 @@ const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummary
           <Section variant="solid" alignItems="flex-start" gap={20}>
             <S.ScheduleTitle>{scheduleSummary.phaseTitle}</S.ScheduleTitle>
             <Flex gap={9} flexDirection="column" alignItems="flex-start">
-              <S.ScheduleCount>D-{scheduleSummary.dDay}</S.ScheduleCount>
+              <S.ScheduleCount>{formatDday(scheduleSummary.dDay)}</S.ScheduleCount>
               <S.ScheduleInfo>{`${formatDateDots(scheduleSummary.dateRange.start)} ~ ${formatDateDots(scheduleSummary.dateRange.end)}`}</S.ScheduleInfo>
             </Flex>
           </Section>

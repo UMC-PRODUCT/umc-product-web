@@ -41,6 +41,8 @@ const buildRecruitingItemFromQuestion = (
   },
 })
 
+type RecruitingQuestionSource = Parameters<typeof buildRecruitingItemFromQuestion>[0]
+
 const sortByOrderNo = <T extends { orderNo?: string }>(items: Array<T>) =>
   [...items].sort((a, b) => {
     const aOrder = Number(a.orderNo)
@@ -54,13 +56,14 @@ export const convertApplicationFormToItems = (formData: RecruitmentApplicationFo
   const pages = formData.pages
 
   pages.forEach((page: FormPage) => {
-    const questions: Array<FormQuestion> = Array.isArray(page.questions) ? page.questions : []
+    const questions: Array<RecruitingQuestionSource> = Array.isArray(page.questions)
+      ? page.questions
+      : []
     const hasScheduleInQuestions = questions.some((question) => question.type === 'SCHEDULE')
-    const commonQuestions = hasScheduleInQuestions
-      ? questions
-      : page.scheduleQuestion
-        ? [...questions, page.scheduleQuestion]
-        : questions
+    let commonQuestions = questions
+    if (!hasScheduleInQuestions && page.scheduleQuestion) {
+      commonQuestions = [...questions, page.scheduleQuestion]
+    }
 
     sortByOrderNo(commonQuestions).forEach((question, index) =>
       items.push(

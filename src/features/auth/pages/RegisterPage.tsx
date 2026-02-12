@@ -170,10 +170,6 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     }
   }, [accessToken, navigate])
 
-  if (accessToken) {
-    return null
-  }
-
   return (
     <AuthSection size="lg">
       <ResponsiveLogo />

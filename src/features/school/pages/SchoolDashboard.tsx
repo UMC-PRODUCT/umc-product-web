@@ -13,6 +13,14 @@ import { ProgressSteps } from '../components/schoolDashboard/ProgressSteps/Progr
 import ScheduleSummary from '../components/schoolDashboard/ScheduleSummary/ScheduleSummary'
 import { useGetRecruitmentDashboardSummary } from '../hooks/useRecruitingQueries'
 
+const resolveErrorStatus = (error: unknown) =>
+  (error as { response?: { status?: number } } | null)?.response?.status
+
+const resolveErrorMessage = (error: unknown) =>
+  (error as { response?: { data?: { message?: string } } } | null)?.response?.data?.message ||
+  (error instanceof Error ? error.message : undefined) ||
+  '요청 처리 중 오류가 발생했습니다.'
+
 export const SchoolDashboardContent = () => {
   const { data } = useGetActiveRecruitmentId()
   const { data: dashboardData } = useGetRecruitmentDashboardSummary(data.result.recruitmentId)
@@ -41,13 +49,9 @@ export const SchoolDashboard = () => {
     <AsyncBoundary
       fallback={<SuspenseFallback />}
       errorFallback={(error, reset) => {
-        const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
+        const errorStatus = resolveErrorStatus(error)
         const isNotFound = errorStatus === 404
-        const errorMessage =
-          (error as { response?: { data?: { message?: string } } } | null)?.response?.data
-            ?.message ||
-          error.message ||
-          '요청 처리 중 오류가 발생했습니다.'
+        const errorMessage = resolveErrorMessage(error)
         return (
           <ServerErrorCard
             errorStatus={errorStatus}

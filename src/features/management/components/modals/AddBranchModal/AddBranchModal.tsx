@@ -9,6 +9,7 @@ import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label'
 import { Modal } from '@/shared/ui/common/Modal'
@@ -20,6 +21,7 @@ import * as S from './AddBranchModal.style'
 const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: string }) => {
   const queryClient = useQueryClient()
   const [selectedSchools, setSelectedSchools] = useState<Array<Option<string>>>([])
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const { data: schoolData } = useGetUnassignedSchools(gisuId)
   const { usePostChapter } = useManagementMutations()
   const { mutate: postChapterMutate } = usePostChapter()
@@ -55,6 +57,7 @@ const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: stri
   }
 
   const onSubmit = (data: { chapterName: string; schoolIds: Array<string> }) => {
+    setSubmitError(null)
     postChapterMutate(
       {
         name: data.chapterName,
@@ -67,6 +70,12 @@ const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: stri
             queryKey: managementKeys.getGisuChapterWithSchools(gisuId),
           })
           onClose()
+        },
+        onError: (error) => {
+          setSubmitError(
+            (error as { response?: { data?: { message?: string } } } | null)?.response?.data
+              ?.message ?? '지부 생성에 실패했습니다. 잠시 후 다시 시도해주세요.',
+          )
         },
       },
     )
@@ -145,6 +154,13 @@ const AddBranchModal = ({ onClose, gisuId }: { onClose: () => void; gisuId: stri
                     </S.SelectedSchoolTag>
                   ))}
                 </Flex>
+                {submitError ? (
+                  <ErrorMessage
+                    errorMessage={submitError}
+                    typo="B4.Md"
+                    responsiveTypo={{ tablet: 'B4.Md' }}
+                  />
+                ) : null}
               </Flex>
 
               <Modal.Footer>
