@@ -1,9 +1,13 @@
+import type { KeyboardEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
-import { useGetDocumentEvaluationMyAnswer } from '@/features/school/hooks/useRecruitingQueries'
+import {
+  useGetDocumentEvaluationMyAnswer,
+  useGetInterviewEvaluationMyAnswer,
+} from '@/features/school/hooks/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
@@ -18,29 +22,59 @@ import * as S from './MyEvaluation.style'
 const MyEvaluation = ({
   selectedUserId,
   recruitingId,
+  mode = 'document',
 }: {
   selectedUserId: string | null
   recruitingId?: string | null
+  mode?: 'document' | 'interview'
 }) => {
   const queryClient = useQueryClient()
-  const { usePatchDocumentEvaluationMyAnswer } = useRecruitingMutation()
-  const { mutate, isPending } = usePatchDocumentEvaluationMyAnswer(
-    recruitingId ?? '',
-    selectedUserId ?? '',
-  )
-  const { data, isLoading } = useGetDocumentEvaluationMyAnswer(recruitingId!, selectedUserId)
+  const { usePatchDocumentEvaluationMyAnswer, usePatchInterviewEvaluationMyAnswer } =
+    useRecruitingMutation()
+  const { mutate: patchDocumentEvaluation, isPending: isDocumentPending } =
+    usePatchDocumentEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
+  const { mutate: patchInterviewEvaluation, isPending: isInterviewPending } =
+    usePatchInterviewEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
+  const {
+    data: documentData,
+    isLoading: isDocumentLoading,
+    refetch: refetchDocument,
+  } = useGetDocumentEvaluationMyAnswer(recruitingId ?? null, selectedUserId)
+  const {
+    data: interviewData,
+    isLoading: isInterviewLoading,
+    refetch: refetchInterview,
+  } = useGetInterviewEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
 
   const canSubmit = Boolean(recruitingId) && Boolean(selectedUserId)
+  const isScoreEmpty = score.trim().length === 0
+  const isLoading = mode === 'document' ? isDocumentLoading : isInterviewLoading
+  const isPending = mode === 'document' ? isDocumentPending : isInterviewPending
+
+  const currentEvaluation = useMemo(() => {
+    if (mode === 'document') return documentData?.result.myEvaluation
+    return interviewData?.result.myEvaluation
+  }, [documentData?.result.myEvaluation, interviewData?.result.myEvaluation, mode])
+
+  const isSubmitted =
+    mode === 'document'
+      ? Boolean(documentData?.result.myEvaluation?.submitted)
+      : Boolean(interviewData?.result.myEvaluation?.submittedAt)
+
+  const savedOrSubmittedAt =
+    mode === 'document'
+      ? documentData?.result.myEvaluation?.savedAt
+      : interviewData?.result.myEvaluation?.submittedAt
+
   const scoreError = useMemo(() => {
-    if (!canSubmit) return ''
-    if (score.trim().length === 0) return '0 이상 100 이하의 정수를 입력하세요.'
+    if (isScoreEmpty) return ''
     if (!/^\d+$/.test(score)) return '0 이상 100 이하의 정수를 입력하세요.'
     const numericScore = Number(score)
     if (numericScore < 0 || numericScore > 100) return '0 이상 100 이하의 정수를 입력하세요.'
     return ''
-  }, [score, canSubmit])
+  }, [isScoreEmpty, score])
   const showScoreError = !isLoading && Boolean(scoreError)
 
   useEffect(() => {
@@ -49,7 +83,7 @@ const MyEvaluation = ({
       setComment('')
       return
     }
-    const evaluation = data?.result.myEvaluation
+    const evaluation = currentEvaluation
     if (!evaluation) {
       setScore('')
       setComment('')
@@ -57,13 +91,59 @@ const MyEvaluation = ({
     }
     setScore(evaluation.score)
     setComment(evaluation.comments)
-  }, [data?.result.myEvaluation, recruitingId, selectedUserId])
+  }, [currentEvaluation, recruitingId, selectedUserId])
 
   const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
-    if (!canSubmit || scoreError) return
-    mutate(
+    if (!canSubmit || isScoreEmpty || scoreError) return
+
+    if (mode === 'document') {
+      patchDocumentEvaluation(
+        {
+          action,
+          score,
+          comments: comment,
+        },
+        {
+          onSuccess: () => {
+            if (recruitingId && selectedUserId) {
+              queryClient.invalidateQueries({
+                queryKey: schoolKeys.evaluation.document.getAnswers(recruitingId, selectedUserId),
+              })
+              queryClient.invalidateQueries({
+                queryKey: schoolKeys.evaluation.document.getMyAnswer(recruitingId, selectedUserId),
+              })
+              queryClient.invalidateQueries({
+                predicate: (query) => {
+                  const [root, domain, feature, key, params] = query.queryKey as [
+                    string?,
+                    string?,
+                    string?,
+                    string?,
+                    any?,
+                  ]
+                  return (
+                    root === 'school' &&
+                    domain === 'documents' &&
+                    feature === 'evaluation' &&
+                    key === 'applicants' &&
+                    String(params?.recruitmentId) === String(recruitingId)
+                  )
+                },
+              })
+              queryClient.invalidateQueries({
+                queryKey: ['school', 'documents', 'evaluation', 'applicants'],
+                exact: false,
+              })
+              void refetchDocument()
+            }
+          },
+        },
+      )
+      return
+    }
+
+    patchInterviewEvaluation(
       {
-        action,
         score,
         comments: comment,
       },
@@ -71,37 +151,30 @@ const MyEvaluation = ({
         onSuccess: () => {
           if (recruitingId && selectedUserId) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getDocumentEvaluationAnswers(recruitingId, selectedUserId),
+              queryKey: schoolKeys.evaluation.interview.getMyAnswer(recruitingId, selectedUserId),
             })
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getDocumentEvaluationMyAnswer(recruitingId, selectedUserId),
+              queryKey: schoolKeys.evaluation.interview.getSummary(recruitingId, selectedUserId),
             })
             queryClient.invalidateQueries({
-              predicate: (query) => {
-                const [root, domain, feature, key, params] = query.queryKey as [
-                  string?,
-                  string?,
-                  string?,
-                  string?,
-                  any?,
-                ]
-                return (
-                  root === 'school' &&
-                  domain === 'documents' &&
-                  feature === 'evaluation' &&
-                  key === 'applicants' &&
-                  String(params?.recruitmentId) === String(recruitingId)
-                )
-              },
+              queryKey: schoolKeys.evaluation.interview.getView(recruitingId, selectedUserId),
             })
-            queryClient.invalidateQueries({
-              queryKey: ['school', 'documents', 'evaluation', 'applicants'],
-              exact: false,
-            })
+            void refetchInterview()
           }
         },
       },
     )
+  }
+
+  const handleScoreChange = (value: string) => {
+    const digitsOnly = value.replace(/\D/g, '')
+    setScore(digitsOnly)
+  }
+
+  const handleScoreKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (['e', 'E', '+', '-', '.'].includes(event.key)) {
+      event.preventDefault()
+    }
   }
   return (
     <Section
@@ -135,9 +208,11 @@ const MyEvaluation = ({
               <S.ScoreInput
                 type="number"
                 value={score}
-                onChange={(e) => setScore(e.target.value)}
+                onChange={(e) => handleScoreChange(e.target.value)}
+                onKeyDown={handleScoreKeyDown}
                 min="0"
                 max="100"
+                inputMode="numeric"
               />
               <span className="total">/ 100</span>
             </S.ScoreInputBox>
@@ -157,31 +232,30 @@ const MyEvaluation = ({
           </S.InputWrapper>
 
           <S.Footer>
-            {data?.result.myEvaluation?.savedAt && (
+            {savedOrSubmittedAt && (
               <S.DateText>
-                {formatDateTimeDot(data.result.myEvaluation.savedAt)}{' '}
-                {data.result.myEvaluation.submitted ? '제출' : '저장'}
+                {formatDateTimeDot(savedOrSubmittedAt)} {isSubmitted ? '제출' : '저장'}
               </S.DateText>
             )}
             <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
-              {!data?.result.myEvaluation?.submitted && (
+              {mode === 'document' && !isSubmitted && (
                 <Button
                   variant="solid"
                   tone={'gray'}
                   type="button"
                   label={'임시저장'}
                   css={{ padding: '7px 0', width: '112px' }}
-                  disabled={!canSubmit || Boolean(scoreError) || isPending}
+                  disabled={!canSubmit || isScoreEmpty || Boolean(scoreError) || isPending}
                   onClick={() => handleSubmit('DRAFT_SAVE')}
                 />
               )}
               <Button
                 variant="solid"
-                tone={data?.result.myEvaluation?.submitted ? 'lime' : 'gray'}
+                tone={isSubmitted ? 'lime' : 'gray'}
                 type="button"
-                label={data?.result.myEvaluation?.submitted ? '평가 재제출' : '평가 제출'}
+                label={isSubmitted ? '평가 재제출' : '평가 제출'}
                 css={{ padding: '7px 0', width: '112px' }}
-                disabled={!canSubmit || Boolean(scoreError) || isPending}
+                disabled={!canSubmit || isScoreEmpty || Boolean(scoreError) || isPending}
                 onClick={() => handleSubmit('SUBMIT')}
               />
             </Flex>
