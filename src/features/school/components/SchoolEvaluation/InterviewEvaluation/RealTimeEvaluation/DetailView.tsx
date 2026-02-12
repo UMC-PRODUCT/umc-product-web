@@ -59,7 +59,7 @@ const DetailView = ({
     text: string
   } | null>(null)
   const queryClient = useQueryClient()
-  const recruitmentId = '12'
+  const recruitmentId = '12' // TODO: 추후 수정
 
   const { useDeleteInterviewLiveQuestion } = useRecruitingMutation()
   const { mutate: deleteInterviewLiveQuestion } = useDeleteInterviewLiveQuestion()

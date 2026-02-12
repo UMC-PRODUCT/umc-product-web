@@ -52,7 +52,7 @@ const writeDateToQuery = (date: string) => {
 }
 
 const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void }) => {
-  const recruitmentId = '12'
+  const recruitmentId = '12' // TODO: 추후 수정
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
   const [selectedDateId, setSelectedDateId] = useState<string | null>(() => readDateFromQuery())
   const [selectedPartId, setSelectedPartId] = useState<PartType | 'ALL' | null>(null)

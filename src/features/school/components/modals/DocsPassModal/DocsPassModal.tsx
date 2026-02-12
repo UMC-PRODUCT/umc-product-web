@@ -204,7 +204,10 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
         </Modal.Footer>
       </S.Container>
       {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
-        <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+        <SetPassSuccessModal
+          processedCount={selectedCount}
+          onClose={() => setModalOpen({ open: false, modalName: null })}
+        />
       )}
       {modalOpen.data && modalOpen.open && modalOpen.modalName === 'setFail' && (
         <DocsPassCancleCautionModal

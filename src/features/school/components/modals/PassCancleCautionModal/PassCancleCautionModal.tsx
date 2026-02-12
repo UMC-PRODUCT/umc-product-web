@@ -13,6 +13,7 @@ const PassCancleCautionModal = ({
   name,
   nickname,
   score,
+  currentStatus,
 }: {
   onClose: () => void
   applicationId: string
@@ -20,16 +21,14 @@ const PassCancleCautionModal = ({
   name: string
   nickname: string
   score: string
+  currentStatus: 'PASS' | 'FAIL'
 }) => {
   const queryClient = useQueryClient()
   const { usePatchFinalSelectionStatus } = useRecruitingMutation()
-  const { mutate: patchFinalSelectionStatus } = usePatchFinalSelectionStatus(
-    recruitmentId,
-    applicationId,
-  )
-  const handleCancelPass = () => {
+  const { mutate: patchFinalSelectionStatus } = usePatchFinalSelectionStatus(recruitmentId)
+  const handleCancelStatus = () => {
     patchFinalSelectionStatus(
-      { decision: 'WAIT' },
+      { applicationId, requestBody: { decision: 'WAIT' } },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
@@ -38,13 +37,19 @@ const PassCancleCautionModal = ({
       },
     )
   }
+
+  const isPass = currentStatus === 'PASS'
+  const content = `${name}/${nickname} 님의 최종 환산 점수는 ${score}점입니다.\n${nickname} 님의 ${
+    isPass ? '합격' : '불합격'
+  }을 취소하시겠습니까?`
+
   return (
     <AlertModalLayout
       Icon={Caution}
       mode={'warning'}
       onClose={onClose}
       title="주의"
-      content={`${name}/${nickname} 님의 최종 환산 점수는 ${score}점입니다.\n${nickname} 님의 합격을 취소하시겠습니까?`}
+      content={content}
     >
       <Flex
         height="32px"
@@ -58,11 +63,11 @@ const PassCancleCautionModal = ({
         <Button type="button" label={'닫기'} tone="gray" onClick={onClose} typo="C3.Md" />
         <Button
           type="button"
-          label={'합격 취소'}
+          label={isPass ? '합격 취소' : '불합격 취소'}
           tone="necessary"
           typo="C3.Md"
           onClick={() => {
-            handleCancelPass()
+            handleCancelStatus()
           }}
         />
       </Flex>

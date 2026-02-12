@@ -19,6 +19,11 @@ const ApplyStatus = ({ applicationStatus }: { applicationStatus: ApplicationStat
               applyNum={Number(partStatus.count)}
             />
           ))}
+          <ApplyStatusCard
+            key={applicationStatus.totalApplicants}
+            part={'총 지원자'}
+            applyNum={Number(applicationStatus.totalApplicants)}
+          />
         </S.Grid>
       </Section>
     </Flex>

@@ -509,14 +509,14 @@ export type GetFinalSelectionApplicationsResponseDTO = {
 }
 
 export type PatchFinalSelectionStatusRequestDTO = {
-  decision: 'PASS' | 'WAIT'
-  selectedPart?: PartType | null
+  decision: 'PASS' | 'WAIT' | 'FAIL'
+  selectedPart?: PartType
 }
 
 export type PatchFinalSelectionStatusResponseDTO = {
   applicationId: string
   finalResult: {
-    decision: 'PASS' | 'WAIT'
+    decision: 'PASS' | 'WAIT' | 'FAIL'
     selectedPart: FinalSelectionPartLabel
   }
 }

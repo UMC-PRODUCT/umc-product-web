@@ -102,9 +102,15 @@ export function useRecruitingMutation() {
   }
 
   // 최종 합격 상태 변경
-  function usePatchFinalSelectionStatus(recruitmentId: string, applicationId: string) {
-    return useCustomMutation((requestBody: PatchFinalSelectionStatusRequestDTO) =>
-      patchFinalSelectionStatus(recruitmentId, applicationId, requestBody),
+  function usePatchFinalSelectionStatus(recruitmentId: string) {
+    return useCustomMutation(
+      ({
+        applicationId,
+        requestBody,
+      }: {
+        applicationId: string
+        requestBody: PatchFinalSelectionStatusRequestDTO
+      }) => patchFinalSelectionStatus(recruitmentId, applicationId, requestBody),
     )
   }
 

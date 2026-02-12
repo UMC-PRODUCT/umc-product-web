@@ -42,17 +42,19 @@ const Scheduling = () => {
   const { mutate: assignApplicantsMutate } = usePostInterviewAssignApplicants()
   const { mutate: deleteAssignmentMutate } = useDeleteInterviewAssignApplicants()
 
+  const recruitmentId = '12' // TODO: 추후 수정 예정
+
   const handleDragStart = (id: string) => (e: DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text/plain', id)
     e.dataTransfer.effectAllowed = 'move'
   }
   const { data: summaryData, isLoading: isSummaryLoading } = useCustomQuery(
-    schoolKeys.evaluation.interview.getSchedulingSummary('12'),
-    () => getInterviewSchedulingSummary('12'),
+    schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
+    () => getInterviewSchedulingSummary(recruitmentId),
     {
       placeholderData: (previous) => previous,
     },
-  ) // TODO: 추후 수정 예정
+  )
 
   const dateFallback = summaryData?.result.dateOptions[0]
   const partFallback = summaryData?.result.partOptions[0]?.part
@@ -62,25 +64,25 @@ const Scheduling = () => {
   const slotDate = dateParam ?? ''
   const slotPart = partParam ?? 'ALL'
   const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(
-    schoolKeys.evaluation.interview.getSlots('12', slotDate, slotPart),
-    () => getInterviewSlots('12', slotDate, slotPart),
+    schoolKeys.evaluation.interview.getSlots(recruitmentId, slotDate, slotPart),
+    () => getInterviewSlots(recruitmentId, slotDate, slotPart),
     {
       enabled: Boolean(dateParam) && Boolean(partParam),
       placeholderData: (previous) => previous,
     },
-  ) // TODO: 추후 수정 예정
+  )
 
   const resolvedSlotId = selectedTimeSlot ?? slotData?.result.slots[0]?.slotId
   const {
     data: slotApplicantsData,
     isLoading: isSlotApplicantsLoading,
     isFetching,
-  } = useGetInterviewSlotApplicants('12', resolvedSlotId) // TODO: 추후 수정 예정
+  } = useGetInterviewSlotApplicants(recruitmentId, resolvedSlotId)
   const { data: assignedData, isLoading: isAssignmentsLoading } = useCustomQuery(
-    schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId ?? ''),
-    () => getInterviewSlotAssignments('12', resolvedSlotId ?? ''),
+    schoolKeys.evaluation.interview.getSlotAssignments(recruitmentId, resolvedSlotId ?? ''),
+    () => getInterviewSlotAssignments(recruitmentId, resolvedSlotId ?? ''),
     { enabled: Boolean(resolvedSlotId), placeholderData: (previous) => previous },
-  ) // TODO: 추후 수정 예정
+  )
 
   const dateOptions: Array<Option<string>> = (summaryData?.result.dateOptions ?? []).map(
     (date) => ({
@@ -125,25 +127,35 @@ const Scheduling = () => {
 
     assignApplicantsMutate(
       {
-        recruitmentId: '12',
+        recruitmentId: recruitmentId,
         slotId: resolvedSlotId,
         applicationId: id,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSlotApplicants('12', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants(
+              recruitmentId,
+              resolvedSlotId,
+            ),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments(
+              recruitmentId,
+              resolvedSlotId,
+            ),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.evaluation.interview.getSlots('12', dateParam, partParam),
+              queryKey: schoolKeys.evaluation.interview.getSlots(
+                recruitmentId,
+                dateParam,
+                partParam,
+              ),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary('12'),
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
           })
         },
       },
@@ -152,23 +164,33 @@ const Scheduling = () => {
   }
   const handleRemoveAssigned = (id: string) => {
     deleteAssignmentMutate(
-      { recruitmentId: '12', assignmentId: id },
+      { recruitmentId, assignmentId: id },
       {
         onSuccess: () => {
           if (!resolvedSlotId) return
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSlotApplicants('12', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants(
+              recruitmentId,
+              resolvedSlotId,
+            ),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments(
+              recruitmentId,
+              resolvedSlotId,
+            ),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.evaluation.interview.getSlots('12', dateParam, partParam),
+              queryKey: schoolKeys.evaluation.interview.getSlots(
+                recruitmentId,
+                dateParam,
+                partParam,
+              ),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary('12'),
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
           })
         },
       },

@@ -1,17 +1,17 @@
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
-import type { PartType } from '@/features/auth/domain'
+import type { FinalSelectionApplication } from '@/features/school/domain/model'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { useGetFinalSelectionApplications } from '@/features/school/hooks/useRecruitingQueries'
-import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
+import { useDocsPassModalUi } from '@/features/school/utils/docsPassModal'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
-import type { Option } from '@/shared/types/form'
-import type { SelectionsSortType } from '@/shared/types/umc'
+import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -27,38 +27,39 @@ import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
 import * as RowS from './FinalEvaluationRow.style'
 
-const sortOptions: Array<Option<string>> = [
-  { label: '점수 높은 순', id: 'SCORE_DESC' },
-  { label: '점수 낮은 순', id: 'SCORE_ASC' },
-  { label: '평가 완료 시각 순', id: 'EVALUATED_AT_ASC' },
-]
-
 const FinalEvaluation = () => {
+  const queryClient = useQueryClient()
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = roleType === 'SCHOOL_PRESIDENT'
+  const { Dropdown, sortOptions, sortValue, handleSortChange, part, sortId } = useDocsPassModalUi()
+  const { usePatchFinalSelectionStatus } = useRecruitingMutation()
+  const recruitmentId = '12' // TODO: 추후 수정
 
-  const recruitmentId = '12'
-
-  const [selectedPart, setSelectedPart] = useState<Option<string>>({
-    label: '전체 파트',
-    id: 'ALL',
-  })
-  const [sort, setSort] = useState<Option<string>>(sortOptions[0])
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [activeRowId, setActiveRowId] = useState<string | null>(null)
+  const [processedPassCount, setProcessedPassCount] = useState(0)
+  const [partSelectApplicantId, setPartSelectApplicantId] = useState<string | null>(null)
+  const [pendingPassFlow, setPendingPassFlow] = useState<{
+    queue: Array<string>
+    processed: number
+    requestedIds: Array<string>
+  } | null>(null)
+  const [cancelStatus, setCancelStatus] = useState<'PASS' | 'FAIL' | null>(null)
   const [modalOpen, setModalOpen] = useState<{
     open: boolean
-    modalName: 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null
+    modalName: 'setPassPart' | 'setPassSuccess' | 'cancelStatus' | 'inform' | null
   }>({
     open: false,
     modalName: null,
   })
+  const { mutateAsync: patchFinalStatus, isPending: isPassing } =
+    usePatchFinalSelectionStatus(recruitmentId)
 
   const { data, isLoading, isError, error, refetch } = useGetFinalSelectionApplications(
     recruitmentId,
     {
-      part: selectedPart.id as PartType | 'ALL',
-      sort: sort.id as SelectionsSortType,
+      part,
+      sort: sortId,
       size: '20',
     },
   )
@@ -76,9 +77,14 @@ const FinalEvaluation = () => {
     () => applicants.find((item) => item.applicationId === activeRowId) ?? null,
     [applicants, activeRowId],
   )
+  const partSelectApplicant = useMemo(
+    () => applicants.find((item) => item.applicationId === partSelectApplicantId) ?? null,
+    [applicants, partSelectApplicantId],
+  )
   const isInitialLoading = isLoading && pages.length === 0
   const isInitialError = isError && pages.length === 0
   const isEmpty = !isInitialLoading && pages.length === 0
+
   const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
   const errorMessage =
     errorStatus === 500
@@ -90,6 +96,14 @@ const FinalEvaluation = () => {
   const selectedCount = selectedIds.size
   const allSelected = applicants.length > 0 && selectedCount === applicants.length
   const headerChecked = allSelected ? true : selectedCount > 0 ? 'indeterminate' : false
+  const selectedApplicants = useMemo(
+    () => applicants.filter((item) => selectedIds.has(item.applicationId)),
+    [applicants, selectedIds],
+  )
+  const alreadyPassedCount = useMemo(
+    () => selectedApplicants.filter((item) => item.selection.status === 'PASS').length,
+    [selectedApplicants],
+  )
 
   const handleToggleAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
@@ -111,18 +125,144 @@ const FinalEvaluation = () => {
     })
   }
 
-  const partOptions = useMemo(() => {
-    const base = [{ label: '전체 파트', id: 'ALL' }]
-    return base.concat(
-      Object.entries(PART_TYPE_TO_SMALL_PART).map(([key, label]) => ({
-        label,
-        id: key,
-      })),
-    )
-  }, [])
+  const selectedSortOption = sortValue ?? sortOptions[0]
+  const openCancelStatusModal = (applicationId: string, status: 'PASS' | 'FAIL') => {
+    setActiveRowId(applicationId)
+    setCancelStatus(status)
+    setModalOpen({ open: true, modalName: 'cancelStatus' })
+  }
+  const findApplicant = (applicationId: string) =>
+    applicants.find((item) => item.applicationId === applicationId) ?? null
+  const getSinglePart = (applicant: FinalSelectionApplication): PartType | null => {
+    if (applicant.appliedParts.length !== 1) return null
+    return applicant.appliedParts[0]?.part.key as PartType
+  }
+  const finalizePassFlow = async (
+    requestedIds: Array<string>,
+    processedCount: number,
+    openSuccessModal: boolean,
+  ) => {
+    await queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      requestedIds.forEach((id) => next.delete(id))
+      return next
+    })
+    if (openSuccessModal && processedCount > 1) {
+      setProcessedPassCount(processedCount)
+      setModalOpen({ open: true, modalName: 'setPassSuccess' })
+      return
+    }
+    setModalOpen({ open: false, modalName: null })
+  }
+  const handlePassApplicants = async (applicationIds: Array<string>, openSuccessModal = true) => {
+    if (!canEdit || applicationIds.length === 0 || isPassing) return
+    const uniqueIds = [...new Set(applicationIds)]
+    const targetApplicants = uniqueIds
+      .map(findApplicant)
+      .filter((item): item is FinalSelectionApplication => Boolean(item))
+      .filter((item) => item.selection.status !== 'PASS')
 
-  const handleSortChange = (option: Option<unknown>) => {
-    setSort(option as Option<string>)
+    if (targetApplicants.length === 0) return
+
+    const onePartTargets = targetApplicants.filter((item) => item.appliedParts.length === 1)
+    const multiPartTargets = targetApplicants.filter((item) => item.appliedParts.length > 1)
+
+    try {
+      if (onePartTargets.length > 0) {
+        await Promise.all(
+          onePartTargets.map(async (item) => {
+            const selectedPart = getSinglePart(item)
+            if (!selectedPart) return
+            await patchFinalStatus({
+              applicationId: item.applicationId,
+              requestBody: { decision: 'PASS', selectedPart },
+            })
+          }),
+        )
+      }
+
+      if (multiPartTargets.length > 0) {
+        const queue = multiPartTargets.map((item) => item.applicationId)
+        setPendingPassFlow({
+          queue,
+          processed: onePartTargets.length,
+          requestedIds: targetApplicants.map((item) => item.applicationId),
+        })
+        setPartSelectApplicantId(queue[0] ?? null)
+        setModalOpen({ open: true, modalName: 'setPassPart' })
+        return
+      }
+
+      await finalizePassFlow(
+        targetApplicants.map((item) => item.applicationId),
+        onePartTargets.length,
+        openSuccessModal,
+      )
+    } catch {
+      setModalOpen({ open: false, modalName: null })
+      setPendingPassFlow(null)
+      setPartSelectApplicantId(null)
+    }
+  }
+  const handleConfirmPassWithSelectedPart = async (selectedPart: PartType) => {
+    if (!pendingPassFlow || !partSelectApplicantId || isPassing) return
+
+    try {
+      await patchFinalStatus({
+        applicationId: partSelectApplicantId,
+        requestBody: { decision: 'PASS', selectedPart },
+      })
+
+      const nextQueue = pendingPassFlow.queue.filter((id) => id !== partSelectApplicantId)
+      const nextProcessed = pendingPassFlow.processed + 1
+
+      if (nextQueue.length > 0) {
+        setPendingPassFlow({
+          ...pendingPassFlow,
+          queue: nextQueue,
+          processed: nextProcessed,
+        })
+        setPartSelectApplicantId(nextQueue[0])
+        return
+      }
+
+      await finalizePassFlow(pendingPassFlow.requestedIds, nextProcessed, true)
+      setPendingPassFlow(null)
+      setPartSelectApplicantId(null)
+    } catch {
+      setModalOpen({ open: false, modalName: null })
+      setPendingPassFlow(null)
+      setPartSelectApplicantId(null)
+    }
+  }
+  const handleFailApplicants = async (applicationIds: Array<string>) => {
+    if (!canEdit || applicationIds.length === 0 || isPassing) return
+    const uniqueIds = [...new Set(applicationIds)]
+    const targetApplicants = uniqueIds
+      .map(findApplicant)
+      .filter((item): item is FinalSelectionApplication => Boolean(item))
+
+    if (targetApplicants.length === 0) return
+
+    try {
+      await Promise.all(
+        targetApplicants.map((item) =>
+          patchFinalStatus({
+            applicationId: item.applicationId,
+            requestBody: { decision: 'FAIL' },
+          }),
+        ),
+      )
+      await queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+      setSelectedIds((prev) => {
+        const next = new Set(prev)
+        targetApplicants.forEach((item) => next.delete(item.applicationId))
+        return next
+      })
+    } catch {
+      // noop
+    }
   }
 
   return (
@@ -135,24 +275,22 @@ const FinalEvaluation = () => {
         {/* 1. 상단 필터/컨트롤 바 */}
         <FilterBar
           leftChild={
-            <>
-              <Dropdown
-                options={partOptions}
-                value={selectedPart}
-                placeholder="전체 파트"
-                css={{ width: '200px', height: '36px', ...theme.typography.B4.Rg }}
-                onChange={(option) => setSelectedPart(option)}
-              />
-              <S.SelectionInfo onClick={() => {}}>
+            <Flex height={36} gap={8}>
+              {Dropdown}
+              <S.SelectionInfo>
                 {isEmpty
                   ? '데이터가 없습니다.'
                   : `전체 ${summary.totalCount}명 중 ${summary.selectedCount}명 선발`}
               </S.SelectionInfo>
-            </>
+            </Flex>
           }
           rightChild={
             <>
-              <S.SelectBox value={sort} options={sortOptions} onChange={handleSortChange} />
+              <S.SelectBox
+                value={selectedSortOption}
+                options={sortOptions}
+                onChange={handleSortChange}
+              />
               <S.Notice>* 파트 필터는 1지망 기준입니다.</S.Notice>
             </>
           }
@@ -250,27 +388,43 @@ const FinalEvaluation = () => {
                       )}
                     </TableStyles.Td>
                     <TableStyles.Td>
-                      {item.selection.status === 'WAIT' ? (
-                        <Flex gap={8}>
-                          <S.ActionButton variant="outline" tone="gray" label="합격" typo="B4.Sb" />
-                          <S.ActionButton
-                            variant="outline"
-                            tone="gray"
-                            label="불합격"
-                            typo="B4.Sb"
-                          />
-                        </Flex>
-                      ) : item.selection.status === 'PASS' ? (
-                        <Flex gap={8}>
-                          <S.ActionButton variant="outline" tone="lime" label="합격" typo="B4.Sb" />
-                          <S.ActionButton
-                            variant="outline"
-                            tone="gray"
-                            label="불합격"
-                            typo="B4.Sb"
-                          />
-                        </Flex>
-                      ) : null}
+                      {(() => {
+                        const isPass = item.selection.status === 'PASS'
+                        const isFail = item.selection.status === 'FAIL'
+
+                        return (
+                          <Flex gap={8}>
+                            <S.ActionButton
+                              variant="outline"
+                              tone={isPass ? 'lime' : 'gray'}
+                              label="합격"
+                              typo="B4.Sb"
+                              disabled={!canEdit || isPassing}
+                              onClick={() => {
+                                if (isPass) {
+                                  openCancelStatusModal(item.applicationId, 'PASS')
+                                  return
+                                }
+                                void handlePassApplicants([item.applicationId])
+                              }}
+                            />
+                            <S.ActionButton
+                              variant="outline"
+                              tone={isFail ? 'necessary' : 'gray'}
+                              label="불합격"
+                              typo="B4.Sb"
+                              disabled={!canEdit || isPassing}
+                              onClick={() => {
+                                if (isFail) {
+                                  openCancelStatusModal(item.applicationId, 'FAIL')
+                                  return
+                                }
+                                void handleFailApplicants([item.applicationId])
+                              }}
+                            />
+                          </Flex>
+                        )
+                      })()}
                     </TableStyles.Td>
                   </>
                 )}
@@ -299,34 +453,82 @@ const FinalEvaluation = () => {
               variant="solid"
               typo="B4.Sb"
               css={{ width: '144px', height: '30px' }}
-              disabled={!canEdit}
-              onClick={() => selectedCount > 0 && setModalOpen({ open: true, modalName: 'inform' })}
+              disabled={!canEdit || isPassing}
+              onClick={() => {
+                if (selectedCount === 0) return
+                const ids = [...selectedIds]
+                if (alreadyPassedCount > 0) {
+                  setModalOpen({ open: true, modalName: 'inform' })
+                  return
+                }
+                void handlePassApplicants(ids)
+              }}
             />
           </div>
         </S.BottomBar>
       </S.Container>
-      {modalOpen.open && modalOpen.modalName === 'setPassPart' && (
-        <SetPassPartModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      {modalOpen.open && modalOpen.modalName === 'setPassPart' && partSelectApplicant && (
+        <SetPassPartModal
+          onClose={() => {
+            setModalOpen({ open: false, modalName: null })
+            setPendingPassFlow(null)
+            setPartSelectApplicantId(null)
+          }}
+          onConfirm={(selectedPart) => void handleConfirmPassWithSelectedPart(selectedPart)}
+          applicantName={partSelectApplicant.applicant.name}
+          applicantNickname={partSelectApplicant.applicant.nickname}
+          documentScore={partSelectApplicant.documentScore}
+          interviewScore={partSelectApplicant.interviewScore}
+          finalScore={partSelectApplicant.finalScore}
+          appliedParts={partSelectApplicant.appliedParts
+            .filter(
+              (
+                item,
+              ): item is {
+                priority: string
+                part: {
+                  key: PartType
+                  label: string
+                }
+              } => item.part.key !== 'COMMON',
+            )
+            .map((item) => ({
+              priority: item.priority,
+              key: item.part.key,
+              label: item.part.label,
+            }))}
+          isSubmitting={isPassing}
+        />
       )}
       {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
-        <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
-      )}
-      {modalOpen.open && modalOpen.modalName === 'setFail' && activeApplicant && (
-        <PassCancleCautionModal
-          applicationId={activeApplicant.applicationId}
-          recruitmentId={recruitmentId}
-          name={activeApplicant.applicant.name}
-          nickname={activeApplicant.applicant.nickname}
-          score={activeApplicant.finalScore}
+        <SetPassSuccessModal
+          processedCount={processedPassCount}
           onClose={() => setModalOpen({ open: false, modalName: null })}
         />
       )}
+      {modalOpen.open &&
+        modalOpen.modalName === 'cancelStatus' &&
+        activeApplicant &&
+        cancelStatus && (
+          <PassCancleCautionModal
+            applicationId={activeApplicant.applicationId}
+            recruitmentId={recruitmentId}
+            name={activeApplicant.applicant.name}
+            nickname={activeApplicant.applicant.nickname}
+            score={activeApplicant.finalScore}
+            currentStatus={cancelStatus}
+            onClose={() => {
+              setModalOpen({ open: false, modalName: null })
+              setCancelStatus(null)
+            }}
+          />
+        )}
       {modalOpen.open && modalOpen.modalName === 'inform' && (
         <PassInfoModal
           selectedCount={selectedCount}
-          alreadyPassedCount={0}
+          alreadyPassedCount={alreadyPassedCount}
           onConfirm={() => {
-            setModalOpen({ open: false, modalName: null })
+            void handlePassApplicants([...selectedIds])
           }}
           onClose={() => setModalOpen({ open: false, modalName: null })}
         />
