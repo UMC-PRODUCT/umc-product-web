@@ -67,7 +67,7 @@ export const useDocsPassModalMutations = ({
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: ['school', 'documents', 'selections', 'applicants'],
           exact: false,
         })
       },
@@ -97,7 +97,7 @@ export const useDocsPassModalMutations = ({
     bulkPass(targetIds, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: ['school', 'documents', 'selections', 'applicants'],
           exact: false,
         })
         clearSelection()

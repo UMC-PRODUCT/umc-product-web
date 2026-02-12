@@ -128,8 +128,7 @@ const ApplicationView = ({
           <S.AnswerGroup>
             {files.length > 0 &&
               files.map((file: any) => {
-                const url = file.url ?? file.link ?? file.fileUrl
-                const label = file.fileName ?? file.name ?? file.fileId ?? file.id
+                const url = file.fileLink
                 return (
                   <S.Hyperlink
                     key={file.fileId ?? file.fileName ?? file.id}
@@ -137,7 +136,7 @@ const ApplicationView = ({
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {label}
+                    {file.originalFileName}
                   </S.Hyperlink>
                 )
               })}

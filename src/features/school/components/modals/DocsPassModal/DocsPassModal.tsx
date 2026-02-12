@@ -81,7 +81,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
           leftChild={
             <>
               <Flex css={{ width: '200px', height: '36px' }}>{Dropdown}</Flex>
-              <S.SelectionInfo onClick={() => {}}>
+              <S.SelectionInfo>
                 전체 {totalCount}명 중 {data?.pages[0].result.summary.selectedCount}명 선발
               </S.SelectionInfo>
             </>

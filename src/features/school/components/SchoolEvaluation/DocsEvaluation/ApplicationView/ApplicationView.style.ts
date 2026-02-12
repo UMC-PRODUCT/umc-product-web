@@ -13,6 +13,7 @@ export const Container = styled.div`
   position: relative;
   height: 100%;
   min-height: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 14px;

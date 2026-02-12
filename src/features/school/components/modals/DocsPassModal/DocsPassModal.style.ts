@@ -28,13 +28,12 @@ export const SelectBox = styled(Dropdown)`
   cursor: pointer;
 `
 
-export const SelectionInfo = styled.button`
+export const SelectionInfo = styled.div`
   color: ${theme.colors.lime};
   background-color: ${theme.colors.gray[700]};
   ${theme.typography.B4.Rg};
   border: 1px solid ${theme.colors.gray[600]};
   padding: 6px 12px;
-  cursor: pointer;
   border-radius: 6px;
 `
 
@@ -48,23 +47,15 @@ export const TableContainer = styled(Section)`
   width: 100%;
   overflow: hidden;
   padding: 0;
+  height: 100%;
 `
 
 export const TableScroll = styled.div`
-  max-height: 450px;
   width: 100%;
   overflow: auto;
   padding: 12px 16px;
   box-sizing: border-box;
-  ${media.down(theme.breakPoints.desktop)} {
-    max-height: 400px;
-  }
-  ${media.down(theme.breakPoints.tablet)} {
-    max-height: 400px;
-  }
-  ${media.down(theme.breakPoints.desktop)} {
-    max-height: 300px;
-  }
+  height: 100%;
 `
 
 export const Table = styled.table`
