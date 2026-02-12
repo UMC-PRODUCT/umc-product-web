@@ -95,9 +95,9 @@ export const transformRecruitingScheduleTypeKorean = (input: RECRUITING_SCHEDULE
   return mapping[input] || input
 }
 
-// TODO: enum 체크 필요
 export const transformNextRecruitmentMonthKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
+    APPLY_START_ANNOUNCE: '지원 시작 예정일: ',
     APPLY_DEADLINE: '지원 마감 예정일: ',
     DOC_RESULT_ANNOUNCE: '서류 합불 발표 예정일: ',
     FINAL_RESULT_ANNOUNCE: '최종 합불 발표 예정일: ',
