@@ -25,8 +25,6 @@ interface BeforeSubmitProps {
   submitStatus: 'DRAFT' | 'NONE' | 'SUBMITTED'
 }
 
-// TODO: API 연동 시 useRecruitmentStatus 훅으로 대체
-
 const BeforeSubmit = ({
   submitStatus,
   partInfoList,
