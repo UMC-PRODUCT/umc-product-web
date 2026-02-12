@@ -27,7 +27,7 @@ const TermContent = () => {
               <Service />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{serviceData.result.title}</S.TermTitle>
+              <S.TermTitle>{serviceData?.result.title}</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -37,7 +37,7 @@ const TermContent = () => {
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
               onClick={() =>
-                window.open(serviceData.result.content, '_blank', 'noopener,noreferrer')
+                window.open(serviceData?.result.content, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>
@@ -48,7 +48,7 @@ const TermContent = () => {
               <Privacy />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{privacyData.result.title}</S.TermTitle>
+              <S.TermTitle>{privacyData?.result.title}</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -58,7 +58,7 @@ const TermContent = () => {
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
               onClick={() =>
-                window.open(privacyData.result.content, '_blank', 'noopener,noreferrer')
+                window.open(privacyData?.result.content, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>
@@ -69,7 +69,7 @@ const TermContent = () => {
               <Marketing />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{marketingData.result.title}</S.TermTitle>
+              <S.TermTitle>{marketingData?.result.title}</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -79,7 +79,7 @@ const TermContent = () => {
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
               onClick={() =>
-                window.open(marketingData.result.content, '_blank', 'noopener,noreferrer')
+                window.open(marketingData?.result.content, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>

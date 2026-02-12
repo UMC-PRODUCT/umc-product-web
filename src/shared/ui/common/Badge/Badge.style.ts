@@ -70,6 +70,18 @@ const toneStyles = {
       border: `1px solid ${theme.colors.necessary}`,
     },
   },
+  caution: {
+    solid: {
+      background: theme.colors.caution,
+      color: theme.colors.black,
+      border: 'none',
+    },
+    outline: {
+      background: 'transparent',
+      color: theme.colors.caution,
+      border: `1px solid ${theme.colors.caution}`,
+    },
+  },
 } as const
 
 /**
