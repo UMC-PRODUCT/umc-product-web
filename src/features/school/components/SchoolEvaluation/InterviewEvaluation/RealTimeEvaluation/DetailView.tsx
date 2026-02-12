@@ -93,6 +93,19 @@ const DetailView = ({
     )
   }
 
+  if (isError && errorStatus === 403) {
+    return (
+      <S.Container>
+        <ErrorPage
+          title="평가 가능한 시간이 아닙니다."
+          description="해당 슬롯 시작 이후에 평가할 수 있습니다."
+          retryLabel="뒤로가기"
+          onRetry={onBack}
+        />
+      </S.Container>
+    )
+  }
+
   const onStartEdit = (item: { liveQuestionId: string; text: string }) => {
     setEditingLiveQuestion({ liveQuestionId: item.liveQuestionId, text: item.text })
     setModalOpen({

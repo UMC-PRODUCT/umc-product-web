@@ -11,16 +11,50 @@ import FilterBar from '../../FilterBar/FilterBar'
 import EvaluationCard from '../EvaluationCard/EvaluationCard'
 import * as S from './index.style'
 
+const QUERY_KEYS = {
+  date: 'rtDate',
+} as const
+
 const formatTimeToHourMinute = (value: string) => {
   const [hour = '', minute = ''] = value.split(':')
   if (!hour || !minute) return value
   return `${hour}:${minute}`
 }
 
+const canStartEvaluation = ({
+  serverNow,
+  slotDate,
+  slotStart,
+}: {
+  serverNow: string
+  slotDate: string
+  slotStart: string
+}) => {
+  const now = new Date(serverNow)
+  const slotStartDate = new Date(`${slotDate}T${slotStart}`)
+
+  if (Number.isNaN(now.getTime()) || Number.isNaN(slotStartDate.getTime())) return true
+  return slotStartDate < now
+}
+
+const readDateFromQuery = (): string | null => {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  return params.get(QUERY_KEYS.date)
+}
+
+const writeDateToQuery = (date: string) => {
+  if (typeof window === 'undefined') return
+  const params = new URLSearchParams(window.location.search)
+  params.set(QUERY_KEYS.date, date)
+  const nextUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`
+  window.history.replaceState(null, '', nextUrl)
+}
+
 const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void }) => {
   const recruitmentId = '12'
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
-  const [selectedDateId, setSelectedDateId] = useState<string | null>(null)
+  const [selectedDateId, setSelectedDateId] = useState<string | null>(() => readDateFromQuery())
   const [selectedPartId, setSelectedPartId] = useState<PartType | 'ALL' | null>(null)
 
   const dateOptions = useMemo(
@@ -37,7 +71,10 @@ const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void
     [optionsData?.result.parts],
   )
 
-  const resolvedDateId = selectedDateId ?? dateOptions[0]?.id
+  const hasSelectedDate = selectedDateId
+    ? dateOptions.some((option) => option.id === selectedDateId)
+    : false
+  const resolvedDateId = (hasSelectedDate ? selectedDateId : null) ?? dateOptions[0]?.id
   const resolvedPartId = selectedPartId as PartType | 'ALL'
 
   const selectedDateOption = dateOptions.find((option) => option.id === resolvedDateId)
@@ -58,7 +95,11 @@ const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void
               value={selectedDateOption}
               placeholder="날짜"
               css={{ height: '40px' }}
-              onChange={(option) => setSelectedDateId(String(option.id))}
+              onChange={(option) => {
+                const nextDate = String(option.id)
+                setSelectedDateId(nextDate)
+                writeDateToQuery(nextDate)
+              }}
             />
             <Dropdown
               options={partOptions}
@@ -89,6 +130,11 @@ const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void
                   score={Number(applicant.documentScore)}
                   tags={applicant.appliedParts.map((part) => part.key)}
                   status={applicant.evaluationProgressStatus}
+                  canStartEval={canStartEvaluation({
+                    serverNow: data.result.serverNow,
+                    slotDate: applicant.slot.date,
+                    slotStart: applicant.slot.start,
+                  })}
                   handleStartEval={() =>
                     onStartEval({
                       id: String(applicant.assignmentId),

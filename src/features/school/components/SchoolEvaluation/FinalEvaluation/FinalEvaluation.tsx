@@ -36,7 +36,8 @@ const sortOptions: Array<Option<string>> = [
 const FinalEvaluation = () => {
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = roleType === 'SCHOOL_PRESIDENT'
-  const recruitmentId = '40'
+
+  const recruitmentId = '12'
 
   const [selectedPart, setSelectedPart] = useState<Option<string>>({
     label: '전체 파트',

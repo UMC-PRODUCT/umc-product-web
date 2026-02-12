@@ -15,14 +15,16 @@ const EvaluationCard = ({
   score,
   tags,
   status,
+  canStartEval,
 }: {
-  handleStartEval: (user: { name: string }) => void
+  handleStartEval: () => void
   time: string
   name: string
   nickname: string
   score: number
   tags: Array<PartType>
   status: FinalStatusType
+  canStartEval: boolean
 }) => {
   return (
     <S.ContentBox>
@@ -50,10 +52,11 @@ const EvaluationCard = ({
           ))}
         </S.TagGroup>
         <Button
-          tone={'lime'}
+          tone={canStartEval ? 'lime' : 'gray'}
           variant="solid"
           label="평가하기"
-          onClick={() => handleStartEval({ name: `${nickname}/${name}` })}
+          onClick={handleStartEval}
+          disabled={!canStartEval}
           typo="B4.Sb"
           css={{ width: 'fit-content', padding: '6px 18px' }}
         />

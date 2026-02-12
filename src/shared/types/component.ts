@@ -9,16 +9,6 @@ export type SvgIconComponent = ComponentType<
   }
 >
 
-// 공통 타입 정의
-export type NavItem = {
-  label: string
-  link: string
-}
-
-export type SocialLink = NavItem & {
-  icon: 'kakao' | 'instagram' | 'youtube'
-}
-
 // Badge 타입
 export type BadgeTone = 'lime' | 'gray' | 'white' | 'necessary' | 'darkGray' | 'caution'
 export type BadgeVariant = 'solid' | 'outline'

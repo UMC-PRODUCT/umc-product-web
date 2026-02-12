@@ -75,6 +75,7 @@ const MyEvaluation = ({
     if (numericScore < 0 || numericScore > 100) return '0 이상 100 이하의 정수를 입력하세요.'
     return ''
   }, [isScoreEmpty, score])
+  const isScoreValid = canSubmit && !isScoreEmpty && !scoreError
   const showScoreError = !isLoading && Boolean(scoreError)
 
   useEffect(() => {
@@ -251,7 +252,7 @@ const MyEvaluation = ({
               )}
               <Button
                 variant="solid"
-                tone={isSubmitted ? 'lime' : 'gray'}
+                tone={isSubmitted || isScoreValid ? 'lime' : 'gray'}
                 type="button"
                 label={isSubmitted ? '평가 재제출' : '평가 제출'}
                 css={{ padding: '7px 0', width: '112px' }}
