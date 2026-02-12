@@ -263,6 +263,7 @@ const MatchingBranchData = () => {
   const gisuDropdown = useGisuDropdown({
     includeAllOption: false,
     defaultToFirst: true,
+    closeOnChange: true,
   })
 
   if (!gisuDropdown.value) {
@@ -287,7 +288,7 @@ const MatchingBranchData = () => {
   return (
     <AsyncBoundary
       fallback={
-        <div style={{ minHeight: 520 }}>
+        <div style={{ minHeight: 520, width: '100%' }}>
           <SuspenseFallback label="지부 매칭 정보를 불러오는 중입니다." />
         </div>
       }

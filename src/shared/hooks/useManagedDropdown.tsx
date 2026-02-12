@@ -15,6 +15,7 @@ type UseManagedDropdownConfig = {
   includeAllOption?: boolean
   allLabel?: string
   defaultToFirst?: boolean
+  closeOnChange?: boolean
 }
 
 type UseManagedDropdownResult = {
@@ -48,9 +49,11 @@ export const useSchoolDropdown = (
     includeAllOption = true,
     allLabel = '-- 전체 학교 --',
     defaultToFirst = false,
+    closeOnChange = false,
   } = config
   const { data, isLoading } = useGetAllSchools()
   const [value, setValueState] = useState<Option<string> | undefined>()
+  const [dropdownKey, setDropdownKey] = useState(0)
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const options = useMemo(() => {
     const schools = data?.result.schools ?? []
@@ -70,6 +73,9 @@ export const useSchoolDropdown = (
   const setValue = (next: Option<string> | undefined) => {
     setHasUserSelected(true)
     setValueState(next)
+    if (closeOnChange) {
+      setDropdownKey((prev) => prev + 1)
+    }
   }
 
   return {
@@ -78,6 +84,7 @@ export const useSchoolDropdown = (
     options,
     Dropdown: (
       <Dropdown
+        key={dropdownKey}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -98,9 +105,11 @@ export const useChapterDropdown = (
     includeAllOption = true,
     allLabel = '-- 전체 지부 --',
     defaultToFirst = false,
+    closeOnChange = false,
   } = config
   const { data, isLoading } = useGetChapters()
   const [value, setValueState] = useState<Option<string> | undefined>()
+  const [dropdownKey, setDropdownKey] = useState(0)
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const options = useMemo(() => {
     const chapters = data?.result.chapters ?? []
@@ -120,6 +129,9 @@ export const useChapterDropdown = (
   const setValue = (next: Option<string> | undefined) => {
     setHasUserSelected(true)
     setValueState(next)
+    if (closeOnChange) {
+      setDropdownKey((prev) => prev + 1)
+    }
   }
 
   return {
@@ -128,6 +140,7 @@ export const useChapterDropdown = (
     options,
     Dropdown: (
       <Dropdown
+        key={dropdownKey}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -148,9 +161,11 @@ export const useGisuDropdown = (
     includeAllOption = true,
     allLabel = '-- 전체 기수 --',
     defaultToFirst = false,
+    closeOnChange = false,
   } = config
   const { data, isLoading } = useGetAllGisu()
   const [value, setValueState] = useState<Option<string> | undefined>()
+  const [dropdownKey, setDropdownKey] = useState(0)
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const options = useMemo(() => {
     const gisuList = data?.result.gisuList ?? []
@@ -170,6 +185,9 @@ export const useGisuDropdown = (
   const setValue = (next: Option<string> | undefined) => {
     setHasUserSelected(true)
     setValueState(next)
+    if (closeOnChange) {
+      setDropdownKey((prev) => prev + 1)
+    }
   }
 
   return {
@@ -178,6 +196,7 @@ export const useGisuDropdown = (
     options,
     Dropdown: (
       <Dropdown
+        key={dropdownKey}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -198,8 +217,10 @@ export const usePartDropdown = (
     includeAllOption = true,
     allLabel = '-- 전체 파트 --',
     defaultToFirst = false,
+    closeOnChange = false,
   } = config
   const [value, setValueState] = useState<Option<string> | undefined>()
+  const [dropdownKey, setDropdownKey] = useState(0)
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const options = useMemo(
     () =>
@@ -220,6 +241,9 @@ export const usePartDropdown = (
   const setValue = (next: Option<string> | undefined) => {
     setHasUserSelected(true)
     setValueState(next)
+    if (closeOnChange) {
+      setDropdownKey((prev) => prev + 1)
+    }
   }
 
   return {
@@ -228,6 +252,7 @@ export const usePartDropdown = (
     options,
     Dropdown: (
       <Dropdown
+        key={dropdownKey}
         options={options}
         placeholder={placeholder}
         value={selectedValue}

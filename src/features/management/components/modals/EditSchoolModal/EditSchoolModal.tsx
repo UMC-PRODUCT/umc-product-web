@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { getSchoolDetails } from '@/features/management/domain/api'
@@ -7,7 +8,7 @@ import { managementKeys } from '@/features/management/domain/queryKeys'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
 import { realUploadFile } from '@/shared/api/file/api'
 import Close from '@/shared/assets/icons/close.svg?react'
-import Plus from '@/shared/assets/icons/plus.svg?react'
+import Edit from '@/shared/assets/icons/edit.svg?react'
 import DefaultSchool from '@/shared/assets/icons/school.svg'
 import type { LinkType } from '@/shared/constants/umc'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
@@ -15,32 +16,42 @@ import { useFile } from '@/shared/hooks/useFile'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
 import { Button } from '@/shared/ui/common/Button'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
+import {
+  ALLOWED_PROFILE_TYPES,
+  FALLBACK_CONTENT_TYPE,
+  MAX_PROFILE_SIZE,
+  PROFILE_CATEGORY,
+} from '../../../domain/schoolConstants'
 import * as S from './EditSchoolModal.style'
+import ExternalLinkEditor from './ExternalLinkEditor'
 
-const linkTypeOptions: Array<Option<string>> = [
-  { id: 'KAKAO', label: '카카오' },
-  { id: 'INSTAGRAM', label: '인스타그램' },
-  { id: 'YOUTUBE', label: '유튜브' },
-]
-
-const MAX_PROFILE_SIZE = 5 * 1024 * 1024
-const PROFILE_CATEGORY = 'SCHOOL_LOGO'
-const FALLBACK_CONTENT_TYPE = 'application/octet-stream'
-const ALLOWED_PROFILE_TYPES = new Set(['image/png', 'image/jpeg', 'image/jpg'])
+type EditSchoolForm = {
+  schoolName: string
+  remark: string
+  linkTitle: string
+  linkUrl: string
+}
 
 const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId: string }) => {
   const [isOpen, setIsOpen] = useState(true)
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const previewUrlRef = useRef<string | null>(null)
+  const initialDataRef = useRef<{
+    schoolName: string
+    remark: string
+    links: Array<ExternalLink>
+  }>({
+    schoolName: '',
+    remark: '',
+    links: [],
+  })
   const { useUploadFile, useConfirmUpload } = useFile()
   const uploadFileMutation = useUploadFile()
   const confirmUploadMutation = useConfirmUpload()
@@ -52,32 +63,44 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
   const { mutate: patchSchool, isPending: isPatchLoading } = usePatchSchool()
   const [openAddLink, setOpenAddLink] = useState(false)
   const [links, setLinks] = useState<Array<ExternalLink>>([])
-  const [linkTitle, setLinkTitle] = useState('')
-  const [linkUrl, setLinkUrl] = useState('')
   const [linkType, setLinkType] = useState<Option<string> | null>(null)
-  const [schoolName, setSchoolName] = useState('')
-  const [remark, setRemark] = useState('')
-  const [initialSchoolName, setInitialSchoolName] = useState('')
-  const [initialRemark, setInitialRemark] = useState('')
-  const [initialLinks, setInitialLinks] = useState<Array<ExternalLink>>([])
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [profilePreview, setProfilePreview] = useState<string | null>(null)
   const [profileFileId, setProfileFileId] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const { register, reset, setValue, getValues, watch } = useForm<EditSchoolForm>({
+    defaultValues: {
+      schoolName: '',
+      remark: '',
+      linkTitle: '',
+      linkUrl: '',
+    },
+  })
+  const linkTitleValue = watch('linkTitle')
+  const linkUrlValue = watch('linkUrl')
+  const linkTitleField = register('linkTitle')
+  const linkUrlField = register('linkUrl')
 
   useEffect(() => {
     if (!schoolDetails?.result) return
     const nextName = schoolDetails.result.schoolName
     const nextRemark = schoolDetails.result.remark ?? ''
-    setSchoolName(nextName)
-    setRemark(nextRemark)
-    setInitialSchoolName(nextName)
-    setInitialRemark(nextRemark)
+    reset({
+      schoolName: nextName,
+      remark: nextRemark,
+      linkTitle: '',
+      linkUrl: '',
+    })
 
     const providedLinks = (schoolDetails.result as { links?: Array<ExternalLink> }).links
     const resolvedLinks = Array.isArray(providedLinks) ? providedLinks : []
     setLinks(resolvedLinks)
-    setInitialLinks(resolvedLinks)
-  }, [schoolDetails])
+    initialDataRef.current = {
+      schoolName: nextName,
+      remark: nextRemark,
+      links: resolvedLinks,
+    }
+  }, [schoolDetails, reset])
 
   const handleFileInputChange = async (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -117,33 +140,78 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     fileInputRef.current?.click()
   }
 
-  const handleAddLink = () => {
+  const handleStartAddLink = () => {
+    setEditingIndex(null)
+    setLinkType(null)
+    setValue('linkTitle', '')
+    setValue('linkUrl', '')
+    setOpenAddLink(true)
+  }
+
+  const handleStartEditLink = (index: number) => {
+    const target = links[index]
+    setOpenAddLink(false)
+    setEditingIndex(index)
+    setValue('linkTitle', target.title)
+    setValue('linkUrl', target.url)
+  }
+
+  const handleSubmitLink = () => {
+    const { linkTitle, linkUrl } = getValues()
     const trimmedTitle = linkTitle.trim()
     const trimmedUrl = linkUrl.trim()
-    if (!trimmedTitle || !trimmedUrl || !linkType) return
+    if (!trimmedTitle || !trimmedUrl) return
 
-    setLinks((prev) => [
-      ...prev,
-      { title: trimmedTitle, url: trimmedUrl, type: linkType.id as LinkType },
-    ])
-    setLinkTitle('')
-    setLinkUrl('')
+    if (editingIndex !== null) {
+      setLinks((prev) =>
+        prev.map((link, index) =>
+          index === editingIndex ? { ...link, title: trimmedTitle, url: trimmedUrl } : link,
+        ),
+      )
+    } else {
+      if (!linkType) return
+      setLinks((prev) => [
+        ...prev,
+        { title: trimmedTitle, url: trimmedUrl, type: linkType.id as LinkType },
+      ])
+    }
+
+    setValue('linkTitle', '')
+    setValue('linkUrl', '')
     setLinkType(null)
+    setEditingIndex(null)
     setOpenAddLink(false)
   }
 
   const handleRemoveLink = (index: number) => {
     setLinks((prev) => prev.filter((_, idx) => idx !== index))
+    if (editingIndex === index) {
+      setEditingIndex(null)
+      setValue('linkTitle', '')
+      setValue('linkUrl', '')
+      setLinkType(null)
+    } else if (editingIndex !== null && index < editingIndex) {
+      setEditingIndex(editingIndex - 1)
+    }
+  }
+
+  const handleCancelLinkEditor = () => {
+    setEditingIndex(null)
+    setValue('linkTitle', '')
+    setValue('linkUrl', '')
+    setLinkType(null)
+    setOpenAddLink(false)
   }
 
   const handleSave = () => {
+    const { schoolName, remark } = getValues()
     const trimmedName = schoolName.trim()
     const trimmedRemark = remark.trim()
-    const nameChanged = trimmedName !== initialSchoolName
-    const remarkChanged = trimmedRemark !== initialRemark
+    const nameChanged = trimmedName !== initialDataRef.current.schoolName
+    const remarkChanged = trimmedRemark !== initialDataRef.current.remark
     const addedLinks = links.filter((link) => {
       const trimmedUrl = link.url.trim()
-      return !initialLinks.some(
+      return !initialDataRef.current.links.some(
         (initial) => initial.type === link.type && initial.url.trim() === trimmedUrl,
       )
     })
@@ -271,8 +339,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
                       type="text"
                       autoComplete="none"
                       placeholder="학교명을 입력해주세요"
-                      value={schoolName}
-                      onChange={(event) => setSchoolName(event.target.value)}
+                      {...register('schoolName')}
                     />
                   </Flex>
                   <Flex flexDirection="column" gap={8}>
@@ -281,78 +348,68 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
                       type="text"
                       autoComplete="none"
                       placeholder="비고 (선택)"
-                      value={remark}
-                      onChange={(event) => setRemark(event.target.value)}
+                      {...register('remark')}
                     />
                   </Flex>
-                  <Flex flexDirection="column" gap={8}>
+                  <Flex flexDirection="column" gap={12}>
                     <S.Title>외부 링크</S.Title>
 
                     <S.LinkPreviewList>
-                      {links.map((link, index) => (
-                        <S.LinkPreviewItem key={`${link.type}-${link.url}-${index}`}>
-                          <Flex gap={4} flexDirection="column" alignItems="flex-start">
-                            <S.LinkTitleText>{link.title}</S.LinkTitleText>
-                            <S.LinkUrlText>{link.url}</S.LinkUrlText>
-                          </Flex>
-                          <S.ModalButton
-                            type="button"
-                            aria-label="링크 삭제"
-                            onClick={() => handleRemoveLink(index)}
-                          >
-                            <Close color={theme.colors.gray[400]} width={20} />
-                          </S.ModalButton>
-                        </S.LinkPreviewItem>
-                      ))}
+                      {links.map((link, index) =>
+                        editingIndex === index ? (
+                          <ExternalLinkEditor
+                            key={`${link.type}-${link.url}-${index}`}
+                            isOpen
+                            mode="edit"
+                            linkTitleValue={linkTitleValue}
+                            linkUrlValue={linkUrlValue}
+                            linkType={linkType}
+                            onLinkTypeChange={setLinkType}
+                            onSubmit={handleSubmitLink}
+                            onCancel={handleCancelLinkEditor}
+                            linkTitleField={linkTitleField}
+                            linkUrlField={linkUrlField}
+                          />
+                        ) : (
+                          <S.LinkPreviewItem key={`${link.type}-${link.url}-${index}`}>
+                            <Flex gap={4} flexDirection="column" alignItems="flex-start">
+                              <S.LinkTitleText>{link.title}</S.LinkTitleText>
+                              <S.LinkUrlText>{link.url}</S.LinkUrlText>
+                            </Flex>
+                            <Flex width={'fit-content'} gap={14}>
+                              <S.ModalButton
+                                type="button"
+                                aria-label="링크 수정"
+                                onClick={() => handleStartEditLink(index)}
+                              >
+                                <Edit color={theme.colors.gray[400]} />
+                              </S.ModalButton>
+                              <S.ModalButton
+                                type="button"
+                                aria-label="링크 삭제"
+                                onClick={() => handleRemoveLink(index)}
+                              >
+                                <Close color={theme.colors.gray[400]} width={20} />
+                              </S.ModalButton>
+                            </Flex>
+                          </S.LinkPreviewItem>
+                        ),
+                      )}
                     </S.LinkPreviewList>
 
-                    {!openAddLink && (
-                      <S.AddLink onClick={() => setOpenAddLink(!openAddLink)}>
-                        <span>
-                          <Plus color={theme.colors.lime} width={20} height={20} />
-                        </span>
-                        링크 추가
-                      </S.AddLink>
-                    )}
-                    {openAddLink && (
-                      <Flex flexDirection="column" gap={8}>
-                        <Flex gap={8} alignItems="flex-end" margin={'16px 0 2px 0'}>
-                          <LabelTextField
-                            label="링크 제목"
-                            type="text"
-                            placeholder="링크의 제목을 입력하세요."
-                            autoComplete="none"
-                            css={{ height: 'fit-content' }}
-                            value={linkTitle}
-                            onChange={(event) => setLinkTitle(event.target.value)}
-                          />
-                          <Dropdown
-                            placeholder="Type"
-                            options={linkTypeOptions}
-                            value={linkType ?? undefined}
-                            onChange={setLinkType}
-                            css={{ width: '55px', height: '50px' }}
-                          />
-                        </Flex>
-                        <LabelTextField
-                          label="URL"
-                          placeholder="URL 주소를 입력하세요."
-                          type="text"
-                          autoComplete="none"
-                          css={{ marginTop: '16px' }}
-                          value={linkUrl}
-                          onChange={(event) => setLinkUrl(event.target.value)}
-                        />
-                        <Button
-                          tone="lime"
-                          typo="C3.Md"
-                          label="링크 등록"
-                          css={{ height: '30px', marginTop: '16px' }}
-                          disabled={!linkTitle.trim() || !linkUrl.trim() || !linkType}
-                          onClick={handleAddLink}
-                        />
-                      </Flex>
-                    )}
+                    <ExternalLinkEditor
+                      isOpen={openAddLink}
+                      mode="add"
+                      linkTitleValue={linkTitleValue}
+                      linkUrlValue={linkUrlValue}
+                      linkType={linkType}
+                      onToggleOpen={handleStartAddLink}
+                      onLinkTypeChange={setLinkType}
+                      onSubmit={handleSubmitLink}
+                      onCancel={handleCancelLinkEditor}
+                      linkTitleField={linkTitleField}
+                      linkUrlField={linkUrlField}
+                    />
                   </Flex>
                 </Flex>
               </>

@@ -38,6 +38,7 @@ export const TermsSection = ({
   termsError,
 }: TermsSectionProps) => {
   const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
+  const isDisabled = !!termsError
 
   const availableTerms = useMemo(() => {
     return (Object.keys(TERM_DEFINITIONS) as Array<TermsAgreementKey>).map((termKey) => {
@@ -57,7 +58,12 @@ export const TermsSection = ({
   return (
     <>
       <Flex flexDirection="column" alignItems="flex-start" gap="12px" width="100%" maxWidth="80vw">
-        <Term onChange={onToggleAll} label="전체 동의" checked={areAllChecked} />
+        <Term
+          onChange={onToggleAll}
+          label="전체 동의"
+          checked={areAllChecked}
+          disabled={isDisabled}
+        />
         {availableTerms.map(({ key, title, necessary, link }) => (
           <Term
             key={key}
@@ -70,6 +76,7 @@ export const TermsSection = ({
             label="동의"
             necessary={necessary}
             checked={terms[key]}
+            disabled={isDisabled}
           />
         ))}
         {hasError && (
