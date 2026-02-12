@@ -59,9 +59,11 @@ const Scheduling = () => {
   const dateParam = selectedDateOption?.id ? String(selectedDateOption.id) : dateFallback
   const partParam = (selectedPartOption?.id ?? partFallback) as PartType | 'ALL' | undefined
 
+  const slotDate = dateParam ?? ''
+  const slotPart = partParam ?? 'ALL'
   const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(
-    schoolKeys.getInterviewSlots('40', dateParam, partParam),
-    () => getInterviewSlots('40', dateParam ?? '', partParam ?? 'ALL'),
+    schoolKeys.getInterviewSlots('40', slotDate, slotPart),
+    () => getInterviewSlots('40', slotDate, slotPart),
     {
       enabled: Boolean(dateParam) && Boolean(partParam),
       placeholderData: (previous) => previous,

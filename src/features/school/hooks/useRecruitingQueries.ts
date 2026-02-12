@@ -1,6 +1,9 @@
 import type { InfiniteData } from '@tanstack/react-query'
 
-import { getRecruitmentApplicationAnswer } from '@/features/apply/domain/api'
+import {
+  getRecruitmentApplicationAnswer,
+  getRecruitmentApplicationForm,
+} from '@/features/apply/domain/api'
 import {
   useCustomInfiniteQuery,
   useCustomQuery,
@@ -25,11 +28,10 @@ import {
   getInterviewEvaluationView,
   getInterviewLiveQuestions,
   getInterviewQuestions,
+  getInterviewSchedulingSlotApplicants,
   getInterviewSchedulingSummary,
-  getInterviewSlotApplicants,
   getInterviewSlotAssignments,
   getInterviewSlots,
-  getRecruitmentApplicationForm,
   getRecruitmentApplicationFormDraft,
   getRecruitmentDashboardSummary,
   getRecruitmentDraft,
@@ -333,9 +335,13 @@ export const useGetInterviewSlotApplicants = (
   const resolvedSlotId = slotId ?? ''
   const queryKey = schoolKeys.getInterviewSlotApplicants(recruitmentId, resolvedSlotId)
   const enabled = Boolean(resolvedSlotId)
-  return useCustomQuery(queryKey, () => getInterviewSlotApplicants(recruitmentId, resolvedSlotId), {
-    enabled,
-  })
+  return useCustomQuery(
+    queryKey,
+    () => getInterviewSchedulingSlotApplicants(recruitmentId, resolvedSlotId),
+    {
+      enabled,
+    },
+  )
 }
 /** 면접 슬롯 목록 조회 */
 export const useGetInterviewSlots = (
