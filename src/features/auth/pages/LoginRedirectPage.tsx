@@ -145,8 +145,9 @@ export const LoginRedirectPage = () => {
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')
         setNickname(profile.nickname ?? '')
-        const activeRole = profile.roles.find((role) => role.gisuId === gisu?.result.gisuId)
-        setRoles(activeRole ?? null)
+        // TODO: 역할 추후에 다시 주석 해제 예정
+        // const activeRole = profile.roles.find((role) => role.gisuId === gisu?.result.gisuId)
+        // setRoles(activeRole ?? null)
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
       }
