@@ -1,20 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { INTERVIEW_QUESTIONS } from '@/features/school/mocks/interviewQuestions'
+import AdditionalQuestionModal from '@/features/school/components/modals/AdditionalQuestionModal/AdditionalQuestionModal'
+import ApplicationModal from '@/features/school/components/modals/ApplicationModal/ApplicationModal'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useGetInterviewEvaluationView } from '@/features/school/hooks/useRecruitingQueries'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import Search from '@/shared/assets/icons/search.svg?react'
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
+import { schoolKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
+import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import Section from '@/shared/ui/common/Section/Section'
 
-import AdditionalQuestionModal from '../../../modals/AdditionalQuestionModal/AdditionalQuestionModal'
-import ApplicationModal from '../../../modals/ApplicationModal/ApplicationModal'
 import EvaluationStatus from '../../EvaluationStatus/EvaluationStatus'
 import FilterBar from '../../FilterBar/FilterBar'
 import MyEvaluation from '../../MyEvaluation/MyEvaluation'
 import * as S from './index.style'
 import QuestionItem from './QuestionItem'
+
+const scrollParentsToTop = (element: HTMLElement | null) => {
+  if (!element) return
+
+  let parent: HTMLElement | null = element
+  while (parent) {
+    parent.scrollTop = 0
+    parent = parent.parentElement
+  }
+
+  window.scrollTo({ top: 0, behavior: 'auto' })
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+}
 
 const DetailView = ({
   selectedUser,
@@ -22,10 +41,10 @@ const DetailView = ({
 }: {
   selectedUser: {
     id: string
-    name: string
   }
   onBack: () => void
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
   const [modalOpen, setModalOpen] = useState<{
     isOpen: boolean
     id: string
@@ -35,31 +54,94 @@ const DetailView = ({
     id: '',
     modalName: null,
   })
+  const [editingLiveQuestion, setEditingLiveQuestion] = useState<{
+    liveQuestionId: string
+    text: string
+  } | null>(null)
+  const queryClient = useQueryClient()
+  const recruitmentId = '12'
+
+  const { useDeleteInterviewLiveQuestion } = useRecruitingMutation()
+  const { mutate: deleteInterviewLiveQuestion } = useDeleteInterviewLiveQuestion()
+
   const [questionType, setQuestionType] = useState<
-    'common' | 'firstChoice' | 'secondChoice' | 'additional'
+    'common' | 'firstChoice' | 'secondChoice' | 'live'
   >('common')
 
-  const onStartEdit = () => {
-    // 저장 로직 구현
+  const { data, isError, error } = useGetInterviewEvaluationView(recruitmentId, selectedUser.id)
+  const applicant = data?.result.application.applicant
+  const appliedParts = data?.result.application.appliedParts ?? []
+  const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
+
+  useEffect(() => {
+    const rafId = requestAnimationFrame(() => {
+      scrollParentsToTop(containerRef.current)
+    })
+    return () => cancelAnimationFrame(rafId)
+  }, [])
+
+  if (isError && errorStatus === 404) {
+    return (
+      <S.Container>
+        <ErrorPage
+          title="지원자 정보를 찾을 수 없습니다."
+          description="존재하지 않는 지원자입니다."
+          retryLabel="뒤로가기"
+          onRetry={onBack}
+        />
+      </S.Container>
+    )
   }
 
-  const handleRemoveQuestion = (_id: string) => {
-    // 취소 로직 구현
+  const onStartEdit = (item: { liveQuestionId: string; text: string }) => {
+    setEditingLiveQuestion({ liveQuestionId: item.liveQuestionId, text: item.text })
+    setModalOpen({
+      isOpen: true,
+      id: selectedUser.id,
+      modalName: 'additionalQuestion',
+    })
+  }
+
+  const handleRemoveQuestion = (liveQuestionId: string) => {
+    deleteInterviewLiveQuestion(
+      {
+        recruitmentId,
+        assignmentId: selectedUser.id,
+        liveQuestionId,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getView(recruitmentId, selectedUser.id),
+          })
+          queryClient.invalidateQueries({
+            queryKey: schoolKeys.evaluation.interview.getLiveQuestions(
+              recruitmentId,
+              selectedUser.id,
+            ),
+          })
+        },
+      },
+    )
   }
 
   return (
-    <S.Container>
+    <S.Container ref={containerRef}>
       <S.DetailWrapper>
         <FilterBar
           leftChild={
             <S.UserInfo>
-              <h1>{selectedUser.name}</h1>
-              <Badge tone="lime" variant="outline" typo="B5.Md">
-                Web
-              </Badge>
-              <Badge tone="lime" variant="outline" typo="B5.Md">
-                SpringBoot
-              </Badge>
+              <h1>{applicant ? `${applicant.nickname}/${applicant.name}` : '-'}</h1>
+              {appliedParts.map((part) => (
+                <Badge
+                  key={`${part.priority}-${part.key}`}
+                  tone="lime"
+                  variant="outline"
+                  typo="B5.Md"
+                >
+                  {PART_TYPE_TO_SMALL_PART[part.key]}
+                </Badge>
+              ))}
             </S.UserInfo>
           }
           rightChild={
@@ -105,34 +187,52 @@ const DetailView = ({
                 >
                   1지망
                 </S.ToggleButton>
+                {data?.result.application.appliedParts &&
+                  data.result.application.appliedParts.length > 1 && (
+                    <S.ToggleButton
+                      $active={questionType === 'secondChoice'}
+                      onClick={() => setQuestionType('secondChoice')}
+                    >
+                      2지망
+                    </S.ToggleButton>
+                  )}
                 <S.ToggleButton
-                  $active={questionType === 'secondChoice'}
-                  onClick={() => setQuestionType('secondChoice')}
-                >
-                  2지망
-                </S.ToggleButton>
-                <S.ToggleButton
-                  $active={questionType === 'additional'}
-                  onClick={() => setQuestionType('additional')}
+                  $active={questionType === 'live'}
+                  onClick={() => setQuestionType('live')}
                 >
                   추가 질문
                 </S.ToggleButton>
               </S.ToggleGroup>
             </S.Header>
             <S.Content>
-              {INTERVIEW_QUESTIONS[questionType].map((item, idx) => (
-                <QuestionItem
-                  key={item.id}
-                  index={idx + 1}
-                  question={item.question}
-                  ownerName={item.nickname + '/' + item.name}
-                  onStartEdit={onStartEdit}
-                  type={questionType}
-                  editable={item.isEditable ?? false}
-                  onRemove={() => handleRemoveQuestion(String(idx + 1))}
-                />
-              ))}
-              {questionType === 'additional' && (
+              {questionType !== 'live' &&
+                data?.result.questions[questionType].map((item, idx) => (
+                  <QuestionItem
+                    key={item.questionId}
+                    index={idx + 1}
+                    question={item.text}
+                    onStartEdit={() => undefined}
+                    type={questionType}
+                    editable={false}
+                    onRemove={() => undefined}
+                  />
+                ))}
+              {questionType === 'live' &&
+                data?.result.questions[questionType].map((item, idx) => (
+                  <QuestionItem
+                    key={item.liveQuestionId}
+                    index={idx + 1}
+                    question={item.text}
+                    ownerName={item.createdBy.nickname + '/' + item.createdBy.name}
+                    onStartEdit={() =>
+                      onStartEdit({ liveQuestionId: item.liveQuestionId, text: item.text })
+                    }
+                    type={questionType}
+                    editable={item.canEdit}
+                    onRemove={() => handleRemoveQuestion(item.liveQuestionId)}
+                  />
+                ))}
+              {questionType === 'live' && (
                 <Section
                   variant="dashed"
                   flexDirection="row"
@@ -144,11 +244,14 @@ const DetailView = ({
                     borderColor: '#4e4e4e',
                   }}
                   onClick={() =>
-                    setModalOpen({
-                      isOpen: true,
-                      id: selectedUser.id,
-                      modalName: 'additionalQuestion',
-                    })
+                    (() => {
+                      setEditingLiveQuestion(null)
+                      setModalOpen({
+                        isOpen: true,
+                        id: selectedUser.id,
+                        modalName: 'additionalQuestion',
+                      })
+                    })()
                   }
                 >
                   <Plus />
@@ -160,14 +263,24 @@ const DetailView = ({
 
           {/* 오른쪽: 현황 및 입력 섹션 */}
           <S.SideColumn>
-            <EvaluationStatus selectedUserId={selectedUser.id} recruitingId={null} />
-            <MyEvaluation selectedUserId={selectedUser.id} recruitingId={null} />
+            <EvaluationStatus
+              selectedUserId={selectedUser.id}
+              recruitingId={recruitmentId}
+              mode="interview"
+            />
+            <MyEvaluation
+              selectedUserId={selectedUser.id}
+              recruitingId={recruitmentId}
+              mode="interview"
+            />
           </S.SideColumn>
         </S.MainContent>
       </S.DetailWrapper>
 
-      {modalOpen.isOpen && modalOpen.modalName === 'application' && (
+      {modalOpen.isOpen && modalOpen.modalName === 'application' && data?.result.assignmentId && (
         <ApplicationModal
+          assignmentId={data.result.assignmentId}
+          recruitmentId="12"
           onClose={() =>
             setModalOpen({
               id: '',
@@ -179,12 +292,19 @@ const DetailView = ({
       )}
       {modalOpen.isOpen && modalOpen.modalName === 'additionalQuestion' && (
         <AdditionalQuestionModal
+          recruitmentId={recruitmentId}
+          assignmentId={modalOpen.id}
+          liveQuestionId={editingLiveQuestion?.liveQuestionId}
+          initialText={editingLiveQuestion?.text}
           onClose={() =>
-            setModalOpen({
-              id: '',
-              isOpen: false,
-              modalName: null,
-            })
+            (() => {
+              setEditingLiveQuestion(null)
+              setModalOpen({
+                id: '',
+                isOpen: false,
+                modalName: null,
+              })
+            })()
           }
         />
       )}

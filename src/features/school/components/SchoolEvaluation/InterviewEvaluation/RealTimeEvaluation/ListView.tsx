@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import type { FinalStatusType } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
 import {
   useGetInterviewAssignments,
@@ -12,12 +11,14 @@ import FilterBar from '../../FilterBar/FilterBar'
 import EvaluationCard from '../EvaluationCard/EvaluationCard'
 import * as S from './index.style'
 
-const ListView = ({
-  onStartEval,
-}: {
-  onStartEval: (user: { id: string; name: string }) => void
-}) => {
-  const recruitmentId = '40'
+const formatTimeToHourMinute = (value: string) => {
+  const [hour = '', minute = ''] = value.split(':')
+  if (!hour || !minute) return value
+  return `${hour}:${minute}`
+}
+
+const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void }) => {
+  const recruitmentId = '12'
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
   const [selectedDateId, setSelectedDateId] = useState<string | null>(null)
   const [selectedPartId, setSelectedPartId] = useState<PartType | 'ALL' | null>(null)
@@ -47,38 +48,6 @@ const ListView = ({
     part: resolvedPartId,
   })
 
-  const groupedSlots = useMemo(() => {
-    const slots = data?.result.interviewAssignmentSlots ?? []
-    const grouped = new Map<string, { timeLabel: string; applicants: typeof slots }>()
-
-    slots.forEach((slot) => {
-      const timeLabel = `${slot.slot.start} ~ ${slot.slot.end}`
-      const slotKey = String(slot.slot.slotId)
-      const existing = grouped.get(slotKey)
-      if (existing) {
-        existing.applicants.push(slot)
-      } else {
-        grouped.set(slotKey, { timeLabel, applicants: [slot] })
-      }
-    })
-
-    return Array.from(grouped.entries()).map(([slotId, group]) => ({
-      slotId,
-      ...group,
-    }))
-  }, [data?.result.interviewAssignmentSlots])
-
-  const mapStatus = (status: 'WAITING' | 'IN_PROGRESS' | 'COMPLETED'): FinalStatusType => {
-    switch (status) {
-      case 'IN_PROGRESS':
-        return 'EVALUATING'
-      case 'COMPLETED':
-        return 'PASSED'
-      default:
-        return 'PENDING'
-    }
-  }
-
   return (
     <S.Container>
       <FilterBar
@@ -104,26 +73,25 @@ const ListView = ({
       />
 
       <S.CardGrid>
-        {groupedSlots.map((group) => (
-          <div key={group.slotId} css={{ gap: '14px', display: 'flex', flexDirection: 'column' }}>
+        {data?.result.interviewAssignmentTimeGroups.map((group) => (
+          <div key={group.start} css={{ gap: '14px', display: 'flex', flexDirection: 'column' }}>
             <S.TimeTitle>
-              {group.timeLabel}
+              {formatTimeToHourMinute(group.start)} ~ {formatTimeToHourMinute(group.end)}
               <div className="divider" />
             </S.TimeTitle>
             <S.CardWrapper>
-              {group.applicants.map((applicant) => (
+              {group.interviewAssignmentSlots.map((applicant) => (
                 <EvaluationCard
                   key={applicant.assignmentId}
-                  time={group.timeLabel}
+                  time={formatTimeToHourMinute(applicant.slot.start)}
                   name={applicant.applicant.name}
                   nickname={applicant.applicant.nickname}
                   score={Number(applicant.documentScore)}
-                  tags={applicant.appliedParts.map((part) => part.key as PartType)}
-                  status={mapStatus(applicant.evaluationProgressStatus)}
+                  tags={applicant.appliedParts.map((part) => part.key)}
+                  status={applicant.evaluationProgressStatus}
                   handleStartEval={() =>
                     onStartEval({
                       id: String(applicant.assignmentId),
-                      name: applicant.applicant.name,
                     })
                   }
                 />
