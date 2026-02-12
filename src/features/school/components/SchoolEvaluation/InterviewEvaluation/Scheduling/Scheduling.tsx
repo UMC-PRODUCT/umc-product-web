@@ -47,8 +47,8 @@ const Scheduling = () => {
     e.dataTransfer.effectAllowed = 'move'
   }
   const { data: summaryData, isLoading: isSummaryLoading } = useCustomQuery(
-    schoolKeys.getInterviewSchedulingSummary('40'),
-    () => getInterviewSchedulingSummary('40'),
+    schoolKeys.evaluation.interview.getSchedulingSummary('12'),
+    () => getInterviewSchedulingSummary('12'),
     {
       placeholderData: (previous) => previous,
     },
@@ -62,8 +62,8 @@ const Scheduling = () => {
   const slotDate = dateParam ?? ''
   const slotPart = partParam ?? 'ALL'
   const { data: slotData, isLoading: isSlotsLoading } = useCustomQuery(
-    schoolKeys.getInterviewSlots('40', slotDate, slotPart),
-    () => getInterviewSlots('40', slotDate, slotPart),
+    schoolKeys.evaluation.interview.getSlots('12', slotDate, slotPart),
+    () => getInterviewSlots('12', slotDate, slotPart),
     {
       enabled: Boolean(dateParam) && Boolean(partParam),
       placeholderData: (previous) => previous,
@@ -75,10 +75,10 @@ const Scheduling = () => {
     data: slotApplicantsData,
     isLoading: isSlotApplicantsLoading,
     isFetching,
-  } = useGetInterviewSlotApplicants('40', resolvedSlotId) // TODO: 추후 수정 예정
+  } = useGetInterviewSlotApplicants('12', resolvedSlotId) // TODO: 추후 수정 예정
   const { data: assignedData, isLoading: isAssignmentsLoading } = useCustomQuery(
-    schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId ?? ''),
-    () => getInterviewSlotAssignments('40', resolvedSlotId ?? ''),
+    schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId ?? ''),
+    () => getInterviewSlotAssignments('12', resolvedSlotId ?? ''),
     { enabled: Boolean(resolvedSlotId), placeholderData: (previous) => previous },
   ) // TODO: 추후 수정 예정
 
@@ -125,25 +125,25 @@ const Scheduling = () => {
 
     assignApplicantsMutate(
       {
-        recruitmentId: '40',
+        recruitmentId: '12',
         slotId: resolvedSlotId,
         applicationId: id,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants('12', resolvedSlotId),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam),
+              queryKey: schoolKeys.evaluation.interview.getSlots('12', dateParam, partParam),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSchedulingSummary('40'),
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary('12'),
           })
         },
       },
@@ -152,23 +152,23 @@ const Scheduling = () => {
   }
   const handleRemoveAssigned = (id: string) => {
     deleteAssignmentMutate(
-      { recruitmentId: '40', assignmentId: id },
+      { recruitmentId: '12', assignmentId: id },
       {
         onSuccess: () => {
           if (!resolvedSlotId) return
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotApplicants('40', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotApplicants('12', resolvedSlotId),
           })
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSlotAssignments('40', resolvedSlotId),
+            queryKey: schoolKeys.evaluation.interview.getSlotAssignments('12', resolvedSlotId),
           })
           if (dateParam && partParam) {
             queryClient.invalidateQueries({
-              queryKey: schoolKeys.getInterviewSlots('40', dateParam, partParam),
+              queryKey: schoolKeys.evaluation.interview.getSlots('12', dateParam, partParam),
             })
           }
           queryClient.invalidateQueries({
-            queryKey: schoolKeys.getInterviewSchedulingSummary('40'),
+            queryKey: schoolKeys.evaluation.interview.getSchedulingSummary('12'),
           })
         },
       },
@@ -284,6 +284,10 @@ const Scheduling = () => {
                   <Loading size={24} label="불러오는 중" labelPlacement="right" />
                 </S.LoadingOverlay>
               )}
+              {slotApplicantsData?.result.available.length === 0 &&
+              slotApplicantsData.result.alreadyScheduled.length === 0 ? (
+                <div className="not-progress">배치할 지원자가 없습니다.</div>
+              ) : null}
               {slotApplicantsData?.result.available.map((app, i) => {
                 return (
                   <ApplicantCard
@@ -300,7 +304,10 @@ const Scheduling = () => {
                   />
                 )
               })}
-              <S.Divider />
+              {slotApplicantsData?.result.available.length !== 0 &&
+              slotApplicantsData?.result.alreadyScheduled.length !== 0 ? (
+                <S.Divider />
+              ) : null}
               {slotApplicantsData?.result.alreadyScheduled.map((app, i) => {
                 return (
                   <ApplicantCard

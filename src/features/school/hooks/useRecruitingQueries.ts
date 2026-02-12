@@ -104,7 +104,7 @@ export const useGetDocumentEvaluationApplicants = (
     size: string
   },
 ) => {
-  const queryKey = schoolKeys.getDocumentEvaluationApplicants(recruitingId, {
+  const queryKey = schoolKeys.evaluation.document.getApplicants(recruitingId, {
     ...params,
     page: '0',
   })
@@ -146,7 +146,7 @@ export const useGetFinalSelectionApplications = (
     size: string
   },
 ) => {
-  const queryKey = schoolKeys.getFinalSelectionApplications(recruitingId, {
+  const queryKey = schoolKeys.evaluation.finalSelection.getApplications(recruitingId, {
     ...params,
     page: '0',
   })
@@ -179,7 +179,7 @@ export const useGetDocumentSelectedApplicants = (
     sort?: SelectionsSortType
   },
 ) => {
-  const queryKey = schoolKeys.getDocumentSelectedApplicants(recruitingId, {
+  const queryKey = schoolKeys.evaluation.document.getSelectedApplicants(recruitingId, {
     ...params,
     page: '0',
   })
@@ -208,7 +208,7 @@ export const useGetDocumentEvaluationApplicationDetail = (
   applicantId: string,
 ) => {
   return useCustomSuspenseQuery(
-    schoolKeys.getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
+    schoolKeys.evaluation.document.getApplicationDetail(recruitingId, applicantId),
     () => getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
   )
 }
@@ -220,7 +220,7 @@ export const useGetDocumentEvaluationAnswers = (
 ) => {
   const resolvedRecruitingId = recruitingId ?? ''
   const resolvedApplicantId = applicantId ?? ''
-  const queryKey = schoolKeys.getDocumentEvaluationAnswers(
+  const queryKey = schoolKeys.evaluation.document.getAnswers(
     resolvedRecruitingId,
     resolvedApplicantId,
   )
@@ -239,7 +239,7 @@ export const useGetDocumentEvaluationMyAnswer = (
 ) => {
   const resolvedRecruitingId = recruitingId ?? ''
   const resolvedApplicantId = applicantId ?? ''
-  const queryKey = schoolKeys.getDocumentEvaluationMyAnswer(
+  const queryKey = schoolKeys.evaluation.document.getMyAnswer(
     resolvedRecruitingId,
     resolvedApplicantId,
   )
@@ -254,7 +254,7 @@ export const useGetDocumentEvaluationMyAnswer = (
 /** 면접 질문지(사전 질문) 조회 */
 export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
   return useCustomQuery(
-    schoolKeys.getInterviewQuestions(recruitmentId, part),
+    schoolKeys.evaluation.interview.getQuestions(recruitmentId, part),
     () => getInterviewQuestions(recruitmentId, part),
     { enabled: Boolean(recruitmentId) },
   )
@@ -262,7 +262,7 @@ export const useGetInterviewQuestions = (recruitmentId: string, part: PartType |
 
 /** 추가 질문(즉석 질문) 조회 */
 export const useGetInterviewLiveQuestions = (recruitmentId: string, assignmentId: string) => {
-  const queryKey = schoolKeys.getInterviewLiveQuestions(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.evaluation.interview.getLiveQuestions(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
   return useCustomQuery(queryKey, () => getInterviewLiveQuestions(recruitmentId, assignmentId), {
     enabled,
@@ -271,7 +271,7 @@ export const useGetInterviewLiveQuestions = (recruitmentId: string, assignmentId
 
 /** 실시간 평가 현황 조회(평균/리스트) */
 export const useGetInterviewEvaluationSummary = (recruitmentId: string, assignmentId: string) => {
-  const queryKey = schoolKeys.getInterviewEvaluationSummary(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.evaluation.interview.getSummary(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
   return useCustomQuery(
     queryKey,
@@ -282,7 +282,7 @@ export const useGetInterviewEvaluationSummary = (recruitmentId: string, assignme
 
 /** 실시간 면접 평가 상세 화면 초기 진입 */
 export const useGetInterviewEvaluationView = (recruitmentId: string, assignmentId: string) => {
-  const queryKey = schoolKeys.getInterviewEvaluationView(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.evaluation.interview.getView(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
   return useCustomQuery(queryKey, () => getInterviewEvaluationView(recruitmentId, assignmentId), {
     enabled,
@@ -295,7 +295,7 @@ export const useGetInterviewAssignments = (
   params?: { date?: string; part?: PartType | 'ALL' },
 ) => {
   return useCustomQuery(
-    schoolKeys.getInterviewAssignments(recruitmentId, params ?? {}),
+    schoolKeys.evaluation.interview.getAssignments(recruitmentId, params ?? {}),
     () => getInterviewAssignments(recruitmentId, params ?? {}),
     { enabled: Boolean(recruitmentId) },
   )
@@ -304,7 +304,7 @@ export const useGetInterviewAssignments = (
 /** 실시간 면접 평가용 드롭다운 옵션 조회 */
 export const useGetInterviewEvaluationOptions = (recruitmentId: string) => {
   return useCustomQuery(
-    schoolKeys.getInterviewEvaluationOptions(recruitmentId),
+    schoolKeys.evaluation.interview.getOptions(recruitmentId),
     () => getInterviewEvaluationOptions(recruitmentId),
     { enabled: Boolean(recruitmentId) },
   )
@@ -312,7 +312,7 @@ export const useGetInterviewEvaluationOptions = (recruitmentId: string) => {
 
 /** 내 면접 평가 조회 */
 export const useGetInterviewEvaluationMyAnswer = (recruitmentId: string, assignmentId: string) => {
-  const queryKey = schoolKeys.getInterviewEvaluationMyAnswer(recruitmentId, assignmentId)
+  const queryKey = schoolKeys.evaluation.interview.getMyAnswer(recruitmentId, assignmentId)
   const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
   return useCustomQuery(
     queryKey,
@@ -323,8 +323,9 @@ export const useGetInterviewEvaluationMyAnswer = (recruitmentId: string, assignm
 
 /** 면접 질문지 작성 가능 파트 조회 */
 export const useGetAvailableInterviewParts = (recruitmentId: string) => {
-  return useCustomSuspenseQuery(schoolKeys.getAvailableInterviewParts(recruitmentId), () =>
-    getAvailableInterviewParts(recruitmentId),
+  return useCustomSuspenseQuery(
+    schoolKeys.evaluation.interview.getAvailableParts(recruitmentId),
+    () => getAvailableInterviewParts(recruitmentId),
   )
 }
 /** 특정 슬롯에 배정 가능한 지원자 / 이미 배정된 지원자 조회 */
@@ -333,7 +334,7 @@ export const useGetInterviewSlotApplicants = (
   slotId: string | undefined,
 ) => {
   const resolvedSlotId = slotId ?? ''
-  const queryKey = schoolKeys.getInterviewSlotApplicants(recruitmentId, resolvedSlotId)
+  const queryKey = schoolKeys.evaluation.interview.getSlotApplicants(recruitmentId, resolvedSlotId)
   const enabled = Boolean(resolvedSlotId)
   return useCustomQuery(
     queryKey,
@@ -352,21 +353,23 @@ export const useGetInterviewSlots = (
   const resolvedDate = date ?? ''
   const resolvedPart = part ?? 'ALL'
   return useCustomSuspenseQuery(
-    schoolKeys.getInterviewSlots(recruitmentId, resolvedDate, resolvedPart),
+    schoolKeys.evaluation.interview.getSlots(recruitmentId, resolvedDate, resolvedPart),
     () => getInterviewSlots(recruitmentId, resolvedDate, resolvedPart),
   )
 }
 
 /** 면접 스케줄링 요약 조회 */
 export const useGetInterviewSchedulingSummary = (recruitmentId: string) => {
-  return useCustomSuspenseQuery(schoolKeys.getInterviewSchedulingSummary(recruitmentId), () =>
-    getInterviewSchedulingSummary(recruitmentId),
+  return useCustomSuspenseQuery(
+    schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
+    () => getInterviewSchedulingSummary(recruitmentId),
   )
 }
 
 /** 특정 면접 슬롯에 배정된 지원자 조회 */
 export const useGetInterviewSlotAssignments = (recruitmentId: string, slotId: string) => {
-  return useCustomSuspenseQuery(schoolKeys.getInterviewSlotAssignments(recruitmentId, slotId), () =>
-    getInterviewSlotAssignments(recruitmentId, slotId),
+  return useCustomSuspenseQuery(
+    schoolKeys.evaluation.interview.getSlotAssignments(recruitmentId, slotId),
+    () => getInterviewSlotAssignments(recruitmentId, slotId),
   )
 }

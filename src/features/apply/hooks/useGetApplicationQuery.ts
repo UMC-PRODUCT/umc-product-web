@@ -103,7 +103,7 @@ export function useGetMyApplicationStatus(recruitmentId: string) {
 }
 
 type DocumentEvaluationApplicationQueryKey = ReturnType<
-  typeof schoolKeys.getDocumentEvaluationApplicationDetail
+  typeof schoolKeys.evaluation.document.getApplicationDetail
 >
 type DocumentEvaluationApplicationResponse =
   CommonResponseDTO<GetDocumentEvaluationApplicationResponseDTO>
@@ -123,7 +123,7 @@ export function useGetDocumentEvaluationApplicationDetail(
   options?: DocumentEvaluationApplicationOptions,
 ) {
   const resolvedApplicantId = applicantId ?? ''
-  const queryKey = schoolKeys.getDocumentEvaluationApplicationDetail(
+  const queryKey = schoolKeys.evaluation.document.getApplicationDetail(
     recruitmentId,
     resolvedApplicantId,
   )

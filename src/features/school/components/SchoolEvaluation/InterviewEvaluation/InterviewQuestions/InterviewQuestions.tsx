@@ -28,7 +28,7 @@ type PartKey = PartType | 'COMMON'
 type QuestionItem = { id: string; text: string }
 
 const InterviewQuestionsContent = () => {
-  const recruitmentId = '40' // TODO: 추후 수정 예정
+  const recruitmentId = '12' // TODO: 추후 수정 예정
   const queryClient = useQueryClient()
   const {
     usePostInterviewQuestion,
@@ -78,7 +78,7 @@ const InterviewQuestionsContent = () => {
 
   const invalidateQuestions = () => {
     queryClient.invalidateQueries({
-      queryKey: schoolKeys.getInterviewQuestions(recruitmentId, selectedPart),
+      queryKey: schoolKeys.evaluation.interview.getQuestions(recruitmentId, selectedPart),
     })
   }
 

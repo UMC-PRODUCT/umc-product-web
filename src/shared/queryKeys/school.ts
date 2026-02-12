@@ -2,6 +2,9 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartType, SelectionsSortType } from '@/shared/types/umc'
 
+// -----------------------------
+// Params
+// -----------------------------
 type RecruitmentsStatusParams = { status: string }
 
 type DocumentEvaluationApplicantsParams = {
@@ -30,6 +33,9 @@ type InterviewAssignmentsParams = {
   part?: PartType | 'ALL'
 }
 
+// -----------------------------
+// Raw key factory (source of truth)
+// -----------------------------
 const schoolKeyFactory = createQueryKeys('school', {
   links: (schoolId: string) => [{ schoolId }],
   recruitments: {
@@ -107,7 +113,65 @@ const schoolKeyFactory = createQueryKeys('school', {
   },
 })
 
+// -----------------------------
+// Evaluation namespace
+// 평가 도메인 전용 키를 명시적으로 분리
+// -----------------------------
+const schoolEvaluationKeys = {
+  document: {
+    getSelectedApplicants: (recruitmentId: string, params: DocumentSelectedApplicantsParams) =>
+      schoolKeyFactory.documents._ctx.selections._ctx.applicants(recruitmentId, params).queryKey,
+    getApplicationDetail: (recruitmentId: string, applicantId: string) =>
+      schoolKeyFactory.documents._ctx.evaluation._ctx.applicationDetail(recruitmentId, applicantId)
+        .queryKey,
+    getAnswers: (recruitmentId: string, applicantId: string) =>
+      schoolKeyFactory.documents._ctx.evaluation._ctx.answers(recruitmentId, applicantId).queryKey,
+    getMyAnswer: (recruitmentId: string, applicantId: string) =>
+      schoolKeyFactory.documents._ctx.evaluation._ctx.myAnswer(recruitmentId, applicantId).queryKey,
+    getApplicants: (recruitmentId: string, params: DocumentEvaluationApplicantsParams) =>
+      schoolKeyFactory.documents._ctx.evaluation._ctx.applicants(recruitmentId, params).queryKey,
+  },
+  finalSelection: {
+    getApplications: (recruitmentId: string, params: FinalSelectionApplicationsParams) =>
+      schoolKeyFactory.finalSelections._ctx.applications(recruitmentId, params).queryKey,
+  },
+  interview: {
+    getQuestions: (recruitmentId: string, part: PartType | 'COMMON') =>
+      schoolKeyFactory.interviews._ctx.questions(recruitmentId, part).queryKey,
+    getLiveQuestions: (recruitmentId: string, assignmentId: string) =>
+      schoolKeyFactory.interviews._ctx.liveQuestions(recruitmentId, assignmentId).queryKey,
+    getSummary: (recruitmentId: string, assignmentId: string) =>
+      schoolKeyFactory.interviews._ctx.evaluationSummary(recruitmentId, assignmentId).queryKey,
+    getView: (recruitmentId: string, assignmentId: string) =>
+      schoolKeyFactory.interviews._ctx.evaluationView(recruitmentId, assignmentId).queryKey,
+    getAssignments: (recruitmentId: string, params: InterviewAssignmentsParams) =>
+      schoolKeyFactory.interviews._ctx.assignments(recruitmentId, params).queryKey,
+    getOptions: (recruitmentId: string) =>
+      schoolKeyFactory.interviews._ctx.options(recruitmentId).queryKey,
+    getMyAnswer: (recruitmentId: string, assignmentId: string) =>
+      schoolKeyFactory.interviews._ctx.myAnswer(recruitmentId, assignmentId).queryKey,
+    getAvailableParts: (recruitmentId: string) =>
+      schoolKeyFactory.interviews._ctx.availableParts(recruitmentId).queryKey,
+    getSlotApplicants: (recruitmentId: string, slotId: string) =>
+      schoolKeyFactory.interviews._ctx.slotApplicants(recruitmentId, slotId).queryKey,
+    getSlots: (recruitmentId: string, date: string, part: PartType | 'ALL') =>
+      schoolKeyFactory.interviews._ctx.slots(recruitmentId, date, part).queryKey,
+    getSchedulingSummary: (recruitmentId: string) =>
+      schoolKeyFactory.interviews._ctx.schedulingSummary(recruitmentId).queryKey,
+    getSlotAssignments: (recruitmentId: string, slotId: string) =>
+      schoolKeyFactory.interviews._ctx.slotAssignments(recruitmentId, slotId).queryKey,
+  },
+}
+
+// -----------------------------
+// Public query keys
+// 평가 관련 키는 schoolKeys.evaluation.* 에서만 사용
+// -----------------------------
 export const schoolKeys = {
+  // 신규 접근: 평가 키 전용 네임스페이스
+  evaluation: schoolEvaluationKeys,
+
+  // 학교/모집 공통
   getSchoolLink: (schoolId: string) => schoolKeyFactory.links(schoolId).queryKey,
   getRecruitments: (params: RecruitmentsStatusParams) =>
     schoolKeyFactory.recruitments._ctx.list(params).queryKey,
@@ -119,50 +183,4 @@ export const schoolKeys = {
     schoolKeyFactory.recruitments._ctx.applicationFormDraft(recruitmentId).queryKey,
   getRecruitmentDashboardSummary: (recruitmentId: string) =>
     schoolKeyFactory.recruitments._ctx.dashboardSummary(recruitmentId).queryKey,
-
-  getDocumentSelectedApplicants: (
-    recruitmentId: string,
-    params: DocumentSelectedApplicantsParams,
-  ) => schoolKeyFactory.documents._ctx.selections._ctx.applicants(recruitmentId, params).queryKey,
-  getDocumentEvaluationApplicationDetail: (recruitmentId: string, applicantId: string) =>
-    schoolKeyFactory.documents._ctx.evaluation._ctx.applicationDetail(recruitmentId, applicantId)
-      .queryKey,
-  getDocumentEvaluationAnswers: (recruitmentId: string, applicantId: string) =>
-    schoolKeyFactory.documents._ctx.evaluation._ctx.answers(recruitmentId, applicantId).queryKey,
-  getDocumentEvaluationMyAnswer: (recruitmentId: string, applicantId: string) =>
-    schoolKeyFactory.documents._ctx.evaluation._ctx.myAnswer(recruitmentId, applicantId).queryKey,
-  getDocumentEvaluationApplicants: (
-    recruitmentId: string,
-    params: DocumentEvaluationApplicantsParams,
-  ) => schoolKeyFactory.documents._ctx.evaluation._ctx.applicants(recruitmentId, params).queryKey,
-
-  getFinalSelectionApplications: (
-    recruitmentId: string,
-    params: FinalSelectionApplicationsParams,
-  ) => schoolKeyFactory.finalSelections._ctx.applications(recruitmentId, params).queryKey,
-
-  getInterviewQuestions: (recruitmentId: string, part: PartType | 'COMMON') =>
-    schoolKeyFactory.interviews._ctx.questions(recruitmentId, part).queryKey,
-  getInterviewLiveQuestions: (recruitmentId: string, assignmentId: string) =>
-    schoolKeyFactory.interviews._ctx.liveQuestions(recruitmentId, assignmentId).queryKey,
-  getInterviewEvaluationSummary: (recruitmentId: string, assignmentId: string) =>
-    schoolKeyFactory.interviews._ctx.evaluationSummary(recruitmentId, assignmentId).queryKey,
-  getInterviewEvaluationView: (recruitmentId: string, assignmentId: string) =>
-    schoolKeyFactory.interviews._ctx.evaluationView(recruitmentId, assignmentId).queryKey,
-  getInterviewAssignments: (recruitmentId: string, params: InterviewAssignmentsParams) =>
-    schoolKeyFactory.interviews._ctx.assignments(recruitmentId, params).queryKey,
-  getInterviewEvaluationOptions: (recruitmentId: string) =>
-    schoolKeyFactory.interviews._ctx.options(recruitmentId).queryKey,
-  getInterviewEvaluationMyAnswer: (recruitmentId: string, assignmentId: string) =>
-    schoolKeyFactory.interviews._ctx.myAnswer(recruitmentId, assignmentId).queryKey,
-  getAvailableInterviewParts: (recruitmentId: string) =>
-    schoolKeyFactory.interviews._ctx.availableParts(recruitmentId).queryKey,
-  getInterviewSlotApplicants: (recruitmentId: string, slotId: string) =>
-    schoolKeyFactory.interviews._ctx.slotApplicants(recruitmentId, slotId).queryKey,
-  getInterviewSlots: (recruitmentId: string, date: string, part: PartType | 'ALL') =>
-    schoolKeyFactory.interviews._ctx.slots(recruitmentId, date, part).queryKey,
-  getInterviewSchedulingSummary: (recruitmentId: string) =>
-    schoolKeyFactory.interviews._ctx.schedulingSummary(recruitmentId).queryKey,
-  getInterviewSlotAssignments: (recruitmentId: string, slotId: string) =>
-    schoolKeyFactory.interviews._ctx.slotAssignments(recruitmentId, slotId).queryKey,
 }
