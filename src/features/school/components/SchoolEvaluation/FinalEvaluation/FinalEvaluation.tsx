@@ -71,6 +71,10 @@ const FinalEvaluation = () => {
     () => pages.flatMap((page) => page.result.finalSelectionApplications.content),
     [pages],
   )
+  const activeApplicant = useMemo(
+    () => applicants.find((item) => item.applicationId === activeRowId) ?? null,
+    [applicants, activeRowId],
+  )
   const isInitialLoading = isLoading && pages.length === 0
   const isInitialError = isError && pages.length === 0
   const isEmpty = !isInitialLoading && pages.length === 0
@@ -306,8 +310,15 @@ const FinalEvaluation = () => {
       {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
         <SetPassSuccessModal onClose={() => setModalOpen({ open: false, modalName: null })} />
       )}
-      {modalOpen.open && modalOpen.modalName === 'setFail' && (
-        <PassCancleCautionModal onClose={() => setModalOpen({ open: false, modalName: null })} />
+      {modalOpen.open && modalOpen.modalName === 'setFail' && activeApplicant && (
+        <PassCancleCautionModal
+          applicationId={activeApplicant.applicationId}
+          recruitmentId={recruitmentId}
+          name={activeApplicant.applicant.name}
+          nickname={activeApplicant.applicant.nickname}
+          score={activeApplicant.finalScore}
+          onClose={() => setModalOpen({ open: false, modalName: null })}
+        />
       )}
       {modalOpen.open && modalOpen.modalName === 'inform' && (
         <PassInfoModal

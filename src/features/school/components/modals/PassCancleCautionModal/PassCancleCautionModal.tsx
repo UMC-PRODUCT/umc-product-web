@@ -1,11 +1,42 @@
+import { useQueryClient } from '@tanstack/react-query'
+
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Caution from '@/shared/assets/icons/caution.svg?react'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-const PassCancleCautionModal = ({ onClose }: { onClose: () => void }) => {
+const PassCancleCautionModal = ({
+  onClose,
+  applicationId,
+  recruitmentId,
+  name,
+  nickname,
+  score,
+}: {
+  onClose: () => void
+  applicationId: string
+  recruitmentId: string
+  name: string
+  nickname: string
+  score: string
+}) => {
+  const queryClient = useQueryClient()
+  const { usePatchFinalSelectionStatus } = useRecruitingMutation()
+  const { mutate: patchFinalSelectionStatus } = usePatchFinalSelectionStatus(
+    recruitmentId,
+    applicationId,
+  )
   const handleCancelPass = () => {
-    // TODO: 합격 취소 API 연동
+    patchFinalSelectionStatus(
+      { decision: 'WAIT' },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+          onClose()
+        },
+      },
+    )
   }
   return (
     <AlertModalLayout
@@ -13,7 +44,7 @@ const PassCancleCautionModal = ({ onClose }: { onClose: () => void }) => {
       mode={'warning'}
       onClose={onClose}
       title="주의"
-      content={`닉넴/성이름 님의 최종 환산 점수는 93.0점입니다.\n닉넴/성이름 님의 합격을 취소하시겠습니까?`}
+      content={`${name}/${nickname} 님의 최종 환산 점수는 ${score}점입니다.\n${nickname} 님의 합격을 취소하시겠습니까?`}
     >
       <Flex
         height="32px"
