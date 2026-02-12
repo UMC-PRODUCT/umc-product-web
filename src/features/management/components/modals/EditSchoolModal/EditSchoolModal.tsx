@@ -417,7 +417,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
 
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button typo="C3.Md" tone="necessary" label="계정 비활성화" />
+                <Button typo="C3.Md" tone="necessary" label="학교 비활성화" />
                 <Flex width={'fit-content'} gap={10}>
                   <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
                   <Button
