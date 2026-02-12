@@ -131,6 +131,7 @@ export const ContentHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  user-select: none;
   height: 40px;
 `
 
@@ -153,6 +154,15 @@ export const ApplicantList = styled(Section)`
   height: 320px !important;
   ${media.down(theme.breakPoints.desktop)} {
     height: fit-content !important;
+  }
+  .not-progress {
+    color: ${theme.colors.gray[300]};
+    ${theme.typography.B4.Rg};
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `
 

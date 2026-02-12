@@ -1,10 +1,10 @@
 import type { FinalStatusType } from '@/features/apply/domain'
+import { FINAL_STATUS_CONFIG } from '@/features/apply/domain/constants'
 import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
-import { FINAL_STATUS_CONFIG } from '../../../../../apply/domain/constants'
 import * as S from './EvaluationCard.style'
 
 const EvaluationCard = ({
@@ -28,7 +28,7 @@ const EvaluationCard = ({
     <S.ContentBox>
       <S.Header>
         <S.TimeBadge>{time}</S.TimeBadge>
-        <Badge tone="lime" typo="B5.Md" variant="outline">
+        <Badge tone={FINAL_STATUS_CONFIG[status].color} typo="B5.Md" variant="outline">
           {FINAL_STATUS_CONFIG[status].label}
         </Badge>
       </S.Header>

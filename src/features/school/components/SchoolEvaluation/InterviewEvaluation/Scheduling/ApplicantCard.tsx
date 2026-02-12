@@ -47,12 +47,8 @@ const ApplicantCard = ({
           {name}/{nickname}
         </span>
 
-        <div className="tags">
-          {tags.map((tag) => (
-            <S.Tag key={tag}>{tag}</S.Tag>
-          ))}
-        </div>
-        <span className="score">{score}</span>
+        <div className="tags">{tags.map((tag) => tag && <S.Tag key={tag}>{tag}</S.Tag>)}</div>
+        <span className="score">서류 {score}</span>
       </div>
       {time && <span className="time">{time}</span>}
       {mode === 'default' && <Drag color={theme.colors.gray[400]} />}

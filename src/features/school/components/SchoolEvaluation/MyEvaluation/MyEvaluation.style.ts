@@ -62,6 +62,7 @@ export const ScoreInputBox = styled.div`
   .total {
     ${theme.typography.B5.Md};
     color: ${theme.colors.gray[300]};
+    width: 50%;
   }
 `
 
@@ -73,9 +74,10 @@ export const ScoreInput = styled.input`
   font-weight: 600;
   text-align: right;
   line-height: 1;
-  width: 40px;
+  flex: 1;
   outline: none;
   padding: 0;
+
   /* Chrome, Safari, Edge, Opera에서 스핀 버튼 제거 */
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
