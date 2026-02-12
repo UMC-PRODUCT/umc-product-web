@@ -19,7 +19,13 @@ export function useMemberMeQuery() {
 
 /** 활성 기수 조회 */
 export function useActiveGisuQuery(
-  options?: UseQueryOptions<CommonResponseDTO<GetActiveGisuResponseDTO>>,
+  options?: Omit<
+    UseQueryOptions<CommonResponseDTO<GetActiveGisuResponseDTO>>,
+    'queryKey' | 'queryFn'
+  > & {
+    staleTime?: number
+    retry?: number | boolean
+  },
 ) {
   return useCustomQuery(gisuKeys.active, getActiveGisu, options)
 }
