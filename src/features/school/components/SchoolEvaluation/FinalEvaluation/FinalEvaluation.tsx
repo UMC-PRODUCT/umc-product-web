@@ -27,13 +27,12 @@ import FilterBar from '../FilterBar/FilterBar'
 import * as S from './FinalEvaluation.style'
 import * as RowS from './FinalEvaluationRow.style'
 
-const FinalEvaluation = () => {
+const FinalEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
   const queryClient = useQueryClient()
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = roleType === 'SCHOOL_PRESIDENT'
   const { Dropdown, sortOptions, sortValue, handleSortChange, part, sortId } = useDocsPassModalUi()
   const { usePatchFinalSelectionStatus } = useRecruitingMutation()
-  const recruitmentId = '12' // TODO: 추후 수정
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [activeRowId, setActiveRowId] = useState<string | null>(null)

@@ -36,9 +36,11 @@ const scrollParentsToTop = (element: HTMLElement | null) => {
 }
 
 const DetailView = ({
+  recruitmentId,
   selectedUser,
   onBack,
 }: {
+  recruitmentId: string
   selectedUser: {
     id: string
   }
@@ -59,7 +61,6 @@ const DetailView = ({
     text: string
   } | null>(null)
   const queryClient = useQueryClient()
-  const recruitmentId = '12' // TODO: 추후 수정
 
   const { useDeleteInterviewLiveQuestion } = useRecruitingMutation()
   const { mutate: deleteInterviewLiveQuestion } = useDeleteInterviewLiveQuestion()
@@ -293,7 +294,7 @@ const DetailView = ({
       {modalOpen.isOpen && modalOpen.modalName === 'application' && data?.result.assignmentId && (
         <ApplicationModal
           assignmentId={data.result.assignmentId}
-          recruitmentId="12"
+          recruitmentId={recruitmentId}
           onClose={() =>
             setModalOpen({
               id: '',

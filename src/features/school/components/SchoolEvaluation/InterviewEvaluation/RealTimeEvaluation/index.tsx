@@ -38,7 +38,7 @@ const clearSelectedUserQuery = () => {
   window.history.replaceState(null, '', nextUrl)
 }
 // --- 메인 컴포넌트 ---
-const RealTimeEvaluation = () => {
+const RealTimeEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
   const initialSelectedUser = readSelectedUserFromQuery()
 
   // view: 'list' (목록), 'detail' (평가 화면)
@@ -62,10 +62,12 @@ const RealTimeEvaluation = () => {
 
   // 1. 목록 화면
   if (view === 'list') {
-    return <ListView onStartEval={handleStartEval} />
+    return <ListView recruitmentId={recruitmentId} onStartEval={handleStartEval} />
   }
 
-  return <DetailView selectedUser={selectedUser!} onBack={handleBack} />
+  return (
+    <DetailView recruitmentId={recruitmentId} selectedUser={selectedUser!} onBack={handleBack} />
+  )
 }
 
 export default RealTimeEvaluation
