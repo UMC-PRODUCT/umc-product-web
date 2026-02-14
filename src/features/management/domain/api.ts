@@ -7,6 +7,7 @@ import type {
   ChapterType,
   Curriculum,
   ExternalLink,
+  GetRecruitmentsApplication,
   GisuType,
   University,
   UniversityFullType,
@@ -33,7 +34,7 @@ export const getSchoolsPaging = async (params: {
   sort?: 'asc' | 'desc'
   chapterId?: string
   keyword?: string
-}): Promise<CommonPagingResponseDTO<University>> => {
+}): Promise<CommonResponseDTO<CommonPagingResponseDTO<University>>> => {
   const { data } = await axiosInstance.get('/schools', { params })
   return data
 }
@@ -67,17 +68,7 @@ export const getAllGisu = async (): Promise<
 export const getGisuList = async (
   page: string,
   size: string,
-): Promise<
-  CommonResponseDTO<{
-    content: Array<GisuType>
-    page: string
-    size: string
-    totalElements: string
-    totalPages: string
-    hasNext: boolean
-    hasPrevious: boolean
-  }>
-> => {
+): Promise<CommonResponseDTO<CommonPagingResponseDTO<GisuType>>> => {
   const { data } = await axiosInstance.get('/gisu', {
     params: { page, size },
   })
@@ -147,7 +138,7 @@ export const patchSchool = async (
     schoolName?: string
     remark?: string
     logoImageId?: string
-    links?: Array<ExternalLink>
+    links?: Array<ExternalLink> | null
   },
 ): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.patch(`/schools/${schoolId}`, body)
@@ -186,5 +177,27 @@ export const deleteGisu = async (gisuId: string): Promise<CommonResponseDTO<null
 /** DELETE /chapters/{chapterId} - 지부 삭제 */
 export const deleteBranch = async (chapterId: string): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.delete(`/chapters/${chapterId}`)
+  return data
+}
+
+/** GET /recruitments/applications - (총괄) 지원자 관리 리스트 조회 */
+export const getRecruitementsApplications = async ({
+  chapterId,
+  schoolId,
+  part,
+  keyword,
+  page,
+  size,
+}: {
+  chapterId?: string
+  schoolId?: string
+  part?: PartType | 'ALL'
+  keyword?: string
+  page?: string
+  size?: string
+}): Promise<CommonResponseDTO<GetRecruitmentsApplication>> => {
+  const { data } = await axiosInstance.get('/recruitments/applications', {
+    params: { chapterId, schoolId, part, page, keyword, size },
+  })
   return data
 }

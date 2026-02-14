@@ -61,7 +61,7 @@ export const CandidatePage = ({ filterOptions = defaultFilterOptions }: Candidat
               typo="B3.Sb"
               label="검색"
               tone="lime"
-              css={{ minWidth: '80px', width: '80px', height: '52px' }}
+              css={{ minWidth: '80px', width: '80px', height: '40px' }}
             />
             <Button
               typo="B3.Sb"

@@ -7,7 +7,7 @@ import type { PartType } from '@features/auth/domain'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
 
 import type { FinalStatusType } from '@/features/apply/domain'
-import type { CommonResponseDTO } from '@/shared/types/api'
+import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
 import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { EvaluationStatusType, SelectionsSortType } from '@/shared/types/umc'
 
@@ -496,16 +496,7 @@ export type GetFinalSelectionApplicationsResponseDTO = {
     selectedCount: string
   }
   sort: SelectionsSortType
-  finalSelectionApplications: {
-    content: Array<FinalSelectionApplication>
-  }
-
-  page: string
-  size: string
-  totalPages: string
-  totalElements: string
-  hasNext: boolean
-  hasPrevious: boolean
+  finalSelectionApplications: CommonPagingResponseDTO<FinalSelectionApplication>
 }
 
 export type PatchFinalSelectionStatusRequestDTO = {
@@ -553,15 +544,7 @@ export type GetDocumentSelectedApplicantsResponseDTO = {
     selectedCount: string
   }
   sort: SelectionsSortType
-  documentSelectionApplications: {
-    content: Array<DocumentSelectionApplication>
-    page: string
-    size: string
-    totalPages: string
-    totalElements: string
-    hasNext: boolean
-    hasPrevious: boolean
-  }
+  documentSelectionApplications: CommonPagingResponseDTO<DocumentSelectionApplication>
 }
 export type GetDocumentSelectedApplicantsRequestDTO = {
   part?: PartType | 'ALL'

@@ -5,6 +5,7 @@
 
 import type { PartType } from '@/features/auth/domain'
 import type { LinkType } from '@/shared/constants/umc'
+import type { CommonPagingResponseDTO } from '@/shared/types'
 
 import type {
   EVALUATION_DOCUMENT_CONFIG,
@@ -144,4 +145,38 @@ export type ExternalLink = {
   title: string
   type: LinkType
   url: string
+}
+
+export type GetRecruitmentsApplication = {
+  filters: {
+    chapterId?: string
+    schoolId?: string
+    part?: PartType | 'ALL'
+    keyword?: string
+  }
+  applications: CommonPagingResponseDTO<{
+    applicationId: string
+    applicant: {
+      nickname: string
+      name: string
+    }
+    school: {
+      schoolId: string
+      name: string
+    }
+    appliedParts: Array<{
+      priority: string
+      part: {
+        key: PartType | 'COMMON'
+        label: string
+      }
+    }>
+    finalResult: {
+      status: string
+      selectedPart: {
+        key: PartType | 'COMMON'
+        label: string
+      }
+    }
+  }>
 }
