@@ -11,6 +11,7 @@ import {
   getChallengerRole,
   getChapter,
   getCurriculums,
+  getGisuById,
   getGisuChapterWithSchools,
   getGisuList,
   getMemberProfile,
@@ -131,6 +132,17 @@ export function useGetGisuList(params: CommonSearchParams) {
   return useCustomQuery(managementKeys.getGisuList(params), () =>
     getGisuList(params.page || '0', params.size || '10'),
   )
+}
+
+/**
+ * 기수 단건 상세를 조회하는 쿼리 훅.
+ * @param gisuId - 기수 ID
+ * @returns 기수 상세 조회 쿼리 결과
+ */
+export function useGetGisuById(gisuId: string) {
+  return useCustomQuery(managementKeys.getGisuDetail(gisuId), () => getGisuById({ gisuId }), {
+    enabled: Boolean(gisuId),
+  })
 }
 
 /**

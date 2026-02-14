@@ -11,6 +11,7 @@ import type {
   GetChallengerResponseDTO,
   GetCurriculumsParams,
   GetGisuChapterWithSchoolsParams,
+  GetGisuDetailParams,
   GetRecruitementsApplicationsParams,
   GetRecruitmentsApplication,
   GetSchoolDetailsParams,
@@ -104,6 +105,18 @@ export const getGisuList = async (
   const { data } = await axiosInstance.get('/gisu', {
     params: { page, size },
   })
+  return data
+}
+
+/**
+ * 기수 ID로 단건 상세를 조회함.
+ * @param gisuId - 기수 ID
+ * @returns 기수 상세 응답 데이터
+ */
+export const getGisuById = async ({
+  gisuId,
+}: GetGisuDetailParams): Promise<CommonResponseDTO<GisuType>> => {
+  const { data } = await axiosInstance.get(`/gisu/${gisuId}`)
   return data
 }
 

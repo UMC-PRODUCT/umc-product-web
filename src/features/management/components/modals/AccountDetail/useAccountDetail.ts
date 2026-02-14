@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMemo, useState } from 'react'
+import { useQueries, useQueryClient } from '@tanstack/react-query'
 
 import { useActiveGisuQuery, useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
 import {
   deleteChallengerRole,
+  getGisuById,
   postChallengerDeactivate,
   postChallengerRole,
 } from '@/features/management/domain/api'
@@ -11,6 +12,7 @@ import {
   useGetChallengerRole,
   useGetMemberProfile,
 } from '@/features/management/hooks/useManagementQueries'
+import { getGisuPeriodText } from '@/features/management/utils/gisu'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import type { CommonResponseDTO } from '@/shared/types/api'
@@ -48,30 +50,32 @@ export const useAccountDetail = ({
           (profileRole) => String(profileRole.gisuId) === String(activeGisuId),
         )
 
-  const formatDateToDot = (value?: string) => {
-    if (!value) return '-'
+  const gisuIds = useMemo(
+    () => Array.from(new Set((profile?.challengerRecords ?? []).map((record) => record.gisuId))),
+    [profile?.challengerRecords],
+  )
 
-    const isoLike = value.match(/^(\d{4})-(\d{2})-(\d{2})/)
-    if (isoLike) return `${isoLike[1]}.${isoLike[2]}.${isoLike[3]}`
+  const gisuDetailQueries = useQueries({
+    queries: gisuIds.map((gisuId) => ({
+      queryKey: managementKeys.getGisuDetail(gisuId),
+      queryFn: () => getGisuById({ gisuId }),
+      enabled: Boolean(gisuId),
+    })),
+  })
 
-    const dotted = value.match(/^(\d{4})\.(\d{2})\.(\d{2})/)
-    if (dotted) return `${dotted[1]}.${dotted[2]}.${dotted[3]}`
+  const gisuDetailMap = useMemo(() => {
+    const map = new Map<string, ReturnType<typeof getGisuPeriodText>>()
 
-    const date = new Date(value)
-    if (Number.isNaN(date.getTime())) return '-'
+    gisuIds.forEach((gisuId, index) => {
+      const gisu = gisuDetailQueries[index]?.data?.result
+      map.set(gisuId, getGisuPeriodText(gisu))
+    })
 
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-
-    return `${year}.${month}.${day}`
-  }
+    return map
+  }, [gisuIds, gisuDetailQueries])
 
   const activityHistories = (profile?.challengerRecords ?? []).map((record) => {
-    const periodText =
-      record.startAt && record.endAt
-        ? `${formatDateToDot(record.startAt)} ~ ${formatDateToDot(record.endAt)}`
-        : '-'
+    const periodText = gisuDetailMap.get(record.gisuId) ?? '-'
 
     return {
       challengerId: record.challengerId,
@@ -130,7 +134,7 @@ export const useAccountDetail = ({
           roleType: role,
           organizationId,
           responsiblePart,
-          gisuId: activeGisuId ?? activeChallengerRecord.gisu,
+          gisuId: activeGisuId ?? activeChallengerRecord.gisuId,
         })
       },
       {

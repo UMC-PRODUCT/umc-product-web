@@ -42,6 +42,7 @@ const managementKeyFactory = createQueryKeys('management', {
     },
   },
   gisuList: (params: SchoolsPagingParams) => [params],
+  gisuDetail: (gisuId: string) => [gisuId],
   gisuChapterWithSchools: (gisuId: string) => [gisuId],
   schoolsPaging: (params: SchoolsPagingParams) => [params],
   schoolDetail: (schoolId: string) => [schoolId],
@@ -63,6 +64,7 @@ export const managementKeys = {
   getAllSchools: managementKeyFactory.schools._ctx.all.queryKey,
   getAllGisu: managementKeyFactory.gisu._ctx.all.queryKey,
   getGisuList: (params: SchoolsPagingParams) => managementKeyFactory.gisuList(params).queryKey,
+  getGisuDetail: (gisuId: string) => managementKeyFactory.gisuDetail(gisuId).queryKey,
   getGisuChapterWithSchools: (gisuId: string) =>
     managementKeyFactory.gisuChapterWithSchools(gisuId).queryKey,
   getUnassignedSchools: (gisuId: string) =>

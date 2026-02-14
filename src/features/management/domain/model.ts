@@ -223,6 +223,10 @@ export type GetGisuChapterWithSchoolsParams = {
   gisuId: string
 }
 
+export type GetGisuDetailParams = {
+  gisuId: string
+}
+
 export type GisuChapterWithSchoolsResponseDTO = {
   chapters: Array<ChapterType>
 }
@@ -308,6 +312,7 @@ export type ChallengerPoint = {
 export type ChallengerDetailResponseDTO = {
   challengerId: string
   memberId: string
+  gisuId: string
   gisu: string
   startAt?: string
   endAt?: string
