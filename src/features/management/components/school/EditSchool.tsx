@@ -26,7 +26,7 @@ const EditSchool = () => {
   const { data, isLoading } = useGetSchoolsPaging({
     page: String(page),
     size: '10',
-    keyword: debouncedSearch,
+    keyword: debouncedSearch || undefined,
   })
   return (
     <>
@@ -61,9 +61,9 @@ const EditSchool = () => {
           headerLabels={['학교명', '비고', '상태']}
           showFooter={true}
           page={{
-            currentPage: page,
-            totalPages: data ? Number(data.result.totalPages) : 0,
-            onChangePage: setPage,
+            currentPage: page + 1,
+            totalPages: data ? Number(data.result.totalPages) : 1,
+            onChangePage: (nextPage) => setPage(nextPage - 1),
           }}
           rows={data?.result.content ?? []}
           getRowId={(row) => row.schoolId}
