@@ -30,6 +30,7 @@ import type {
   GetRecruitmentDashboardResponseDTO,
   GetRecruitmentDraftResponseDTO,
   GetRecruitmentNoticesResponseDTO,
+  GetRecruitmentsDocumentEvaluationResponseDTO,
   GetRecruitmentsRequestDTO,
   GetRecruitmentsResponseDTO,
   InterviewEvaluationViewResponseDTO,
@@ -561,5 +562,13 @@ export const deleteInterviewAssignApplicants = async (
   const { data } = await axiosInstance.delete(
     `/recruitments/${recruitmentId}/interviews/scheduling/assignments/${assignmentId}`,
   )
+  return data
+}
+
+/** GET /recruitments/document-evaluations - 서류 평가 가능한 모집 목록 조회 */
+export const getRecruitmentsDocumentEvaluation = async (): Promise<
+  CommonResponseDTO<GetRecruitmentsDocumentEvaluationResponseDTO>
+> => {
+  const { data } = await axiosInstance.get('/recruitments/document-evaluations')
   return data
 }
