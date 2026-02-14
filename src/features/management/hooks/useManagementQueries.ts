@@ -13,6 +13,7 @@ import {
   getCurriculums,
   getGisuChapterWithSchools,
   getGisuList,
+  getMemberProfile,
   getRecruitementsApplications,
   getSchoolDetails,
   getSchoolsPaging,
@@ -171,6 +172,19 @@ export function useGetChallengerDetail(challengerId: string) {
     managementKeys.getChallengerDetail(challengerId),
     () => getChallengerDetail(challengerId),
     { enabled: Boolean(challengerId) },
+  )
+}
+
+/**
+ * 회원 상세 정보를 조회하는 쿼리 훅.
+ * @param memberId - 회원 ID
+ * @returns 회원 상세 조회 쿼리 결과
+ */
+export function useGetMemberProfile(memberId: string) {
+  return useCustomQuery(
+    managementKeys.getMemberProfileDetail(memberId),
+    () => getMemberProfile(memberId),
+    { enabled: Boolean(memberId) },
   )
 }
 

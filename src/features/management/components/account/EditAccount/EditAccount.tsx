@@ -35,7 +35,7 @@ const EditAccountContent = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [activeRowId, setActiveRowId] = useState<string | null>(null)
-  const [selectedChallengerId, setSelectedChallengerId] = useState<string | null>(null)
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
   const [selectedRoleType, setSelectedRoleType] = useState<RoleType | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
@@ -85,6 +85,7 @@ const EditAccountContent = () => {
     () =>
       (data?.result.page.content ?? []).map((item) => ({
         id: `${item.challengerId}-${item.memberId}`,
+        memberId: String(item.memberId),
         challengerId: String(item.challengerId),
         name: item.name,
         nickname: item.nickname,
@@ -143,9 +144,11 @@ const EditAccountContent = () => {
             activeRowId={activeRowId}
             onRowClick={(id) => {
               setActiveRowId(id)
-              setSelectedChallengerId(id.split('-')[0] || null)
               const selectedRow = pageItems.find((row) => row.id === id)
-              setSelectedRoleType(selectedRow?.roleTypes[0] ?? null)
+              setSelectedMemberId(selectedRow?.memberId ?? null)
+              setSelectedRoleType(
+                selectedRow && selectedRow.roleTypes.length === 1 ? selectedRow.roleTypes[0] : null,
+              )
               setOpenModal(true)
             }}
             renderRow={(item) => (
@@ -179,13 +182,13 @@ const EditAccountContent = () => {
           />
         )}
       </Section>
-      {openModal && selectedChallengerId && (
+      {openModal && selectedMemberId && (
         <AccountDetail
-          challengerId={selectedChallengerId}
+          memberId={selectedMemberId}
           initialRoleType={selectedRoleType}
           onClose={() => {
             setOpenModal(false)
-            setSelectedChallengerId(null)
+            setSelectedMemberId(null)
             setSelectedRoleType(null)
           }}
         />

@@ -18,6 +18,7 @@ import type {
   GetUnassignedSchoolsParams,
   GisuChapterWithSchoolsResponseDTO,
   GisuType,
+  MemberProfileResponseDTO,
   PatchSchoolAssignBody,
   PatchSchoolBody,
   PatchSchoolUnassignBody,
@@ -280,6 +281,18 @@ export const getChallengerDetail = async (
   challengerId: string,
 ): Promise<CommonResponseDTO<ChallengerDetailResponseDTO>> => {
   const { data } = await axiosInstance.get(`/challenger/${challengerId}`)
+  return data
+}
+
+/**
+ * memberId로 회원 상세 정보를 조회함
+ * @param memberId - 회원 ID
+ * @returns 회원 상세 응답 데이터
+ */
+export const getMemberProfile = async (
+  memberId: string,
+): Promise<CommonResponseDTO<MemberProfileResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/member/profile/${memberId}`)
   return data
 }
 

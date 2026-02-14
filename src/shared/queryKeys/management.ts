@@ -54,6 +54,7 @@ const managementKeyFactory = createQueryKeys('management', {
   recruitmentApplications: (params: RecruitmentApplicationsPagingParams) => [params],
   challenger: (params: ChallengerSearchParams) => [params],
   challengerDetail: (challengerId: string) => [challengerId],
+  memberProfileDetail: (memberId: string) => [memberId],
   challengerRoleDetail: (challengerRoleId: string) => [challengerRoleId],
 })
 
@@ -76,6 +77,8 @@ export const managementKeys = {
     managementKeyFactory.challenger(params).queryKey,
   getChallengerDetail: (challengerId: string) =>
     managementKeyFactory.challengerDetail(challengerId).queryKey,
+  getMemberProfileDetail: (memberId: string) =>
+    managementKeyFactory.memberProfileDetail(memberId).queryKey,
   getChallengerRoleDetail: (challengerRoleId: string) =>
     managementKeyFactory.challengerRoleDetail(challengerRoleId).queryKey,
 }

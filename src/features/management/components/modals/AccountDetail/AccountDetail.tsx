@@ -1,31 +1,16 @@
-import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-
-import { useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
-import {
-  deleteChallengerRole,
-  postChallengerDeactivate,
-  postChallengerRole,
-} from '@/features/management/domain/api'
-import {
-  useGetChallengerDetail,
-  useGetChallengerRole,
-} from '@/features/management/hooks/useManagementQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
 import Mail from '@/shared/assets/icons/mail.svg?react'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
-import { useCustomMutation } from '@/shared/hooks/customQuery'
-import { managementKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
-import type { CommonResponseDTO } from '@/shared/types/api'
 import type { RoleType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 import Section from '@/shared/ui/common/Section/Section'
-import { transformPart } from '@/shared/utils/transformKorean'
+import { transformPart, transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './AccountDetail.style'
+import { useAccountDetail } from './useAccountDetail'
 
 const STATUS_LABEL: Record<string, string> = {
   ACTIVE: '활성',
@@ -34,113 +19,50 @@ const STATUS_LABEL: Record<string, string> = {
   WITHDRAWN: '탈퇴',
 }
 
-const ROLE_OPTIONS: Array<{ roleType: RoleType; label: string }> = [
-  { roleType: 'SUPER_ADMIN', label: '프로덕트 팀' },
-  { roleType: 'CENTRAL_PRESIDENT', label: '중앙 총괄' },
-  { roleType: 'CENTRAL_VICE_PRESIDENT', label: '중앙 부총괄' },
-  { roleType: 'CENTRAL_OPERATING_TEAM_MEMBER', label: '중앙 운영국원' },
-  { roleType: 'CENTRAL_EDUCATION_TEAM_MEMBER', label: '중앙 교육국원' },
-  { roleType: 'CHAPTER_PRESIDENT', label: '지부장' },
-  { roleType: 'SCHOOL_PRESIDENT', label: '학교 회장' },
-  { roleType: 'SCHOOL_VICE_PRESIDENT', label: '학교 부회장' },
-  { roleType: 'SCHOOL_PART_LEADER', label: '학교 파트장' },
-  { roleType: 'SCHOOL_ETC_ADMIN', label: '학교 기타 운영진' },
+const ROLE_OPTION_TYPES: Array<RoleType> = [
+  'SUPER_ADMIN',
+  'CENTRAL_PRESIDENT',
+  'CENTRAL_VICE_PRESIDENT',
+  'CENTRAL_OPERATING_TEAM_MEMBER',
+  'CENTRAL_EDUCATION_TEAM_MEMBER',
+  'CHAPTER_PRESIDENT',
+  'SCHOOL_PRESIDENT',
+  'SCHOOL_VICE_PRESIDENT',
+  'SCHOOL_PART_LEADER',
+  'SCHOOL_ETC_ADMIN',
 ]
 
+const ROLE_OPTIONS: Array<{ roleType: RoleType; label: string }> = ROLE_OPTION_TYPES.map(
+  (roleType) => ({
+    roleType,
+    label: transformRoleKorean(roleType),
+  }),
+)
+
 const AccountDetail = ({
-  challengerId,
+  memberId,
   initialRoleType,
   onClose,
 }: {
-  challengerId: string
+  memberId: string
   initialRoleType?: RoleType | null
   onClose: () => void
 }) => {
-  const [role, setRole] = useState<RoleType | null>(initialRoleType ?? null)
-  const [createdRoleId, setCreatedRoleId] = useState<string>('')
-  const queryClient = useQueryClient()
-  const { data: myProfile } = useMemberMeQuery()
-  const { data, isLoading } = useGetChallengerDetail(challengerId)
-  const { data: createdRoleDetail } = useGetChallengerRole(createdRoleId)
-  const profile = data?.result
-  const { mutate: deactivateChallenger, isPending: isDeactivating } =
-    useCustomMutation<CommonResponseDTO<null> | null>(
-      () => {
-        if (!profile) return Promise.resolve(null)
-
-        return postChallengerDeactivate(challengerId, {
-          deactivationType: 'WITHDRAW',
-          modifiedBy: Number(myProfile?.id ?? 0),
-          reason: '관리자에 의한 비활성화 처리',
-          memberId: profile.memberId,
-        })
-      },
-      {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
-          await queryClient.invalidateQueries({
-            queryKey: managementKeys.getChallengerDetail(challengerId),
-          })
-          onClose()
-        },
-      },
-    )
-  const { mutate: createChallengerRole, isPending: isSavingRole } =
-    useCustomMutation<CommonResponseDTO<{ challengerRoleId: number }> | null>(
-      async () => {
-        if (!profile || !role) return null
-
-        if (role === 'CHAPTER_PRESIDENT') {
-          alert('지부장 권한은 현재 화면에서 지부 organizationId가 없어 설정할 수 없습니다.')
-          return null
-        }
-
-        const organizationId = role.startsWith('SCHOOL_') ? Number(profile.schoolId) : null
-        const responsiblePart =
-          role === 'SCHOOL_PART_LEADER' || role === 'CENTRAL_EDUCATION_TEAM_MEMBER'
-            ? profile.part
-            : null
-
-        return postChallengerRole({
-          challengerId: Number(profile.challengerId),
-          roleType: role,
-          organizationId,
-          responsiblePart,
-          gisuId: Number(profile.gisu),
-        })
-      },
-      {
-        onSuccess: async (created) => {
-          if (!created) return
-          const createdId = created.result.challengerRoleId
-          if (createdId) setCreatedRoleId(String(createdId))
-          await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
-          await queryClient.invalidateQueries({
-            queryKey: managementKeys.getChallengerDetail(challengerId),
-          })
-        },
-      },
-    )
-  const { mutate: deleteCreatedRole, isPending: isDeletingRole } = useCustomMutation(
-    async () => {
-      if (!createdRoleId) return null
-      return deleteChallengerRole(createdRoleId)
-    },
-    {
-      onSuccess: async () => {
-        if (createdRoleId) {
-          await queryClient.invalidateQueries({
-            queryKey: managementKeys.getChallengerRoleDetail(createdRoleId),
-          })
-        }
-        setCreatedRoleId('')
-        await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
-        await queryClient.invalidateQueries({
-          queryKey: managementKeys.getChallengerDetail(challengerId),
-        })
-      },
-    },
-  )
+  const {
+    isLoading,
+    profile,
+    activityHistories,
+    deactivateChallenger,
+    isDeactivating,
+    createChallengerRole,
+    isSavingRole,
+    onClickRoleOption,
+    isRoleActive,
+  } = useAccountDetail({
+    memberId,
+    initialRoleType,
+    onClose,
+  })
 
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
@@ -184,7 +106,7 @@ const AccountDetail = ({
                     </S.Name>
                     <S.Status>
                       <S.Circle />
-                      {STATUS_LABEL[profile?.status ?? ''] ?? '알 수 없음'}
+                      {STATUS_LABEL[profile?.status ?? '']}
                     </S.Status>
                   </Flex>
                   <S.School>{profile?.schoolName ?? '-'}</S.School>
@@ -205,36 +127,15 @@ const AccountDetail = ({
                   {ROLE_OPTIONS.map((option) => (
                     <S.RoleButton
                       key={option.roleType}
-                      isActive={role === option.roleType}
-                      onClick={() => setRole(option.roleType)}
+                      isActive={isRoleActive(option.roleType)}
+                      onClick={() => onClickRoleOption(option.roleType)}
                     >
-                      <S.RadioChoiceInput $isChecked={role === option.roleType} />
+                      <S.RadioChoiceInput $isChecked={isRoleActive(option.roleType)} />
                       {option.label}
                     </S.RoleButton>
                   ))}
                 </S.Grid>
               </Section>
-              {createdRoleDetail?.result && (
-                <Section variant="solid" gap={8}>
-                  <S.SubTitle>최근 생성 역할</S.SubTitle>
-                  <Flex justifyContent="space-between" alignItems="center">
-                    <Flex flexDirection="column" alignItems="flex-start" gap={2}>
-                      <S.SubInfo>Role: {createdRoleDetail.result.roleType}</S.SubInfo>
-                      <S.SubInfo>
-                        Organization: {createdRoleDetail.result.organizationType}
-                      </S.SubInfo>
-                      <S.SubInfo>Gisu: {createdRoleDetail.result.gisu}기</S.SubInfo>
-                    </Flex>
-                    <Button
-                      tone="necessary"
-                      typo="C3.Md"
-                      label="역할 삭제"
-                      isLoading={isDeletingRole}
-                      onClick={() => deleteCreatedRole()}
-                    />
-                  </Flex>
-                </Section>
-              )}
             </Flex>
 
             <Flex flexDirection="column" gap={10}>
@@ -242,19 +143,34 @@ const AccountDetail = ({
                 <S.Title>활동 이력</S.Title>
                 <S.SubTitle>기수별 참여 파트 정보를 확인할 수 있습니다.</S.SubTitle>
               </Flex>
-              <Section variant="solid" flexDirection="row" padding="15px 40px">
-                <S.Generation isActive={true}>
-                  {profile?.gisu ? `${profile.gisu}기` : '-'}
-                </S.Generation>
-                <S.ActivityInfo isActive={true}>
-                  <span>파트</span>
-                  <span>{profile?.part ? transformPart(profile.part) : '-'}</span>
-                </S.ActivityInfo>
-                <S.ActivityInfo isActive={true}>
-                  <span>기수</span>
-                  <span>{profile?.gisu ? `${profile.gisu}기` : '-'}</span>
-                </S.ActivityInfo>
-              </Section>
+              <Flex flexDirection="column" gap={8} width="100%">
+                {activityHistories.length > 0 ? (
+                  activityHistories.map((history, index) => (
+                    <Section
+                      key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
+                      variant="solid"
+                      flexDirection="row"
+                      padding="15px 40px"
+                    >
+                      <S.Generation isActive={history.isActive}>{`${history.gisu}기`}</S.Generation>
+                      <S.ActivityInfo isActive={history.isActive}>
+                        <span>파트</span>
+                        <span>{transformPart(history.part)}</span>
+                      </S.ActivityInfo>
+                      <S.ActivityInfo isActive={history.isActive}>
+                        <span>기간</span>
+                        <span>{history.periodText}</span>
+                      </S.ActivityInfo>
+                    </Section>
+                  ))
+                ) : (
+                  <Section variant="solid" flexDirection="row" padding="15px 40px">
+                    <S.ActivityInfo isActive={false}>
+                      <span>활동 이력이 없습니다.</span>
+                    </S.ActivityInfo>
+                  </Section>
+                )}
+              </Flex>
             </Flex>
             <Modal.Footer>
               <S.FooterWrapper>
@@ -274,7 +190,10 @@ const AccountDetail = ({
                     variant="solid"
                     label="상세 정보 등록"
                     isLoading={isSavingRole}
-                    onClick={() => createChallengerRole()}
+                    onClick={() => {
+                      createChallengerRole()
+                      onClose()
+                    }}
                     css={{ width: 'fit-content', padding: '6px 18px' }}
                   />
                 </Flex>

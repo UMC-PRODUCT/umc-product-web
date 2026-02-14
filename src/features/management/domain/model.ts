@@ -49,17 +49,17 @@ export interface UniversitySimple {
 
 /** 대학교 지부 정보 */
 export interface UniversityBranch {
-  id: number
-  universityId: number
+  id: string
+  universityId: string
   name: string
   state: SchoolStateType
 }
 
 /** 리크루팅 정보 */
 export interface Recruiting {
-  id: number
-  universityId: number
-  generation: number
+  id: string
+  universityId: string
+  generation: string
   state: RecruitingType
   startDate: string
   endDate: string
@@ -69,12 +69,12 @@ export interface Recruiting {
 
 /** 공지사항 */
 export interface Notice {
-  id: number
+  id: string
   title: string
   content: string
   createdAt: string
   updatedAt: string
-  authorId: number
+  authorId: string
 }
 
 export type ManageSchoolTab = (typeof MANAGE_SCHOOL_TABS)[number]
@@ -88,14 +88,14 @@ export type Curriculum = {
 }
 
 export type PutCurriculumWorkbookItem = {
-  id?: string | number
-  weekNo: number
+  id?: string | string
+  weekNo: string
   title: string
   description: string
 }
 
 export type PutCurriculumsBody = {
-  id?: string | number
+  id?: string | string
   part: PartType
   title: string
   workbooks: Array<PutCurriculumWorkbookItem>
@@ -278,74 +278,99 @@ export type GetChallengerParams = CommonSearchParams & {
 }
 
 export type ChallengerSearchItem = {
-  memberId: number
-  challengerId: number
-  gisuId: number
-  gisu: number
+  memberId: string
+  challengerId: string
+  gisuId: string
+  gisu: string
   part: PartType
   name: string
   nickname: string
   email: string
-  schoolId: number
+  schoolId: string
   schoolName: string
   profileImageLink: string
   roleTypes: Array<RoleType>
 }
 
 export type GetChallengerResponseDTO = {
-  totalCount: number
+  totalCount: string
   page: CommonPagingResponseDTO<ChallengerSearchItem>
 }
 
 export type ChallengerPoint = {
-  id: number
+  id: string
   pointType: string
-  point: number
+  point: string
   description: string
   createdAt: string
 }
 
 export type ChallengerDetailResponseDTO = {
-  challengerId: number
-  memberId: number
-  gisu: number
+  challengerId: string
+  memberId: string
+  gisu: string
+  startAt?: string
+  endAt?: string
   part: PartType
   challengerPoints: Array<ChallengerPoint>
   name: string
   nickname: string
   email: string
-  schoolId: number
+  schoolId: string
   schoolName: string
-  profileImageLink: string
+  profileImageLink: string | null
   status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
 }
 
+export type MemberProfileRole = {
+  id: string
+  challengerId: string
+  roleType: RoleType
+  organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+  organizationId: string | null
+  responsiblePart: PartType | null
+  gisuId: string
+}
+
+export type MemberProfileResponseDTO = {
+  id: string
+  name: string
+  nickname: string
+  email: string
+  schoolId: string
+  schoolName: string
+  profileImageLink: string
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
+  roles: Array<MemberProfileRole>
+  challengerRecords: Array<ChallengerDetailResponseDTO>
+}
+
 export type PostChallengerDeactivateBody = {
-  memberId: number
+  memberId: string
   deactivationType: 'WITHDRAW' | 'EXPEL'
-  modifiedBy: number
+  modifiedBy: string
   reason: string
 }
 
 export type PostChallengerRoleBody = {
-  challengerId: number
+  challengerId: string
   roleType: RoleType
-  organizationId: number | null
+  organizationId: string | null
   responsiblePart: PartType | null
-  gisuId: number
+  gisuId: string
 }
 
 export type PostChallengerRoleResponseDTO = {
-  challengerRoleId: number
+  challengerRoleId: string
 }
 
 export type ChallengerRoleDetailResponseDTO = {
-  challengerRoleId: number
-  challengerId: number
+  challengerRoleId: string
+  challengerId: string
   roleType: RoleType
   organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
-  organizationId: number | null
+  organizationId: string | null
   responsiblePart: PartType | null
-  gisuId: number
-  gisu: number
+  gisuId: string
+  gisu: string
 }
