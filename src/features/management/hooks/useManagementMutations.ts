@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 
 import { useCustomMutation } from '@/shared/hooks/customQuery'
+import { managementKeys } from '@/shared/queryKeys'
 
 import {
   deleteBranch,
@@ -11,7 +12,9 @@ import {
   postChapter,
   postGisu,
   postSchool,
+  putCurriculums,
 } from '../domain/api'
+import type { PutCurriculumsBody } from '../domain/model'
 
 /**
  * 관리(총괄) 영역에서 사용하는 mutation 훅 모음을 제공함.
@@ -122,6 +125,20 @@ export function useManagementMutations() {
   function usePostGisu() {
     return useCustomMutation(postGisu)
   }
+
+  /**
+   * 커리큘럼 일괄 저장 mutation 훅.
+   * @returns 커리큘럼 저장 mutation 결과
+   */
+  function usePutCurriculums() {
+    return useCustomMutation((body: PutCurriculumsBody) => putCurriculums(body), {
+      onSuccess: (_, variables) => {
+        queryClient.invalidateQueries({
+          queryKey: managementKeys.getCurriculums(variables.part),
+        })
+      },
+    })
+  }
   return {
     usePostSchool,
     usePostChapter,
@@ -131,5 +148,6 @@ export function useManagementMutations() {
     useDeleteBranch,
     useDeleteGeneration,
     usePostGisu,
+    usePutCurriculums,
   }
 }

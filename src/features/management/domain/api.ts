@@ -27,6 +27,7 @@ import type {
   PostChapterBody,
   PostGisuBody,
   PostSchoolBody,
+  PutCurriculumsBody,
   SchoolsResponseDTO,
   University,
   UniversityFullType,
@@ -329,5 +330,17 @@ export const deleteChallengerRole = async (
   challengerRoleId: string,
 ): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.delete(`/authorization/challenger-role/${challengerRoleId}`)
+  return data
+}
+
+/**
+ * 활성 기수의 파트별 커리큘럼/워크북을 일괄 생성·수정·삭제함
+ * @param body - 커리큘럼 일괄 관리 요청 본문
+ * @returns 커리큘럼 저장 응답 데이터
+ */
+export const putCurriculums = async (
+  body: PutCurriculumsBody,
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.put('/curriculums', body)
   return data
 }

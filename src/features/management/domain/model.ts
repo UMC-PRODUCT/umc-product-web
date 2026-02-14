@@ -87,6 +87,20 @@ export type Curriculum = {
   workbooks: Array<Workbook>
 }
 
+export type PutCurriculumWorkbookItem = {
+  id?: string | number
+  weekNo: number
+  title: string
+  description: string
+}
+
+export type PutCurriculumsBody = {
+  id?: string | number
+  part: PartType
+  title: string
+  workbooks: Array<PutCurriculumWorkbookItem>
+}
+
 export type Workbook = {
   id: string
   title: string

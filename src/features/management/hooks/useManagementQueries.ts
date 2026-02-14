@@ -29,6 +29,17 @@ export function useGetCurriculums(part: PartType) {
 }
 
 /**
+ * 파트별 커리큘럼을 조회하는 일반 쿼리 훅.
+ * @param part - 조회할 파트 타입
+ * @returns 커리큘럼 조회 쿼리 결과
+ */
+export function useGetCurriculumsQuery(part: PartType) {
+  return useCustomQuery(managementKeys.getCurriculums(part), () => getCurriculums({ part }), {
+    enabled: Boolean(part),
+  })
+}
+
+/**
  * 전체 기수 목록을 조회하는 쿼리 훅.
  * @returns 전체 기수 조회 쿼리 결과
  */
