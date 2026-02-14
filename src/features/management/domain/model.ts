@@ -35,7 +35,7 @@ export interface University {
   schoolName: string
   chapterId: string | null
   chapterName: string | null
-  logoImageLink: string | null
+  logoImageUrl: string | null
   remark: string | null
   createdAt: string
   isActive: boolean

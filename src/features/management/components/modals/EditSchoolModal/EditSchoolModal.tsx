@@ -313,7 +313,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
                   <Flex alignItems="center" justifyContent="center" gap={25}>
                     <S.ModalButton type="button" onClick={handleFileWrapperClick}>
                       <img
-                        src={profilePreview ?? schoolDetails.result.logoImageLink ?? DefaultSchool}
+                        src={profilePreview ?? schoolDetails.result.logoImageUrl ?? DefaultSchool}
                         alt="학교 이미지"
                         css={{
                           borderRadius: '50%',
