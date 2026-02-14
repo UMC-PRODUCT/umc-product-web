@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react'
+import { css, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { media } from '@/shared/styles/media'
@@ -12,6 +12,32 @@ export const fadeInUp = keyframes`
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+`
+
+// 홈 페이지 전용 반응형 폰트 헬퍼
+// desktop / tablet / mobile 순서로 전달해서 각 컴포넌트에서 재사용할 수 있습니다.
+export const homeResponsiveFont = (desktop: string, tablet: string, mobile: string) => css`
+  font-size: ${desktop};
+
+  ${media.down(theme.breakPoints.tablet)} {
+    font-size: ${tablet};
+  }
+
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: ${mobile};
+  }
+`
+
+export const homeResponsiveSpace = (desktop: string, tablet: string, mobile: string) => css`
+  ${desktop};
+
+  ${media.down(theme.breakPoints.tablet)} {
+    ${tablet};
+  }
+
+  ${media.down(theme.breakPoints.mobile)} {
+    ${mobile};
   }
 `
 
@@ -41,16 +67,12 @@ export const Page = styled.div`
 export const Section = styled.section`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 140px 60px;
-
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 80px 32px;
-  }
+  ${homeResponsiveSpace('padding: 140px 60px;', 'padding: 80px 32px;', 'padding: 64px 30px;')}
 `
 
 export const SectionHeader = styled.div`
   text-align: center;
-  margin-bottom: 100px;
+  ${homeResponsiveSpace('margin-bottom: 100px;', 'margin-bottom: 72px;', 'margin-bottom: 52px;')}
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease-out;
@@ -62,28 +84,25 @@ export const SectionHeader = styled.div`
 `
 
 export const SectionBadge = styled.div`
-  font-size: 17px;
+  ${homeResponsiveFont('17px', '15px', '13px')}
   font-weight: 700;
   color: ${theme.colors.lime};
   letter-spacing: 2px;
-  margin-bottom: 24px;
+  ${homeResponsiveSpace('margin-bottom: 24px;', 'margin-bottom: 18px;', 'margin-bottom: 14px;')}
   text-transform: uppercase;
 `
 
 export const SectionTitle = styled.h2`
-  font-size: 64px;
+  ${homeResponsiveFont('64px', '48px', '34px')}
   font-weight: 900;
   line-height: 1.2;
-  margin-bottom: 24px;
+  ${homeResponsiveSpace('margin-bottom: 24px;', 'margin-bottom: 18px;', 'margin-bottom: 14px;')}
   letter-spacing: -2px;
   margin-top: 0;
-  ${media.down('1200px')} {
-    font-size: 48px;
-  }
 `
 
 export const SectionDescription = styled.p`
-  font-size: 18px;
+  ${homeResponsiveFont('18px', '16px', '14px')}
   color: ${theme.colors.gray[400]};
   max-width: 700px;
   margin: 0 auto;
@@ -91,20 +110,12 @@ export const SectionDescription = styled.p`
 `
 
 export const FullWidthSection = styled.section`
-  padding: 140px 0;
+  ${homeResponsiveSpace('padding: 140px 0;', 'padding: 80px 0;', 'padding: 64px 20px;')}
   overflow: hidden;
-
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 80px 0;
-  }
 `
 
 export const FullWidthHeader = styled(SectionHeader)`
-  padding: 0 60px;
-
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 0 32px;
-  }
+  ${homeResponsiveSpace('padding: 0 60px;', 'padding: 0 32px;', 'padding: 0 20px;')}
 `
 
 export const ScrollWrapper = styled.div<{ $paused?: boolean }>`

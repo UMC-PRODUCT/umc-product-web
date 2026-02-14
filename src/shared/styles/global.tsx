@@ -16,6 +16,7 @@ export const GlobalStyle = () => (
         scrollbar-gutter: stable both-edges;
         scrollbar-color: transparent transparent;
         max-width: 100vw;
+        margin: 0;
         input:focus {
           outline: none;
         }

@@ -7,6 +7,8 @@ import { theme } from '@/shared/styles/theme'
 import {
   FullWidthHeader,
   FullWidthSection,
+  homeResponsiveFont,
+  homeResponsiveSpace,
   SectionBadge,
   SectionDescription,
   SectionTitle,
@@ -22,18 +24,16 @@ const slideIn = keyframes`
 export const GenerationTabs = styled.div`
   display: flex;
   justify-content: center;
-  gap: 48px;
-  margin-bottom: 60px;
-  padding: 0 60px;
+  ${homeResponsiveSpace('gap: 48px;', 'gap: 24px;', 'gap: 14px;')}
+  ${homeResponsiveSpace('margin-bottom: 60px;', 'margin-bottom: 40px;', 'margin-bottom: 24px;')}
+  ${homeResponsiveSpace('padding: 0 60px;', 'padding: 0 32px;', 'padding: 0 20px;')}
 
   ${media.down(theme.breakPoints.tablet)} {
-    padding: 0 32px;
-    gap: 24px;
   }
 `
 
 export const GenerationTab = styled.button<{ $active?: boolean }>`
-  font-size: 18px;
+  ${homeResponsiveFont('18px', '16px', '14px')}
   font-weight: 700;
   color: ${({ $active }) => ($active ? theme.colors.white : theme.colors.gray[400])};
   cursor: pointer;
@@ -66,17 +66,13 @@ export const ProjectsScrollWrapper = styled.div<{ $dragging?: boolean }>`
   position: relative;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 20px 60px;
+  ${homeResponsiveSpace('padding: 20px 60px;', 'padding: 16px 32px;', 'padding: 12px 20px;')}
   cursor: ${({ $dragging }) => ($dragging ? 'grabbing' : 'grab')};
   scrollbar-width: none;
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
     display: none;
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 16px 32px;
   }
 `
 
@@ -89,8 +85,8 @@ export const ProjectsScrollContainer = styled.div`
 
 export const ProjectsList = styled.div`
   display: flex;
-  gap: 32px;
-  padding-right: 32px;
+  ${homeResponsiveSpace('gap: 32px;', 'gap: 24px;', 'gap: 16px;')}
+  ${homeResponsiveSpace('padding-right: 32px;', 'padding-right: 24px;', 'padding-right: 16px;')}
 `
 
 export const ProjectCard = styled.div`
@@ -108,16 +104,10 @@ export const ProjectCard = styled.div`
     transform: translateY(-12px);
   }
 
-  ${media.down('1200px')} {
-    min-width: 288px;
-    max-width: 288px;
-    height: 324px;
-  }
-
   ${media.down(theme.breakPoints.tablet)} {
     min-width: 256px;
     max-width: 256px;
-    height: 288px;
+    height: 300px;
   }
 `
 
@@ -144,7 +134,7 @@ export const ProjectImage = styled.div`
 
 export const ProjectContent = styled.div`
   background: rgba(255, 255, 255, 0.03);
-  padding: 26px;
+  ${homeResponsiveSpace('padding: 26px;', 'padding: 20px;', 'padding: 16px;')}
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-top: none;
   flex: 1;
@@ -155,17 +145,17 @@ export const ProjectContent = styled.div`
 `
 
 export const ProjectTitle = styled.h3`
-  font-size: 20px;
+  ${homeResponsiveFont('20px', '18px', '16px')}
   font-weight: 800;
-  margin-bottom: 12px;
+  ${homeResponsiveSpace('margin-bottom: 12px;', 'margin-bottom: 10px;', 'margin-bottom: 8px;')}
   letter-spacing: -0.5px;
 `
 
 export const ProjectDescription = styled.p`
-  font-size: 14px;
+  ${homeResponsiveFont('14px', '13px', '12px')}
   color: ${theme.colors.gray[400]};
   line-height: 1.6;
-  margin-bottom: 16px;
+  ${homeResponsiveSpace('margin-bottom: 16px;', 'margin-bottom: 12px;', 'margin-bottom: 10px;')}
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -176,14 +166,14 @@ export const ProjectDescription = styled.p`
 
 export const ProjectTech = styled.div`
   display: flex;
-  gap: 6px;
+  ${homeResponsiveSpace('gap: 6px;', 'gap: 6px;', 'gap: 4px;')}
   flex-wrap: wrap;
 `
 
 export const TechTag = styled.span`
-  font-size: 11px;
+  ${homeResponsiveFont('11px', '11px', '10px')}
   color: ${theme.colors.lime};
-  padding: 4px 10px;
+  ${homeResponsiveSpace('padding: 4px 10px;', 'padding: 4px 8px;', 'padding: 3px 7px;')}
   border: 1px solid rgba(149, 239, 75, 0.3);
   border-radius: 6px;
   font-weight: 600;

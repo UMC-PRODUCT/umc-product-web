@@ -1,4 +1,4 @@
-import type { Stat } from '../../pages/home.constants'
+import type { Stat } from '../../domain/constants'
 import * as S from './StatsSection.style'
 
 type Props = {

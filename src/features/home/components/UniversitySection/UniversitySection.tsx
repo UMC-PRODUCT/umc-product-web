@@ -53,7 +53,7 @@ const UniversitySection = () => {
 
   return (
     <S.UniversitySection data-animate>
-      <UniversitySlogan css={{ alignSelf: 'center', padding: '0 20px' }} />
+      <UniversitySlogan className="slogan" />
       <S.UniversityList>
         <S.UniversityRow $direction="left">
           <div className="track">{renderTrack()}</div>
