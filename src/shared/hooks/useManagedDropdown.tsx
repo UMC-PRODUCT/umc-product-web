@@ -35,7 +35,7 @@ const buildOptions = <T,>(
   includeAllOption: boolean,
 ): Array<Option<string>> => {
   const options: Array<Option<string>> = includeAllOption ? [{ label: allLabel, id: ALL_ID }] : []
-  const seenIds = new Set<string>(options.map((option) => option.id))
+  const seenIds = new Set<string>(options.map((option) => String(option.id)))
 
   items.forEach((item) => {
     const id = String(mapId(item))

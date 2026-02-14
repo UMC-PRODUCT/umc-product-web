@@ -88,14 +88,14 @@ export type Curriculum = {
 }
 
 export type PutCurriculumWorkbookItem = {
-  id?: string | string
-  weekNo: string
+  id?: string | number
+  weekNo: string | number
   title: string
   description: string
 }
 
 export type PutCurriculumsBody = {
-  id?: string | string
+  id?: string | number
   part: PartType
   title: string
   workbooks: Array<PutCurriculumWorkbookItem>
