@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/api/axiosInstance'
 import type { PartType } from '@/features/auth/domain'
+import type { RoleType } from '@/shared/types'
 import type {
   CommonPagingResponseDTO,
   CommonResponseDTO,
@@ -200,6 +201,39 @@ export const getRecruitementsApplications = async ({
 }): Promise<CommonResponseDTO<GetRecruitmentsApplication>> => {
   const { data } = await axiosInstance.get('/recruitments/applications', {
     params: { chapterId, schoolId, part, page, keyword, size },
+  })
+  return data
+}
+
+/** GET /member/search - 계정(회원) 조회 */
+export const getChallenger = async (
+  params: CommonSearchParams & {
+    sort?: Array<string>
+    keyword?: string
+    schoolId?: string
+    chapterId?: string
+    part?: PartType
+    gisuId?: string
+  },
+): Promise<{
+  totalCount: number
+  page: CommonPagingResponseDTO<{
+    memberId: number
+    challengerId: number
+    gisuId: number
+    gisu: number
+    part: PartType
+    name: string
+    nickname: string
+    email: string
+    schoolId: number
+    schoolName: string
+    profileImageLink: string
+    roleTypes: Array<RoleType>
+  }>
+}> => {
+  const { data } = await axiosInstance.get('/member/search', {
+    params,
   })
   return data
 }

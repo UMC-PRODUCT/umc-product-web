@@ -17,6 +17,15 @@ type RecruitmentApplicationsPagingParams = CommonSearchParams & {
   keyword?: string
 }
 
+type ChallengerSearchParams = CommonSearchParams & {
+  sort?: Array<string>
+  keyword?: string
+  schoolId?: string
+  chapterId?: string
+  part?: PartType
+  gisuId?: string
+}
+
 const managementKeyFactory = createQueryKeys('management', {
   curriculums: (part: PartType) => [part],
   schools: {
@@ -43,6 +52,7 @@ const managementKeyFactory = createQueryKeys('management', {
     },
   },
   recruitmentApplications: (params: RecruitmentApplicationsPagingParams) => [params],
+  challenger: (params: ChallengerSearchParams) => [params],
 })
 
 export const managementKeys = {
@@ -60,4 +70,6 @@ export const managementKeys = {
   getChapters: managementKeyFactory.chapters._ctx.all.queryKey,
   getRecruitmentsApplications: (params: RecruitmentApplicationsPagingParams) =>
     managementKeyFactory.recruitmentApplications(params).queryKey,
+  getChallenger: (params: ChallengerSearchParams) =>
+    managementKeyFactory.challenger(params).queryKey,
 }

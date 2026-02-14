@@ -25,7 +25,7 @@ type UseManagedDropdownResult = {
   Dropdown: React.ReactElement
 }
 
-const ALL_ID = '0'
+const ALL_ID = '__ALL__'
 
 const buildOptions = <T,>(
   items: Array<T>,

@@ -53,13 +53,34 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__month-view__days {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     overflow: visible !important;
     border: 1px solid ${theme.colors.gray[600]};
+  }
+
+  .react-calendar__month-view__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    color: ${theme.colors.white};
+    text-transform: none;
+    abbr {
+      text-decoration: none;
+    }
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
   }
 
   /* 날짜 타일 설정 */
   .react-calendar__tile {
     height: 48px;
+    width: 100%;
+    max-width: none;
     position: relative;
     border: none;
     outline: none;
@@ -112,13 +133,6 @@ const StyledCalendarWrapper = styled.div`
     z-index: 100 !important;
   }
 
-  .react-calendar__month-view__weekdays {
-    color: ${theme.colors.white};
-    abbr {
-      text-decoration: none;
-    }
-  }
-
   .react-calendar__tile--now {
     background: none !important;
     color: ${theme.colors.lime} !important;
@@ -127,6 +141,9 @@ const StyledCalendarWrapper = styled.div`
       font-weight: bold;
       width: 26px;
       height: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       ${media.down(theme.breakPoints.mobile)} {
         width: 20px;
         height: 20px;
@@ -144,6 +161,9 @@ const StyledCalendarWrapper = styled.div`
       border-radius: 50%;
       width: 26px;
       height: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       ${media.down(theme.breakPoints.mobile)} {
         width: 20px;
         height: 20px;

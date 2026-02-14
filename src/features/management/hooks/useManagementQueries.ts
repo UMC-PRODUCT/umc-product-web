@@ -6,6 +6,7 @@ import type { PartType } from '@/shared/types/umc'
 import {
   getAllGisu,
   getAllSchools,
+  getChallenger,
   getChapter,
   getCurriculums,
   getGisuChapterWithSchools,
@@ -83,4 +84,10 @@ export function useGetRecruitmentApplications(
   return useCustomQuery(managementKeys.getRecruitmentsApplications(params), () =>
     getRecruitementsApplications(params),
   )
+}
+
+export function useGetChallenger(params: Parameters<typeof getChallenger>[0]) {
+  return useCustomQuery(managementKeys.getChallenger(params), () => getChallenger(params), {
+    placeholderData: (prev) => prev,
+  })
 }
