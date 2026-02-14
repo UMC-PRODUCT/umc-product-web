@@ -115,7 +115,10 @@ const EditAccountContent = () => {
           rows={pageItems}
           getRowId={(row) => row.id}
           activeRowId={activeRowId}
-          onRowClick={(id) => setActiveRowId(id)}
+          onRowClick={(id) => {
+            setActiveRowId(id)
+            setOpenModal(true)
+          }}
           renderRow={(item) => (
             <>
               <TableStyles.Td>
@@ -136,7 +139,6 @@ const EditAccountContent = () => {
                 <Flex gap={10} justifyContent="space-between">
                   {item.role}
                   <Arrow
-                    onClick={() => setOpenModal(true)}
                     width={20}
                     role="button"
                     css={{ transform: 'rotate(-90deg)', cursor: 'pointer' }}
