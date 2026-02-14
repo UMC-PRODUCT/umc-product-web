@@ -52,7 +52,7 @@ export function useManagementMutations() {
             title: string
             type: 'KAKAO' | 'INSTAGRAM' | 'YOUTUBE'
             url: string
-          }>
+          }> | null
         }
       }) => patchSchool(schoolId, body),
     )

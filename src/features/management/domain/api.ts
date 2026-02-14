@@ -147,7 +147,7 @@ export const patchSchool = async (
     schoolName?: string
     remark?: string
     logoImageId?: string
-    links?: Array<ExternalLink>
+    links?: Array<ExternalLink> | null
   },
 ): Promise<CommonResponseDTO<null>> => {
   const { data } = await axiosInstance.patch(`/schools/${schoolId}`, body)
