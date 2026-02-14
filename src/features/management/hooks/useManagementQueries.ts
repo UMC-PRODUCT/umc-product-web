@@ -7,6 +7,8 @@ import {
   getAllGisu,
   getAllSchools,
   getChallenger,
+  getChallengerDetail,
+  getChallengerRole,
   getChapter,
   getCurriculums,
   getGisuChapterWithSchools,
@@ -90,4 +92,20 @@ export function useGetChallenger(params: Parameters<typeof getChallenger>[0]) {
   return useCustomQuery(managementKeys.getChallenger(params), () => getChallenger(params), {
     placeholderData: (prev) => prev,
   })
+}
+
+export function useGetChallengerDetail(challengerId: string) {
+  return useCustomQuery(
+    managementKeys.getChallengerDetail(challengerId),
+    () => getChallengerDetail(challengerId),
+    { enabled: Boolean(challengerId) },
+  )
+}
+
+export function useGetChallengerRole(challengerRoleId: string) {
+  return useCustomQuery(
+    managementKeys.getChallengerRoleDetail(challengerRoleId),
+    () => getChallengerRole(challengerRoleId),
+    { enabled: Boolean(challengerRoleId) },
+  )
 }

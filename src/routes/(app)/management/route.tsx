@@ -16,7 +16,11 @@ export const Route = createFileRoute('/(app)/management')({
     const { role, gisu } = useUserProfileStore.getState()
     const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
 
-    if (activeRole?.roleType !== 'SUPER_ADMIN') {
+    if (
+      activeRole?.roleType !== 'CENTRAL_PRESIDENT' &&
+      activeRole?.roleType !== 'CENTRAL_VICE_PRESIDENT' &&
+      activeRole?.roleType !== 'SUPER_ADMIN'
+    ) {
       throw redirect({ to: '/school/dashboard' })
     }
   },

@@ -215,25 +215,108 @@ export const getChallenger = async (
     part?: PartType
     gisuId?: string
   },
-): Promise<{
-  totalCount: number
-  page: CommonPagingResponseDTO<{
-    memberId: number
+): Promise<
+  CommonResponseDTO<{
+    totalCount: number
+    page: CommonPagingResponseDTO<{
+      memberId: number
+      challengerId: number
+      gisuId: number
+      gisu: number
+      part: PartType
+      name: string
+      nickname: string
+      email: string
+      schoolId: number
+      schoolName: string
+      profileImageLink: string
+      roleTypes: Array<RoleType>
+    }>
+  }>
+> => {
+  const { data } = await axiosInstance.get('/member/search', {
+    params,
+  })
+  return data
+}
+
+/** GET /challenger/{challengerId} - 챌린저 상세 조회 */
+export const getChallengerDetail = async (
+  challengerId: string,
+): Promise<
+  CommonResponseDTO<{
     challengerId: number
-    gisuId: number
+    memberId: number
     gisu: number
     part: PartType
+    challengerPoints: Array<{
+      id: number
+      pointType: string
+      point: number
+      description: string
+      createdAt: string
+    }>
     name: string
     nickname: string
     email: string
     schoolId: number
     schoolName: string
     profileImageLink: string
-    roleTypes: Array<RoleType>
+    status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
   }>
-}> => {
-  const { data } = await axiosInstance.get('/member/search', {
-    params,
-  })
+> => {
+  const { data } = await axiosInstance.get(`/challenger/${challengerId}`)
+  return data
+}
+
+/** POST /challenger/{challengerId}/deactivate - 챌린저 비활성화(제명/탈부) */
+export const postChallengerDeactivate = async (
+  challengerId: string,
+  body: {
+    deactivationType: 'WITHDRAW' | 'EXPEL'
+    modifiedBy: number
+    reason: string
+  },
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.post(`/challenger/${challengerId}/deactivate`, body)
+  return data
+}
+
+/** POST /authorization/challenger-role - 챌린저 권한 생성 */
+export const postChallengerRole = async (body: {
+  challengerId: number
+  roleType: RoleType
+  organizationId: number | null
+  responsiblePart: PartType | null
+  gisuId: number
+}): Promise<CommonResponseDTO<{ challengerRoleId: number }>> => {
+  const { data } = await axiosInstance.post('/authorization/challenger-role', body)
+  return data
+}
+
+/** GET /authorization/challenger-role/{challengerRoleId} - 챌린저 권한 조회 */
+export const getChallengerRole = async (
+  challengerRoleId: string,
+): Promise<
+  CommonResponseDTO<{
+    challengerRoleId: number
+    challengerId: number
+    roleType: RoleType
+    organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+    organizationId: number | null
+    responsiblePart: PartType | null
+    gisuId: number
+    gisu: number
+  }>
+> => {
+  const { data } = await axiosInstance.get(`/authorization/challenger-role/${challengerRoleId}`)
+  return data
+}
+
+/** DELETE /authorization/challenger-role/{challengerRoleId} - 챌린저 권한 삭제 */
+export const deleteChallengerRole = async (
+  challengerRoleId: string,
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.delete(`/authorization/challenger-role/${challengerRoleId}`)
   return data
 }

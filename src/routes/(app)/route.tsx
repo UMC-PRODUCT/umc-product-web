@@ -22,7 +22,13 @@ function getHeaderType(roleType?: RoleType | null): HeaderType {
     roleType === 'SCHOOL_VICE_PRESIDENT'
   )
     return 'school'
-  if (roleType === 'SUPER_ADMIN') return 'management'
+  if (
+    roleType === 'SUPER_ADMIN' ||
+    roleType === 'CENTRAL_PRESIDENT' ||
+    roleType === 'CENTRAL_VICE_PRESIDENT' ||
+    roleType === 'CENTRAL_OPERATING_TEAM_MEMBER'
+  )
+    return 'management'
 
   return 'challenger'
 }

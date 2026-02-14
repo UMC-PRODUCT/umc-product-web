@@ -17,6 +17,7 @@ import {
   useSchoolDropdown,
 } from '@/shared/hooks/useManagedDropdown'
 import * as S from '@/shared/styles/shared'
+import type { RoleType } from '@/shared/types/umc'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -24,7 +25,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
-import { transformPart } from '@/shared/utils/transformKorean'
+import { transformPart, transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import AccountDetail from '../../modals/AccountDetail/AccountDetail'
 
@@ -34,6 +35,8 @@ const EditAccountContent = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [activeRowId, setActiveRowId] = useState<string | null>(null)
+  const [selectedChallengerId, setSelectedChallengerId] = useState<string | null>(null)
+  const [selectedRoleType, setSelectedRoleType] = useState<RoleType | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
 
@@ -80,17 +83,22 @@ const EditAccountContent = () => {
 
   const pageItems = useMemo(
     () =>
-      (data?.page.content ?? []).map((item) => ({
+      (data?.result.page.content ?? []).map((item) => ({
         id: `${item.challengerId}-${item.memberId}`,
+        challengerId: String(item.challengerId),
         name: item.name,
         nickname: item.nickname,
         school: item.schoolName,
         generation: `${item.gisu}기`,
         part: transformPart(item.part),
-        role: item.roleTypes.length > 0 ? item.roleTypes.join(', ') : 'USER',
+        role:
+          item.roleTypes.length > 0
+            ? item.roleTypes.map((roleType) => transformRoleKorean(roleType)).join(', ')
+            : transformRoleKorean('USER'),
+        roleTypes: item.roleTypes,
         profileImageLink: item.profileImageLink,
       })),
-    [data?.page.content],
+    [data?.result.page.content],
   )
 
   return (
@@ -110,7 +118,7 @@ const EditAccountContent = () => {
             {gisuDropdown.Dropdown}
             {chapterDropdown.Dropdown}
             {schoolDropdown.Dropdown}
-            {partDropdown.Dropdown}총 {Number(data?.page.totalElements ?? 0)}명
+            {partDropdown.Dropdown}총 {Number(data?.result.page.totalElements ?? 0)}명
           </>
         }
       />
@@ -124,7 +132,7 @@ const EditAccountContent = () => {
           <Table
             page={{
               currentPage: page + 1,
-              totalPages: Number(data?.page.totalPages ?? 1),
+              totalPages: Number(data?.result.page.totalPages ?? 1),
               onChangePage: (nextPage) => setPage(nextPage - 1),
             }}
             showFooter={true}
@@ -135,6 +143,9 @@ const EditAccountContent = () => {
             activeRowId={activeRowId}
             onRowClick={(id) => {
               setActiveRowId(id)
+              setSelectedChallengerId(id.split('-')[0] || null)
+              const selectedRow = pageItems.find((row) => row.id === id)
+              setSelectedRoleType(selectedRow?.roleTypes[0] ?? null)
               setOpenModal(true)
             }}
             renderRow={(item) => (
@@ -168,7 +179,17 @@ const EditAccountContent = () => {
           />
         )}
       </Section>
-      {openModal && <AccountDetail onClose={() => setOpenModal(false)} />}
+      {openModal && selectedChallengerId && (
+        <AccountDetail
+          challengerId={selectedChallengerId}
+          initialRoleType={selectedRoleType}
+          onClose={() => {
+            setOpenModal(false)
+            setSelectedChallengerId(null)
+            setSelectedRoleType(null)
+          }}
+        />
+      )}
     </S.AccountContent>
   )
 }
