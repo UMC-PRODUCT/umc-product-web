@@ -24,7 +24,7 @@ export const transformStateKorean = (input: string): string => {
 /**
  * 역할 코드를 한글 라벨로 변환함
  * @param input - 역할 코드 문자열
- * @returns 한글 역할 라벨, 매핑이 없으면 원본 문자열
+ * @returns 한글 역할 라벨, 매핑이 없으면 '일반 유저'
  */
 export const transformRoleKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {

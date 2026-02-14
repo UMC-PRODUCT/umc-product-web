@@ -39,15 +39,7 @@ const ROLE_OPTIONS: Array<{ roleType: RoleType; label: string }> = ROLE_OPTION_T
   }),
 )
 
-const AccountDetail = ({
-  memberId,
-  initialRoleType,
-  onClose,
-}: {
-  memberId: string
-  initialRoleType?: RoleType | null
-  onClose: () => void
-}) => {
+const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () => void }) => {
   const {
     isLoading,
     profile,
@@ -60,7 +52,6 @@ const AccountDetail = ({
     isRoleActive,
   } = useAccountDetail({
     memberId,
-    initialRoleType,
     onClose,
   })
 
@@ -190,10 +181,7 @@ const AccountDetail = ({
                     variant="solid"
                     label="상세 정보 등록"
                     isLoading={isSavingRole}
-                    onClick={() => {
-                      createChallengerRole()
-                      onClose()
-                    }}
+                    onClick={() => createChallengerRole()}
                     css={{ width: 'fit-content', padding: '6px 18px' }}
                   />
                 </Flex>

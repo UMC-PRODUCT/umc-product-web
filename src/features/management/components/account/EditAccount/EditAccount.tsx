@@ -17,7 +17,6 @@ import {
   useSchoolDropdown,
 } from '@/shared/hooks/useManagedDropdown'
 import * as S from '@/shared/styles/shared'
-import type { RoleType } from '@/shared/types/umc'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -36,7 +35,6 @@ const EditAccountContent = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [activeRowId, setActiveRowId] = useState<string | null>(null)
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
-  const [selectedRoleType, setSelectedRoleType] = useState<RoleType | null>(null)
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
 
@@ -146,9 +144,6 @@ const EditAccountContent = () => {
               setActiveRowId(id)
               const selectedRow = pageItems.find((row) => row.id === id)
               setSelectedMemberId(selectedRow?.memberId ?? null)
-              setSelectedRoleType(
-                selectedRow && selectedRow.roleTypes.length === 1 ? selectedRow.roleTypes[0] : null,
-              )
               setOpenModal(true)
             }}
             renderRow={(item) => (
@@ -185,11 +180,9 @@ const EditAccountContent = () => {
       {openModal && selectedMemberId && (
         <AccountDetail
           memberId={selectedMemberId}
-          initialRoleType={selectedRoleType}
           onClose={() => {
             setOpenModal(false)
             setSelectedMemberId(null)
-            setSelectedRoleType(null)
           }}
         />
       )}

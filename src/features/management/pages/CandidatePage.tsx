@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react'
 import Search from '@shared/assets/icons/search.svg?react'
 
 import { getGisuChapterWithSchools } from '@/features/management/domain/api'
-import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
@@ -13,6 +12,7 @@ import type { Option } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
+import FilterBar from '@/shared/ui/common/FilterBar/FilterBar'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
@@ -58,24 +58,24 @@ export const CandidatePage = () => {
   }, [activeGisu, gisuOptions, selectedGisuId])
   const resolvedGisuId = selectedGisu ? String(selectedGisu.id) : undefined
 
-  const { data: BranchWithSchoolData } = useCustomQuery(
+  const { data: branchWithSchoolData } = useCustomQuery(
     managementKeys.getGisuChapterWithSchools(resolvedGisuId ?? ''),
     () => getGisuChapterWithSchools({ gisuId: resolvedGisuId ?? '' }),
     { enabled: Boolean(resolvedGisuId) },
   )
 
   const chapterOptions = useMemo<Array<Option<string>>>(() => {
-    const chapterList = BranchWithSchoolData?.result.chapters ?? []
+    const chapterList = branchWithSchoolData?.result.chapters ?? []
     return createDropdownOptions(
       chapterList,
       (chapter) => chapter.chapterName,
       (chapter) => chapter.chapterId,
       '-- 전체 지부 --',
     )
-  }, [BranchWithSchoolData?.result.chapters])
+  }, [branchWithSchoolData?.result.chapters])
 
   const schoolOptions = useMemo<Array<Option<string>>>(() => {
-    const chapterList = BranchWithSchoolData?.result.chapters ?? []
+    const chapterList = branchWithSchoolData?.result.chapters ?? []
     const targetChapterId = selectedChapter ? String(selectedChapter.id) : undefined
     const targetChapters = targetChapterId
       ? chapterList.filter((chapter) => chapter.chapterId === targetChapterId)
@@ -100,7 +100,7 @@ export const CandidatePage = () => {
       (school) => school.schoolId,
       '-- 전체 학교 --',
     )
-  }, [BranchWithSchoolData?.result.chapters, selectedChapter])
+  }, [branchWithSchoolData?.result.chapters, selectedChapter])
 
   const { data, isLoading, isFetching } = useGetRecruitmentApplications({
     page: String(page),

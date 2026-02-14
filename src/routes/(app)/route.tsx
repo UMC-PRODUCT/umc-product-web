@@ -5,7 +5,6 @@ import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
 import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
 import SuperHeader from '@/shared/layout/Header/SuperHeader'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
-// import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import type { RoleType } from '@/shared/types/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'
 
@@ -26,7 +25,8 @@ function getHeaderType(roleType?: RoleType | null): HeaderType {
     roleType === 'SUPER_ADMIN' ||
     roleType === 'CENTRAL_PRESIDENT' ||
     roleType === 'CENTRAL_VICE_PRESIDENT' ||
-    roleType === 'CENTRAL_OPERATING_TEAM_MEMBER'
+    roleType === 'CENTRAL_OPERATING_TEAM_MEMBER' ||
+    roleType === 'CENTRAL_EDUCATION_TEAM_MEMBER'
   )
     return 'management'
 

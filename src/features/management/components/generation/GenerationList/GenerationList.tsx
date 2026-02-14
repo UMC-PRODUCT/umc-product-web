@@ -6,6 +6,7 @@ import Trash from '@shared/assets/icons/trash.svg?react'
 
 import { postGisuActivate } from '@/features/management/domain/api'
 import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
+import { formatDateToDot } from '@/features/management/utils/gisu'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
@@ -17,17 +18,6 @@ import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
 import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
-
-const formatDateToDot = (value: string) => {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}.${month}.${day}`
-}
 
 const GenerationList = () => {
   const [page, setPage] = useState(0)

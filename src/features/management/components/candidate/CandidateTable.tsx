@@ -37,7 +37,9 @@ export const CandidateTable = ({
               {item.applicant.nickname}/{item.applicant.name}
             </TableStyles.Td>
             <TableStyles.Td>{item.school.name}</TableStyles.Td>
-            <TableStyles.Td>{item.appliedParts.map((part) => part.part.label)}</TableStyles.Td>
+            <TableStyles.Td>
+              {item.appliedParts.map((part) => part.part.label).join(', ')}
+            </TableStyles.Td>
             <TableStyles.Td>
               {item.finalResult.status === 'PASS' && (
                 <Button

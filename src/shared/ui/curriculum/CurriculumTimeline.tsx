@@ -1,15 +1,14 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
-import type { PartType } from '@/features/auth/domain'
-import type { Workbook } from '@/features/management/domain/model'
-import { useGetCurriculums } from '@/features/management/hooks/useManagementQueries'
-import { CURRICULUM_MOCK } from '@/features/management/mocks/managementMocks'
-
 import * as S from './CurriculumTimeline.style'
 
 type Props = {
-  activeTab: PartType
+  workbooks?: Array<{
+    id: string
+    weekNo: string
+    title: string
+  }>
 }
 
 type LinePosition = {
@@ -43,7 +42,7 @@ const getLinePosition = (column: HTMLDivElement | null): LinePosition => {
   }
 }
 
-export const CurriculumTimeline = ({ activeTab }: Props) => {
+export const CurriculumTimeline = ({ workbooks = [] }: Props) => {
   const firstColumnRef = useRef<HTMLDivElement | null>(null)
   const secondColumnRef = useRef<HTMLDivElement | null>(null)
   const mobileColumnRef = useRef<HTMLDivElement | null>(null)
@@ -51,20 +50,14 @@ export const CurriculumTimeline = ({ activeTab }: Props) => {
   const [secondLinePosition, setSecondLinePosition] = useState<LinePosition>(INITIAL_LINE_POSITION)
   const [mobileLinePosition, setMobileLinePosition] = useState<LinePosition>(INITIAL_LINE_POSITION)
 
-  const { data } = useGetCurriculums(activeTab)
-  const apiWorkbooksCandidate = (data as { result?: { workbooks?: unknown } }).result?.workbooks
-  const apiWorkbooks = Array.isArray(apiWorkbooksCandidate)
-    ? (apiWorkbooksCandidate as Array<Workbook>)
-    : []
-  const currentData = apiWorkbooks.length > 0 ? apiWorkbooks : CURRICULUM_MOCK[activeTab]
   const getWeekLabel = (weekNo: string | null | undefined) => {
     const parsed = Number(weekNo)
     return Number.isFinite(parsed) ? parsed.toString().padStart(2, '0') : '--'
   }
 
   const sortedWeeks = useMemo(
-    () => [...currentData].sort((a, b) => Number(a.weekNo) - Number(b.weekNo)),
-    [currentData],
+    () => [...workbooks].sort((a, b) => Number(a.weekNo) - Number(b.weekNo)),
+    [workbooks],
   )
   const firstColWeeks = sortedWeeks.filter((item) => Number(item.weekNo) <= 6)
   const secondColWeeks = sortedWeeks.filter((item) => Number(item.weekNo) >= 7)

@@ -19,6 +19,8 @@ export const Route = createFileRoute('/(app)/management')({
     if (
       activeRole?.roleType !== 'CENTRAL_PRESIDENT' &&
       activeRole?.roleType !== 'CENTRAL_VICE_PRESIDENT' &&
+      activeRole?.roleType !== 'CENTRAL_OPERATING_TEAM_MEMBER' &&
+      activeRole?.roleType !== 'CENTRAL_EDUCATION_TEAM_MEMBER' &&
       activeRole?.roleType !== 'SUPER_ADMIN'
     ) {
       throw redirect({ to: '/school/dashboard' })

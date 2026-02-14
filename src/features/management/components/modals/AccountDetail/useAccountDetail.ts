@@ -20,15 +20,10 @@ import type { RoleType } from '@/shared/types/umc'
 
 type UseAccountDetailParams = {
   memberId: string
-  initialRoleType?: RoleType | null
   onClose: () => void
 }
 
-export const useAccountDetail = ({
-  memberId,
-  initialRoleType: _initialRoleType,
-  onClose,
-}: UseAccountDetailParams) => {
+export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) => {
   const [role, setRole] = useState<RoleType | null>(null)
   const [createdRoleId, setCreatedRoleId] = useState<string>('')
 
@@ -146,6 +141,7 @@ export const useAccountDetail = ({
           await queryClient.invalidateQueries({
             queryKey: managementKeys.getMemberProfileDetail(memberId),
           })
+          onClose()
         },
       },
     )
