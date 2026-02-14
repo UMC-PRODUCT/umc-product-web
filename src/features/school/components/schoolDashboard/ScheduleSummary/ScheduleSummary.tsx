@@ -72,7 +72,7 @@ const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummary
                     key={index}
                     time={interview.interviewTime}
                     name={interview.name}
-                    nickname={interview.nickname}
+                    nickname={interview.nickName}
                   />
                 ))
               ) : (
