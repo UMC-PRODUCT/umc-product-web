@@ -28,13 +28,10 @@ export const transformStateKorean = (input: string): string => {
  */
 export const transformRoleKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
-    ADMIN: '관리자',
-    MANAGER: '매니저',
-    USER: '일반 사용자',
     CHALLENGER: '챌린저',
     SUPER_ADMIN: '프로덕트 팀',
-    CENTRAL_PRESIDENT: '중앙 총괄',
-    CENTRAL_VICE_PRESIDENT: '중앙 부총괄',
+    CENTRAL_PRESIDENT: '총괄',
+    CENTRAL_VICE_PRESIDENT: '부총괄',
     CENTRAL_OPERATING_TEAM_MEMBER: '중앙 운영국원',
     CENTRAL_EDUCATION_TEAM_MEMBER: '중앙 교육국원',
     CHAPTER_PRESIDENT: '지부장',
@@ -44,7 +41,7 @@ export const transformRoleKorean = (input: string): string => {
     SCHOOL_ETC_ADMIN: '학교 기타 운영진',
   }
 
-  return mapping[input] || input
+  return mapping[input] || '일반 유저'
 }
 
 /**

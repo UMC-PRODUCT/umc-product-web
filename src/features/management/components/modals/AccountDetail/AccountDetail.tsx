@@ -63,23 +63,28 @@ const AccountDetail = ({
   const { data, isLoading } = useGetChallengerDetail(challengerId)
   const { data: createdRoleDetail } = useGetChallengerRole(createdRoleId)
   const profile = data?.result
-  const { mutate: deactivateChallenger, isPending: isDeactivating } = useCustomMutation(
-    () =>
-      postChallengerDeactivate(challengerId, {
-        deactivationType: 'WITHDRAW',
-        modifiedBy: Number(myProfile?.id ?? 0),
-        reason: '관리자에 의한 비활성화 처리',
-      }),
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
-        await queryClient.invalidateQueries({
-          queryKey: managementKeys.getChallengerDetail(challengerId),
+  const { mutate: deactivateChallenger, isPending: isDeactivating } =
+    useCustomMutation<CommonResponseDTO<null> | null>(
+      () => {
+        if (!profile) return Promise.resolve(null)
+
+        return postChallengerDeactivate(challengerId, {
+          deactivationType: 'WITHDRAW',
+          modifiedBy: Number(myProfile?.id ?? 0),
+          reason: '관리자에 의한 비활성화 처리',
+          memberId: profile.memberId,
         })
-        onClose()
       },
-    },
-  )
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
+          await queryClient.invalidateQueries({
+            queryKey: managementKeys.getChallengerDetail(challengerId),
+          })
+          onClose()
+        },
+      },
+    )
   const { mutate: createChallengerRole, isPending: isSavingRole } =
     useCustomMutation<CommonResponseDTO<{ challengerRoleId: number }> | null>(
       async () => {

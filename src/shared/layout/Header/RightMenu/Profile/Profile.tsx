@@ -10,6 +10,7 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
 import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
+import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './Profile.style'
 
@@ -90,6 +91,7 @@ const ProfileMenuContent = ({
       to: '/auth/login',
     })
   }
+  const activeRoleType = data.roles.find((role) => role.gisuId === gisuId)?.roleType
 
   return (
     <>
@@ -119,7 +121,7 @@ const ProfileMenuContent = ({
           <Badge tone="gray" variant="solid" typo="H5.Md">
             권한
           </Badge>
-          {data.roles.find((role) => role.gisuId === gisuId)?.roleType || '권한 없음'}
+          {activeRoleType ? transformRoleKorean(activeRoleType) : '권한 없음'}
         </S.InfoRow>
       </Flex>
       {children && <S.MobileOnly>{children}</S.MobileOnly>}
