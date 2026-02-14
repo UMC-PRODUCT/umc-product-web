@@ -12,9 +12,11 @@ const InterviewInfo = ({
   name: string
   nickname: string
 }) => {
+  const displayTime = time.split(':').slice(0, 2).join(':')
+
   return (
     <Flex gap={12}>
-      <TimeInfo>{time}</TimeInfo>
+      <TimeInfo>{displayTime}</TimeInfo>
       <NameInfo>
         {name}/{nickname}
       </NameInfo>
