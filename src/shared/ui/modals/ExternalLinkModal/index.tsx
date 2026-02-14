@@ -47,7 +47,23 @@ const linkTypeOptions: Array<Option<string>> = [
   { id: 'YOUTUBE', label: '유튜브' },
 ]
 
-const ExternalModalContent = () => {
+const normalizeLink = (link: Pick<ExternalLink, 'title' | 'type' | 'url'>) => ({
+  type: link.type,
+  title: link.title.trim(),
+  url: link.url.trim(),
+})
+
+const areLinksEqual = (left: Array<ExternalLink>, right: Array<ExternalLink>) => {
+  if (left.length !== right.length) return false
+
+  return left.every((link, index) => {
+    const a = normalizeLink(link)
+    const b = normalizeLink(right[index])
+    return a.type === b.type && a.title === b.title && a.url === b.url
+  })
+}
+
+const ExternalModalContent = ({ onClose }: { onClose: () => void }) => {
   const queryClient = useQueryClient()
   const schoolId = useUserProfileStore((state) => state.schoolId)
   const { usePatchSchool } = useManagementMutations()
@@ -99,18 +115,19 @@ const ExternalModalContent = () => {
   const handleSave = () => {
     if (!schoolId) return
     const payload = links
-      .map((link) => ({
-        type: link.type,
-        url: link.url.trim(),
-        title: link.title.trim(),
-      }))
+      .map((link) => normalizeLink(link))
       .filter((item) => item.url.length > 0 && item.title.length > 0)
+    const initialPayload = initialLinks
+      .map((link) => normalizeLink(link))
+      .filter((item) => item.url.length > 0 && item.title.length > 0)
+    const linksChanged = !areLinksEqual(payload, initialPayload)
 
     patchSchool(
-      { schoolId, body: { links: payload } },
+      { schoolId, body: { links: linksChanged ? payload : null } },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: schoolKeys.getSchoolLink(schoolId) })
+          onClose()
         },
       },
     )
@@ -391,7 +408,7 @@ const ExternalLinkModal = ({ onClose }: AccountModalProps) => {
                   />
                 )}
               >
-                <ExternalModalContent />
+                <ExternalModalContent onClose={onClose} />
               </AsyncBoundary>
             </Modal.Body>
           </S.ModalContentWrapper>
