@@ -5,7 +5,7 @@ export type CommonResponseDTO<T> = {
   result: T
 }
 
-export type CommonPagingResponseDTO<T> = CommonResponseDTO<{
+export type CommonPagingResponseDTO<T> = {
   content: Array<T>
   totalElements: string
   totalPages: string
@@ -13,4 +13,9 @@ export type CommonPagingResponseDTO<T> = CommonResponseDTO<{
   size: string
   hasNext: boolean
   hasPrevious: boolean
-}>
+}
+
+export type CommonSearchParams = {
+  page?: string
+  size?: string
+}

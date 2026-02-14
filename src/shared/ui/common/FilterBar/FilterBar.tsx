@@ -19,6 +19,7 @@ const FilterBar = ({
     </FilterBarWrapper>
   )
 }
+
 export default FilterBar
 
 const FilterBarWrapper = styled(Section)`

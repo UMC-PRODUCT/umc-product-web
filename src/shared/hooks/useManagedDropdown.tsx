@@ -25,7 +25,7 @@ type UseManagedDropdownResult = {
   Dropdown: React.ReactElement
 }
 
-const ALL_ID = '0'
+const ALL_ID = '__ALL__'
 
 const buildOptions = <T,>(
   items: Array<T>,
@@ -33,13 +33,22 @@ const buildOptions = <T,>(
   mapId: (item: T) => string,
   allLabel: string,
   includeAllOption: boolean,
-): Array<Option<string>> => [
-  ...(includeAllOption ? [{ label: allLabel, id: ALL_ID }] : []),
-  ...items.map((item) => ({
-    label: mapLabel(item),
-    id: mapId(item),
-  })),
-]
+): Array<Option<string>> => {
+  const options: Array<Option<string>> = includeAllOption ? [{ label: allLabel, id: ALL_ID }] : []
+  const seenIds = new Set<string>(options.map((option) => String(option.id)))
+
+  items.forEach((item) => {
+    const id = String(mapId(item))
+    if (seenIds.has(id)) return
+    seenIds.add(id)
+    options.push({
+      label: mapLabel(item),
+      id,
+    })
+  })
+
+  return options
+}
 
 export const useSchoolDropdown = (
   config: UseManagedDropdownConfig = {},
@@ -84,7 +93,7 @@ export const useSchoolDropdown = (
     options,
     Dropdown: (
       <Dropdown
-        key={dropdownKey}
+        key={`school-${dropdownKey}`}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -140,7 +149,7 @@ export const useChapterDropdown = (
     options,
     Dropdown: (
       <Dropdown
-        key={dropdownKey}
+        key={`chapter-${dropdownKey}`}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -196,7 +205,7 @@ export const useGisuDropdown = (
     options,
     Dropdown: (
       <Dropdown
-        key={dropdownKey}
+        key={`gisu-${dropdownKey}`}
         options={options}
         placeholder={placeholder}
         value={selectedValue}
@@ -252,7 +261,7 @@ export const usePartDropdown = (
     options,
     Dropdown: (
       <Dropdown
-        key={dropdownKey}
+        key={`part-${dropdownKey}`}
         options={options}
         placeholder={placeholder}
         value={selectedValue}

@@ -41,7 +41,8 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   role: {
     id: '',
     challengerId: '',
-    roleType: 'SCHOOL_PRESIDENT',
+    // roleType: 'SCHOOL_PRESIDENT',
+    roleType: 'SUPER_ADMIN',
     organizationType: 'CENTRAL',
     responsiblePart: null,
     gisuId: '1',

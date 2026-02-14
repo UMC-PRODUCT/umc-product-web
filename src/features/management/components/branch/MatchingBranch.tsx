@@ -192,6 +192,7 @@ const MatchingBranchContent = ({
                     schoolId: school.schoolId,
                     branchId: branch.chapterId,
                   })}
+                  width={'fit-content'}
                 >
                   <span css={{ cursor: 'grab', width: 22, height: 22 }}>
                     <Grab color={theme.colors.gray[400]} />

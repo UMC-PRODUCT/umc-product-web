@@ -1,6 +1,7 @@
 import { Suspense, useState } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
+import { useGetCurriculumsQuery } from '@/features/management/hooks/useManagementQueries'
 import { PART_REQUIRED_SKILL } from '@/features/recruiting/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -11,6 +12,8 @@ import * as S from './CurriculumSection.style'
 const CurriculumSection = () => {
   // 기본값으로 첫 번째 데이터 선택
   const [selectedPart, setSelectedPart] = useState<PartType>('PLAN')
+  const { data } = useGetCurriculumsQuery(selectedPart)
+  const workbooks = data?.result.workbooks ?? []
 
   return (
     <S.FullWidthSection id="curriculum">
@@ -40,7 +43,7 @@ const CurriculumSection = () => {
           <S.SkillValue>{PART_REQUIRED_SKILL[selectedPart] || '기초 지식'}</S.SkillValue>
         </S.RequiredSkill>
         <Suspense fallback={<SuspenseFallback />}>
-          <CurriculumTimeline activeTab={selectedPart} />
+          <CurriculumTimeline workbooks={workbooks} />
         </Suspense>
       </S.CurriculumBoard>
     </S.FullWidthSection>

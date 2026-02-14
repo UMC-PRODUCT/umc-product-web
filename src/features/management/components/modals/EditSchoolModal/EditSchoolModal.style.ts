@@ -31,7 +31,7 @@ export const Grid = styled.div`
 export const FooterWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 13px;
   align-items: center;
   gap: 18px;
@@ -231,4 +231,5 @@ export const LinkUrlText = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 `

@@ -6,6 +6,7 @@ import { PART_REQUIRED_SKILL } from '@features/recruiting/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { PartType } from '@/features/auth/domain'
+import { useGetCurriculumsQuery } from '@/features/management/hooks/useManagementQueries'
 import Check from '@/shared/assets/icons/check.svg?react'
 import { PART } from '@/shared/constants/umc'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -18,6 +19,8 @@ import * as S from './PartCurriculum.style'
 
 const PartCurriculum = () => {
   const [activeTab, setActiveTab] = useState<PartType>('PLAN')
+  const { data } = useGetCurriculumsQuery(activeTab)
+  const workbooks = data?.result.workbooks ?? []
 
   return (
     <Flex flexDirection="column" gap="24px">
@@ -46,7 +49,7 @@ const PartCurriculum = () => {
         </S.Requirement>
 
         <Suspense fallback={<SuspenseFallback />}>
-          <CurriculumTimeline activeTab={activeTab} />
+          <CurriculumTimeline workbooks={workbooks} />
         </Suspense>
       </Flex>
     </Flex>

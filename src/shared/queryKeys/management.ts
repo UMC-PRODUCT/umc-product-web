@@ -2,12 +2,28 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartType } from '@/shared/types/umc'
 
-type SchoolsPagingParams = {
-  page?: string
-  size?: string
+import type { CommonSearchParams } from '../types/api'
+
+type SchoolsPagingParams = CommonSearchParams & {
   sort?: 'asc' | 'desc'
   chapterId?: string
   keyword?: string
+}
+
+type RecruitmentApplicationsPagingParams = CommonSearchParams & {
+  chapterId?: string
+  schoolId?: string
+  part?: PartType | 'ALL'
+  keyword?: string
+}
+
+type ChallengerSearchParams = CommonSearchParams & {
+  sort?: Array<string>
+  keyword?: string
+  schoolId?: string
+  chapterId?: string
+  part?: PartType
+  gisuId?: string
 }
 
 const managementKeyFactory = createQueryKeys('management', {
@@ -26,6 +42,7 @@ const managementKeyFactory = createQueryKeys('management', {
     },
   },
   gisuList: (params: SchoolsPagingParams) => [params],
+  gisuDetail: (gisuId: string) => [gisuId],
   gisuChapterWithSchools: (gisuId: string) => [gisuId],
   schoolsPaging: (params: SchoolsPagingParams) => [params],
   schoolDetail: (schoolId: string) => [schoolId],
@@ -35,6 +52,11 @@ const managementKeyFactory = createQueryKeys('management', {
       all: null,
     },
   },
+  recruitmentApplications: (params: RecruitmentApplicationsPagingParams) => [params],
+  challenger: (params: ChallengerSearchParams) => [params],
+  challengerDetail: (challengerId: string) => [challengerId],
+  memberProfileDetail: (memberId: string) => [memberId],
+  challengerRoleDetail: (challengerRoleId: string) => [challengerRoleId],
 })
 
 export const managementKeys = {
@@ -42,6 +64,7 @@ export const managementKeys = {
   getAllSchools: managementKeyFactory.schools._ctx.all.queryKey,
   getAllGisu: managementKeyFactory.gisu._ctx.all.queryKey,
   getGisuList: (params: SchoolsPagingParams) => managementKeyFactory.gisuList(params).queryKey,
+  getGisuDetail: (gisuId: string) => managementKeyFactory.gisuDetail(gisuId).queryKey,
   getGisuChapterWithSchools: (gisuId: string) =>
     managementKeyFactory.gisuChapterWithSchools(gisuId).queryKey,
   getUnassignedSchools: (gisuId: string) =>
@@ -50,4 +73,14 @@ export const managementKeys = {
     managementKeyFactory.schoolsPaging(params).queryKey,
   getSchoolDetails: (schoolId: string) => managementKeyFactory.schoolDetail(schoolId).queryKey,
   getChapters: managementKeyFactory.chapters._ctx.all.queryKey,
+  getRecruitmentsApplications: (params: RecruitmentApplicationsPagingParams) =>
+    managementKeyFactory.recruitmentApplications(params).queryKey,
+  getChallenger: (params: ChallengerSearchParams) =>
+    managementKeyFactory.challenger(params).queryKey,
+  getChallengerDetail: (challengerId: string) =>
+    managementKeyFactory.challengerDetail(challengerId).queryKey,
+  getMemberProfileDetail: (memberId: string) =>
+    managementKeyFactory.memberProfileDetail(memberId).queryKey,
+  getChallengerRoleDetail: (challengerRoleId: string) =>
+    managementKeyFactory.challengerRoleDetail(challengerRoleId).queryKey,
 }

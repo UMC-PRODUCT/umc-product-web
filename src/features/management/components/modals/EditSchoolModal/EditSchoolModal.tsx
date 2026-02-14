@@ -38,6 +38,26 @@ type EditSchoolForm = {
   linkUrl: string
 }
 
+const normalizeLink = (link: ExternalLink) => ({
+  title: link.title.trim(),
+  type: link.type,
+  url: link.url.trim(),
+})
+
+const areLinksEqual = (left: Array<ExternalLink>, right: Array<ExternalLink>) => {
+  if (left.length !== right.length) return false
+
+  return left.every((link, index) => {
+    const normalizedLeft = normalizeLink(link)
+    const normalizedRight = normalizeLink(right[index])
+    return (
+      normalizedLeft.type === normalizedRight.type &&
+      normalizedLeft.title === normalizedRight.title &&
+      normalizedLeft.url === normalizedRight.url
+    )
+  })
+}
+
 const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId: string }) => {
   const [isOpen, setIsOpen] = useState(true)
   const queryClient = useQueryClient()
@@ -209,13 +229,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     const trimmedRemark = remark.trim()
     const nameChanged = trimmedName !== initialDataRef.current.schoolName
     const remarkChanged = trimmedRemark !== initialDataRef.current.remark
-    const addedLinks = links.filter((link) => {
-      const trimmedUrl = link.url.trim()
-      return !initialDataRef.current.links.some(
-        (initial) => initial.type === link.type && initial.url.trim() === trimmedUrl,
-      )
-    })
-    const linksChanged = addedLinks.length > 0
+    const linksChanged = !areLinksEqual(links, initialDataRef.current.links)
     const imageChanged = Boolean(profileFileId)
 
     if (!nameChanged && !remarkChanged && !linksChanged && !imageChanged) {
@@ -226,13 +240,13 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     const body: {
       schoolName?: string
       remark?: string
-      links?: Array<ExternalLink>
+      links?: Array<ExternalLink> | null
       logoImageId?: string
     } = {}
 
     if (nameChanged) body.schoolName = trimmedName
     if (remarkChanged) body.remark = trimmedRemark || undefined
-    if (linksChanged) body.links = addedLinks
+    body.links = linksChanged ? links.map(normalizeLink) : null
     if (imageChanged) body.logoImageId = profileFileId ?? undefined
 
     patchSchool(
@@ -299,7 +313,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
                   <Flex alignItems="center" justifyContent="center" gap={25}>
                     <S.ModalButton type="button" onClick={handleFileWrapperClick}>
                       <img
-                        src={profilePreview ?? schoolDetails.result.logoImageLink ?? DefaultSchool}
+                        src={profilePreview ?? schoolDetails.result.logoImageUrl ?? DefaultSchool}
                         alt="학교 이미지"
                         css={{
                           borderRadius: '50%',
@@ -417,19 +431,16 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
 
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button typo="C3.Md" tone="necessary" label="학교 비활성화" />
-                <Flex width={'fit-content'} gap={10}>
-                  <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
-                  <Button
-                    tone="lime"
-                    typo="C3.Md"
-                    variant="solid"
-                    label="저장하기"
-                    css={{ width: 'fit-content', padding: '6px 18px' }}
-                    disabled={isPatchLoading}
-                    onClick={handleSave}
-                  />
-                </Flex>
+                <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
+                <Button
+                  tone="lime"
+                  typo="C3.Md"
+                  variant="solid"
+                  label="저장하기"
+                  css={{ width: 'fit-content', padding: '6px 18px' }}
+                  disabled={isPatchLoading}
+                  onClick={handleSave}
+                />
               </S.FooterWrapper>
             </Modal.Footer>
           </S.ModalContentWrapper>

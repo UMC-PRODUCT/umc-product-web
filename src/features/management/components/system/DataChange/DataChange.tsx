@@ -1,15 +1,15 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 // import { DATA_CHANGE_MOCK } from '@/features/management/mocks/data'
 import { TabSubtitle, TabTitle } from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
-import Navigation from '@/shared/ui/common/Navigation/Navigation'
+// import Navigation from '@/shared/ui/common/Navigation/Navigation'
 
 // import * as S from './DataChange.style'
 
 const DataChange = () => {
-  const [page, setPage] = useState(1)
+  // const [page, setPage] = useState(1)
   return (
     <Flex flexDirection="column" gap={16} alignItems="flex-start">
       <Flex flexDirection="column" gap={3} alignItems="flex-start">
@@ -26,9 +26,9 @@ const DataChange = () => {
       >
         현재 지원하지 않는 기능입니다.
       </Flex>
-      <Flex justifyContent="center">
+      {/* <Flex justifyContent="center">
         <Navigation currentPage={page} totalPages={5} onChangePage={setPage} />
-      </Flex>
+      </Flex> */}
     </Flex>
   )
 }

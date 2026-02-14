@@ -46,9 +46,9 @@ export const TermsSection = ({
       const definition = TERM_DEFINITIONS[termKey]
       return {
         key: termKey,
-        title: payload?.title ?? definition.defaultTitle,
+        title: definition.defaultTitle,
         necessary: payload?.isMandatory ?? definition.necessary,
-        link: payload?.content,
+        link: payload?.link,
       }
     })
   }, [termsData])

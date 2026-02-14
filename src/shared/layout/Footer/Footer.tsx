@@ -18,22 +18,23 @@ const Footer = () => {
             UMC {FOOTER_INFO.generation}th 총괄 : {FOOTER_INFO.master}{' '}
           </S.Content>
           <S.TextDivider className="divider" />
-          <S.Content>이메일 : {FOOTER_INFO.email}</S.Content>
+          <S.Content
+            onClick={() => (window.location.href = `mailto:${FOOTER_INFO.email}`)}
+            css={{ cursor: 'pointer' }}
+          >
+            이메일 : {FOOTER_INFO.email}
+          </S.Content>
         </S.UmcInfo>
         <Flex gap="10px">
           <S.Content
-            onClick={() =>
-              window.open(serviceData?.result.content, '_blank', 'noopener,noreferrer')
-            }
+            onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
             css={{ cursor: 'pointer' }}
           >
             서비스이용약관
           </S.Content>
           <S.TextDivider />
           <S.Content
-            onClick={() =>
-              window.open(privacyData?.result.content, '_blank', 'noopener,noreferrer')
-            }
+            onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
           >
             개인정보처리방침
           </S.Content>

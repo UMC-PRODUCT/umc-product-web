@@ -27,7 +27,7 @@ const TermContent = () => {
               <Service />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{serviceData?.result.title}</S.TermTitle>
+              <S.TermTitle>서비스 이용 약관</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -36,9 +36,7 @@ const TermContent = () => {
               tone="lime"
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
-              onClick={() =>
-                window.open(serviceData?.result.content, '_blank', 'noopener,noreferrer')
-              }
+              onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
             />
           </Flex>
         </S.TermCard>
@@ -48,7 +46,7 @@ const TermContent = () => {
               <Privacy />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{privacyData?.result.title}</S.TermTitle>
+              <S.TermTitle>개인 정보 처리 방침</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -57,9 +55,7 @@ const TermContent = () => {
               tone="lime"
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
-              onClick={() =>
-                window.open(privacyData?.result.content, '_blank', 'noopener,noreferrer')
-              }
+              onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
             />
           </Flex>
         </S.TermCard>
@@ -69,7 +65,7 @@ const TermContent = () => {
               <Marketing />
             </S.Logo>
             <Flex flexDirection="column" gap={4} alignItems="flex-start">
-              <S.TermTitle>{marketingData?.result.title}</S.TermTitle>
+              <S.TermTitle>마케팅 정보 수신</S.TermTitle>
             </Flex>
           </Flex>
           <Flex gap={21} width={'fit-content'}>
@@ -79,7 +75,7 @@ const TermContent = () => {
               label="내용 보기"
               css={{ width: '83px', height: '40px' }}
               onClick={() =>
-                window.open(marketingData?.result.content, '_blank', 'noopener,noreferrer')
+                window.open(marketingData?.result.link, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>
