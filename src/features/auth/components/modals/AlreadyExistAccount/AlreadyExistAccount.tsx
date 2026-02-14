@@ -6,7 +6,7 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const AlreadyExistAccount = ({ onClose }: { onClose: () => void }) => {
-  const navigate = useNavigate({ from: '/auth/login' })
+  const navigate = useNavigate()
   return (
     <AlertModalLayout
       mode={'success'}
