@@ -5,7 +5,7 @@ import type { PartType } from '@/shared/types/part'
 export const PART: Array<PartType> = [...PART_LIST]
 
 export const FOOTER_INFO: { email: string; generation: number; master: string } = {
-  email: 'email.umc@example.com',
+  email: 'chattchatt@epqpf.com',
   generation: 10,
   master: '전채운',
 }
