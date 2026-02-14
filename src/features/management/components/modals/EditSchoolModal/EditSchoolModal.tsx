@@ -431,19 +431,16 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
 
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button typo="C3.Md" tone="necessary" label="학교 비활성화" />
-                <Flex width={'fit-content'} gap={10}>
-                  <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
-                  <Button
-                    tone="lime"
-                    typo="C3.Md"
-                    variant="solid"
-                    label="저장하기"
-                    css={{ width: 'fit-content', padding: '6px 18px' }}
-                    disabled={isPatchLoading}
-                    onClick={handleSave}
-                  />
-                </Flex>
+                <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
+                <Button
+                  tone="lime"
+                  typo="C3.Md"
+                  variant="solid"
+                  label="저장하기"
+                  css={{ width: 'fit-content', padding: '6px 18px' }}
+                  disabled={isPatchLoading}
+                  onClick={handleSave}
+                />
               </S.FooterWrapper>
             </Modal.Footer>
           </S.ModalContentWrapper>
