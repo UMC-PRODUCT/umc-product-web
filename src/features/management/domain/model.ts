@@ -129,17 +129,6 @@ export interface Branch {
   name: string
   schools: Array<UniversitySimple>
 }
-export type CandidateType = {
-  id: number
-  nickname: string
-  name: string
-  school: string
-  part: Array<PartType>
-  finalResult: {
-    status: '합격' | '불합격' | '대기'
-    part: PartType
-  }
-}
 
 export type ExternalLink = {
   title: string
@@ -154,29 +143,31 @@ export type GetRecruitmentsApplication = {
     part?: PartType | 'ALL'
     keyword?: string
   }
-  applications: CommonPagingResponseDTO<{
-    applicationId: string
-    applicant: {
-      nickname: string
-      name: string
-    }
-    school: {
-      schoolId: string
-      name: string
-    }
-    appliedParts: Array<{
-      priority: string
-      part: {
-        key: PartType | 'COMMON'
-        label: string
-      }
-    }>
-    finalResult: {
-      status: string
-      selectedPart: {
-        key: PartType | 'COMMON'
-        label: string
-      }
+  applications: CommonPagingResponseDTO<CandidateType>
+}
+
+export type CandidateType = {
+  applicationId: string
+  applicant: {
+    nickname: string
+    name: string
+  }
+  school: {
+    schoolId: string
+    name: string
+  }
+  appliedParts: Array<{
+    priority: string
+    part: {
+      key: PartType | 'COMMON'
+      label: string
     }
   }>
+  finalResult: {
+    status: string
+    selectedPart: {
+      key: PartType | 'COMMON'
+      label: string
+    }
+  }
 }

@@ -2,11 +2,18 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartType } from '@/shared/types/umc'
 
-type SchoolsPagingParams = {
-  page?: string
-  size?: string
+import type { CommonSearchParams } from '../types/api'
+
+type SchoolsPagingParams = CommonSearchParams & {
   sort?: 'asc' | 'desc'
   chapterId?: string
+  keyword?: string
+}
+
+type RecruitmentApplicationsPagingParams = CommonSearchParams & {
+  chapterId?: string
+  schoolId?: string
+  part?: PartType | 'ALL'
   keyword?: string
 }
 
@@ -35,6 +42,7 @@ const managementKeyFactory = createQueryKeys('management', {
       all: null,
     },
   },
+  recruitmentApplications: (params: RecruitmentApplicationsPagingParams) => [params],
 })
 
 export const managementKeys = {
@@ -50,4 +58,6 @@ export const managementKeys = {
     managementKeyFactory.schoolsPaging(params).queryKey,
   getSchoolDetails: (schoolId: string) => managementKeyFactory.schoolDetail(schoolId).queryKey,
   getChapters: managementKeyFactory.chapters._ctx.all.queryKey,
+  getRecruitmentsApplications: (params: RecruitmentApplicationsPagingParams) =>
+    managementKeyFactory.recruitmentApplications(params).queryKey,
 }

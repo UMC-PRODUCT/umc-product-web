@@ -13,7 +13,7 @@ export const Field = styled.div`
 
 export const inputShell = css`
   width: 100%;
-  min-width: 180px;
+  min-width: fit-content;
   border-radius: 8px;
   border: 1.5px solid ${theme.colors.gray[600]};
   background-color: ${theme.colors.black};

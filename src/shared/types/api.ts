@@ -14,3 +14,8 @@ export type CommonPagingResponseDTO<T> = {
   hasNext: boolean
   hasPrevious: boolean
 }
+
+export type CommonSearchParams = {
+  page?: string
+  size?: string
+}

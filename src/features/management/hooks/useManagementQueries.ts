@@ -1,5 +1,6 @@
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
+import type { CommonSearchParams } from '@/shared/types/api'
 import type { PartType } from '@/shared/types/umc'
 
 import {
@@ -9,6 +10,7 @@ import {
   getCurriculums,
   getGisuChapterWithSchools,
   getGisuList,
+  getRecruitementsApplications,
   getSchoolDetails,
   getSchoolsPaging,
   getUnassignedSchools,
@@ -38,13 +40,13 @@ export function useGetUnassignedSchools(gisuId: string) {
   )
 }
 
-export function useGetSchoolsPaging(params: {
-  page?: string
-  size?: string
-  sort?: 'asc' | 'desc'
-  chapterId?: string
-  keyword?: string
-}) {
+export function useGetSchoolsPaging(
+  params: CommonSearchParams & {
+    sort?: 'asc' | 'desc'
+    chapterId?: string
+    keyword?: string
+  },
+) {
   return useCustomQuery(managementKeys.getSchoolsPaging(params), () => getSchoolsPaging(params), {
     placeholderData: (prev) => prev,
   })
@@ -64,8 +66,21 @@ export function useGetAllSchoolsList() {
   return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
 }
 
-export function useGetGisuList(params: { page?: string; size?: string }) {
+export function useGetGisuList(params: CommonSearchParams) {
   return useCustomQuery(managementKeys.getGisuList(params), () =>
     getGisuList(params.page || '0', params.size || '10'),
+  )
+}
+
+export function useGetRecruitmentApplications(
+  params: CommonSearchParams & {
+    chapterId?: string
+    schoolId?: string
+    part?: PartType | 'ALL'
+    keyword?: string
+  },
+) {
+  return useCustomQuery(managementKeys.getRecruitmentsApplications(params), () =>
+    getRecruitementsApplications(params),
   )
 }

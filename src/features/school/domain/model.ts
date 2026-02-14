@@ -7,7 +7,11 @@ import type { PartType } from '@features/auth/domain'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
 
 import type { FinalStatusType } from '@/features/apply/domain'
-import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
+import type {
+  CommonPagingResponseDTO,
+  CommonResponseDTO,
+  CommonSearchParams,
+} from '@/shared/types/api'
 import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { EvaluationStatusType, SelectionsSortType } from '@/shared/types/umc'
 
@@ -315,11 +319,9 @@ export type GetDocumentEvaluationApplicantsResponseDTO = {
   applicationSummaries: Array<DocumentEvaluationApplicantSummary>
   pagination: Pagination
 }
-export type GetDocumentEvaluationApplicantsRequestDTO = {
+export type GetDocumentEvaluationApplicantsRequestDTO = CommonSearchParams & {
   part?: PartType | 'ALL'
   keyword?: string
-  page?: string
-  size?: string
 }
 export type PatchDocumentEvaluationMyAnswerResponseDTO = {
   myEvaluation: MyEvaluation | null
@@ -546,10 +548,8 @@ export type GetDocumentSelectedApplicantsResponseDTO = {
   sort: SelectionsSortType
   documentSelectionApplications: CommonPagingResponseDTO<DocumentSelectionApplication>
 }
-export type GetDocumentSelectedApplicantsRequestDTO = {
+export type GetDocumentSelectedApplicantsRequestDTO = CommonSearchParams & {
   part?: PartType | 'ALL'
-  page?: string
-  size?: string
   sort?: SelectionsSortType
 }
 export type PatchDocumentSelectionStatusRequestDTO = {

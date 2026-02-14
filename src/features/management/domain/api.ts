@@ -1,6 +1,10 @@
 import { axiosInstance } from '@/api/axiosInstance'
 import type { PartType } from '@/features/auth/domain'
-import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
+import type {
+  CommonPagingResponseDTO,
+  CommonResponseDTO,
+  CommonSearchParams,
+} from '@/shared/types/api'
 
 import type {
   ChapterMiniType,
@@ -28,13 +32,13 @@ export const getAllSchools = async (): Promise<
   return data
 }
 /** GET /schools - 학교 목록 페이징 조회 */
-export const getSchoolsPaging = async (params: {
-  page?: string
-  size?: string
-  sort?: 'asc' | 'desc'
-  chapterId?: string
-  keyword?: string
-}): Promise<CommonResponseDTO<CommonPagingResponseDTO<University>>> => {
+export const getSchoolsPaging = async (
+  params: CommonSearchParams & {
+    sort?: 'asc' | 'desc'
+    chapterId?: string
+    keyword?: string
+  },
+): Promise<CommonResponseDTO<CommonPagingResponseDTO<University>>> => {
   const { data } = await axiosInstance.get('/schools', { params })
   return data
 }
@@ -188,13 +192,11 @@ export const getRecruitementsApplications = async ({
   keyword,
   page,
   size,
-}: {
+}: CommonSearchParams & {
   chapterId?: string
   schoolId?: string
   part?: PartType | 'ALL'
   keyword?: string
-  page?: string
-  size?: string
 }): Promise<CommonResponseDTO<GetRecruitmentsApplication>> => {
   const { data } = await axiosInstance.get('/recruitments/applications', {
     params: { chapterId, schoolId, part, page, keyword, size },

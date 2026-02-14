@@ -14,8 +14,8 @@ const FilterBar = ({
 }) => {
   return (
     <FilterBarWrapper gap={gap} variant="solid" padding={'12px 22px'}>
-      <div className="left">{leftChild}</div>
-      <div className="right">{rightChild}</div>
+      {leftChild && <div className="left">{leftChild}</div>}
+      {rightChild && <div className="right">{rightChild}</div>}
     </FilterBarWrapper>
   )
 }
@@ -34,6 +34,7 @@ const FilterBarWrapper = styled(Section)`
     align-items: center;
     gap: ${(props) => props.gap};
     white-space: nowrap;
+    width: 100%;
   }
   overflow-x: scroll;
 `
