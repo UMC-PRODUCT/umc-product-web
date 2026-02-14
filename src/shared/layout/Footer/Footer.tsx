@@ -22,18 +22,14 @@ const Footer = () => {
         </S.UmcInfo>
         <Flex gap="10px">
           <S.Content
-            onClick={() =>
-              window.open(serviceData?.result.content, '_blank', 'noopener,noreferrer')
-            }
+            onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
             css={{ cursor: 'pointer' }}
           >
             서비스이용약관
           </S.Content>
           <S.TextDivider />
           <S.Content
-            onClick={() =>
-              window.open(privacyData?.result.content, '_blank', 'noopener,noreferrer')
-            }
+            onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
           >
             개인정보처리방침
           </S.Content>

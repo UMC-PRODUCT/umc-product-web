@@ -67,8 +67,7 @@ export type GetMemberOAuthMeResponseDTO = Array<{
 
 export type GetTermsResponseDTO = {
   id: string
-  title: string
-  content: string
+  link: string
   isMandatory: boolean
 }
 
