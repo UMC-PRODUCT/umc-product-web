@@ -5,7 +5,8 @@
 
 import type { PartType } from '@/features/auth/domain'
 import type { LinkType } from '@/shared/constants/umc'
-import type { CommonPagingResponseDTO } from '@/shared/types'
+import type { RoleType } from '@/shared/types'
+import type { CommonPagingResponseDTO, CommonSearchParams } from '@/shared/types/api'
 
 import type {
   EVALUATION_DOCUMENT_CONFIG,
@@ -170,4 +171,165 @@ export type CandidateType = {
       label: string
     }
   }
+}
+
+export type GetCurriculumsParams = {
+  part: PartType
+}
+
+export type GetSchoolsPagingParams = CommonSearchParams & {
+  sort?: 'asc' | 'desc'
+  chapterId?: string
+  keyword?: string
+}
+
+export type ChaptersResponseDTO = {
+  chapters: Array<ChapterMiniType>
+}
+
+export type SchoolsResponseDTO = {
+  schools: Array<UniversitySimple>
+}
+
+export type GetUnassignedSchoolsParams = {
+  gisuId: string
+}
+
+export type AllGisuResponseDTO = {
+  gisuList: Array<GisuType>
+}
+
+export type GetSchoolDetailsParams = {
+  schoolId: string
+}
+
+export type GetGisuChapterWithSchoolsParams = {
+  gisuId: string
+}
+
+export type GisuChapterWithSchoolsResponseDTO = {
+  chapters: Array<ChapterType>
+}
+
+export type PostSchoolBody = {
+  schoolName: string
+  remark?: string
+  logoImageId?: string
+  links: Array<ExternalLink>
+}
+
+export type PostGisuBody = {
+  number: string
+  startAt: string
+  endAt: string
+}
+
+export type PostChapterBody = {
+  gisuId: string
+  name: string
+  schoolIds?: Array<string>
+}
+
+export type PatchSchoolBody = {
+  schoolName?: string
+  remark?: string
+  logoImageId?: string
+  links?: Array<ExternalLink> | null
+}
+
+export type PatchSchoolUnassignBody = {
+  gisuId: string
+}
+
+export type PatchSchoolAssignBody = {
+  chapterId: string
+}
+
+export type GetRecruitementsApplicationsParams = CommonSearchParams & {
+  chapterId?: string
+  schoolId?: string
+  part?: PartType | 'ALL'
+  keyword?: string
+}
+
+export type GetChallengerParams = CommonSearchParams & {
+  sort?: Array<string>
+  keyword?: string
+  schoolId?: string
+  chapterId?: string
+  part?: PartType
+  gisuId?: string
+}
+
+export type ChallengerSearchItem = {
+  memberId: number
+  challengerId: number
+  gisuId: number
+  gisu: number
+  part: PartType
+  name: string
+  nickname: string
+  email: string
+  schoolId: number
+  schoolName: string
+  profileImageLink: string
+  roleTypes: Array<RoleType>
+}
+
+export type GetChallengerResponseDTO = {
+  totalCount: number
+  page: CommonPagingResponseDTO<ChallengerSearchItem>
+}
+
+export type ChallengerPoint = {
+  id: number
+  pointType: string
+  point: number
+  description: string
+  createdAt: string
+}
+
+export type ChallengerDetailResponseDTO = {
+  challengerId: number
+  memberId: number
+  gisu: number
+  part: PartType
+  challengerPoints: Array<ChallengerPoint>
+  name: string
+  nickname: string
+  email: string
+  schoolId: number
+  schoolName: string
+  profileImageLink: string
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
+}
+
+export type PostChallengerDeactivateBody = {
+  memberId: number
+  deactivationType: 'WITHDRAW' | 'EXPEL'
+  modifiedBy: number
+  reason: string
+}
+
+export type PostChallengerRoleBody = {
+  challengerId: number
+  roleType: RoleType
+  organizationId: number | null
+  responsiblePart: PartType | null
+  gisuId: number
+}
+
+export type PostChallengerRoleResponseDTO = {
+  challengerRoleId: number
+}
+
+export type ChallengerRoleDetailResponseDTO = {
+  challengerRoleId: number
+  challengerId: number
+  roleType: RoleType
+  organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+  organizationId: number | null
+  responsiblePart: PartType | null
+  gisuId: number
+  gisu: number
 }

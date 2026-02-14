@@ -6,6 +6,11 @@ import { PART_TYPE_TO_SMALL_PART } from '../constants/part'
 import type { PartSmallType } from '../types/part'
 import type { EvaluationStatusType } from '../types/umc'
 
+/**
+ * 계정 상태 코드를 한글 라벨로 변환함
+ * @param input - 계정 상태 코드 문자열
+ * @returns 한글 상태 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformStateKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     ACTIVE: '활성',
@@ -16,6 +21,11 @@ export const transformStateKorean = (input: string): string => {
   return mapping[input] || input
 }
 
+/**
+ * 역할 코드를 한글 라벨로 변환함
+ * @param input - 역할 코드 문자열
+ * @returns 한글 역할 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformRoleKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     ADMIN: '관리자',
@@ -37,11 +47,21 @@ export const transformRoleKorean = (input: string): string => {
   return mapping[input] || input
 }
 
+/**
+ * 파트 타입을 축약 한글 파트명으로 변환함
+ * @param input - 파트 타입
+ * @returns 축약 파트명
+ */
 export const transformPart = (input: PartType): PartSmallType => {
   const mapping = PART_TYPE_TO_SMALL_PART[input]
   return mapping
 }
 
+/**
+ * 모집 구분 코드를 한글 라벨로 변환함
+ * @param input - 모집 구분 코드
+ * @returns 한글 모집 구분 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformRecruitingKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     PREVIOUS: '지난 모집',
@@ -51,6 +71,11 @@ export const transformRecruitingKorean = (input: string): string => {
   return mapping[input] || input
 }
 
+/**
+ * 모집 상태 코드를 한글 라벨로 변환함
+ * @param input - 모집 상태 코드
+ * @returns 한글 모집 상태 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformResumeStatusKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     OPEN: '모집 중',
@@ -60,6 +85,11 @@ export const transformResumeStatusKorean = (input: string): string => {
   return mapping[input] || input
 }
 
+/**
+ * 질문 타입 코드를 한글 라벨로 변환함
+ * @param input - 질문 타입 코드
+ * @returns 한글 질문 타입 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformQuestionTypeKorean = (input: QuestionType | 'PREFERRED_PART'): string => {
   const mapping: { [key: string]: string } = {
     SHORT_TEXT: '단답형',
@@ -76,6 +106,11 @@ export const transformQuestionTypeKorean = (input: QuestionType | 'PREFERRED_PAR
   return mapping[input] || input
 }
 
+/**
+ * 지원 상태 코드를 한글 라벨로 변환함
+ * @param input - 지원 상태 코드
+ * @returns 한글 지원 상태 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformApplicationStatusKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     DRAFT: '임시 저장',
@@ -93,6 +128,12 @@ export const transformApplicationStatusKorean = (input: string): string => {
 
   return mapping[input] || input
 }
+
+/**
+ * 모집 일정 타입 코드를 한글 라벨로 변환함
+ * @param input - 모집 일정 타입 코드
+ * @returns 한글 모집 일정 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformRecruitingScheduleTypeKorean = (input: RECRUITING_SCHEDULE_TYPE): string => {
   const mapping: { [key: string]: string } = {
     APPLY_WINDOW: '서류 지원 기간',
@@ -106,6 +147,11 @@ export const transformRecruitingScheduleTypeKorean = (input: RECRUITING_SCHEDULE
   return mapping[input] || input
 }
 
+/**
+ * 다음 모집 안내 문구 코드를 한글 문구로 변환함
+ * @param input - 다음 모집 안내 코드
+ * @returns 한글 안내 문구, 매핑이 없으면 원본 문자열
+ */
 export const transformNextRecruitmentMonthKorean = (input: string): string => {
   const mapping: { [key: string]: string } = {
     APPLY_START_ANNOUNCE: '지원 시작 예정일: ',
@@ -119,6 +165,11 @@ export const transformNextRecruitmentMonthKorean = (input: string): string => {
   return mapping[input] || input
 }
 
+/**
+ * 사용자 지원 배지 코드를 한글 라벨로 변환함
+ * @param input - 사용자 지원 배지 코드
+ * @returns 한글 배지 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformUserRecruitmentBadgeToKorean = (input: UserApplicationBadgeType): string => {
   const mapping: { [key: string]: string } = {
     DRAFT: '임시 저장',
@@ -129,6 +180,11 @@ export const transformUserRecruitmentBadgeToKorean = (input: UserApplicationBadg
   return mapping[input] || input
 }
 
+/**
+ * 평가 상태 코드를 한글 라벨로 변환함
+ * @param input - 평가 상태 코드
+ * @returns 한글 평가 상태 라벨, 매핑이 없으면 원본 문자열
+ */
 export const transformEvaluationStatusTypeKorean = (input: EvaluationStatusType): string => {
   const mapping: { [key: string]: string } = {
     NOT_STARTED: '평가 전',

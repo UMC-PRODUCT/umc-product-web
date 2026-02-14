@@ -13,8 +13,17 @@ import {
   postSchool,
 } from '../domain/api'
 
+/**
+ * 관리(총괄) 영역에서 사용하는 mutation 훅 모음을 제공함.
+ * @returns 학교/지부/기수 관련 mutation 훅 객체
+ */
 export function useManagementMutations() {
   const queryClient = useQueryClient()
+
+  /**
+   * 학교 생성 mutation 훅.
+   * @returns 학교 생성 mutation 결과
+   */
   function usePostSchool() {
     return useCustomMutation(postSchool, {
       onSuccess: () => {
@@ -24,19 +33,39 @@ export function useManagementMutations() {
       },
     })
   }
+
+  /**
+   * 지부(챕터) 생성 mutation 훅.
+   * @returns 지부 생성 mutation 결과
+   */
   function usePostChapter() {
     return useCustomMutation(postChapter)
   }
+
+  /**
+   * 학교 배정 mutation 훅.
+   * @returns 학교 배정 mutation 결과
+   */
   function usePatchAssignSchools() {
     return useCustomMutation(({ chapterId, schoolId }: { chapterId: string; schoolId: string }) =>
       patchSchoolAssign(schoolId, { chapterId }),
     )
   }
+
+  /**
+   * 학교 배정 해제 mutation 훅.
+   * @returns 학교 배정 해제 mutation 결과
+   */
   function usePatchUnassignSchools() {
     return useCustomMutation(({ gisuId, schoolId }: { gisuId: string; schoolId: string }) =>
       patchSchoolUnAssign(schoolId, { gisuId }),
     )
   }
+
+  /**
+   * 학교 수정 mutation 훅.
+   * @returns 학교 수정 mutation 결과
+   */
   function usePatchSchool() {
     return useCustomMutation(
       ({
@@ -57,6 +86,11 @@ export function useManagementMutations() {
       }) => patchSchool(schoolId, body),
     )
   }
+
+  /**
+   * 기수 삭제 mutation 훅.
+   * @returns 기수 삭제 mutation 결과
+   */
   function useDeleteGeneration() {
     return useCustomMutation((gisuId: string) => deleteGisu(gisuId), {
       onSuccess: () => {
@@ -66,6 +100,11 @@ export function useManagementMutations() {
       },
     })
   }
+
+  /**
+   * 지부 삭제 mutation 훅.
+   * @returns 지부 삭제 mutation 결과
+   */
   function useDeleteBranch() {
     return useCustomMutation((chapterId: string) => deleteBranch(chapterId), {
       onSuccess: () => {
@@ -76,6 +115,10 @@ export function useManagementMutations() {
     })
   }
 
+  /**
+   * 기수 생성 mutation 훅.
+   * @returns 기수 생성 mutation 결과
+   */
   function usePostGisu() {
     return useCustomMutation(postGisu)
   }
