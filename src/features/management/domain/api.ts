@@ -155,7 +155,7 @@ export const postGisu = async (body: PostGisuBody): Promise<CommonResponseDTO<nu
  * @returns 기수 활성화 응답 데이터
  */
 export const postGisuActivate = async (gisuId: string): Promise<CommonResponseDTO<null>> => {
-  const { data } = await axiosInstance.post(`/gisu/${gisuId}/activate`)
+  const { data } = await axiosInstance.post(`/gisu/${gisuId}/active`)
   return data
 }
 /**

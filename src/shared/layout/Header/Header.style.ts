@@ -28,7 +28,7 @@ export const LeftWrapper = styled(Flex)({
   width: 'fit-content',
   gap: '76px',
   [media.down(theme.breakPoints.desktop)]: {
-    gap: '68px',
+    gap: '30px',
   },
   [media.down(theme.breakPoints.tablet)]: {
     gap: '18px',

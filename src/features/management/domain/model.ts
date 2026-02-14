@@ -118,6 +118,8 @@ export type GisuType = {
   gisuId: string
   generation: string
   isActive: boolean
+  startAt: string
+  endAt: string
 }
 
 export type UniversityFullType = University & {
