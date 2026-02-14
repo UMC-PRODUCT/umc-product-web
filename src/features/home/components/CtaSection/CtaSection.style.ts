@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 
-import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 import { homeResponsiveFont, homeResponsiveSpace } from '../../pages/styles/HomePage.common.style'
