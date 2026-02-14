@@ -1,4 +1,4 @@
-import type { Sponsor } from '../../pages/home.constants'
+import type { Sponsor } from '../../domain/constants'
 import * as S from './SponsorsSection.style'
 
 type Props = {
@@ -23,7 +23,7 @@ const SponsorsSection = ({ sponsors }: Props) => {
             <S.SponsorLogoContainer>
               <img src={sponsor.logo} alt={sponsor.name} />
             </S.SponsorLogoContainer>
-            <S.SponsorInfo style={index % 2 === 1 ? { textAlign: 'right' } : undefined}>
+            <S.SponsorInfo style={index % 2 === 1 ? { textAlign: 'right' } : { textAlign: 'left' }}>
               <S.SponsorName>{sponsor.name}</S.SponsorName>
               <S.SponsorText>{sponsor.description}</S.SponsorText>
             </S.SponsorInfo>

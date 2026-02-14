@@ -3,6 +3,8 @@ import styled from '@emotion/styled'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
+import { homeResponsiveFont, homeResponsiveSpace } from '../../pages/styles/HomePage.common.style'
+
 export {
   Section,
   SectionBadge,
@@ -18,12 +20,26 @@ export const SponsorsContainer = styled.div`
 export const SponsorRow = styled.div<{ $direction?: 'left' | 'right' }>`
   display: flex;
   align-items: center;
-  gap: 30px;
-  margin-bottom: 40px;
+  ${homeResponsiveSpace('gap: 30px;', 'gap: 20px;', 'gap: 16px;')}
+  ${homeResponsiveSpace('margin-bottom: 40px;', 'margin-bottom: 32px;', 'margin-bottom: 24px;')}
   opacity: 0;
   transition: all 0.8s ease-out;
   height: 200px;
   max-width: 600px;
+
+  ${media.down('1200px')} {
+    max-width: 550px;
+    gap: 25px;
+  }
+
+  ${media.down(theme.breakPoints.tablet)} {
+    height: 180px;
+  }
+
+  ${media.down(theme.breakPoints.mobile)} {
+    height: 100px;
+  }
+
   ${({ $direction }) =>
     $direction === 'left'
       ? `
@@ -41,22 +57,6 @@ export const SponsorRow = styled.div<{ $direction?: 'left' | 'right' }>`
   &.animate {
     opacity: 1;
     transform: translateX(0);
-  }
-
-  ${media.down('1200px')} {
-    max-width: 550px;
-    gap: 25px;
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    flex-direction: column !important;
-    gap: 20px;
-    margin-bottom: 40px;
-    height: auto;
-    max-width: 100%;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    text-align: center;
   }
 `
 
@@ -77,14 +77,13 @@ export const SponsorLogoContainer = styled.div`
     box-shadow: 0 5px 40px rgba(149, 239, 75, 0.2);
   }
 
-  ${media.down('1200px')} {
-    width: 140px;
-    height: 140px;
-  }
-
   ${media.down(theme.breakPoints.tablet)} {
     width: 120px;
     height: 120px;
+  }
+  ${media.down(theme.breakPoints.mobile)} {
+    width: 64px;
+    height: 64px;
   }
 `
 
@@ -94,23 +93,15 @@ export const SponsorInfo = styled.div`
 `
 
 export const SponsorName = styled.h3`
-  font-size: 24px;
+  ${homeResponsiveFont('24px', '22px', '20px')}
   font-weight: 800;
-  margin-bottom: 8px;
+  ${homeResponsiveSpace('margin-bottom: 8px;', 'margin-bottom: 7px;', 'margin-bottom: 6px;')}
   letter-spacing: -0.5px;
   color: ${theme.colors.white};
-
-  ${media.down('1200px')} {
-    font-size: 22px;
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    font-size: 20px;
-  }
 `
 
 export const SponsorText = styled.p`
-  font-size: 13px;
+  ${homeResponsiveFont('13px', '12px', '11px')}
   color: ${theme.colors.gray[400]};
   line-height: 1.6;
   overflow: hidden;
@@ -119,12 +110,4 @@ export const SponsorText = styled.p`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   margin: 0;
-
-  ${media.down('1200px')} {
-    font-size: 12px;
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    font-size: 13px;
-  }
 `

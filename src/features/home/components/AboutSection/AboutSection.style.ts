@@ -3,6 +3,8 @@ import styled from '@emotion/styled'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
+import { homeResponsiveFont, homeResponsiveSpace } from '../../pages/styles/HomePage.common.style'
+
 export {
   Section,
   SectionBadge,
@@ -14,14 +16,13 @@ export {
 export const AboutGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 80px 120px;
+  ${homeResponsiveSpace('gap: 80px 120px;', 'gap: 48px;', 'gap: 28px;')}
   align-items: start;
   max-width: 1000px;
   margin: 0 auto;
 
   ${media.down(theme.breakPoints.tablet)} {
     grid-template-columns: 1fr;
-    gap: 48px;
   }
 `
 
@@ -37,14 +38,14 @@ export const AboutContent = styled.div`
 `
 
 export const AboutTitle = styled.h3`
-  font-size: 32px;
+  ${homeResponsiveFont('32px', '28px', '24px')}
   font-weight: 800;
-  margin-bottom: 16px;
+  ${homeResponsiveSpace('margin-bottom: 16px;', 'margin-bottom: 12px;', 'margin-bottom: 10px;')}
   letter-spacing: -1px;
 `
 
 export const AboutText = styled.p`
-  font-size: 17px;
+  ${homeResponsiveFont('17px', '16px', '10px')}
   max-width: 650px;
   color: ${theme.colors.gray[400]};
   line-height: 1.8;

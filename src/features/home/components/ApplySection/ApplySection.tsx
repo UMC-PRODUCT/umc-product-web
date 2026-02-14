@@ -1,4 +1,4 @@
-import type { TimelineItem } from '../../pages/home.constants'
+import type { TimelineItem } from '../../domain/constants'
 import * as S from './ApplySection.style'
 
 type Props = {

@@ -15,8 +15,15 @@ import SponsorsSection from '../components/SponsorsSection/SponsorsSection'
 import StatsSection from '../components/StatsSection/StatsSection'
 import UniversitySection from '../components/UniversitySection/UniversitySection'
 import ValuesSection from '../components/ValuesSection/ValuesSection'
+import {
+  faqItems,
+  heroText,
+  projectsData,
+  sponsors,
+  stats,
+  timelineItems,
+} from '../domain/constants'
 import * as S from './styles/HomePage.common.style'
-import { faqItems, heroText, projectsData, sponsors, stats, timelineItems } from './home.constants'
 
 export const HomePage = () => {
   const navigate = useNavigate()

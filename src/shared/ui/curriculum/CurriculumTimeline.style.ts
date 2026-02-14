@@ -37,7 +37,14 @@ export const FirstColumn = styled.div<{ $indexLength: number }>`
     opacity: 0.5;
 
     ${media.down(theme.breakPoints.tablet)} {
-      height: ${(props) => (props.$indexLength === 7 ? `316px` : '268px')};
+      height: ${(props) =>
+        props.$indexLength === 7 ? `316px` : props.$indexLength === 6 ? '278px' : '270px'};
+      background: ${theme.colors.lime};
+      bottom: 20px;
+    }
+    ${media.down(theme.breakPoints.mobile)} {
+      height: ${(props) =>
+        props.$indexLength === 7 ? `316px` : props.$indexLength === 6 ? '248.5px' : '250px'};
       background: ${theme.colors.lime};
       bottom: 20px;
     }
@@ -70,6 +77,11 @@ export const SecondColumn = styled.div<{ $lastIndex: number }>`
       background: ${theme.colors.lime};
       bottom: 20px;
     }
+    ${media.down(theme.breakPoints.tablet)} {
+      height: ${(props) => (props.$lastIndex === 3 ? `160px` : '260px')};
+      background: ${theme.colors.lime};
+      bottom: 20px;
+    }
   }
 `
 
@@ -93,10 +105,17 @@ export const WeekLabel = styled.span`
   width: 50px;
   min-width: 50px;
   ${theme.typography.B3.Sb}
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: 13px;
+    min-width: fit-content;
+  }
 `
 
 export const ContentLabel = styled.span`
   color: ${theme.colors.white};
   padding-left: 18px;
   border-left: 1px solid ${theme.colors.gray[500]};
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: 13px;
+  }
 `
