@@ -36,6 +36,7 @@ import {
   getRecruitmentDashboardSummary,
   getRecruitmentDraft,
   getRecruitments,
+  getRecruitmentsDocumentEvaluation,
 } from '../domain/api'
 
 /** 모집 임시저장 조회 */
@@ -77,6 +78,14 @@ export const useGetRecruitmentApplicationFormDraft = (recruitingId: string) => {
 export const useGetRecruitmentsList = (status: RecruitmentStatusType) => {
   return useCustomSuspenseQuery(schoolKeys.getRecruitments({ status }), () =>
     getRecruitments({ status }),
+  )
+}
+
+/** 서류 평가 가능한 모집 목록 조회 */
+export const useGetRecruitmentsDocumentEvaluation = () => {
+  return useCustomQuery(
+    schoolKeys.getRecruitmentsDocumentEvaluation,
+    getRecruitmentsDocumentEvaluation,
   )
 }
 

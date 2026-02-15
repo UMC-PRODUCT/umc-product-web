@@ -51,8 +51,13 @@ const writeDateToQuery = (date: string) => {
   window.history.replaceState(null, '', nextUrl)
 }
 
-const ListView = ({ onStartEval }: { onStartEval: (user: { id: string }) => void }) => {
-  const recruitmentId = '12' // TODO: 추후 수정
+const ListView = ({
+  recruitmentId,
+  onStartEval,
+}: {
+  recruitmentId: string
+  onStartEval: (user: { id: string }) => void
+}) => {
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
   const [selectedDateId, setSelectedDateId] = useState<string | null>(() => readDateFromQuery())
   const [selectedPartId, setSelectedPartId] = useState<PartType | 'ALL' | null>(null)

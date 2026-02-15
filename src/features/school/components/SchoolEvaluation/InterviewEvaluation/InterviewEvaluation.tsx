@@ -43,7 +43,7 @@ const resolveInitialTab = (): InterviewTab => {
   return 'scheduling'
 }
 
-const InterviewEvaluation = () => {
+const InterviewEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
   const [interviewTab, setInterviewTab] = useState<InterviewTab>(resolveInitialTab)
 
   useEffect(() => {
@@ -81,12 +81,12 @@ const InterviewEvaluation = () => {
       {interviewTab === 'scheduling' && (
         <div css={{ minHeight: 600, width: '100%' }}>
           <AsyncBoundary fallback={<SuspenseFallback label="면접 스케줄링을 불러오는 중입니다." />}>
-            <Scheduling />
+            <Scheduling recruitmentId={recruitmentId} />
           </AsyncBoundary>
         </div>
       )}
-      {interviewTab === 'questions' && <InterviewQuestions />}
-      {interviewTab === 'evaluations' && <RealTimeEvaluation />}
+      {interviewTab === 'questions' && <InterviewQuestions recruitmentId={recruitmentId} />}
+      {interviewTab === 'evaluations' && <RealTimeEvaluation recruitmentId={recruitmentId} />}
     </>
   )
 }

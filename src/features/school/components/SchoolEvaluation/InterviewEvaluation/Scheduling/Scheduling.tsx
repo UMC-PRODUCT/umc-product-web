@@ -25,7 +25,7 @@ import FilterBar from '../../FilterBar/FilterBar'
 import ApplicantCard from './ApplicantCard'
 import * as S from './Scheduling.style'
 
-const Scheduling = () => {
+const Scheduling = ({ recruitmentId }: { recruitmentId: string }) => {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const [contentHeight, setContentHeight] = useState<number | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -41,8 +41,6 @@ const Scheduling = () => {
     useRecruitingMutation()
   const { mutate: assignApplicantsMutate } = usePostInterviewAssignApplicants()
   const { mutate: deleteAssignmentMutate } = useDeleteInterviewAssignApplicants()
-
-  const recruitmentId = '12' // TODO: 추후 수정 예정
 
   const handleDragStart = (id: string) => (e: DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text/plain', id)

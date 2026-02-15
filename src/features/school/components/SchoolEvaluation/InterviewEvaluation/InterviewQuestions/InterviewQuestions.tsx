@@ -27,8 +27,7 @@ import * as S from './InterviewQuestions.style'
 type PartKey = PartType | 'COMMON'
 type QuestionItem = { id: string; text: string }
 
-const InterviewQuestionsContent = () => {
-  const recruitmentId = '12' // TODO: 추후 수정 예정
+const InterviewQuestionsContent = ({ recruitmentId }: { recruitmentId: string }) => {
   const queryClient = useQueryClient()
   const {
     usePostInterviewQuestion,
@@ -275,10 +274,10 @@ const InterviewQuestionsContent = () => {
   )
 }
 
-const InterviewQuestions = () => {
+const InterviewQuestions = ({ recruitmentId }: { recruitmentId: string }) => {
   return (
     <AsyncBoundary fallback={<SuspenseFallback label="면접 질문을 불러오는 중입니다." />}>
-      <InterviewQuestionsContent />
+      <InterviewQuestionsContent recruitmentId={recruitmentId} />
     </AsyncBoundary>
   )
 }

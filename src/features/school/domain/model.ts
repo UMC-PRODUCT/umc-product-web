@@ -272,7 +272,7 @@ export type ScheduleSummary = {
   dateRange: DateRange
   todayInterviews: Array<{
     interviewTime: string
-    nickname: string
+    nickName: string
     name: string
     message: string
   }>
@@ -705,4 +705,19 @@ export type DeleteInterviewAssignApplicantsResponseDTO = {
     applicationId: string
   }
   summary: InterviewSummary
+}
+
+export type GetRecruitmentsDocumentEvaluationResponseDTO = {
+  recruitments: Array<{
+    recruitmentId: string
+    rootRecruitmentId: string
+    title: string
+    docReviewStartDate: string
+    docReviewEndDate: string
+    totalApplicantCount: string
+    openParts: Array<{
+      key: PartType | 'COMMON'
+      label: string
+    }>
+  }>
 }

@@ -20,11 +20,13 @@ export const Route = createFileRoute('/(app)/school/evaluation/$recruitmentId/')
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+  const params = Route.useParams()
   const search = Route.useSearch()
   const activeTab: (typeof EVALUATION_TAB)[number]['value'] = search.tab ?? 'docs'
 
   return (
     <SchoolEvaluation
+      recruitmentId={params.recruitmentId}
       activeTab={activeTab}
       onTabChange={(next) =>
         navigate({
