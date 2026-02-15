@@ -130,6 +130,12 @@ const ProfileMenuContent = ({
           type="button"
           onClick={() => onOpenModal({ modalType: 'accountLink', isOpen: true })}
         >
+          챌린저 기록 불러오기 <ArrowUp width={16} />
+        </S.ModalButton>
+        <S.ModalButton
+          type="button"
+          onClick={() => onOpenModal({ modalType: 'accountLink', isOpen: true })}
+        >
           계정 연동 <ArrowUp width={16} />
         </S.ModalButton>
         <S.DeleteButton

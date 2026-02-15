@@ -61,6 +61,7 @@ const ScheduleSummary = ({ scheduleSummary }: { scheduleSummary: ScheduleSummary
           <Section variant="solid" alignItems="flex-start" gap={18} css={{ position: 'relative' }}>
             <S.InterviewTitle>오늘 면접 예정자</S.InterviewTitle>
             <S.Grid
+              empty={scheduleSummary.todayInterviews.length === 0}
               notProgress={scheduleSummary.todayInterviews.length === 0}
               ref={setGridRef}
               onScroll={handleScroll}
