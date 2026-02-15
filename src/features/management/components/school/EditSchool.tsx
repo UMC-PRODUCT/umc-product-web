@@ -13,7 +13,7 @@ import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
 
 import { useGetSchoolsPaging } from '../../hooks/useManagementQueries'
 import EditSchoolModal from '../modals/EditSchoolModal/EditSchoolModal'
-import SchoolStateButton from './SchoolStateButton'
+import SchoolStateButton from '../stateButton/StateButton'
 import * as S from './shared'
 
 const EditSchool = () => {

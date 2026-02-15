@@ -18,6 +18,7 @@ import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
 import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
+import StateButton from '../../stateButton/StateButton'
 
 const GenerationList = () => {
   const [page, setPage] = useState(0)
@@ -39,7 +40,7 @@ const GenerationList = () => {
     id: generation.gisuId,
     state: generation.isActive,
     gisuName: generation.generation,
-    duration: `${formatDateToDot(generation.startAt)}~${formatDateToDot(generation.endAt)}`,
+    duration: `${formatDateToDot(generation.startAt)} ~ ${formatDateToDot(generation.endAt)}`,
   }))
 
   return (
@@ -58,33 +59,19 @@ const GenerationList = () => {
         renderRow={(row) => (
           <>
             <TableStyles.Td>
-              <span
-                css={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minWidth: '72px',
-                  height: '30px',
-                  padding: '0 12px',
-                  borderRadius: '999px',
-                  border: `1px solid ${row.state ? '#5CBF2F' : theme.colors.gray[600]}`,
-                  backgroundColor: row.state ? '#273423' : theme.colors.gray[700],
-                  color: row.state ? theme.colors.lime : theme.colors.gray[400],
-                  ...theme.typography.C3.Md,
-                }}
-              >
-                {row.state ? '활성' : '비활성'}
-              </span>
+              <StateButton label={row.state ? '활성' : '비활성'} isActive={row.state} />
             </TableStyles.Td>
             <TableStyles.Td css={{ ...theme.typography.C2.Sb }}>{row.gisuName}기</TableStyles.Td>
-            <TableStyles.Td css={{ color: theme.colors.gray[300] }}>{row.duration}</TableStyles.Td>
+            <TableStyles.Td css={{ color: theme.colors.gray[300], ...theme.typography.C2.Sb }}>
+              {row.duration}
+            </TableStyles.Td>
             <TableStyles.Td>
               <Button
                 iconSize={15}
-                typo="C3.Md"
+                typo="C2.Sb"
                 tone={row.state ? 'gray' : 'lime'}
                 variant={row.state ? 'solid' : 'outline'}
-                label={row.state ? '활성 중' : '활성화 하기'}
+                label={row.state ? '활성 중' : '활성화하기'}
                 disabled={row.state || isActivating}
                 css={{
                   width: '108px',
@@ -111,7 +98,7 @@ const GenerationList = () => {
               <Button
                 Icon={Trash}
                 iconSize={15}
-                typo="C2.Rg"
+                typo="C2.Sb"
                 tone="necessary"
                 variant="outline"
                 label="삭제"
