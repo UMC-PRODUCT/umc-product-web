@@ -9,6 +9,7 @@ import { Badge } from '@/shared/ui/common/Badge/Badge'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
+import ChallengerRecordModal from '@/shared/ui/modals/ChallengerRecordModal/ChallengerRecordModal'
 import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
 import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
@@ -22,12 +23,12 @@ const ProfileMenuContent = ({
   children?: React.ReactNode
   onOpenModal: React.Dispatch<
     React.SetStateAction<{
-      modalType: 'accountLink' | 'deleteAccount' | ''
+      modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
       isOpen: boolean
     }>
   >
   isModalOpen: {
-    modalType: 'accountLink' | 'deleteAccount' | ''
+    modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
   }
 }) => {
@@ -128,7 +129,7 @@ const ProfileMenuContent = ({
       <S.MenuWrapper alignItems="flex-start">
         <S.ModalButton
           type="button"
-          onClick={() => onOpenModal({ modalType: 'accountLink', isOpen: true })}
+          onClick={() => onOpenModal({ modalType: 'challengerRecord', isOpen: true })}
         >
           챌린저 기록 불러오기 <ArrowUp width={16} />
         </S.ModalButton>
@@ -159,6 +160,9 @@ const ProfileMenuContent = ({
       {isModalOpen.isOpen && isModalOpen.modalType === 'accountLink' && (
         <AccountModal onClose={() => onOpenModal({ modalType: '', isOpen: false })} />
       )}
+      {isModalOpen.isOpen && isModalOpen.modalType === 'challengerRecord' && (
+        <ChallengerRecordModal onClose={() => onOpenModal({ modalType: '', isOpen: false })} />
+      )}
     </>
   )
 }
@@ -171,7 +175,7 @@ const ProfileMenu = ({
   children?: React.ReactNode
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<{
-    modalType: 'accountLink' | 'deleteAccount' | ''
+    modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
   }>({
     modalType: '',

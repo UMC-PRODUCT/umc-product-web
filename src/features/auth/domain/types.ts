@@ -40,6 +40,10 @@ export type PostEmailVerificationCodeRequestDTO = {
 }
 export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
 
+export type PostChallengerRecordMemberRequestDTO = {
+  code: string
+}
+
 export type GetMemberMeResponseDTO = {
   id?: string
   name?: string
