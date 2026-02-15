@@ -1,5 +1,5 @@
 import type { ReactNode, UIEvent } from 'react'
-import { forwardRef } from 'react'
+import { forwardRef, useMemo } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
@@ -40,10 +40,19 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     onScrollEnd,
     portal = true,
   } = props
+  const normalizedOptions = useMemo(() => {
+    const seen = new Set<string>()
+    return options.filter((option) => {
+      const optionId = String(option.id)
+      if (seen.has(optionId)) return false
+      seen.add(optionId)
+      return true
+    })
+  }, [options])
   const isValuePropProvided = Object.prototype.hasOwnProperty.call(props, 'value')
   const controlledValue = value ? String(value.id) : ''
   const handleValueChange = (selectedValue: string) => {
-    const selectedOption = options.find((opt) => String(opt.id) === selectedValue)
+    const selectedOption = normalizedOptions.find((opt) => String(opt.id) === selectedValue)
     if (selectedOption) {
       onChange?.(selectedOption)
     }
@@ -83,8 +92,8 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         <SelectPrimitive.Portal>
           <S.StyledContent position="popper" sideOffset={4}>
             <S.StyledViewport onScroll={handleScroll}>
-              {options.map((option) => (
-                <S.StyledItem key={option.id} value={String(option.id)}>
+              {normalizedOptions.map((option) => (
+                <S.StyledItem key={String(option.id)} value={String(option.id)}>
                   <SelectPrimitive.ItemText asChild>
                     <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                       {option.label}
@@ -99,8 +108,8 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
       ) : (
         <S.StyledContent position="popper" sideOffset={4}>
           <S.StyledViewport onScroll={handleScroll}>
-            {options.map((option) => (
-              <S.StyledItem key={option.id} value={String(option.id)}>
+            {normalizedOptions.map((option) => (
+              <S.StyledItem key={String(option.id)} value={String(option.id)}>
                 <SelectPrimitive.ItemText asChild>
                   <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                     {option.label}

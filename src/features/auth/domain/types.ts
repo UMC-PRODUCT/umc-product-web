@@ -15,10 +15,10 @@ export type PostRegisterRequestDTO = {
   name?: string
   nickname?: string
   emailVerificationToken?: string
-  schoolId?: number
-  profileImageId?: number
+  schoolId?: string
+  profileImageId?: string
   termsAgreements?: Array<{
-    termsId?: number
+    termsId?: string
     isAgreed?: boolean
   }>
 }
@@ -41,11 +41,11 @@ export type PostEmailVerificationCodeRequestDTO = {
 export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
 
 export type GetMemberMeResponseDTO = {
-  id?: number
+  id?: string
   name?: string
   nickname?: string
   email?: string
-  schoolId?: number
+  schoolId?: string
   schoolName?: string
   profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
@@ -67,8 +67,7 @@ export type GetMemberOAuthMeResponseDTO = Array<{
 
 export type GetTermsResponseDTO = {
   id: string
-  title: string
-  content: string
+  link: string
   isMandatory: boolean
 }
 

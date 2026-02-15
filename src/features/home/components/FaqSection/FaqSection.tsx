@@ -1,4 +1,4 @@
-import type { FaqItem } from '../../pages/home.constants'
+import type { FaqItem } from '../../domain/constants'
 import * as S from './FaqSection.style'
 
 type Props = {

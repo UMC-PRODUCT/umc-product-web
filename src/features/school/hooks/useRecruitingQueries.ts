@@ -170,10 +170,10 @@ export const useGetFinalSelectionApplications = (
     {
       initialPageParam: 0,
       getNextPageParam: (lastPage) => {
-        const page = Number(lastPage.result.page)
-        const totalPages = Number(lastPage.result.totalPages)
+        const page = Number(lastPage.result.finalSelectionApplications.page)
+        const totalPages = Number(lastPage.result.finalSelectionApplications.totalPages)
         if (Number.isNaN(page) || Number.isNaN(totalPages)) return undefined
-        return lastPage.result.hasNext ? page + 1 : undefined
+        return lastPage.result.finalSelectionApplications.hasNext ? page + 1 : undefined
       },
     },
   )

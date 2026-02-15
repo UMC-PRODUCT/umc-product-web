@@ -47,7 +47,6 @@ export const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  width: 130px;
   background-color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray[600]};
   border-radius: 8px;

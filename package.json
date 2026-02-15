@@ -34,13 +34,13 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
-    "@tanstack/react-devtools": "^0.7.0",
-    "@tanstack/react-query": "^5.66.5",
-    "@tanstack/react-query-devtools": "^5.84.2",
-    "@tanstack/react-router": "^1.144.0",
-    "@tanstack/react-router-devtools": "^1.132.0",
-    "@tanstack/router-plugin": "^1.145.2",
-    "axios": "^1.13.2",
+    "@tanstack/react-devtools": "^0.9.5",
+    "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-query-devtools": "^5.91.3",
+    "@tanstack/react-router": "^1.159.10",
+    "@tanstack/react-router-devtools": "^1.159.10",
+    "@tanstack/router-plugin": "^1.159.12",
+    "axios": "^1.13.5",
     "dayjs": "^1.11.19",
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
@@ -58,9 +58,9 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@emotion/babel-plugin": "^11.13.5",
-    "@tanstack/devtools-vite": "^0.3.11",
-    "@tanstack/eslint-config": "^0.3.0",
-    "@tanstack/router-cli": "^1.145.2",
+    "@tanstack/devtools-vite": "^0.5.1",
+    "@tanstack/eslint-config": "^0.3.4",
+    "@tanstack/router-cli": "^1.159.9",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.10.2",
@@ -84,5 +84,11 @@
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
     "web-vitals": "^5.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "seroval": "^1.5.0",
+      "seroval-plugins": "^1.5.0"
+    }
   }
 }

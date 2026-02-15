@@ -1,21 +1,18 @@
 import styled from '@emotion/styled'
 
-import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+
+import { homeResponsiveFont, homeResponsiveSpace } from '../../pages/styles/HomePage.common.style'
 
 export { HeroCta } from '../HeroSection/HeroSection.style'
 
 export const CtaSection = styled.section`
   position: relative;
   text-align: center;
-  padding: 140px 60px;
+  ${homeResponsiveSpace('padding: 140px 60px;', 'padding: 80px 32px;', 'padding: 64px 20px;')}
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   z-index: 0;
-
-  ${media.down(theme.breakPoints.tablet)} {
-    padding: 80px 32px;
-  }
 `
 
 export const CtaContent = styled.div`
@@ -32,16 +29,17 @@ export const CtaContent = styled.div`
 `
 
 export const CtaTitle = styled.h2`
-  font-size: 56px;
+  ${homeResponsiveFont('56px', '42px', '24px')}
   font-weight: 900;
-  margin-bottom: 32px;
+  ${homeResponsiveSpace('margin-bottom: 20px;', 'margin-bottom: 20px;', 'margin-bottom: 0px;')}
   letter-spacing: -2px;
+  white-space: nowrap;
 `
 
 export const CtaText = styled.p`
-  font-size: 18px;
+  ${homeResponsiveFont('18px', '16px', '14px')}
   color: ${theme.colors.gray[400]};
-  margin-bottom: 48px;
+  ${homeResponsiveSpace('margin-bottom: 48px;', 'margin-bottom: 36px;', 'margin: 6px 0 12px 0;')}
 `
 
 export const Blur = styled.div`

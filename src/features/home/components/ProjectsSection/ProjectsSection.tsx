@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { Project } from '../../pages/home.constants'
+import type { Project } from '../../domain/constants'
 import * as S from './ProjectsSection.style'
 
 type Props = {

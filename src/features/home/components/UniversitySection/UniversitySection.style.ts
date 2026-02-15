@@ -4,6 +4,8 @@ import styled from '@emotion/styled'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
+import { homeResponsiveFont, homeResponsiveSpace } from '../../pages/styles/HomePage.common.style'
+
 export const UniversitySection = styled.section`
   width: 100%;
   margin: 0 auto;
@@ -11,9 +13,17 @@ export const UniversitySection = styled.section`
   display: flex;
   flex-direction: column;
   gap: 92px;
+  .slogan {
+    width: 750px;
+    align-self: center;
+    ${media.down(theme.breakPoints.tablet)} {
+      width: 300px;
+    }
+  }
 
   ${media.down(theme.breakPoints.tablet)} {
     padding: 80px 0px;
+    gap: 30px;
   }
 `
 
@@ -32,6 +42,9 @@ export const UniversityList = styled.div`
   display: grid;
   gap: 20px;
   overflow: hidden;
+  ${media.down(theme.breakPoints.tablet)} {
+    margin-top: 0;
+  }
 `
 
 export const UniversityRow = styled.div<{ $direction?: 'left' | 'right' }>`
@@ -62,11 +75,22 @@ export const UniversityItem = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50px;
-  background: ${theme.colors.gray[800]};
+  background: ${theme.colors.gray[700]};
   color: ${theme.colors.gray[400]};
   gap: 14px;
-  font-size: 18px;
+  ${homeResponsiveFont('18px', '16px', '14px')}
+  ${homeResponsiveSpace('padding: 14px 28px;', 'padding: 10px 20px;', 'padding: 10px 11px;')}
   font-weight: 600;
+  ${media.down(theme.breakPoints.tablet)} {
+    min-width: 121px;
+    height: 52px;
+    gap: 10px;
+  }
+  ${media.down(theme.breakPoints.mobile)} {
+    min-width: 73px;
+    height: 30px;
+    gap: 8px;
+  }
 
   img {
     max-height: 40px;
@@ -74,5 +98,13 @@ export const UniversityItem = styled.div`
     object-fit: contain;
     display: block;
     border-radius: 6px;
+    ${media.down(theme.breakPoints.tablet)} {
+      width: 32px;
+      height: 32px;
+    }
+    ${media.down(theme.breakPoints.mobile)} {
+      width: 18px;
+      height: 18px;
+    }
   }
 `

@@ -151,11 +151,11 @@ export const useRegistrationWorkflow = ({
                 const termsId = typeof rawId === 'number' ? rawId : Number(rawId)
                 if (!Number.isFinite(termsId)) return null
                 return {
-                  termsId,
+                  termsId: String(termsId),
                   isAgreed: Boolean(termsAgreement[termKey]),
                 }
               })
-              .filter((term): term is { termsId: number; isAgreed: boolean } => term !== null)
+              .filter((term): term is { termsId: string; isAgreed: boolean } => term !== null)
           : undefined
 
       setIsRegistering(true)
@@ -165,7 +165,7 @@ export const useRegistrationWorkflow = ({
           nickname: formData.nickname,
           emailVerificationToken: formData.emailVerificationToken,
           oAuthVerificationToken: formData.oAuthVerificationToken || undefined,
-          schoolId,
+          schoolId: schoolId === undefined ? undefined : String(schoolId),
           ...(mappedTermsAgreements && mappedTermsAgreements.length
             ? { termsAgreements: mappedTermsAgreements }
             : {}),

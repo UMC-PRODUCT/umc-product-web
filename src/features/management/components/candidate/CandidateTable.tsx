@@ -1,4 +1,3 @@
-import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 import Table from '@/shared/ui/common/Table/Table'
@@ -7,7 +6,7 @@ import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import type { CandidateType } from '../../domain/model'
 
 type CandidateTableProps = {
-  items: Array<CandidateType>
+  items: Array<CandidateType> | undefined
   totalPages?: number
   currentPage?: number
   onChangePage?: (page: number) => void
@@ -20,7 +19,7 @@ export const CandidateTable = ({
   onChangePage,
 }: CandidateTableProps) => {
   return (
-    <Section variant="solid" padding="12px 16px" height="500px">
+    <Section variant="solid" padding="12px 16px">
       <Table
         showFooter={true}
         page={{
@@ -30,23 +29,23 @@ export const CandidateTable = ({
         }}
         headerLabels={['번호', '닉네임/이름', '학교', '파트', '최종 결과']}
         rows={items}
-        getRowId={(item) => item.id}
+        getRowId={(item) => item.applicationId}
         renderRow={(item) => (
           <>
-            <TableStyles.Td>{item.id}</TableStyles.Td>
+            <TableStyles.Td>{item.applicationId}</TableStyles.Td>
             <TableStyles.Td>
-              {item.nickname}/{item.name}
+              {item.applicant.nickname}/{item.applicant.name}
             </TableStyles.Td>
-            <TableStyles.Td>{item.school}</TableStyles.Td>
+            <TableStyles.Td>{item.school.name}</TableStyles.Td>
             <TableStyles.Td>
-              {item.part.map((part) => PART_TYPE_TO_SMALL_PART[part]).join(', ')}
+              {item.appliedParts.map((part) => part.part.label).join(', ')}
             </TableStyles.Td>
             <TableStyles.Td>
-              {item.finalResult.status === '합격' && (
+              {item.finalResult.status === 'PASS' && (
                 <Button
                   typo="B4.Md"
                   tone="lime"
-                  label={`${PART_TYPE_TO_SMALL_PART[item.finalResult.part]} ${item.finalResult.status}`}
+                  label={`${item.finalResult.selectedPart.label} 합격`}
                   css={{
                     width: 'fit-content',
                     padding: '4px 18px',
@@ -55,7 +54,7 @@ export const CandidateTable = ({
                   }}
                 />
               )}
-              {item.finalResult.status === '대기' && (
+              {item.finalResult.status === 'WAITING' && (
                 <Button
                   typo="B4.Md"
                   tone="darkGray"
@@ -65,19 +64,23 @@ export const CandidateTable = ({
                     padding: '4px 18px',
                     cursor: 'default',
                     pointerEvents: 'none',
+                    color: '#999999',
+                    backgroundColor: '#2a2a2a',
                   }}
                 />
               )}
-              {item.finalResult.status === '불합격' && (
+              {item.finalResult.status === 'FAIL' && (
                 <Button
                   typo="B4.Md"
-                  tone="gray"
+                  tone="darkGray"
                   label={'불합격'}
                   css={{
                     width: 'fit-content',
                     padding: '4px 18px',
                     cursor: 'default',
                     pointerEvents: 'none',
+                    color: '#999999',
+                    backgroundColor: '#3a3a3a',
                   }}
                 />
               )}

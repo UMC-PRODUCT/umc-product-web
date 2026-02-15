@@ -14,7 +14,7 @@ const HomeHeader = ({ onScrollToSection }: Props) => {
     <S.FixedHeader>
       <S.Nav>
         <S.Logo type="button" onClick={() => onScrollToSection('top')}>
-          <Logo width={70} />
+          <Logo />
         </S.Logo>
         <S.NavLinks>
           <li>

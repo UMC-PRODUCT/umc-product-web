@@ -2,6 +2,8 @@ import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
 
+import { homeResponsiveFont } from '../../pages/styles/HomePage.common.style'
+
 export {
   Section,
   SectionBadge,
@@ -12,6 +14,7 @@ export {
 export const FaqContainer = styled.div`
   max-width: 1000px;
   margin: 0 auto;
+  padding: 0 20px;
 `
 
 export const FaqItem = styled.div<{ $active?: boolean }>`
@@ -57,7 +60,7 @@ export const FaqQuestion = styled.button`
 `
 
 export const FaqQuestionTitle = styled.h3`
-  font-size: 20px;
+  ${homeResponsiveFont('20px', '18px', '16px')}
   font-weight: 700;
   letter-spacing: -0.5px;
   margin: 0;
@@ -97,7 +100,7 @@ export const FaqAnswer = styled.div`
 `
 
 export const FaqAnswerText = styled.p`
-  font-size: 16px;
+  ${homeResponsiveFont('16px', '15px', '14px')}
   color: ${theme.colors.gray[400]};
   line-height: 1.8;
   margin: 0;

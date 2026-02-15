@@ -31,7 +31,10 @@ export const Value = styled.span<{ $placeholder: boolean }>`
 export const CalendarPopover = styled.div<{ $open: boolean }>`
   position: absolute;
   left: 0;
-  right: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: min(100vw - 32px, 420px);
   top: calc(100% + 8px);
   display: ${({ $open }) => ($open ? 'block' : 'none')};
   transform: translateY(${({ $open }) => ($open ? '0' : '4px')});

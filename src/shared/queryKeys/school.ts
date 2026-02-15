@@ -2,22 +2,20 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartType, SelectionsSortType } from '@/shared/types/umc'
 
+import type { CommonSearchParams } from '../types/api'
+
 // -----------------------------
 // Params
 // -----------------------------
 type RecruitmentsStatusParams = { status: string }
 
-type DocumentEvaluationApplicantsParams = {
+type DocumentEvaluationApplicantsParams = CommonSearchParams & {
   part?: PartType | 'ALL'
   keyword?: string
-  page?: string
-  size?: string
 }
 
-type DocumentSelectedApplicantsParams = {
+type DocumentSelectedApplicantsParams = CommonSearchParams & {
   part?: PartType | 'ALL'
-  page?: string
-  size?: string
   sort?: SelectionsSortType
 }
 

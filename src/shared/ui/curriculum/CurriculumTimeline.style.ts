@@ -10,12 +10,26 @@ export const TimelineGrid = styled.div`
   width: 100%;
 
   ${media.down(theme.breakPoints.tablet)} {
-    grid-template-columns: 1fr;
-    gap: 0;
+    display: none;
   }
 `
 
-export const FirstColumn = styled.div<{ $indexLength: number }>`
+export const MobileTimeline = styled.div`
+  display: none;
+  width: 100%;
+
+  ${media.down(theme.breakPoints.tablet)} {
+    display: block;
+  }
+`
+
+type ColumnLineProps = {
+  $showLine: boolean
+  $lineTop: number
+  $lineBottom: number
+}
+
+export const FirstColumn = styled.div<ColumnLineProps>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -24,10 +38,10 @@ export const FirstColumn = styled.div<{ $indexLength: number }>`
     content: '';
     position: absolute;
     left: 4px;
-    top: 20px;
-    bottom: 0px;
+    top: ${(props) => `${props.$lineTop}px`};
+    bottom: ${(props) => `${props.$lineBottom}px`};
     width: 2px;
-    height: ${(props) => (props.$indexLength === 7 ? `315px` : '270px')};
+    display: ${(props) => (props.$showLine ? 'block' : 'none')};
     background: linear-gradient(
       to bottom,
       ${theme.colors.lime} 0%,
@@ -35,16 +49,10 @@ export const FirstColumn = styled.div<{ $indexLength: number }>`
       #4a6312 99%
     );
     opacity: 0.5;
-
-    ${media.down(theme.breakPoints.tablet)} {
-      height: ${(props) => (props.$indexLength === 7 ? `316px` : '268px')};
-      background: ${theme.colors.lime};
-      bottom: 20px;
-    }
   }
 `
 
-export const SecondColumn = styled.div<{ $lastIndex: number }>`
+export const SecondColumn = styled.div<ColumnLineProps>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -53,23 +61,40 @@ export const SecondColumn = styled.div<{ $lastIndex: number }>`
     content: '';
     position: absolute;
     left: 4px;
-    top: 0px;
-    bottom: 80px;
+    top: ${(props) => `${props.$lineTop}px`};
+    bottom: ${(props) => `${props.$lineBottom}px`};
     width: 2px;
-    height: ${(props) => (props.$lastIndex === 3 ? `170px` : '260px')};
+    display: ${(props) => (props.$showLine ? 'block' : 'none')};
     background: linear-gradient(
-      to top,
+      to bottom,
       ${theme.colors.lime} 0%,
       ${theme.colors.lime} 95%,
       #4a6312 99%
     );
     opacity: 0.5;
+  }
+`
 
-    ${media.down(theme.breakPoints.tablet)} {
-      height: ${(props) => (props.$lastIndex === 3 ? `170px` : '260px')};
-      background: ${theme.colors.lime};
-      bottom: 20px;
-    }
+export const MobileColumn = styled.div<ColumnLineProps>`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: ${(props) => `${props.$lineTop}px`};
+    bottom: ${(props) => `${props.$lineBottom}px`};
+    width: 2px;
+    display: ${(props) => (props.$showLine ? 'block' : 'none')};
+    background: linear-gradient(
+      to bottom,
+      ${theme.colors.lime} 0%,
+      ${theme.colors.lime} 95%,
+      #4a6312 99%
+    );
+    opacity: 0.5;
   }
 `
 
@@ -93,10 +118,17 @@ export const WeekLabel = styled.span`
   width: 50px;
   min-width: 50px;
   ${theme.typography.B3.Sb}
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: 13px;
+    min-width: fit-content;
+  }
 `
 
 export const ContentLabel = styled.span`
   color: ${theme.colors.white};
   padding-left: 18px;
   border-left: 1px solid ${theme.colors.gray[500]};
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: 13px;
+  }
 `
