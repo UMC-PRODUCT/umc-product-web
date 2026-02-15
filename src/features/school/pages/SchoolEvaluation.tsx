@@ -28,17 +28,53 @@ export const SchoolEvaluation = ({
   recruitmentId,
 }: SchoolEvaluationProps) => {
   const { data, isLoading, error, refetch } = useGetRecruitmentsDocumentEvaluation()
+  const recruitments = data?.result.recruitments
   const rootRecruitmentId = useMemo(() => {
-    const recruitments = data?.result.recruitments ?? []
-    if (recruitments.length === 0) return undefined
-    if (!recruitmentId) return recruitments[0]?.rootRecruitmentId
-    const matched = recruitments.find(
+    const list = recruitments ?? []
+    if (list.length === 0) return undefined
+    if (!recruitmentId) return list[0]?.rootRecruitmentId
+    const matched = list.find(
       (recruitment) =>
         String(recruitment.recruitmentId) === String(recruitmentId) ||
         String(recruitment.rootRecruitmentId) === String(recruitmentId),
     )
     return matched?.rootRecruitmentId
-  }, [data?.result, recruitmentId])
+  }, [recruitments, recruitmentId])
+  const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
+  const errorMessage = error instanceof Error ? error.message : '데이터를 불러오지 못했어요.'
+
+  const renderEvaluationContent = (tab: 'interview' | 'final') => {
+    if (activeTab !== tab) return null
+    if (isLoading) return <SuspenseFallback label="모집 정보를 불러오는 중입니다." />
+    if (error) {
+      return (
+        <ServerErrorCard
+          errorStatus={errorStatus}
+          errorMessage={errorMessage}
+          onRetry={() => {
+            refetch()
+          }}
+        />
+      )
+    }
+    if (!rootRecruitmentId) {
+      return (
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          css={{ padding: '48px 0', color: theme.colors.gray[300] }}
+        >
+          현재 평가 가능한 모집이 없습니다.
+        </Flex>
+      )
+    }
+
+    return tab === 'interview' ? (
+      <InterviewEvaluation recruitmentId={rootRecruitmentId} />
+    ) : (
+      <FinalEvaluation recruitmentId={rootRecruitmentId} />
+    )
+  }
 
   return (
     <Flex justifyContent="center">
@@ -50,54 +86,8 @@ export const SchoolEvaluation = ({
           contentCss={{ padding: '22px 18px' }}
         >
           {activeTab === 'docs' && (docsContent ?? <DocsEvaluation />)}
-          {activeTab === 'interview' &&
-            (isLoading ? (
-              <SuspenseFallback label="모집 정보를 불러오는 중입니다." />
-            ) : error ? (
-              <ServerErrorCard
-                errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
-                errorMessage={
-                  error instanceof Error ? error.message : '데이터를 불러오지 못했어요.'
-                }
-                onRetry={() => {
-                  refetch()
-                }}
-              />
-            ) : rootRecruitmentId ? (
-              <InterviewEvaluation recruitmentId={rootRecruitmentId} />
-            ) : (
-              <Flex
-                justifyContent="center"
-                alignItems="center"
-                css={{ padding: '48px 0', color: theme.colors.gray[300] }}
-              >
-                현재 평가 가능한 모집이 없습니다.
-              </Flex>
-            ))}
-          {activeTab === 'final' &&
-            (isLoading ? (
-              <SuspenseFallback label="모집 정보를 불러오는 중입니다." />
-            ) : error ? (
-              <ServerErrorCard
-                errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
-                errorMessage={
-                  error instanceof Error ? error.message : '데이터를 불러오지 못했어요.'
-                }
-                onRetry={() => {
-                  refetch()
-                }}
-              />
-            ) : rootRecruitmentId ? (
-              <FinalEvaluation recruitmentId={rootRecruitmentId} />
-            ) : (
-              <Flex
-                justifyContent="center"
-                alignItems="center"
-                css={{ padding: '48px 0', color: theme.colors.gray[300] }}
-              >
-                현재 평가 가능한 모집이 없습니다.
-              </Flex>
-            ))}
+          {renderEvaluationContent('interview')}
+          {renderEvaluationContent('final')}
         </Tab>
       </PageLayout>
     </Flex>

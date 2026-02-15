@@ -53,14 +53,33 @@ const normalizeLink = (link: Pick<ExternalLink, 'title' | 'type' | 'url'>) => ({
   url: link.url.trim(),
 })
 
+const createLinkKey = (link: Pick<ExternalLink, 'title' | 'type' | 'url'>) => {
+  const { type, title, url } = normalizeLink(link)
+  return `${type}|||${title}|||${url}`
+}
+
 const areLinksEqual = (left: Array<ExternalLink>, right: Array<ExternalLink>) => {
   if (left.length !== right.length) return false
 
-  return left.every((link, index) => {
-    const a = normalizeLink(link)
-    const b = normalizeLink(right[index])
-    return a.type === b.type && a.title === b.title && a.url === b.url
-  })
+  const toCountMap = (links: Array<ExternalLink>) => {
+    const map = new Map<string, number>()
+    links.forEach((link) => {
+      const key = createLinkKey(link)
+      map.set(key, (map.get(key) ?? 0) + 1)
+    })
+    return map
+  }
+
+  const leftMap = toCountMap(left)
+  const rightMap = toCountMap(right)
+
+  if (leftMap.size !== rightMap.size) return false
+
+  for (const [key, leftCount] of leftMap.entries()) {
+    if (rightMap.get(key) !== leftCount) return false
+  }
+
+  return true
 }
 
 const ExternalModalContent = ({ onClose }: { onClose: () => void }) => {
