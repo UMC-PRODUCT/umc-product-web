@@ -47,7 +47,7 @@ export const useDocsPassModalMutations = ({
             const next = structuredClone(oldData)
             const nextPages = (next as { pages: Array<any> }).pages
             nextPages.forEach((page: any) => {
-              const nextItems = page?.result?.documentSelectionApplications?.content
+              const nextItems = page?.result.documentSelectionApplications?.content
               nextItems.forEach((item: any) => {
                 if (String(item.applicationId) === String(applicationId)) {
                   item.documentResult = { ...(item.documentResult ?? {}), decision }

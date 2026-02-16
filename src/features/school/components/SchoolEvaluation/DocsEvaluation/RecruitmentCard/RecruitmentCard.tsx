@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 
 import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
+import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -27,7 +28,13 @@ const RecruitmentCard = ({
   const endDate = dayjs(end).format('YYYY.MM.DD')
   const navigate = useNavigate()
   return (
-    <Section variant="outline" padding="15px 18px" alignItems="flex-start" gap={12}>
+    <Section
+      variant="outline"
+      padding="15px 18px"
+      alignItems="flex-start"
+      gap={12}
+      css={{ backgroundColor: theme.colors.gray[700] }}
+    >
       <S.RecruitmentHeader>
         <S.Period>
           {startDate} ~ {endDate}

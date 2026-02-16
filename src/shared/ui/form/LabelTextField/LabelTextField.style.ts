@@ -14,6 +14,7 @@ const Input = styled.input<{ IconPlaced?: 'left' | 'right' }>`
   flex: 1;
   overflow-x: auto;
   max-height: 100%;
+  min-width: 174px;
   ${media.down(theme.breakPoints.mobile)} {
     padding: 10px 8px 10px 12px;
   }

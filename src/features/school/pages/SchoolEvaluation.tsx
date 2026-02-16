@@ -28,18 +28,25 @@ export const SchoolEvaluation = ({
   recruitmentId,
 }: SchoolEvaluationProps) => {
   const { data, isLoading, error, refetch } = useGetRecruitmentsDocumentEvaluation()
-  const recruitments = data?.result.recruitments
+  const evaluatingRecruitments = data?.result.evaluatingRecruitments
+  const completeRecruitments = data?.result.completeRecruitments
   const rootRecruitmentId = useMemo(() => {
-    const list = recruitments ?? []
-    if (list.length === 0) return undefined
-    if (!recruitmentId) return list[0]?.rootRecruitmentId
-    const matched = list.find(
+    const evaluatingList = evaluatingRecruitments ?? []
+    const completeList = completeRecruitments ?? []
+    const allRecruitments = [...completeList, ...evaluatingList]
+    if (allRecruitments.length === 0) return undefined
+
+    if (!recruitmentId) {
+      return (completeList[0] ?? evaluatingList[0]).rootRecruitmentId
+    }
+
+    const matched = allRecruitments.find(
       (recruitment) =>
         String(recruitment.recruitmentId) === String(recruitmentId) ||
         String(recruitment.rootRecruitmentId) === String(recruitmentId),
     )
     return matched?.rootRecruitmentId
-  }, [recruitments, recruitmentId])
+  }, [completeRecruitments, evaluatingRecruitments, recruitmentId])
   const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
   const errorMessage = error instanceof Error ? error.message : '데이터를 불러오지 못했어요.'
 
