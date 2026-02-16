@@ -34,6 +34,14 @@ import type {
   University,
   UniversityFullType,
 } from './model'
+
+/** GET /schools/gisu/{gisuId} - 기수별 학교 목록 조회 */
+export const getSchoolsByGisu = async (
+  gisuId: string,
+): Promise<CommonResponseDTO<Array<UniversityFullType>>> => {
+  const { data } = await axiosInstance.get(`/schools/gisu/${gisuId}`)
+  return data
+}
 /**
  * 파트별 커리큘럼을 조회함
  * @param params - 파트 조회 파라미터

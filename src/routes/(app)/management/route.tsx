@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
+import { ensureActiveRolePool } from '@/features/auth/utils/roleGuard'
 import { NotFoundPage } from '@/shared/ui/feedback'
 import { canAccessManagementByRoles } from '@/shared/utils/role'
-import { ensureActiveRolePool } from '@/shared/utils/roleGuard'
 
 /**
  * 관리자(Management) 라우트 그룹

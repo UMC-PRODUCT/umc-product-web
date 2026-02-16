@@ -1,8 +1,7 @@
 import { getAccessToken } from '@/api/tokenManager'
 import { getActiveGisu, getMemberMe } from '@/features/auth/domain/api'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
-
-import { getActiveRolePool, getHighestPriorityRole, getRolesByGisu } from './role'
+import { getActiveRolePool, getHighestPriorityRole, getRolesByGisu } from '@/shared/utils/role'
 
 export const ensureActiveRolePool = async () => {
   const store = useUserProfileStore.getState()

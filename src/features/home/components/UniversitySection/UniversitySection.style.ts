@@ -13,17 +13,29 @@ export const UniversitySection = styled.section`
   display: flex;
   flex-direction: column;
   gap: 92px;
-  .slogan {
-    width: 750px;
-    align-self: center;
-    ${media.down(theme.breakPoints.tablet)} {
-      width: 300px;
-    }
-  }
 
   ${media.down(theme.breakPoints.tablet)} {
     padding: 80px 0px;
     gap: 30px;
+  }
+`
+
+export const Slogan = styled.h2`
+  color: var(--Lime, #95ef4b);
+  text-align: center;
+  text-shadow: 6px 8px 12px rgba(149, 239, 75, 0.4);
+  font-family: 'Inter Variable', sans-serif;
+  font-size: 70px;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 110%;
+
+  ${media.down(theme.breakPoints.tablet)} {
+    font-size: 42px;
+  }
+
+  ${media.down(theme.breakPoints.mobile)} {
+    font-size: 30px;
   }
 `
 
