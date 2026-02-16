@@ -185,7 +185,7 @@ export type GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: string
   formId: string
   formResponseId: string
-  status: string // TODO: enum 으로 변경
+  status: 'DRAFT' | 'SUBMITTED'
   lastSavedAt: string
   submittedAt: string | null
   answers: Array<AnswerItem>

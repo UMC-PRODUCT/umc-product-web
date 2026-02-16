@@ -6,7 +6,7 @@ import { useFileProcessing, useFileUploadSimulation, useUploadedFileState } from
  *
  * 분해된 훅들을 조합하여 사용:
  * - useUploadedFileState: 파일 상태 관리 및 외부 동기화
- * - useFileUploadSimulation: 업로드 시뮬레이션 (TODO: API 연동)
+ * - useFileUploadSimulation: 업로드 시뮬레이션
  * - useFileProcessing: 파일 처리 및 변환
  */
 export function useFileUpload({
