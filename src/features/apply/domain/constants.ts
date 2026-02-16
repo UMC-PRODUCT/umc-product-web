@@ -49,6 +49,7 @@ export const FINAL_STATUS_CONFIG = createStatusConfig<FinalStatusType>({
   EVALUATING: { label: '평가 중', color: 'lime' },
   PENDING: { label: '평가 대기 중', color: 'white' },
   DONE: { label: '평가 완료', color: 'lime' },
+  NONE: { label: '미정', color: 'gray' },
 })
 
 /** 모집 파트 목록 / 매핑 */

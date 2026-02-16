@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 import AfterSubmit from '@/features/apply/components/AfterSubmit'
 import * as S from '@/features/apply/components/ApplyPage.style'
 import BeforeSubmit from '@/features/apply/components/BeforeSubmit'
@@ -71,6 +73,14 @@ const renderApplySections = (
   recruitmentId?: string,
   overrideTitle?: string,
 ) => {
+  const today = dayjs().startOf('day')
+  const period = result.recruitmentPeriod
+  const isRecruitmentOpen =
+    !!period?.startsAt &&
+    !!period.endsAt &&
+    !today.isBefore(dayjs(period.startsAt).startOf('day')) &&
+    !today.isAfter(dayjs(period.endsAt).startOf('day'))
+
   const formattedRecruitmentPeriod = formatRecruitmentPeriod(
     result.recruitmentPeriod?.startsAt,
     result.recruitmentPeriod?.endsAt,
@@ -100,6 +110,7 @@ const renderApplySections = (
             submitStatus={submitStatus}
             partInfoList={result.parts}
             recruitmentId={recruitmentId}
+            canApply={isRecruitmentOpen}
             draftFormResponseId={result.myApplication.draftFormResponseId}
           />
         )}

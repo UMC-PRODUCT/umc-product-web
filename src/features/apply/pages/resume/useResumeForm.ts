@@ -44,7 +44,6 @@ export function useResumeForm(
     recruitmentId: 0,
     formId: 0,
     status: 'DRAFT',
-    title: '',
     recruitmentFormTitle: '',
     noticeTitle: '',
     noticeContent: '',

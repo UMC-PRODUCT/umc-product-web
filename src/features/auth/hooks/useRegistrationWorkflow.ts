@@ -172,6 +172,7 @@ export const useRegistrationWorkflow = ({
         },
         {
           onSuccess: (data) => {
+            console.log(data)
             setRegistrationError(null)
             setAccessToken(data.result.accessToken)
             setRefreshToken(data.result.refreshToken)

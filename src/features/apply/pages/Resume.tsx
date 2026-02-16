@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import type { FieldErrors } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
@@ -23,12 +22,10 @@ import {
   useGetRecruitmentApplicationForm,
 } from '../hooks/useGetApplicationQuery'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
-import { findFirstErrorPageIndex, getPageRequiredFieldIds, getSubmissionItems } from '../utils'
+import { getPageRequiredFieldIds, getSubmissionItems } from '../utils'
 import { useResumeForm } from './resume/useResumeForm'
 
 const AUTO_SAVE_INTERVAL_MS = 60_000
-
-type FormValues = Record<string, unknown>
 
 interface ResumeProps {
   currentPage: number
@@ -45,7 +42,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
   const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
-
+  const navigate = useNavigate()
   const {
     control,
     trigger,
@@ -118,15 +115,6 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     )
   }
 
-  const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
-    const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
-
-    if (errorPageIndex !== -1) {
-      onPageChange(errorPageIndex + 1)
-      scrollToTop()
-    }
-  }
-
   const openSubmitModal = () => setIsSubmitModalOpen(true)
   const closeSubmitModal = () => setIsSubmitModalOpen(false)
 
@@ -160,9 +148,13 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
             queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
           setIsSubmitModalOpen(false)
+          navigate({
+            to: '/apply',
+          })
         },
+
         onError: () => {
-          navigateToFirstErrorPage(errors)
+          alert('지원서 제출에 실패했습니다.')
         },
       },
     )
@@ -191,13 +183,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         handlePageNavigation={handlePageNavigation}
         isEdit={true}
       />
-      {isSubmitModalOpen && (
-        <SubmitConfirmModal
-          onClose={closeSubmitModal}
-          onSubmit={onSubmit}
-          onAllowNavigate={navigationBlocker.allowNextNavigationOnce}
-        />
-      )}
+      {isSubmitModalOpen && <SubmitConfirmModal onClose={closeSubmitModal} onSubmit={onSubmit} />}
 
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />

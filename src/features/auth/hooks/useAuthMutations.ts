@@ -2,6 +2,7 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 
 import {
+  deleteMember,
   deleteMemberOAuth,
   postChallengerRecordMember,
   postEmailVerification,
@@ -31,6 +32,10 @@ export function useAuthMutation() {
   function useDeleteMemberOAuth() {
     return useCustomMutation(deleteMemberOAuth)
   }
+  /** 회원 삭제 */
+  function useDeleteMember() {
+    return useCustomMutation(deleteMember)
+  }
   /** 챌린저 기록 불러오기 */
   function usePostChallengerRecordMember() {
     return useCustomMutation(postChallengerRecordMember)
@@ -41,6 +46,7 @@ export function useAuthMutation() {
     usePostEmailVerificationCode,
     usePostMemberOAuth,
     useDeleteMemberOAuth,
+    useDeleteMember,
     usePostChallengerRecordMember,
   }
 }

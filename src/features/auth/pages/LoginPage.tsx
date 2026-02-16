@@ -38,7 +38,7 @@ export const LoginPage = () => {
     <Main>
       <IntroBanner />
       <AuthSection size="md">
-        <Logo />
+        <Logo onClick={() => navigate({ to: '/' })} />
         <Divider label="로그인 또는 회원가입" />
         <ButtonGroup>
           <Button

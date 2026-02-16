@@ -154,6 +154,7 @@ const ProfileMenuContent = ({
           onClose={() => onOpenModal({ modalType: '', isOpen: false })}
           onClick={() => {
             onOpenModal({ modalType: '', isOpen: false })
+            handleLogout()
           }}
         />
       )}

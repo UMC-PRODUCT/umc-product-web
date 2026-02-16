@@ -140,6 +140,11 @@ export const deleteMemberOAuth = async ({
   return data
 }
 
+/** DELETE /member - 회원 삭제 */
+export const deleteMember = async (): Promise<void> => {
+  await axiosInstance.delete('/member')
+}
+
 /** POST /challenger-record/member - 챌린저 기록 불러오기 */
 export const postChallengerRecordMember = async (
   requestBody: PostChallengerRecordMemberRequestDTO,

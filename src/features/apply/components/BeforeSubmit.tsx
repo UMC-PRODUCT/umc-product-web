@@ -22,6 +22,7 @@ interface BeforeSubmitProps {
   }>
   draftFormResponseId?: string
   recruitmentId?: string
+  canApply: boolean
   submitStatus: 'DRAFT' | 'NONE' | 'SUBMITTED'
 }
 
@@ -29,6 +30,7 @@ const BeforeSubmit = ({
   submitStatus,
   partInfoList,
   recruitmentId,
+  canApply,
   draftFormResponseId,
 }: BeforeSubmitProps & { submitStatus: string }) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
@@ -37,6 +39,8 @@ const BeforeSubmit = ({
   const closeConfirmModal = () => setIsConfirmModalOpen(false)
   const { useFirstCreateDraft } = useApplyMutation()
   const { mutate: firstCreateDraft } = useFirstCreateDraft()
+  const isApplyDisabled = !recruitmentId || !canApply
+
   const handleApplyClick = () => {
     if (submitStatus === 'NONE') {
       firstCreateDraft(recruitmentId!, {
@@ -71,8 +75,8 @@ const BeforeSubmit = ({
 
       <Button
         label={`UMC 지원하기`}
-        tone={recruitmentId ? 'lime' : 'darkGray'}
-        disabled={!recruitmentId}
+        tone={isApplyDisabled ? 'darkGray' : 'lime'}
+        disabled={isApplyDisabled}
         onClick={handleApplyClick}
       />
 

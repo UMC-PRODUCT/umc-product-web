@@ -40,10 +40,21 @@ type RecruitmentCalendarEvent = CalendarEvent & {
   }
 }
 
+const getEventTooltipText = (eventTitle: string, displayRange?: string, suffix = ''): string => {
+  const label = transformRecruitingScheduleTypeKorean(eventTitle as RECRUITING_SCHEDULE_TYPE)
+  const range = displayRange ?? ''
+  return `${label}${range ? ` ${range}` : ''}${suffix}`
+}
+
 const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
   const today = useMemo(() => toStartOfDay(new Date()).toDate(), [])
   const [activeStartDate, setActiveStartDate] = useState<Date>(today)
   const [selectedDate, setSelectedDate] = useState<Date>(today)
+  const [hoveredTooltip, setHoveredTooltip] = useState<{
+    text: string
+    x: number
+    y: number
+  } | null>(null)
   const calendarRef = useRef<FullCalendar>(null)
 
   useEffect(() => {
@@ -102,6 +113,22 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
     api.gotoDate(nextDate)
   }
 
+  const handleEventMouseEnter: ComponentProps<typeof FullCalendar>['eventMouseEnter'] = (info) => {
+    const tooltipText = getEventTooltipText(
+      info.event.title,
+      info.event.extendedProps.displayRange as string | undefined,
+    )
+    setHoveredTooltip({
+      text: tooltipText,
+      x: info.jsEvent.clientX + 12,
+      y: info.jsEvent.clientY + 12,
+    })
+  }
+
+  const handleEventMouseLeave: ComponentProps<typeof FullCalendar>['eventMouseLeave'] = () => {
+    setHoveredTooltip(null)
+  }
+
   return (
     <Flex flexDirection="column" gap="24px">
       <S.Header flexDirection="row" justifyContent="space-between">
@@ -143,6 +170,13 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
           eventContent={(eventInfo) => {
             const start = eventInfo.event.start
             const end = eventInfo.event.end
+            const eventLabel = transformRecruitingScheduleTypeKorean(
+              eventInfo.event.title as RECRUITING_SCHEDULE_TYPE,
+            )
+            const tooltipText = getEventTooltipText(
+              eventInfo.event.title,
+              eventInfo.event.extendedProps.displayRange,
+            )
             const isHighlighted =
               !!start &&
               dayjs(today).isBetween(
@@ -153,12 +187,8 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
               )
 
             return (
-              <S.EventBar $isHighlighted={isHighlighted}>
-                <span className="event-title">
-                  {transformRecruitingScheduleTypeKorean(
-                    eventInfo.event.title as RECRUITING_SCHEDULE_TYPE,
-                  )}
-                </span>
+              <S.EventBar $isHighlighted={isHighlighted} aria-label={tooltipText}>
+                <span className="event-title">{eventLabel}</span>
                 {eventInfo.event.extendedProps.displayRange ? (
                   <span className="event-range">{eventInfo.event.extendedProps.displayRange}</span>
                 ) : null}
@@ -177,7 +207,19 @@ const RecruitingCalendar = ({ events }: RecruitingCalendarProps) => {
             const isSelected = dayjs(date).isSame(selectedDate, 'day')
             return isSelected ? ['fc-selected-day'] : []
           }}
+          eventMouseEnter={handleEventMouseEnter}
+          eventMouseLeave={handleEventMouseLeave}
         />
+        {hoveredTooltip ? (
+          <S.HoverTooltip
+            style={{
+              left: `${hoveredTooltip.x}px`,
+              top: `${hoveredTooltip.y}px`,
+            }}
+          >
+            {hoveredTooltip.text}
+          </S.HoverTooltip>
+        ) : null}
       </S.StyledCalendarWrapper>
 
       <Flex flexDirection="column" gap="12px">

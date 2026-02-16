@@ -1,3 +1,4 @@
+import { useAuthMutation } from '@/features/auth/hooks/useAuthMutations'
 import FillNotice from '@/shared/assets/icons/notice_fill.svg?react'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -14,8 +15,20 @@ const DeleteAccountModal = ({
   onClose: () => void
   onClick: () => void
 }) => {
+  const { useDeleteMember } = useAuthMutation()
+  const { mutate: deleteMemberMutate, isPending } = useDeleteMember()
   const content = `계정을 삭제할 시 복구할 수 없습니다.
 ${nickname}/${name} 님의 계정을 삭제하시겠습니까?`
+
+  const handleDelete = () => {
+    deleteMemberMutate(undefined, {
+      onSuccess: () => {
+        onClick()
+        onClose()
+      },
+    })
+  }
+
   return (
     <AlertModalLayout
       onClose={onClose}
@@ -39,10 +52,8 @@ ${nickname}/${name} 님의 계정을 삭제하시겠습니까?`
           label={'삭제하기'}
           tone="necessary"
           typo="C3.Md"
-          onClick={() => {
-            onClick()
-            onClose()
-          }}
+          isLoading={isPending}
+          onClick={handleDelete}
         />
       </Flex>
     </AlertModalLayout>
