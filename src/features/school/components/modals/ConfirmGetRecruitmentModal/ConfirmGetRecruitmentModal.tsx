@@ -11,8 +11,8 @@ const ConfirmGetRecruitmentModal = ({
   onConfirm: () => void
 }) => {
   const content = `
-기존 모집 데이터가 존재합니다.
-해당 데이터를 불러와 모집을 생성하시겠습니까?
+추가 모집인가요?
+기존의 모집 데이터를 불러와 연동할 수 있습니다.
   `
   return (
     <AlertModalLayout
@@ -32,15 +32,17 @@ const ConfirmGetRecruitmentModal = ({
       >
         <Button
           type="button"
-          label={'새로 만들기'}
+          label={'네, 추가 모집입니다.'}
           tone="gray"
-          onClick={onClose}
+          onClick={() => {
+            onClose()
+          }}
           typo="C3.Md"
           css={{ width: '98px' }}
         />
         <Button
           type="button"
-          label={'기존 모집 불러오기'}
+          label={'아니요, 새로운 모집입니다.'}
           tone="lime"
           typo="C3.Md"
           onClick={() => {

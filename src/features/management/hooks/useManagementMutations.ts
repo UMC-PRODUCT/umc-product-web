@@ -6,6 +6,7 @@ import { managementKeys } from '@/shared/queryKeys'
 import {
   deleteBranch,
   deleteGisu,
+  deleteSchool,
   patchSchool,
   patchSchoolAssign,
   patchSchoolUnAssign,
@@ -119,6 +120,23 @@ export function useManagementMutations() {
   }
 
   /**
+   * 학교 삭제 mutation 훅.
+   * @returns 학교 삭제 mutation 결과
+   */
+  function useDeleteSchool() {
+    return useCustomMutation((schoolIds: Array<string>) => deleteSchool(schoolIds), {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['management', 'schoolsPaging'],
+        })
+        queryClient.invalidateQueries({
+          queryKey: managementKeys.getAllSchools,
+        })
+      },
+    })
+  }
+
+  /**
    * 기수 생성 mutation 훅.
    * @returns 기수 생성 mutation 결과
    */
@@ -145,6 +163,7 @@ export function useManagementMutations() {
     usePatchAssignSchools,
     usePatchUnassignSchools,
     usePatchSchool,
+    useDeleteSchool,
     useDeleteBranch,
     useDeleteGeneration,
     usePostGisu,

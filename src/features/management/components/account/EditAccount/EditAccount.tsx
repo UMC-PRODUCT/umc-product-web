@@ -3,38 +3,49 @@ import { useMemo, useState } from 'react'
 import Arrow from '@shared/assets/icons/arrow.svg?react'
 
 import type { PartType } from '@/features/auth/domain'
+import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
-import { useGetChallenger } from '@/features/management/hooks/useManagementQueries'
+import {
+  useGetAllGisu,
+  useGetAllSchools,
+  useGetChallenger,
+  useGetChapters,
+  useGetSchoolsPaging,
+} from '@/features/management/hooks/useManagementQueries'
 import FilterBar from '@/features/school/components/SchoolEvaluation/FilterBar/FilterBar'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
 import Search from '@/shared/assets/icons/search.svg?react'
 import { PART_LIST } from '@/shared/constants/part'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
-import {
-  useChapterDropdown,
-  useGisuDropdown,
-  usePartDropdown,
-  useSchoolDropdown,
-} from '@/shared/hooks/useManagedDropdown'
+import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { managementKeys } from '@/shared/queryKeys'
 import * as S from '@/shared/styles/shared'
+import type { Option } from '@/shared/types/form'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 import { TextField } from '@/shared/ui/form/LabelTextField/TextField'
+import { createDropdownOptions } from '@/shared/utils/createDropdownOptions'
 import { transformPart, transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import AccountDetail from '../../modals/AccountDetail/AccountDetail'
 
 const SEARCH_DEBOUNCE_MS = 500
+const ALL_OPTION_ID = '0'
 
 const EditAccountContent = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [activeRowId, setActiveRowId] = useState<string | null>(null)
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
+  const [selectedGisuId, setSelectedGisuId] = useState<string | undefined>()
+  const [selectedChapter, setSelectedChapter] = useState<Option<string> | undefined>()
+  const [selectedSchool, setSelectedSchool] = useState<Option<string> | undefined>()
   const initialPage = useMemo(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page')
 
@@ -47,10 +58,109 @@ const EditAccountContent = () => {
 
   const [page, setPage] = useState<number>(initialPage)
 
-  const chapterDropdown = useChapterDropdown({ includeAllOption: true })
-  const schoolDropdown = useSchoolDropdown({ includeAllOption: true })
-  const gisuDropdown = useGisuDropdown({ includeAllOption: true })
+  const { data: allGisuData, isLoading: isGisuLoading } = useGetAllGisu()
+  const { data: allChaptersData } = useGetChapters()
+  const { data: allSchoolsData } = useGetAllSchools()
+  const { data: schoolsByChapterData } = useGetSchoolsPaging({
+    page: '0',
+    size: '1000',
+    chapterId: selectedChapter ? String(selectedChapter.id) : undefined,
+  })
   const partDropdown = usePartDropdown({ includeAllOption: false })
+  const gisuOptions = useMemo<Array<Option<string>>>(
+    () =>
+      createDropdownOptions(
+        allGisuData?.result.gisuList ?? [],
+        (gisu) => `${gisu.gisu}기`,
+        (gisu) => gisu.gisuId,
+        '-- 전체 기수 --',
+      ),
+    [allGisuData?.result.gisuList],
+  )
+  const selectedGisu = useMemo<Option<string> | undefined>(
+    () => gisuOptions.find((option) => String(option.id) === selectedGisuId),
+    [gisuOptions, selectedGisuId],
+  )
+  const resolvedGisuId = selectedGisu ? String(selectedGisu.id) : undefined
+
+  const { data: branchWithSchoolData } = useCustomQuery(
+    managementKeys.getGisuChapterWithSchools(resolvedGisuId ?? ''),
+    () => getGisuChapterWithSchools({ gisuId: resolvedGisuId ?? '' }),
+    { enabled: Boolean(resolvedGisuId) },
+  )
+
+  const chapterOptions = useMemo<Array<Option<string>>>(() => {
+    if (!resolvedGisuId) {
+      const chapterList = allChaptersData?.result.chapters ?? []
+      return createDropdownOptions(
+        chapterList,
+        (chapter) => chapter.name,
+        (chapter) => chapter.id,
+        '-- 전체 지부 --',
+      )
+    }
+    const chapterList = branchWithSchoolData?.result.chapters ?? []
+    return createDropdownOptions(
+      chapterList,
+      (chapter) => chapter.chapterName,
+      (chapter) => chapter.chapterId,
+      '-- 전체 지부 --',
+    )
+  }, [allChaptersData?.result.chapters, branchWithSchoolData?.result.chapters, resolvedGisuId])
+
+  const schoolOptions = useMemo<Array<Option<string>>>(() => {
+    if (!resolvedGisuId) {
+      const schools = selectedChapter
+        ? (schoolsByChapterData?.result.content ?? []).map((school) => ({
+            schoolId: school.schoolId,
+            schoolName: school.schoolName,
+          }))
+        : (allSchoolsData?.result.schools ?? [])
+      return createDropdownOptions(
+        schools,
+        (school) => school.schoolName,
+        (school) => school.schoolId,
+        '-- 전체 학교 --',
+      )
+    }
+    const chapterList = branchWithSchoolData?.result.chapters ?? []
+    if (!selectedChapter) {
+      const uniqueSchools = new Map<string, string>()
+      chapterList.forEach((chapter) => {
+        chapter.schools.forEach((school) => {
+          if (!uniqueSchools.has(school.schoolId)) {
+            uniqueSchools.set(school.schoolId, school.schoolName)
+          }
+        })
+      })
+      const schools = Array.from(uniqueSchools.entries()).map(([schoolId, schoolName]) => ({
+        schoolId,
+        schoolName,
+      }))
+      return createDropdownOptions(
+        schools,
+        (school) => school.schoolName,
+        (school) => school.schoolId,
+        '-- 전체 학교 --',
+      )
+    }
+    const targetChapter = chapterList.find(
+      (chapter) => chapter.chapterId === String(selectedChapter.id),
+    )
+    return createDropdownOptions(
+      targetChapter?.schools ?? [],
+      (school) => school.schoolName,
+      (school) => school.schoolId,
+      '-- 전체 학교 --',
+    )
+  }, [
+    allSchoolsData?.result.schools,
+    branchWithSchoolData?.result.chapters,
+    resolvedGisuId,
+    selectedChapter,
+    schoolsByChapterData?.result.content,
+  ])
+
   const selectedPartId = partDropdown.value?.id
   const selectedPart: PartType | undefined =
     typeof selectedPartId === 'string' && PART_LIST.includes(selectedPartId as PartType)
@@ -61,20 +171,13 @@ const EditAccountContent = () => {
     () => ({
       page: String(page),
       size: '10',
-      chapterId: chapterDropdown.value ? String(chapterDropdown.value.id) : undefined,
-      schoolId: schoolDropdown.value ? String(schoolDropdown.value.id) : undefined,
-      gisuId: gisuDropdown.value ? String(gisuDropdown.value.id) : undefined,
+      chapterId: selectedChapter ? String(selectedChapter.id) : undefined,
+      schoolId: selectedSchool ? String(selectedSchool.id) : undefined,
+      gisuId: resolvedGisuId,
       part: selectedPart,
       keyword: debouncedSearch || undefined,
     }),
-    [
-      page,
-      chapterDropdown.value,
-      schoolDropdown.value,
-      gisuDropdown.value,
-      selectedPart,
-      debouncedSearch,
-    ],
+    [page, selectedChapter, selectedSchool, resolvedGisuId, selectedPart, debouncedSearch],
   )
 
   const { data, isLoading, isFetching } = useGetChallenger(challengerQueryParams)
@@ -114,9 +217,40 @@ const EditAccountContent = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               css={{ width: '252px', height: '54px' }}
             />
-            {gisuDropdown.Dropdown}
-            {chapterDropdown.Dropdown}
-            {schoolDropdown.Dropdown}
+            <Dropdown
+              options={gisuOptions}
+              placeholder="전체 기수"
+              value={selectedGisu}
+              disabled={isGisuLoading}
+              onChange={(option) => {
+                const nextGisu = option.id === ALL_OPTION_ID ? undefined : String(option.id)
+                setSelectedGisuId(nextGisu)
+                setSelectedChapter(undefined)
+                setSelectedSchool(undefined)
+                setPage(0)
+              }}
+            />
+            <Dropdown
+              options={chapterOptions}
+              placeholder="전체 지부"
+              value={selectedChapter}
+              disabled={false}
+              onChange={(option) => {
+                setSelectedChapter(option.id === ALL_OPTION_ID ? undefined : option)
+                setSelectedSchool(undefined)
+                setPage(0)
+              }}
+            />
+            <Dropdown
+              options={schoolOptions}
+              placeholder="전체 학교"
+              value={selectedSchool}
+              disabled={false}
+              onChange={(option) => {
+                setSelectedSchool(option.id === ALL_OPTION_ID ? undefined : option)
+                setPage(0)
+              }}
+            />
             {partDropdown.Dropdown}총 {Number(data?.result.page.totalElements ?? 0)}명
           </>
         }
