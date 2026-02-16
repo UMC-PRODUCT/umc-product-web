@@ -14,6 +14,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
 import ConfirmGetRecruitmentModal from '../../modals/ConfirmGetRecruitmentModal/ConfirmGetRecruitmentModal'
+import GetPublishedRecruitmentModal from '../../modals/GetPublishedRecruitmentModal/GetPublishedRecruitmentModal'
 import TempRecruitmentModal from '../../modals/TempRecruitmentModal/TempRecruitmentModal'
 import * as S from './RecruitingMake.style'
 
@@ -26,6 +27,15 @@ const RecruitingMake = () => {
     isOpen: false,
     publishedRecruitmentId: null,
   })
+  const [isGetPublishedModalOpen, setIsGetPublishedModalOpen] = useState(false)
+  const [publishedRecruitments, setPublishedRecruitments] = useState<
+    Array<{
+      recruitmentId: string
+      recruitmentName: string
+      startDate: string
+      endDate: string
+    }>
+  >([])
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { usePostRecruitmentCreate } = useRecruitingMutation()
@@ -73,11 +83,20 @@ const RecruitingMake = () => {
         ...ongoingResponse.result.recruitments,
         ...scheduledResponse.result.recruitments,
       ]
-      const targetRecruitment = recruitments.find(
+      const publishedList = recruitments.filter(
         (item) => item.status === 'PUBLISHED' && item.editable,
       )
 
-      if (targetRecruitment) {
+      if (publishedList.length > 0) {
+        const targetRecruitment = publishedList[0]
+        setPublishedRecruitments(
+          publishedList.map((item) => ({
+            recruitmentId: String(item.recruitmentId),
+            recruitmentName: item.recruitmentName,
+            startDate: item.startDate,
+            endDate: item.endDate,
+          })),
+        )
         setConfirmModalState({
           isOpen: true,
           publishedRecruitmentId: String(targetRecruitment.recruitmentId),
@@ -137,17 +156,29 @@ const RecruitingMake = () => {
               isOpen: false,
               publishedRecruitmentId: null,
             })
-            createRecruitingFromScratch()
           }}
-          onConfirm={() => {
-            const recruitmentId = confirmModalState.publishedRecruitmentId
+          onClickAdditional={() => {
             setConfirmModalState({
               isOpen: false,
               publishedRecruitmentId: null,
             })
-            if (recruitmentId) {
-              console.log('published recruitment id:', recruitmentId)
-            }
+            setIsGetPublishedModalOpen(true)
+          }}
+          onClickNew={() => {
+            setConfirmModalState({
+              isOpen: false,
+              publishedRecruitmentId: null,
+            })
+            createRecruitingFromScratch()
+          }}
+        />
+      )}
+      {isGetPublishedModalOpen && (
+        <GetPublishedRecruitmentModal
+          recruitments={publishedRecruitments}
+          onClose={() => setIsGetPublishedModalOpen(false)}
+          onSelect={(recruitmentId) => {
+            console.log('published recruitment id:', recruitmentId)
           }}
         />
       )}

@@ -5,10 +5,12 @@ import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayo
 
 const ConfirmGetRecruitmentModal = ({
   onClose,
-  onConfirm,
+  onClickAdditional,
+  onClickNew,
 }: {
   onClose: () => void
-  onConfirm: () => void
+  onClickAdditional: () => void
+  onClickNew: () => void
 }) => {
   const content = `
 추가 모집인가요?
@@ -35,10 +37,10 @@ const ConfirmGetRecruitmentModal = ({
           label={'네, 추가 모집입니다.'}
           tone="gray"
           onClick={() => {
-            onClose()
+            onClickAdditional()
           }}
           typo="C3.Md"
-          css={{ width: '98px' }}
+          css={{ width: '145px' }}
         />
         <Button
           type="button"
@@ -46,9 +48,9 @@ const ConfirmGetRecruitmentModal = ({
           tone="lime"
           typo="C3.Md"
           onClick={() => {
-            onConfirm()
+            onClickNew()
           }}
-          css={{ width: '138px' }}
+          css={{ width: '182px' }}
         />
       </Flex>
     </AlertModalLayout>
