@@ -24,7 +24,7 @@ const CurriculumSection = () => {
   // 기본값으로 첫 번째 데이터 선택
   const [selectedPart, setSelectedPart] = useState<PartType>('PLAN')
   const { data } = useGetCurriculumsQuery(selectedPart)
-  const apiWorkbooks = data?.result.workbooks
+  const apiWorkbooks = data?.result?.workbooks
   const workbooks =
     Array.isArray(apiWorkbooks) && apiWorkbooks.length > 0
       ? apiWorkbooks
