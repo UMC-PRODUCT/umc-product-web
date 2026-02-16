@@ -1,9 +1,9 @@
-import gritzyLogo from '@/shared/assets/sponsor/그릿지.svg'
-import nerdinaryLogo from '@/shared/assets/sponsor/너디너리.svg'
-import vieworksLogo from '@/shared/assets/sponsor/뷰웍스.svg'
-import softSquaredLogo from '@/shared/assets/sponsor/소프트스퀘어드.svg'
-import jabberLogo from '@/shared/assets/sponsor/자버.svg'
-import comgongLogo from '@/shared/assets/sponsor/컴공선배.svg'
+import comgongLogo from '@/shared/assets/sponsor/comgong.svg'
+import gritzyLogo from '@/shared/assets/sponsor/gridge.svg'
+import jabberLogo from '@/shared/assets/sponsor/jober.svg'
+import nerdinaryLogo from '@/shared/assets/sponsor/neordinary.svg'
+import softSquaredLogo from '@/shared/assets/sponsor/softsquared.svg'
+import vieworksLogo from '@/shared/assets/sponsor/vieworks.svg'
 
 export type Curriculum = {
   title: string
