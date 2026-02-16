@@ -86,7 +86,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                 <img
                   src={profile?.profileImageLink || DefaultProfile}
                   alt="프로필 이미지"
-                  css={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                  css={{ borderRadius: '50%', width: '100px', minWidth: '100px', height: '100px' }}
                 />
                 <Flex flexDirection="column" alignItems="flex-start">
                   <Flex alignItems="center" gap={20}>

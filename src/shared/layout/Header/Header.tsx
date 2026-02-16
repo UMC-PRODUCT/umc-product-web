@@ -8,6 +8,7 @@ import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
 import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import { getHighestPriorityRole, getRolesByGisu } from '@/shared/utils/role'
 
 import * as S from './Header.style'
 
@@ -26,7 +27,7 @@ const Header = ({
   }
 }) => {
   const navigate = useNavigate()
-  const { schoolId, setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } =
+  const { schoolId, setName, setNickname, setEmail, setGisu, setSchoolId, setRoles, setRoleList } =
     useUserProfileStore()
   const { data: profileData } = useMemberMeQuery()
   const { data: gisuData } = useActiveGisuQuery({
@@ -41,15 +42,14 @@ const Header = ({
     setNickname(profileData.nickname || '')
     setEmail(profileData.email || '')
     setSchoolId(profileData.schoolId ? profileData.schoolId.toString() : '')
-  }, [profileData, setName, setNickname, setEmail, setSchoolId])
+    setRoleList(profileData.roles)
+  }, [profileData, setName, setNickname, setEmail, setSchoolId, setRoleList])
 
   useEffect(() => {
     if (!profileData || !gisuId) return
     setGisu(gisuId)
-    const activeRole = profileData.roles.find((role) => role.gisuId === gisuId)
-    if (activeRole) {
-      setRoles(activeRole)
-    }
+    const activeRoles = getRolesByGisu(profileData.roles, gisuId)
+    setRoles(getHighestPriorityRole(activeRoles))
   }, [profileData, gisuId, setGisu, setRoles])
 
   const { data: schoolLinkData } = useCustomQuery(

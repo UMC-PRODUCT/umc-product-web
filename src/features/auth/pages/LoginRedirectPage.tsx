@@ -8,6 +8,12 @@ import { theme } from '@/shared/styles/theme'
 import type { RoleType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
+import {
+  getHighestPriorityRole,
+  getRolesByGisu,
+  isManagementRole,
+  isSchoolRole,
+} from '@/shared/utils/role'
 
 import { useAuthMutation } from '../hooks/useAuthMutations'
 
@@ -42,23 +48,10 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     }
   }, [])
 
-const ROLE_PRIORITY: Record<RoleType, number> = {
-  SUPER_ADMIN: 100,
-  CENTRAL_PRESIDENT: 90,
-  CENTRAL_VICE_PRESIDENT: 80,
-  CENTRAL_OPERATING_TEAM_MEMBER: 70,
-  CENTRAL_EDUCATION_TEAM_MEMBER: 60,
-  CHAPTER_PRESIDENT: 50,
-  SCHOOL_PRESIDENT: 40,
-  SCHOOL_VICE_PRESIDENT: 30,
-  SCHOOL_PART_LEADER: 20,
-  SCHOOL_ETC_ADMIN: 10,
-}
-
 const resolveInitialPathByRole = (roleType?: RoleType | null) => {
   if (!roleType) return '/dashboard'
-  if (roleType === 'SUPER_ADMIN' || roleType.startsWith('CENTRAL_')) return '/management/generation'
-  if (roleType.startsWith('SCHOOL_')) return '/school/dashboard'
+  if (isManagementRole(roleType)) return '/management/generation'
+  if (isSchoolRole(roleType)) return '/school/dashboard'
   return '/dashboard'
 }
 
@@ -66,7 +59,7 @@ export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setRoles, setGisu } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setRoles, setRoleList, setGisu } = useUserProfileStore()
   const { usePostMemberOAuth } = useAuthMutation()
   const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
@@ -156,19 +149,13 @@ export const LoginRedirectPage = () => {
         if (cancelled) return
 
         const activeGisuId = activeGisuResponse.result.gisuId
-        const activeGisuRoles =
-          activeGisuId && profile.roles.length > 0
-            ? profile.roles.filter((role) => role.gisuId === activeGisuId)
-            : []
-        const rolePool = activeGisuRoles.length > 0 ? activeGisuRoles : profile.roles
-        const selectedRole =
-          rolePool.length > 0
-            ? [...rolePool].sort((a, b) => ROLE_PRIORITY[b.roleType] - ROLE_PRIORITY[a.roleType])[0]
-            : null
+        const activeGisuRoles = getRolesByGisu(profile.roles, activeGisuId)
+        const selectedRole = getHighestPriorityRole(activeGisuRoles)
 
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')
         setNickname(profile.nickname ?? '')
+        setRoleList(profile.roles)
         setRoles(selectedRole)
         if (activeGisuId) {
           setGisu(activeGisuId)
@@ -196,6 +183,7 @@ export const LoginRedirectPage = () => {
     setName,
     setNickname,
     setRoles,
+    setRoleList,
     setGisu,
     navigate,
   ])

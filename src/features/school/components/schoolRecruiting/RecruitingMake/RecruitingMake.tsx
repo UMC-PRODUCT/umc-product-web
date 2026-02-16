@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
-import { patchRecruitmentApplicationFormDraft } from '@/features/school/domain/api'
+import { getRecruitments, patchRecruitmentApplicationFormDraft } from '@/features/school/domain/api'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
@@ -13,17 +13,25 @@ import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 
+import ConfirmGetRecruitmentModal from '../../modals/ConfirmGetRecruitmentModal/ConfirmGetRecruitmentModal'
 import TempRecruitmentModal from '../../modals/TempRecruitmentModal/TempRecruitmentModal'
 import * as S from './RecruitingMake.style'
 
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
+  const [confirmModalState, setConfirmModalState] = useState<{
+    isOpen: boolean
+    publishedRecruitmentId: string | null
+  }>({
+    isOpen: false,
+    publishedRecruitmentId: null,
+  })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { usePostRecruitmentCreate } = useRecruitingMutation()
   const { mutate: postFirstRecruitmentMutate } = usePostRecruitmentCreate()
 
-  const handleCreateRecruiting = () => {
+  const createRecruitingFromScratch = () => {
     postFirstRecruitmentMutate(undefined, {
       onSuccess: (data) => {
         queryClient.invalidateQueries({
@@ -53,6 +61,34 @@ const RecruitingMake = () => {
         })
       },
     })
+  }
+
+  const handleCreateRecruiting = async () => {
+    try {
+      const [ongoingResponse, scheduledResponse] = await Promise.all([
+        getRecruitments({ status: 'ONGOING' }),
+        getRecruitments({ status: 'SCHEDULED' }),
+      ])
+      const recruitments = [
+        ...ongoingResponse.result.recruitments,
+        ...scheduledResponse.result.recruitments,
+      ]
+      const targetRecruitment = recruitments.find(
+        (item) => item.status === 'PUBLISHED' && item.editable,
+      )
+
+      if (targetRecruitment) {
+        setConfirmModalState({
+          isOpen: true,
+          publishedRecruitmentId: String(targetRecruitment.recruitmentId),
+        })
+        return
+      }
+    } catch (error) {
+      console.error('Failed to fetch published recruitments:', error)
+    }
+
+    createRecruitingFromScratch()
   }
 
   const handleLoadRecruiting = () => {
@@ -94,6 +130,27 @@ const RecruitingMake = () => {
         </S.Grid>
       </Section>
       {openModal && <TempRecruitmentModal onClose={() => setOpenModal(false)} />}
+      {confirmModalState.isOpen && (
+        <ConfirmGetRecruitmentModal
+          onClose={() => {
+            setConfirmModalState({
+              isOpen: false,
+              publishedRecruitmentId: null,
+            })
+            createRecruitingFromScratch()
+          }}
+          onConfirm={() => {
+            const recruitmentId = confirmModalState.publishedRecruitmentId
+            setConfirmModalState({
+              isOpen: false,
+              publishedRecruitmentId: null,
+            })
+            if (recruitmentId) {
+              console.log('published recruitment id:', recruitmentId)
+            }
+          }}
+        />
+      )}
     </Flex>
   )
 }

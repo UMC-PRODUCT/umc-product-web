@@ -11,6 +11,7 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
 import ChallengerRecordModal from '@/shared/ui/modals/ChallengerRecordModal/ChallengerRecordModal'
 import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
+import { getHighestPriorityRole, getRolesByGisu } from '@/shared/utils/role'
 import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './Profile.style'
@@ -33,7 +34,8 @@ const ProfileMenuContent = ({
   }
 }) => {
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setGisu, setSchoolId, setRoles, setRoleList } =
+    useUserProfileStore()
   const {
     data,
     isLoading: isProfileLoading,
@@ -53,15 +55,14 @@ const ProfileMenuContent = ({
     setNickname(data.nickname || '')
     setEmail(data.email || '')
     setSchoolId(data.schoolId ? data.schoolId.toString() : '')
-  }, [data, setName, setNickname, setEmail, setSchoolId])
+    setRoleList(data.roles)
+  }, [data, setName, setNickname, setEmail, setSchoolId, setRoleList])
 
   useEffect(() => {
     if (!data || !gisuId) return
     setGisu(gisuId)
-    const activeRole = data.roles.find((role) => role.gisuId === gisuId)
-    if (activeRole) {
-      setRoles(activeRole)
-    }
+    const activeRoles = getRolesByGisu(data.roles, gisuId)
+    setRoles(getHighestPriorityRole(activeRoles))
   }, [data, gisuId, setGisu, setRoles])
 
   if (isProfileLoading) {
@@ -86,6 +87,8 @@ const ProfileMenuContent = ({
     setNickname('')
     setEmail('')
     setGisu('')
+    setRoleList([])
+    setRoles(null)
     clearTokens()
     navigate({
       to: '/auth/login',
@@ -99,7 +102,15 @@ const ProfileMenuContent = ({
   return (
     <>
       <Flex gap="12px">
-        <S.Avatar />
+        {data.profileImageLink ? (
+          <img
+            src={data.profileImageLink}
+            alt="프로필 이미지"
+            css={{ width: '46px', minWidth: '46px', height: '46px', borderRadius: '50%' }}
+          />
+        ) : (
+          <S.Avatar />
+        )}
         <Flex
           flexDirection="column"
           alignItems="flex-start"
@@ -200,6 +211,7 @@ const ProfileMenu = ({
 const Profile = ({ children }: { children?: React.ReactNode }) => {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { data: profileData } = useMemberMeQuery()
 
   useEffect(() => {
     if (!open) return
@@ -217,7 +229,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <S.Container ref={menuRef}>
-      <S.TriggerIcon onClick={() => setOpen(!open)} />
+      <S.TriggerButton type="button" aria-label="프로필 메뉴 열기" onClick={() => setOpen(!open)}>
+        {profileData?.profileImageLink ? (
+          <S.TriggerImage src={profileData.profileImageLink} alt="프로필 이미지" />
+        ) : (
+          <S.TriggerIcon />
+        )}
+      </S.TriggerButton>
       {open && <ProfileMenu onClose={() => setOpen(false)}>{children}</ProfileMenu>}
     </S.Container>
   )

@@ -1,7 +1,8 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { NotFoundPage } from '@/shared/ui/feedback'
+import { canAccessSchoolByRoles } from '@/shared/utils/role'
+import { ensureActiveRolePool } from '@/shared/utils/roleGuard'
 
 /**
  * 학교(School) 라우트 그룹
@@ -12,11 +13,11 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/school')({
-  beforeLoad: () => {
-    const { role, gisu } = useUserProfileStore.getState()
-    const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
+  beforeLoad: async () => {
+    const rolePool = await ensureActiveRolePool()
+    const canAccessSchool = canAccessSchoolByRoles(rolePool)
 
-    if (!activeRole?.roleType?.startsWith('SCHOOL_')) {
+    if (!canAccessSchool) {
       throw redirect({ to: '/' })
     }
   },

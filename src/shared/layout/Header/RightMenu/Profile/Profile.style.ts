@@ -9,24 +9,34 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 export const Container = styled.div({
   display: 'inline-block',
   position: 'relative',
-  '& img': {
-    width: 46,
-    height: 46,
-    borderRadius: '100%',
-    objectFit: 'cover',
-    [media.down(theme.breakPoints.tablet)]: {
-      width: 40,
-      height: 40,
-    },
-  },
+})
+
+export const TriggerButton = styled.button({
+  border: 'none',
+  background: 'transparent',
+  padding: 0,
+  margin: 0,
+  cursor: 'pointer',
+  lineHeight: 0,
+  display: 'inline-flex',
 })
 
 export const TriggerIcon = styled(Icon)({
   borderRadius: '100%',
-  cursor: 'pointer',
   width: 40,
   [media.down(theme.breakPoints.tablet)]: {
     width: 19,
+  },
+})
+
+export const TriggerImage = styled.img({
+  borderRadius: '100%',
+  width: 40,
+  height: 40,
+  objectFit: 'cover',
+  [media.down(theme.breakPoints.tablet)]: {
+    width: 19,
+    height: 19,
   },
 })
 

@@ -91,6 +91,7 @@ const SlotCell = styled.div<{
   $isDisabled: boolean
   $isHourBoundary: boolean
   $isInteractive?: boolean
+  $selectedColorMode?: 'lime' | 'gray'
 }>`
   height: 25px;
   box-sizing: border-box;
@@ -98,7 +99,9 @@ const SlotCell = styled.div<{
     p.$isDisabled
       ? theme.colors.gray[800]
       : p.$isSelected
-        ? theme.colors.lime
+        ? p.$selectedColorMode === 'gray'
+          ? theme.colors.gray[400]
+          : theme.colors.lime
         : theme.colors.black};
   border-right: 1px solid ${theme.colors.gray[600]};
   border-bottom: ${(p) =>

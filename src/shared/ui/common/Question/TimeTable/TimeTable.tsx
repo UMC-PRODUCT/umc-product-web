@@ -27,6 +27,7 @@ interface ScheduleSelectorProps {
   value?: Partial<Record<string, Array<string>>>
   onChange?: (selected: Record<string, Array<string>>) => void
   mode: QuestionMode
+  selectedColorMode?: 'lime' | 'gray'
 }
 
 const TimeTableComponent = (
@@ -39,6 +40,7 @@ const TimeTableComponent = (
     value = {},
     onChange,
     mode,
+    selectedColorMode = 'lime',
   }: ScheduleSelectorProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) => {
@@ -179,6 +181,7 @@ const TimeTableComponent = (
                       $isDisabled={disabledForDate.has(idx)}
                       $isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
                       $isInteractive={isEditable}
+                      $selectedColorMode={selectedColorMode}
                       onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
                       onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
                     />
