@@ -1,7 +1,3 @@
-/**
- * Home 도메인 상수
- * (현재 특별한 상수 없음, 추후 확장용)
- */
 import gritzyLogo from '@/shared/assets/sponsor/그릿지.svg'
 import nerdinaryLogo from '@/shared/assets/sponsor/너디너리.svg'
 import vieworksLogo from '@/shared/assets/sponsor/뷰웍스.svg'
