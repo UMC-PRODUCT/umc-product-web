@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 import * as LabelPrimitive from '@radix-ui/react-label'
 
-import Necessary from '@shared/assets/icons/necessary.svg?react'
-import { theme } from '@shared/styles/theme'
+import Necessary from '@/shared/assets/icons/necessary.svg?react'
+import { theme } from '@/shared/styles/theme'
 
 import { LabelStyle } from './Label.style'
 

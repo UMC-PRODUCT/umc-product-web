@@ -1,18 +1,17 @@
 import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
-import Logo from '@shared/assets/brand_logo.svg?react'
-import Notice from '@shared/assets/icons/notice.svg?react'
-import Apple from '@shared/assets/social/apple.svg?react'
-import Google from '@shared/assets/social/google.svg?react'
-import Kakao from '@shared/assets/social/kakao.svg?react'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import { Button } from '@shared/ui/common/Button/Button'
-import Divider from '@shared/ui/common/Divider/Divider'
-import Instruction from '@shared/ui/common/Instruction/Instruction'
-
+import Logo from '@/shared/assets/brand_logo.svg?react'
+import Notice from '@/shared/assets/icons/notice.svg?react'
+import Apple from '@/shared/assets/social/apple.svg?react'
+import Google from '@/shared/assets/social/google.svg?react'
+import Kakao from '@/shared/assets/social/kakao.svg?react'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Divider from '@/shared/ui/common/Divider/Divider'
+import Instruction from '@/shared/ui/common/Instruction/Instruction'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
@@ -39,7 +38,7 @@ export const LoginPage = () => {
     <Main>
       <IntroBanner />
       <AuthSection size="md">
-        <Logo />
+        <Logo onClick={() => navigate({ to: '/' })} />
         <Divider label="로그인 또는 회원가입" />
         <ButtonGroup>
           <Button

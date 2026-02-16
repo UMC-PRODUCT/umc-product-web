@@ -5,6 +5,7 @@ import type {
   QueryKey,
   UseInfiniteQueryOptions,
   UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseSuspenseQueryOptions,
 } from '@tanstack/react-query'
@@ -93,21 +94,20 @@ export const useCustomInfiniteQuery = <
 >(
   queryKey: TQueryKey,
   queryFn: QueryFunction<TQueryFnData, TQueryKey, TPageParam>,
-  infiniteOptions?: UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam> &
+  infiniteOptions?: Omit<
+    UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>,
+    'queryKey' | 'queryFn'
+  > &
     DefaultQueryOptions,
 ) => {
   const safeOptions =
     infiniteOptions ??
-    ({} as UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam> &
+    ({} as Omit<
+      UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>,
+      'queryKey' | 'queryFn'
+    > &
       DefaultQueryOptions)
-  const {
-    staleTime,
-    retry,
-    refetchOnWindowFocus,
-    queryKey: _,
-    queryFn: __,
-    ...restOptions
-  } = safeOptions
+  const { staleTime, retry, refetchOnWindowFocus, ...restOptions } = safeOptions
 
   return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey, TPageParam>({
     queryKey,
@@ -119,14 +119,18 @@ export const useCustomInfiniteQuery = <
   })
 }
 
-export const useCustomMutation = <TData, TError, TVariables = void, TContext = unknown>(
+export const useCustomMutation = <
+  TData = unknown,
+  TError = Error,
+  TVariables = void,
+  TContext = unknown,
+>(
   mutationFn: MutationFunction<TData, TVariables>,
-  options?: UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions,
-) => {
-  const safeOptions =
-    options ?? ({} as UseMutationOptions<TData, TError, TVariables, TContext> & DefaultQueryOptions)
-  const { retry, ...restOptions } = safeOptions
-
+  options?: UseMutationOptions<TData, TError, TVariables, TContext> & {
+    retry?: number | boolean
+  },
+): UseMutationResult<TData, TError, TVariables, TContext> => {
+  const { retry, ...restOptions } = options ?? {}
   return useMutation<TData, TError, TVariables, TContext>({
     mutationFn,
     retry: retry ?? MUTATION_RETRY,

@@ -1,6 +1,6 @@
 import '@emotion/react'
 
-import type { theme } from '@shared/styles/theme'
+import type { theme } from '@/shared/styles/theme'
 
 type AppTheme = typeof theme
 

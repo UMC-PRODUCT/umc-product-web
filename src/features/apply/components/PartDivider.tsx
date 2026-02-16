@@ -1,14 +1,10 @@
+import type { PartType } from '@/features/auth/domain'
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
-const transformLabel = (value: string) => {
-  if (!value) return value
-  const words = value.toLowerCase().split(' ')
-  return words.map((word) => (word ? `${word[0].toUpperCase()}${word.slice(1)}` : word)).join(' ')
-}
-
-const PartDivider = ({ label }: { label: string }) => {
-  const displayLabel = transformLabel(label)
+const PartDivider = ({ label }: { label: PartType }) => {
+  const displayLabel = PART_TYPE_TO_SMALL_PART[label]
 
   return (
     <Section

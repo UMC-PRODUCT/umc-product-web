@@ -7,15 +7,15 @@ export function PhaseBadgeTone({ phase }: { phase: Phase }) {
     case 'APPLY_OPEN':
       return 'lime'
     case 'DOC_REVIEWING':
-      return 'gray'
+      return 'lime'
     case 'DOC_RESULT_PUBLISHED':
-      return 'gray'
+      return 'lime'
     case 'INTERVIEW_WAITING':
-      return 'gray'
+      return 'lime'
     case 'FINAL_REVIEWING':
-      return 'gray'
+      return 'lime'
     case 'FINAL_RESULT_PUBLISHED':
-      return 'gray'
+      return 'lime'
     case 'CLOSED':
       return 'gray'
     default:

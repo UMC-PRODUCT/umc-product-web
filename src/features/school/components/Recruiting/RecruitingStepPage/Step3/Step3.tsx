@@ -1,9 +1,17 @@
 import { useEffect, useMemo } from 'react'
 import type { Control } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
-import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
+import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
+import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePartItems'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -27,6 +35,7 @@ interface Step3Props {
   setPart: (nextPart: PartType | null) => void
   partCompletion: Partial<Record<PartType, boolean>>
   setPartCompletion: (next: Partial<Record<PartType, boolean>>) => void
+  canEditQuestions: boolean
 }
 
 const Step3 = ({
@@ -37,13 +46,26 @@ const Step3 = ({
   setPart,
   partCompletion,
   setPartCompletion,
+  canEditQuestions,
 }: Step3Props) => {
+  const router = useRouter()
+  const recruitingMatch = router.state.matches.find(
+    (m) => (m.params as Record<string, string>).recruitingId,
+  )
+  const recruitingId =
+    (recruitingMatch?.params as Record<string, string> | undefined)?.recruitingId ?? ''
   const recruitmentParts = useWatch({ control, name: 'recruitmentParts' })
   const items = useWatch({ control, name: 'items' })
+  const { recruitmentForm } = useRecruitingContext()
+  const queryClient = useQueryClient()
+  const { usePatchRecruitmentApplicationFormDraft } = useRecruitingMutation()
+  const { mutate: patchTempSavedRecruitQuestionsMutate } =
+    usePatchRecruitmentApplicationFormDraft(recruitingId)
+  const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   const partOptions = useMemo<Array<Option<PartSmallType>>>(
     () =>
       recruitmentParts.reduce<Array<Option<PartSmallType>>>((acc, partValue) => {
-        const label = mapApiPartToPartType(partValue)
+        const label = PART_TYPE_TO_SMALL_PART[partValue]
         acc.push({ label, id: partValue })
         return acc
       }, []),
@@ -56,6 +78,22 @@ const Step3 = ({
   }
   const selectedPart = getSelectedPart()
   const isSelectedPartComplete = selectedPart ? Boolean(partCompletion[selectedPart]) : false
+  const saveQuestionDraft = () => {
+    if (!recruitingId) return
+    patchTempSavedRecruitQuestionsMutate(
+      { items: buildQuestionsPayload(items) },
+      {
+        onSuccess: (data) => {
+          recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
+            shouldDirty: false,
+            shouldTouch: false,
+            shouldValidate: true,
+          })
+          queryClient.invalidateQueries({ queryKey: applicationQueryKey })
+        },
+      },
+    )
+  }
 
   useEffect(() => {
     if (page !== 3) return
@@ -71,11 +109,23 @@ const Step3 = ({
   // 완료 처리 전에 문항 유효성을 확인한다.
   const handlePartStatusChange = (isComplete: boolean) => {
     if (!selectedPart) return
-    if (isComplete && !isPartItemsValid(items, selectedPart)) return
+
+    if (!isComplete) {
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
+    if (!isPartItemsValid(items, selectedPart)) {
+      // 유효성 검증 실패 시에는 '작성 완료'로 넘어가지 않고 '작성 중' 상태를 유지한다.
+      setPartCompletion({ ...partCompletion, [selectedPart]: false })
+      return
+    }
+
     setPartCompletion({
       ...partCompletion,
-      [selectedPart]: isComplete,
+      [selectedPart]: true,
     })
+    saveQuestionDraft()
   }
 
   return (
@@ -109,7 +159,8 @@ const Step3 = ({
           partCompletion={partCompletion}
           onChangePart={setPart}
           onChangeStatus={handlePartStatusChange}
-          labelResolver={mapApiPartToPartType}
+          disablePartSelect={false}
+          disableStatusToggle={!canEditQuestions}
         />
       )}
       <Step3QuestionList
@@ -117,6 +168,7 @@ const Step3 = ({
         control={control}
         selectedPart={selectedPart}
         isSelectedPartComplete={isSelectedPartComplete}
+        isLocked={!canEditQuestions}
       />
       <Flex justifyContent="center">
         <Navigation currentPage={page} totalPages={PAGE_LIST.length} onChangePage={setPage} />

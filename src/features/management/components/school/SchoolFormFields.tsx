@@ -1,11 +1,10 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Label from '@shared/ui/common/Label/Label'
-import { LabelTextField } from '@shared/ui/form/LabelTextField/LabelTextField'
-
 import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Label from '@/shared/ui/common/Label/Label'
+import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
 import type { SchoolRegisterForm } from '../../schemas/management'
 import * as S from './shared'
@@ -37,22 +36,10 @@ export const SchoolFormFields = ({
           }}
           {...register('schoolName')}
         />
-        <LabelTextField
-          type="text"
-          label="지부"
-          autoComplete="off"
-          placeholder="지부를 입력하세요."
-          error={{
-            error: !!errors.affiliated,
-            errorMessage: errors.affiliated?.message || '',
-          }}
-          necessary={false}
-          {...register('affiliated')}
-        />
       </S.InputRow>
       <S.TextAreaWrapper alignItems="flex-start">
         <Label label="비고" necessary={false} />
-        <S.TextArea placeholder="추가 정보를 입력하세요." {...register('note')} />
+        <S.TextArea placeholder="추가 정보를 입력하세요." {...register('remark')} />
       </S.TextAreaWrapper>
       <Flex
         gap="42px"

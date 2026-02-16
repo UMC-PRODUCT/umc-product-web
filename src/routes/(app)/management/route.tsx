@@ -1,4 +1,8 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+
+import { ensureActiveRolePool } from '@/features/auth/utils/roleGuard'
+import { NotFoundPage } from '@/shared/ui/feedback'
+import { canAccessManagementByRoles } from '@/shared/utils/role'
 
 /**
  * 관리자(Management) 라우트 그룹
@@ -9,5 +13,14 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management')({
+  beforeLoad: async () => {
+    const rolePool = await ensureActiveRolePool()
+    const canAccessManagement = canAccessManagementByRoles(rolePool)
+
+    if (!canAccessManagement) {
+      throw redirect({ to: '/school/dashboard' })
+    }
+  },
   component: RouteComponent,
+  notFoundComponent: () => <NotFoundPage />,
 })

@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 
-import type { BadgeTone, BadgeVariant } from '@shared/types/component'
-import type { TypoToken } from '@shared/types/typo'
+import type { BadgeTone, BadgeVariant } from '@/shared/types/component'
+import type { TypoToken } from '@/shared/types/typo'
 
 import { StyledBadge } from './Badge.style'
 

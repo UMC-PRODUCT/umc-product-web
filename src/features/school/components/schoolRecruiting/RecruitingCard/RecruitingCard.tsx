@@ -19,6 +19,7 @@ interface RecruitingCardProps {
   applicants: number
   state: Phase
   editable: boolean
+  listBadge: string
   recruitmentId: string
 }
 const RecruitingCard = ({
@@ -27,6 +28,7 @@ const RecruitingCard = ({
   endDate,
   applicants,
   state,
+  listBadge,
   editable,
   recruitmentId,
 }: RecruitingCardProps) => {
@@ -63,13 +65,23 @@ const RecruitingCard = ({
             <span className="label">명</span>
           </Flex>
           <Badge className="state" variant="outline" typo="B5.Md" tone={badgeTone}>
-            {state}
+            {listBadge}
           </Badge>
         </S.LeftInfo>
       </S.InfoWrapper>
       {editable && (
         <Flex width={126} gap={12} height={28}>
-          <Button label="수정" tone="caution" />
+          <Button
+            label="수정"
+            tone="caution"
+            onClick={() =>
+              navigate({
+                to: '/school/recruiting/$recruitingId/published',
+                search: { step: 1 },
+                params: { recruitingId: recruitmentId },
+              })
+            }
+          />
           <Button
             label="삭제"
             tone="necessary"
@@ -99,7 +111,7 @@ const RecruitingCard = ({
         <DeleteConfirm
           onClose={() => setIsModalOpen({ ...isModalOpen, open: false })}
           name={isModalOpen.name}
-          onClick={() => {}}
+          recruitmentId={recruitmentId}
         />
       )}
       {isModalOpen.open && isModalOpen.modalName === 'deleteFail' && (

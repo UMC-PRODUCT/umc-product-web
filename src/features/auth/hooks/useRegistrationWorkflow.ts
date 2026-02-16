@@ -3,12 +3,13 @@ import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react
 import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import type { CommonResponseDTO } from '@/shared/types/api'
 
 import type { GetTermsResponseDTO } from '../domain/types'
 import type { RegisterForm } from '../schemas/register'
-import { useAuth } from './register/useAuthMutations'
-import type { TermsAgreementKey } from './register/useTermsAgreementState'
+import type { TermsAgreementKey } from './register/useTermsAgreement'
+import { useAuthMutation } from './useAuthMutations'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
@@ -31,10 +32,11 @@ export const useRegistrationWorkflow = ({
   onEmailSent,
   terms,
 }: RegistrationWorkflowProps) => {
-  const { useSendEmail, useVerifyCode, useRegister } = useAuth()
-  const { mutate: sendEmailMutate } = useSendEmail()
-  const { mutate: verifyCodeMutate } = useVerifyCode()
-  const { mutate: registerMutate } = useRegister()
+  const { usePostEmailVerification, usePostEmailVerificationCode, usePostRegister } =
+    useAuthMutation()
+  const { mutate: sendEmailMutate } = usePostEmailVerification()
+  const { mutate: verifyCodeMutate } = usePostEmailVerificationCode()
+  const { mutate: registerMutate } = usePostRegister()
 
   const [emailVerificationId, setEmailVerificationId] = useState<string | null>(null)
   const [hasEmailBeenSent, setHasEmailBeenSent] = useState(false)
@@ -43,6 +45,9 @@ export const useRegistrationWorkflow = ({
   const [isVerifyingCode, setIsVerifyingCode] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
   const [registrationError, setRegistrationError] = useState<string | null>(null)
+
+  const { setItem: setAccessToken } = useLocalStorage('accessToken')
+  const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
 
   const getApiErrorMessage = useCallback((error: unknown, fallback: string) => {
     if (isAxiosError(error)) {
@@ -146,11 +151,11 @@ export const useRegistrationWorkflow = ({
                 const termsId = typeof rawId === 'number' ? rawId : Number(rawId)
                 if (!Number.isFinite(termsId)) return null
                 return {
-                  termsId,
+                  termsId: String(termsId),
                   isAgreed: Boolean(termsAgreement[termKey]),
                 }
               })
-              .filter((term): term is { termsId: number; isAgreed: boolean } => term !== null)
+              .filter((term): term is { termsId: string; isAgreed: boolean } => term !== null)
           : undefined
 
       setIsRegistering(true)
@@ -160,17 +165,23 @@ export const useRegistrationWorkflow = ({
           nickname: formData.nickname,
           emailVerificationToken: formData.emailVerificationToken,
           oAuthVerificationToken: formData.oAuthVerificationToken || undefined,
-          schoolId,
+          schoolId: schoolId === undefined ? undefined : String(schoolId),
           ...(mappedTermsAgreements && mappedTermsAgreements.length
             ? { termsAgreements: mappedTermsAgreements }
             : {}),
         },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
+            const tokenPayload = 'result' in data ? data.result : data
+            if (!tokenPayload.accessToken || !tokenPayload.refreshToken) {
+              setRegistrationError('토큰 정보가 올바르지 않습니다. 다시 시도해 주세요.')
+              return
+            }
             setRegistrationError(null)
-
+            setAccessToken(tokenPayload.accessToken)
+            setRefreshToken(tokenPayload.refreshToken)
             navigate({
-              to: '/auth/login',
+              to: '/dashboard',
             })
           },
           onError: (error) => {

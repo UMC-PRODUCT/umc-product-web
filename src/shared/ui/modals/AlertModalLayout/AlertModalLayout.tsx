@@ -1,10 +1,9 @@
-import Close from '@shared/assets/icons/close.svg?react'
-import Flex from '@shared/ui/common/Flex/Flex'
-import Instruction from '@shared/ui/common/Instruction/Instruction'
-import { Modal } from '@shared/ui/common/Modal'
-import * as S from '@shared/ui/modals/AlertModalLayout/AlertModalLayout.style'
-
+import Close from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import Instruction from '@/shared/ui/common/Instruction/Instruction'
+import { Modal } from '@/shared/ui/common/Modal'
+import * as S from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout.style'
 
 type AlertModalLayoutProps = {
   onClose: () => void
@@ -36,7 +35,7 @@ const AlertModalLayout = ({
                 width="100%"
                 css={{ marginBottom: '33px' }}
               >
-                <Modal.Title asChild>
+                <Modal.Title>
                   <Instruction
                     content={title}
                     typography="H2.Sb"
@@ -52,6 +51,21 @@ const AlertModalLayout = ({
                 </Modal.Close>
               </Flex>
             </Modal.Header>
+            <Modal.Description
+              css={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                padding: 0,
+                margin: -1,
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                border: 0,
+              }}
+            >
+              {content}
+            </Modal.Description>
             <Modal.Body>
               <S.ContentWrapper
                 justifyContent="flex-start"

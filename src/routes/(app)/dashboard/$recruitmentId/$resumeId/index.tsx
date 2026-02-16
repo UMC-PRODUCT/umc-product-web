@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import ViewResume from '@/features/dashboard/pages/ViewResume'
+import { ViewResume } from '@/features/dashboard/pages/ViewResume'
 
 type ViewResumeSearch = {
   page: number

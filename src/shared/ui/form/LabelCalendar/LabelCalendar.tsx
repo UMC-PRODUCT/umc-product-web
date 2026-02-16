@@ -2,13 +2,12 @@ import { forwardRef, useCallback, useEffect, useId, useRef, useState } from 'rea
 import type { Interpolation, Theme } from '@emotion/react'
 import dayjs from 'dayjs'
 
-import CalendarIcon from '@shared/assets/icons/calendar2.svg?react'
-import { Field } from '@shared/styles/formStyles'
-import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
-import Label from '@shared/ui/common/Label/Label'
-
+import CalendarIcon from '@/shared/assets/icons/calendar2.svg?react'
+import { Field } from '@/shared/styles/formStyles'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+import Label from '@/shared/ui/common/Label/Label'
 
 import Section from '../../common/Section/Section'
 import * as S from './LabelCalendar.style'
@@ -29,6 +28,7 @@ type LabelCalendarProps = {
   id?: string
   className?: string
   css?: Interpolation<Theme>
+  disabled?: boolean
 }
 
 const formatDate = (value: Date) => dayjs(value).format('YYYY.MM.DD')
@@ -47,6 +47,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
       id,
       className,
       css,
+      disabled = false,
     },
     ref,
   ) => {
@@ -58,10 +59,11 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
     const isValuePropProvided = value !== undefined
     const [internalValue, setInternalValue] = useState<Date | null>(null)
     const [isOpen, setIsOpen] = useState(false)
+    const effectiveIsOpen = isOpen && !disabled
     const selectedValue = isValuePropProvided ? (value ?? null) : internalValue
 
     useEffect(() => {
-      if (!isOpen) return
+      if (!effectiveIsOpen) return
       const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
         if (!wrapperRef.current) return
         if (wrapperRef.current.contains(event.target as Node)) return
@@ -75,10 +77,11 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
         document.removeEventListener('mousedown', handleOutsideClick)
         document.removeEventListener('touchstart', handleOutsideClick)
       }
-    }, [isOpen, onBlur])
+    }, [effectiveIsOpen, onBlur])
 
     const handleDateChange = useCallback(
       (nextValue: Date) => {
+        if (disabled) return
         if (!isValuePropProvided) {
           setInternalValue(nextValue)
         }
@@ -86,7 +89,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
         setIsOpen(false)
         onBlur?.()
       },
-      [isValuePropProvided, onBlur, onChange],
+      [disabled, isValuePropProvided, onBlur, onChange],
     )
 
     const displayValue = selectedValue ? formatDate(selectedValue) : placeholder
@@ -115,19 +118,21 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             type="button"
             aria-labelledby={labelId}
             aria-haspopup="dialog"
-            aria-expanded={isOpen}
+            aria-expanded={effectiveIsOpen}
             className={className}
             css={css}
-            $open={isOpen}
+            $open={effectiveIsOpen}
             onClick={() => {
+              if (disabled) return
               setIsOpen(!isOpen)
             }}
+            disabled={disabled}
           >
             <S.Value $placeholder={!selectedValue}>{displayValue}</S.Value>
             <CalendarIcon color={theme.colors.gray[400]} width={26} height={26} aria-hidden />
           </S.Trigger>
-          {isOpen && (
-            <S.CalendarPopover $open={isOpen} role="dialog" aria-labelledby={labelId}>
+          {effectiveIsOpen && (
+            <S.CalendarPopover $open={effectiveIsOpen} role="dialog" aria-labelledby={labelId}>
               <Section
                 variant="both"
                 padding={'18px 20px'}

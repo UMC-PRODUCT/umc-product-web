@@ -1,13 +1,13 @@
-import type { question } from '@/shared/types/form'
+import type { FormQuestion } from '@/shared/types/form'
 
 const REQUIRED_FIELD_MESSAGE = '응답 필수 항목입니다.'
 
-export const createPartValidation = (question: question) => (value: unknown) => {
+export const createPartValidation = (question: FormQuestion) => (value: unknown) => {
   if (question.type !== 'PREFERRED_PART') return true
   const selections = Array.isArray(value) ? value : []
   const first = selections.find((item) => item?.id === 1)?.answer
   const second = selections.find((item) => item?.id === 2)?.answer
-  const maxSelectCountValue = Number(question.maxSelectCount ?? 1)
+  const maxSelectCountValue = Number(question.maxSelectCount ?? '1')
   const requiredCount = Math.max(!Number.isNaN(maxSelectCountValue) ? maxSelectCountValue : 1, 1)
 
   if (question.required) {
@@ -22,7 +22,7 @@ export const createPartValidation = (question: question) => (value: unknown) => 
   return true
 }
 
-export const createValidationRules = (question: question) => ({
+export const createValidationRules = (question: FormQuestion) => ({
   required:
     question.type === 'PREFERRED_PART' ? false : question.required ? REQUIRED_FIELD_MESSAGE : false,
   ...(question.type === 'PREFERRED_PART'

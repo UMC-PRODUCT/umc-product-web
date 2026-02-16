@@ -1,15 +1,15 @@
-import Close from '@shared/assets/icons/close.svg?react'
-import { Modal } from '@shared/ui/common/Modal'
-
 import * as S from '@/features/school/components/modals/TempRecruitmentModal/TempRecruitmentModal.style'
 import { getRecruitments } from '@/features/school/domain/api'
-import { recruiteKeys } from '@/features/school/domain/queryKey'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import { schoolKeys } from '@/features/school/domain/queryKeys'
+import Close from '@/shared/assets/icons/close.svg?react'
 import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Flex } from '@/shared/ui/common/Flex'
+import { Modal } from '@/shared/ui/common/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { formatTempSavedTime } from '@/shared/utils'
 
 import TempRecruitmentCard from '../../TempRecruitmentCard/TempRecruitmentCard'
 
@@ -18,9 +18,8 @@ type TempRecruitmentModalProps = {
 }
 
 const TempRecruitmentList = () => {
-  const { data } = useCustomSuspenseQuery(
-    recruiteKeys.recruitments({ status: 'DRAFT' }).queryKey,
-    () => getRecruitments({ status: 'DRAFT' }),
+  const { data } = useCustomSuspenseQuery(schoolKeys.getRecruitments({ status: 'DRAFT' }), () =>
+    getRecruitments({ status: 'DRAFT' }),
   )
 
   const recruitments = data.result.recruitments
@@ -35,7 +34,7 @@ const TempRecruitmentList = () => {
         <TempRecruitmentCard
           key={recruitment.recruitmentId}
           title={recruitment.recruitmentName}
-          tempSavedTime={'2026.01.06'}
+          tempSavedTime={formatTempSavedTime(recruitment.updatedAt)}
           editable={recruitment.editable}
           recruitmentId={String(recruitment.recruitmentId)}
         />

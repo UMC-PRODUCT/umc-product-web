@@ -2,20 +2,19 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from '@tanstack/react-router'
 
-import Logo from '@shared/assets/brand_logo.svg?react'
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-import { Button } from '@shared/ui/common/Button/Button'
-import ErrorMessage from '@shared/ui/common/ErrorMessage/ErrorMessage'
-
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import Logo from '@/shared/assets/brand_logo.svg?react'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import { Button } from '@/shared/ui/common/Button/Button'
+import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
 import { useSchoolSelection, useTermsAgreement } from '../hooks/register'
-import { useTerms } from '../hooks/register/useTermsIdsQuery'
+import { useTerms } from '../hooks/register/useTerms'
 import { useRegisterForm } from '../hooks/useRegisterForm'
 import { useRegistrationWorkflow } from '../hooks/useRegistrationWorkflow'
 import type { RegisterForm } from '../schemas/register'
@@ -100,8 +99,8 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   )
 
   const handleFormSubmit = (formData: RegisterForm) => {
-    const hasSchoolId = selectedSchool.id !== ''
-    const schoolId = hasSchoolId ? Number(selectedSchool.id) : undefined
+    const hasSchoolId = selectedSchool.schoolId !== ''
+    const schoolId = hasSchoolId ? Number(selectedSchool.schoolId) : undefined
 
     handleRegisterSubmit(formData, schoolId, termsAgreement)
   }
@@ -126,7 +125,6 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   const emailButtonLabel = emailRequestState.isSent ? '발송 완료' : '메일 인증'
   const verificationButtonLabel = verificationState.isVerified ? '인증 완료' : '번호 확인'
   const canSubmit = isValid && verificationState.isVerified && !isRegistering && areTermsAgreed
-
   const registerFieldsConfig = {
     register,
     errors,
@@ -157,22 +155,25 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
       : undefined,
     isTermsLoading: serviceTerm.isFetching || privacyTerm.isFetching || marketingTerm.isFetching,
     termsError:
-      serviceTerm.error?.message || privacyTerm.error?.message || marketingTerm.error?.message,
+      serviceTerm.error || privacyTerm.error || marketingTerm.error
+        ? '약관 정보를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+        : undefined,
   }
 
   const closeEmailVerificationModal = () => {
     setIsEmailVerificationModalOpen(false)
   }
 
-  if (accessToken) {
-    navigate({ to: '/', replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (accessToken) {
+      navigate({ to: '/', replace: true })
+    }
+  }, [accessToken, navigate])
 
   return (
     <AuthSection size="lg">
       <ResponsiveLogo />
-      <form onSubmit={handleSubmit(handleFormSubmit)} css={{ width: '100%' }}>
+      <form onSubmit={handleSubmit(handleFormSubmit)} css={{ width: '100%' }} method="POST">
         <RegisterFormFields {...registerFieldsConfig} />
         {registrationError && (
           <ErrorMessage

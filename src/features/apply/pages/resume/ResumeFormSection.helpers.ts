@@ -1,6 +1,6 @@
 import type { PartType } from '@features/auth/domain'
 
-import type { question } from '@/shared/types/form'
+import type { FormQuestion } from '@/shared/types/form'
 
 import type { QuestionAnswerValue } from '../../domain/model'
 
@@ -59,7 +59,7 @@ export const getChangedPartRanks = (
   return Array.from(changedRanks).sort((a, b) => a - b)
 }
 
-export const isAnswerEmpty = (question: question, answerValue: unknown): boolean => {
+export const isAnswerEmpty = (question: FormQuestion, answerValue: unknown): boolean => {
   if (answerValue === null || answerValue === undefined) return true
 
   if (typeof answerValue === 'string') {

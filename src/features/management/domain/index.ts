@@ -1,5 +1,9 @@
 /**
  * Management 도메인 공개 API
+ *
+ * @example
+ * import { RECRUITING_STATE_CONFIG } from '@features/management/domain'
+ * import type { Recruiting, University } from '@features/management/domain'
  */
 
 // 상수
@@ -15,7 +19,6 @@ export type {
   EvaluationDocumentType,
   EvaluationFinalType,
   Notice,
-  Recruiting,
   RecruitingType,
   SchoolStateType,
   University,

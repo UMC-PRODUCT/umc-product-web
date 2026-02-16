@@ -1,26 +1,14 @@
-import Tab from '@shared/ui/common/Tab/Tab'
-
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 
-import AddAccount from '../components/account/AddAccountTab/AddAccountTab'
-import EditAccount from '../components/account/EditAccountTab/EditAccountTab'
-import { MANAGE_ACCOUNT_TABS } from '../domain/constants'
-import type { ManageAccountTabName } from '../domain/model'
+import EditAccount from '../components/account/EditAccount/EditAccount'
 
-type AccountPageProps = {
-  activeTab: ManageAccountTabName
-  onTabChange: (next: ManageAccountTabName) => void
-}
-
-export const AccountPage = ({ activeTab, onTabChange }: AccountPageProps) => {
+export const AccountPage = () => {
   return (
-    <PageLayout title="계정 관리">
-      <Tab tabs={MANAGE_ACCOUNT_TABS} value={activeTab} onValueChange={onTabChange}>
-        {/* TODO: 'add' 탭 - CreateAccount 컴포넌트 구현 예정 */}
-        {activeTab === 'add' && <AddAccount />}
-        {/* TODO: 'level' 탭 - ManageLevelAccount 컴포넌트 구현 예정 */}
-        {activeTab === 'edit' && <EditAccount />}
-      </Tab>
+    <PageLayout
+      title="계정 관리"
+      subTitle="모든 UMC 소속원들의 계정을 조회하고 수정할 수 있습니다."
+    >
+      <EditAccount />
     </PageLayout>
   )
 }

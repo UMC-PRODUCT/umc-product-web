@@ -1,41 +1,15 @@
-/**
- * UMC 공통 상수 (하위 호환성 유지)
- * 실제 상수는 각 feature의 domain에서 관리됨
- *
- * @deprecated 새 코드에서는 각 feature의 domain을 직접 import하세요
- * - Account/Part 관련: @features/auth/domain
- */
-
-import type { AccountLevelType, PartType } from '@features/auth/domain'
-import { ACCOUNT_LEVEL_LIST, PART_CONFIG, PART_LIST } from '@features/auth/domain'
+import { PART_LIST } from '@/shared/constants/part'
+import type { PartType } from '@/shared/types/part'
 
 // 하위 호환성을 위한 re-export
 export const PART: Array<PartType> = [...PART_LIST]
 
-export const FOOTER_INFO: { email: string; generation: number; master: string } = {
-  email: 'email.umc@example.com',
-  generation: 10,
-  master: '홍길동',
+export const FOOTER_INFO: { email: string; gisu: number; master: string } = {
+  email: 'chattchatt@epqpf.com',
+  gisu: 10,
+  master: '전채운',
 }
 
-// 하위 호환성을 위해 기존 형태 유지
-export const ACCOUNT_LEVEL: Array<{ id: number; label: AccountLevelType }> = ACCOUNT_LEVEL_LIST.map(
-  (item) => ({
-    id: item.id,
-    label: item.label,
-  }),
-)
-
-// PART_ABILITY는 PART_CONFIG에서 유도
-export const PART_ABILITY: Record<PartType, Array<string>> = {
-  PLAN: [...PART_CONFIG.PLAN.abilities],
-  DESIGN: [...PART_CONFIG.DESIGN.abilities],
-  WEB: [...PART_CONFIG.WEB.abilities],
-  IOS: [...PART_CONFIG.IOS.abilities],
-  ANDROID: [...PART_CONFIG.ANDROID.abilities],
-  SPRINGBOOT: [...PART_CONFIG.SPRINGBOOT.abilities],
-  NODEJS: [...PART_CONFIG.NODEJS.abilities],
-}
 export type RECRUITING_SCHEDULE_TYPE =
   | 'APPLY_WINDOW'
   | 'DOC_REVIEW_WINDOW'
@@ -45,3 +19,18 @@ export type RECRUITING_SCHEDULE_TYPE =
   | 'FINAL_RESULT_AT'
 
 export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'
+
+export type LinkType = 'KAKAO' | 'YOUTUBE' | 'INSTAGRAM'
+
+export const UMC_CENTRAL_LINKS = [
+  {
+    type: 'INSTAGRAM',
+    url: 'https://www.instagram.com/uni_makeus_challenge/',
+    title: 'UMC 공식 인스타그램',
+  },
+  {
+    type: 'YOUTUBE',
+    url: 'https://www.youtube.com/@UniversityMakeUsChallenge',
+    title: 'UMC 공식 유튜브',
+  },
+]

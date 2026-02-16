@@ -1,6 +1,9 @@
 import { css } from '@emotion/react'
-import { Link } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 
+import Error from '@shared/assets/icons/error.svg?react'
+
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 interface NotFoundPageProps {
@@ -11,18 +14,28 @@ interface NotFoundPageProps {
 
 const containerStyle = css({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '100vh',
-  padding: '40px 20px',
   textAlign: 'center',
-  gap: '24px',
+  width: '100%',
+  gap: '80px',
   backgroundColor: theme.colors.black,
+  [media.down(theme.breakPoints.desktop)]: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '24px',
+  },
+  [media.down(theme.breakPoints.mobile)]: {
+    svg: {
+      display: 'none',
+    },
+  },
 })
 
 const errorCodeStyle = css({
-  fontSize: '120px',
+  fontSize: '44px',
   fontWeight: 700,
   color: theme.colors.lime,
   lineHeight: 1,
@@ -39,36 +52,65 @@ const messageStyle = css({
   ...theme.typography.B3.Rg,
   color: theme.colors.gray[400],
   maxWidth: '400px',
+  whiteSpace: 'pre-line',
+  textAlign: 'start',
+  [media.down(theme.breakPoints.desktop)]: {
+    alignItems: 'center',
+    gap: '16px',
+    textAlign: 'center',
+  },
 })
 
 const linkStyle = css({
   ...theme.typography.B2.Md,
-  backgroundColor: theme.colors.lime,
+  backgroundColor: theme.colors.gray[300],
   color: theme.colors.black,
   textDecoration: 'none',
   borderRadius: '8px',
   padding: '12px 24px',
   transition: 'opacity 0.2s',
+  border: 'none',
+  cursor: 'pointer',
   '&:hover': {
     opacity: 0.9,
   },
 })
 
+const innerContainerStyle = css({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  [media.down(theme.breakPoints.desktop)]: {
+    alignItems: 'center',
+    gap: '16px',
+  },
+})
+
 const NotFoundPage = ({
   title = '페이지를 찾을 수 없습니다',
-  message = '요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.',
+  message = `죄송합니다. 페이지를 찾을 수 없습니다.\n존재하지 않는 주소를 입력하셨거나,\n요청하신 페이지의 주소가 변경, 삭제되어 찾을 수 없습니다.`,
   showHomeLink = true,
 }: NotFoundPageProps) => {
+  const navigate = useNavigate()
   return (
     <div css={containerStyle}>
-      <p css={errorCodeStyle}>404</p>
-      <h1 css={titleStyle}>{title}</h1>
-      <p css={messageStyle}>{message}</p>
-      {showHomeLink && (
-        <Link to="/" css={linkStyle}>
-          홈으로 돌아가기
-        </Link>
-      )}
+      <Error />
+      <div css={innerContainerStyle}>
+        <p css={errorCodeStyle}>404</p>
+        <h1 css={titleStyle}>{title}</h1>
+        <p css={messageStyle}>{message}</p>
+        {showHomeLink && (
+          <button
+            type="button"
+            css={linkStyle}
+            onClick={() =>
+              window.history.length > 1 ? window.history.back() : navigate({ to: '/' })
+            }
+          >
+            이전으로 이동
+          </button>
+        )}
+      </div>
     </div>
   )
 }

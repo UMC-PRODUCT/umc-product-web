@@ -1,3 +1,5 @@
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
@@ -15,7 +17,8 @@ type Step3PartHeaderProps = {
   partCompletion: Partial<Record<PartType, boolean>>
   onChangePart: (part: PartType) => void
   onChangeStatus: (isComplete: boolean) => void
-  labelResolver: (part: PartType) => string
+  disablePartSelect?: boolean
+  disableStatusToggle?: boolean
 }
 
 const Step3PartHeader = ({
@@ -25,8 +28,10 @@ const Step3PartHeader = ({
   partCompletion,
   onChangePart,
   onChangeStatus,
-  labelResolver,
+  disablePartSelect = false,
+  disableStatusToggle = false,
 }: Step3PartHeaderProps) => {
+  const isCompletionToggleDisabled = disableStatusToggle
   return (
     <Section
       variant="solid"
@@ -44,12 +49,13 @@ const Step3PartHeader = ({
         value={
           selectedPart
             ? {
-                label: labelResolver(selectedPart),
+                label: PART_TYPE_TO_SMALL_PART[selectedPart],
                 id: selectedPart,
               }
             : undefined
         }
-        onChange={(option) => onChangePart(option.id as PartType)}
+        onChange={disablePartSelect ? undefined : (option) => onChangePart(option.id as PartType)}
+        disabled={disablePartSelect}
         css={{ width: 300, maxWidth: '100%' }}
         optionSuffix={(option) =>
           partCompletion[option.id as PartType] ? (
@@ -76,8 +82,12 @@ const Step3PartHeader = ({
           typo="B4.Sb"
           tone={'gray'}
           variant={isSelectedPartComplete ? 'outline' : 'solid'}
-          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
-          onClick={() => onChangeStatus(false)}
+          css={{
+            padding: '4px 14px',
+            cursor: selectedPart && !isCompletionToggleDisabled ? 'pointer' : 'default',
+            opacity: isCompletionToggleDisabled ? 0.5 : 1,
+          }}
+          onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(false)}
         >
           작성 중
         </Badge>
@@ -85,8 +95,12 @@ const Step3PartHeader = ({
           typo="B4.Sb"
           tone={'gray'}
           variant={isSelectedPartComplete ? 'solid' : 'outline'}
-          css={{ padding: '4px 14px', cursor: selectedPart ? 'pointer' : 'default' }}
-          onClick={() => onChangeStatus(true)}
+          css={{
+            padding: '4px 14px',
+            cursor: selectedPart && !isCompletionToggleDisabled ? 'pointer' : 'default',
+            opacity: isCompletionToggleDisabled ? 0.5 : 1,
+          }}
+          onClick={isCompletionToggleDisabled ? undefined : () => onChangeStatus(true)}
         >
           작성 완료
         </Badge>

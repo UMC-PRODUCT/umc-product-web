@@ -1,7 +1,7 @@
-import Notice from '@shared/assets/icons/notice.svg?react'
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
+import Notice from '@/shared/assets/icons/notice.svg?react'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const EmailSendModal = ({ onClose, onClick }: { onClose: () => void; onClick: () => void }) => {
   return (

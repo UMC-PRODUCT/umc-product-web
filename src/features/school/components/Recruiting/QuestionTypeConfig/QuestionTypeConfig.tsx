@@ -10,9 +10,17 @@ type QuestionTypeConfigProps = {
   control: Control<RecruitingForms>
   namePrefix: string
   isLocked?: boolean
+  onDeleteOption?: (optionId: string) => void
+  onAppendOption?: () => void
 }
 
-const QuestionTypeConfig = ({ control, namePrefix, isLocked = false }: QuestionTypeConfigProps) => {
+const QuestionTypeConfig = ({
+  control,
+  namePrefix,
+  isLocked = false,
+  onDeleteOption,
+  onAppendOption,
+}: QuestionTypeConfigProps) => {
   const type = useWatch({
     control,
     name: `${namePrefix}.question.type` as FieldPath<RecruitingForms>,
@@ -39,6 +47,8 @@ const QuestionTypeConfig = ({ control, namePrefix, isLocked = false }: QuestionT
         name={`${namePrefix}.question.options`}
         variant={type === 'RADIO' ? 'RADIO' : 'CHECKBOX'}
         isLocked={isLocked}
+        onDeleteOption={onDeleteOption}
+        onAppendOption={onAppendOption}
       />
     )
   }

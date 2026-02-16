@@ -1,6 +1,7 @@
 import type { DocumentStatusType, FinalStatusType } from '@/features/apply/domain'
 import { DOCUMENT_STATUS_CONFIG, FINAL_STATUS_CONFIG } from '@/features/apply/domain'
 import type { PartType } from '@/features/auth/domain'
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
@@ -28,7 +29,12 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
   const documentEvaluationStatus: DocumentStatusType | undefined =
     current?.documentEvaluation.status
   const finalEvaluationStatus: FinalStatusType | undefined = current?.finalEvaluation.status
-
+  const documentStatusLabel = documentEvaluationStatus
+    ? DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label
+    : '미정'
+  const finalStatusLabel = finalEvaluationStatus
+    ? FINAL_STATUS_CONFIG[finalEvaluationStatus].label
+    : '미정'
   return (
     <Section
       variant="solid"
@@ -52,7 +58,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
               key={index}
               variant="solid"
               tone={part === '미정' ? 'gray' : 'lime'}
-              label={part}
+              label={part === '미정' ? '미정' : PART_TYPE_TO_SMALL_PART[part]}
               onClick={() => {}}
               typo="B5.Md"
               css={{ width: 'fit-content', height: '24px' }}
@@ -79,9 +85,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {documentEvaluationStatus
-              ? DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label
-              : '미정'}
+            {documentStatusLabel}
           </Badge>
         </Flex>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -91,7 +95,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {finalEvaluationStatus ? FINAL_STATUS_CONFIG[finalEvaluationStatus].label : '미정'}
+            {finalStatusLabel}
           </Badge>
         </Flex>
       </Flex>

@@ -1,8 +1,8 @@
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -11,14 +11,16 @@ import ApplyResumeCard from '../components/ApplyResumeCard/ApplyResumeCard'
 import ApplyStatement from '../components/ApplyStatement/ApplyStatement'
 import { gridStyle } from '../components/ApplyStatement/ApplyStatement.style'
 import ProgressStage from '../components/ProgressStage/ProgressStage'
-import { useMyApplications } from '../hooks/useDashboardQueries'
+import { useGetMyApplications } from '../hooks/useDashboardQueries'
 
 const DashboardPageContent = () => {
-  const { data } = useMyApplications()
+  const { data } = useGetMyApplications()
   const dashboardData = data.result
   const current = dashboardData.current
   const applications = dashboardData.applications
   const displayName = `${dashboardData.nickName}/${dashboardData.name}`
+  const progressForDisplay =
+    current && current.appliedParts.length === 0 ? undefined : current?.progress
   const sectionBorder = {
     border: `1px solid ${theme.colors.gray[700]}`,
     [media.down(theme.breakPoints.tablet)]: {
@@ -42,7 +44,7 @@ const DashboardPageContent = () => {
           >
             <div css={gridStyle}>
               <ApplyStatement current={current} />
-              <ProgressStage progress={current?.progress} />
+              <ProgressStage progress={progressForDisplay} />
             </div>
           </Section>
         </Flex>

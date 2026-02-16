@@ -3,12 +3,12 @@ import { useEffect } from 'react'
 import type { Control, FieldPath } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
-import Hamburger from '@/shared/assets/icons/hamburger.svg?react'
 import type { RecruitingForms } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
 import { Flex } from '@/shared/ui/common/Flex'
+import GrabButton from '@/shared/ui/common/GrabButton/GrabButton'
 import Section from '@/shared/ui/common/Section/Section'
 import { LabelTextField } from '@/shared/ui/form/LabelTextField/LabelTextField'
 
@@ -18,6 +18,7 @@ type PreferredPartQuestionCardProps = {
   index: number
   control: Control<RecruitingForms>
   namePrefix: string
+  recruitingId?: string
   onDelete?: () => void
   canDelete?: boolean
   isLocked?: boolean
@@ -65,10 +66,7 @@ const PreferredPartQuestionCard = ({
   return (
     <Section variant="solid" gap={22} {...containerProps}>
       <S.Header>
-        <S.QuestionInfo data-drag-handle="true" {...dragHandleProps}>
-          <Hamburger />
-          문항 {index + 1}
-        </S.QuestionInfo>
+        <GrabButton index={index} dragHandleProps={dragHandleProps} />
         {canDelete ? (
           <Button
             tone="necessary"
@@ -114,9 +112,11 @@ const PreferredPartQuestionCard = ({
       </Flex>
       <Flex alignItems="center" gap={8}>
         <Checkbox
-          checked={maxPreferredField.value === 1}
+          checked={String(maxPreferredField.value) === '1'}
+          disabled={isLocked}
           onCheckedChange={(checked) => {
-            maxPreferredField.onChange(checked ? 1 : 2)
+            if (isLocked) return
+            maxPreferredField.onChange(checked ? '1' : '2')
           }}
         />
         <S.Body>1지망만 입력받기</S.Body>

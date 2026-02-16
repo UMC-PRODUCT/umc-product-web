@@ -1,34 +1,31 @@
 import { useState } from 'react'
-import type { FieldErrors } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
-import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import { applyKeys } from '@/shared/queryKeys'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import { scrollToTop } from '@/shared/utils/scrollToTop'
+import { formatDateTimeKorean, scrollToTop } from '@/shared/utils'
 
 import ResumeContent from '../components/ResumeContent'
-import { userRecruitement } from '../domain/queryKey'
+import type { QuestionAnswerValue } from '../domain/model'
 import { useApplyMutation } from '../hooks/useApplyMutation'
 import {
-  useGetApplicationAnswer,
-  useGetApplicationQuestions,
+  useGetRecruitmentApplicationAnswer,
+  useGetRecruitmentApplicationForm,
 } from '../hooks/useGetApplicationQuery'
 import { useUnsavedChangesBlocker } from '../hooks/useUnsavedChangeBlocker'
-import { findFirstErrorPageIndex, getPageRequiredFieldIds, getSubmissionItems } from '../utils'
+import { getPageRequiredFieldIds, getSubmissionItems } from '../utils'
 import { useResumeForm } from './resume/useResumeForm'
 
 const AUTO_SAVE_INTERVAL_MS = 60_000
-
-type FormValues = Record<string, unknown>
 
 interface ResumeProps {
   currentPage: number
@@ -36,17 +33,16 @@ interface ResumeProps {
 }
 
 const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
-  const { schoolName, generation } = RECRUITMENT_INFO
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
-  const { data: questionsData } = useGetApplicationQuestions(recruitmentId)
-  const { data: answerData } = useGetApplicationAnswer(recruitmentId, resumeId)
+  const { data: questionsData } = useGetRecruitmentApplicationForm(recruitmentId)
+  const { data: answerData } = useGetRecruitmentApplicationAnswer(recruitmentId, resumeId)
   const { usePatchApplication, useSubmitApplication } = useApplyMutation()
   const { mutate: patchApplication } = usePatchApplication()
   const { mutate: submitApplication } = useSubmitApplication()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const questionDataForForm = questionsData.result
-  const resumeForm = useResumeForm(questionDataForForm, answerData.result)
-
+  const resumeForm = useResumeForm(questionDataForForm, answerData?.result)
+  const navigate = useNavigate()
   const {
     control,
     trigger,
@@ -64,29 +60,11 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const currentPageIndex = Math.max(0, Math.min(currentPage - 1, totalPages - 1))
   const currentPageData = resolvedPages[currentPageIndex] ?? resolvedPages[0]
   const displayLastSavedTime = (() => {
-    const raw = answerData.result.lastSavedAt
+    const raw = answerData?.result.lastSavedAt
     if (!raw) return null
     const savedDate = new Date(raw)
     if (Number.isNaN(savedDate.getTime())) return null
-    const formatter = new Intl.DateTimeFormat('ko-KR', {
-      timeZone: 'Asia/Seoul',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    })
-    const parts = formatter.formatToParts(savedDate)
-    const getPart = (type: Intl.DateTimeFormatPart['type']) =>
-      parts.find((part) => part.type === type)?.value ?? ''
-    const year = getPart('year')
-    const month = getPart('month')
-    const day = getPart('day')
-    const hour = getPart('hour')
-    const minute = getPart('minute')
-    if (!year || !month || !day || !hour || !minute) return null
-    return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`
+    return formatDateTimeKorean(savedDate)
   })()
   const queryClient = useQueryClient()
   useBeforeUnload(isDirty)
@@ -95,13 +73,13 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   const { handleSave } = useAutoSave({
     getValues,
     onSave: (formValues) => {
-      const answers = getSubmissionItems(questionsData.result.pages, formValues, defaultValues)
+      const answers = getSubmissionItems(resolvedPages, formValues, defaultValues)
       patchApplication(
         { recruitmentId, formResponseId: resumeId, items: answers },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+              queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
             })
           },
         },
@@ -110,13 +88,31 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
     interval: AUTO_SAVE_INTERVAL_MS,
   })
 
-  const navigateToFirstErrorPage = (formErrors: FieldErrors<FormValues>) => {
-    const errorPageIndex = findFirstErrorPageIndex(formErrors, resolvedPages)
-
-    if (errorPageIndex !== -1) {
-      onPageChange(errorPageIndex + 1)
-      scrollToTop()
-    }
+  const handlePortfolioImmediateSave = (questionId: number, nextValue: QuestionAnswerValue) => {
+    const currentValues = getValues()
+    const sanitizedValue =
+      nextValue && typeof nextValue === 'object'
+        ? {
+            ...nextValue,
+            files: Array.isArray((nextValue as { files?: Array<{ status?: unknown }> }).files)
+              ? (nextValue as { files: Array<{ status?: unknown }> }).files.filter(
+                  (file) => file.status === 'success',
+                )
+              : [],
+          }
+        : nextValue
+    const mergedValues = { ...currentValues, [String(questionId)]: sanitizedValue }
+    const answers = getSubmissionItems(resolvedPages, mergedValues, defaultValues)
+    patchApplication(
+      { recruitmentId, formResponseId: resumeId, items: answers },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
+          })
+        },
+      },
+    )
   }
 
   const openSubmitModal = () => setIsSubmitModalOpen(true)
@@ -149,12 +145,16 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: userRecruitement.getApplicationAnswer(recruitmentId, resumeId).queryKey,
+            queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
           setIsSubmitModalOpen(false)
+          navigate({
+            to: '/apply',
+          })
         },
+
         onError: () => {
-          navigateToFirstErrorPage(errors)
+          alert('지원서 제출에 실패했습니다.')
         },
       },
     )
@@ -163,7 +163,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   return (
     <PageLayout>
       <Flex maxWidth="956px">
-        <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
+        <PageTitle title={questionsData.result.recruitmentFormTitle} />
       </Flex>
 
       <ResumeContent
@@ -171,6 +171,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         formData={questionDataForForm}
         displayLastSavedTime={displayLastSavedTime}
         handleSave={handleSave}
+        onPortfolioImmediateSave={handlePortfolioImmediateSave}
         control={control}
         setValue={setValue}
         clearErrors={clearErrors}
@@ -182,13 +183,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
         handlePageNavigation={handlePageNavigation}
         isEdit={true}
       />
-      {isSubmitModalOpen && (
-        <SubmitConfirmModal
-          onClose={closeSubmitModal}
-          onSubmit={onSubmit}
-          onAllowNavigate={navigationBlocker.allowNextNavigationOnce}
-        />
-      )}
+      {isSubmitModalOpen && <SubmitConfirmModal onClose={closeSubmitModal} onSubmit={onSubmit} />}
 
       {navigationBlocker.isOpen && (
         <LeaveConfirmModal onClose={navigationBlocker.stay} onMove={navigationBlocker.leave} />
@@ -197,10 +192,8 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   )
 }
 
-const Resume = ({ currentPage, onPageChange }: ResumeProps) => (
+export const Resume = ({ currentPage, onPageChange }: ResumeProps) => (
   <AsyncBoundary fallback={<SuspenseFallback label="지원서를 불러오는 중입니다." />}>
     <ResumeContentPage currentPage={currentPage} onPageChange={onPageChange} />
   </AsyncBoundary>
 )
-
-export default Resume

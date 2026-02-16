@@ -1,24 +1,20 @@
-import ArrowUp from '@shared/assets/icons/arrow_up.svg?react'
-import ExternalLink from '@shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
-import Profile from '@shared/layout/Header/RightMenu/Profile/Profile'
+import type { ExternalLink as ExternalLinkType } from '@/features/auth/domain/types'
+import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
+import ExternalLink from '@/shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
+import Profile from '@/shared/layout/Header/RightMenu/Profile/Profile'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 
 import * as S from './RightMenu.style'
 
-type SocialLink = {
-  label: string
-  link: string
-  icon: 'kakao' | 'instagram' | 'youtube'
-}
-
 const RightMenu = ({
   nav,
-  social,
+  links,
 }: {
   nav?: {
     label: string
     link: string
   }
-  social?: Array<SocialLink>
+  links?: Array<ExternalLinkType>
 }) => {
   const Children = (
     <S.MenuWrapper alignItems="flex-start">
@@ -33,14 +29,16 @@ const RightMenu = ({
           </S.NavAnchor>
         ))}
 
-      <ExternalLink subLinks={social || []} />
+      <ExternalLink subLinks={links ?? []} />
     </S.MenuWrapper>
   )
 
   return (
     <S.Container>
       <S.DesktopMenu>{Children}</S.DesktopMenu>
-      <Profile>{Children}</Profile>
+      <AsyncBoundary fallback={null}>
+        <Profile>{Children}</Profile>
+      </AsyncBoundary>
     </S.Container>
   )
 }

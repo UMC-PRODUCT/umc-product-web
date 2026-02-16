@@ -4,8 +4,9 @@ import { useNavigate } from '@tanstack/react-router'
 import { PART_CONFIG } from '@features/auth/domain'
 import type { PartType } from '@features/auth/domain/model'
 
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import * as S from '@/features/apply/components/ApplyPage.style'
-import { PART_TYPE_TO_SMALL_PART } from '@/features/apply/domain/constants'
 import { Button } from '@/shared/ui/common/Button'
 import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
 
@@ -21,15 +22,15 @@ interface BeforeSubmitProps {
   }>
   draftFormResponseId?: string
   recruitmentId?: string
+  canApply: boolean
   submitStatus: 'DRAFT' | 'NONE' | 'SUBMITTED'
 }
-
-// TODO: API 연동 시 useRecruitmentStatus 훅으로 대체
 
 const BeforeSubmit = ({
   submitStatus,
   partInfoList,
   recruitmentId,
+  canApply,
   draftFormResponseId,
 }: BeforeSubmitProps & { submitStatus: string }) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
@@ -38,6 +39,8 @@ const BeforeSubmit = ({
   const closeConfirmModal = () => setIsConfirmModalOpen(false)
   const { useFirstCreateDraft } = useApplyMutation()
   const { mutate: firstCreateDraft } = useFirstCreateDraft()
+  const isApplyDisabled = !recruitmentId || !canApply
+
   const handleApplyClick = () => {
     if (submitStatus === 'NONE') {
       firstCreateDraft(recruitmentId!, {
@@ -72,8 +75,8 @@ const BeforeSubmit = ({
 
       <Button
         label={`UMC 지원하기`}
-        tone={recruitmentId ? 'lime' : 'darkGray'}
-        disabled={!recruitmentId}
+        tone={isApplyDisabled ? 'darkGray' : 'lime'}
+        disabled={isApplyDisabled}
         onClick={handleApplyClick}
       />
 

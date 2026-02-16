@@ -8,8 +8,8 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 
 import * as TanStackQueryProvider from '@app/providers/tanstack-query'
 
-import { GlobalStyle } from '@shared/styles/global.tsx'
-import { theme } from '@shared/styles/theme'
+import { GlobalStyle } from '@/shared/styles/global.tsx'
+import { theme } from '@/shared/styles/theme'
 
 // Import the generated route tree
 import { routeTree } from '../routeTree.gen.ts'

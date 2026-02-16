@@ -1,10 +1,9 @@
 import type { useForm } from 'react-hook-form'
 
-import type { RecruitingForms } from '@/features/school/domain'
-import type { pageType } from '@/shared/types/form'
+import type { ResumeFormValues } from '@/features/apply/utils'
+import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 
-import type { GetApplicationAnswerResponseDTO } from '../../domain/model'
-import type { ResumeFormValues } from '../../utils/buildDefaultValuesFromQuestions'
+import type { GetRecruitmentApplicationAnswerResponseDTO } from '../../domain/model'
 import {
   useFormCompleteness,
   useFormSetup,
@@ -23,7 +22,7 @@ export interface UseResumeFormReturn {
   errors: ReturnType<typeof useForm<ResumeFormValues>>['formState']['errors']
   isDirty: boolean
   isFormIncomplete: boolean
-  resolvedPages: Array<pageType>
+  resolvedPages: Array<FormPage>
   defaultValues: ResumeFormValues
 }
 
@@ -37,12 +36,12 @@ export interface UseResumeFormReturn {
  * - useFormValidationRegistration: 동적 검증 규칙 등록
  */
 export function useResumeForm(
-  questionData?: RecruitingForms,
-  answerData?: GetApplicationAnswerResponseDTO,
+  questionData?: RecruitmentApplicationForm,
+  answerData?: GetRecruitmentApplicationAnswerResponseDTO,
   options?: { labelMode?: 'ranked' | 'part'; showAllParts?: boolean },
 ): UseResumeFormReturn {
-  const defaultQuestionData: RecruitingForms = {
-    recruitmentid: 0,
+  const defaultQuestionData: RecruitmentApplicationForm = {
+    recruitmentId: 0,
     formId: 0,
     status: 'DRAFT',
     recruitmentFormTitle: '',

@@ -13,7 +13,9 @@ import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appSchoolRouteRouteImport } from './routes/(app)/school/route'
 import { Route as appManagementRouteRouteImport } from './routes/(app)/management/route'
+import { Route as appSchoolIndexRouteImport } from './routes/(app)/school/index'
 import { Route as appRecruitingIndexRouteImport } from './routes/(app)/recruiting/index'
+import { Route as appManagementIndexRouteImport } from './routes/(app)/management/index'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appApplyIndexRouteImport } from './routes/(app)/apply/index'
 import { Route as authAuthLayoutRouteImport } from './routes/(auth)/auth/_layout'
@@ -25,11 +27,15 @@ import { Route as appSchoolEvaluationIndexRouteImport } from './routes/(app)/sch
 import { Route as appSchoolDashboardIndexRouteImport } from './routes/(app)/school/dashboard/index'
 import { Route as appManagementSystemIndexRouteImport } from './routes/(app)/management/system/index'
 import { Route as appManagementSchoolIndexRouteImport } from './routes/(app)/management/school/index'
+import { Route as appManagementGenerationIndexRouteImport } from './routes/(app)/management/generation/index'
 import { Route as appManagementCandidateIndexRouteImport } from './routes/(app)/management/candidate/index'
+import { Route as appManagementBranchIndexRouteImport } from './routes/(app)/management/branch/index'
 import { Route as appManagementAccountIndexRouteImport } from './routes/(app)/management/account/index'
 import { Route as appSchoolRecruitingRecruitingIdIndexRouteImport } from './routes/(app)/school/recruiting/$recruitingId/index'
+import { Route as appSchoolEvaluationRecruitmentIdIndexRouteImport } from './routes/(app)/school/evaluation/$recruitmentId/index'
 import { Route as appDashboardRecruitmentIdResumeIdIndexRouteImport } from './routes/(app)/dashboard/$recruitmentId/$resumeId/index'
 import { Route as appApplyRecruitmentIdResumeIdIndexRouteImport } from './routes/(app)/apply/$recruitmentId/$resumeId/index'
+import { Route as appSchoolRecruitingRecruitingIdPublishedRouteImport } from './routes/(app)/school/recruiting/$recruitingId/published'
 import { Route as appSchoolRecruitingRecruitingIdPreviewRouteImport } from './routes/(app)/school/recruiting/$recruitingId/preview'
 
 const appRouteRoute = appRouteRouteImport.update({
@@ -51,10 +57,20 @@ const appManagementRouteRoute = appManagementRouteRouteImport.update({
   path: '/management',
   getParentRoute: () => appRouteRoute,
 } as any)
+const appSchoolIndexRoute = appSchoolIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appSchoolRouteRoute,
+} as any)
 const appRecruitingIndexRoute = appRecruitingIndexRouteImport.update({
   id: '/recruiting/',
   path: '/recruiting/',
   getParentRoute: () => appRouteRoute,
+} as any)
+const appManagementIndexRoute = appManagementIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appManagementRouteRoute,
 } as any)
 const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   id: '/dashboard/',
@@ -115,10 +131,22 @@ const appManagementSchoolIndexRoute =
     path: '/school/',
     getParentRoute: () => appManagementRouteRoute,
   } as any)
+const appManagementGenerationIndexRoute =
+  appManagementGenerationIndexRouteImport.update({
+    id: '/generation/',
+    path: '/generation/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
 const appManagementCandidateIndexRoute =
   appManagementCandidateIndexRouteImport.update({
     id: '/candidate/',
     path: '/candidate/',
+    getParentRoute: () => appManagementRouteRoute,
+  } as any)
+const appManagementBranchIndexRoute =
+  appManagementBranchIndexRouteImport.update({
+    id: '/branch/',
+    path: '/branch/',
     getParentRoute: () => appManagementRouteRoute,
   } as any)
 const appManagementAccountIndexRoute =
@@ -133,6 +161,12 @@ const appSchoolRecruitingRecruitingIdIndexRoute =
     path: '/recruiting/$recruitingId/',
     getParentRoute: () => appSchoolRouteRoute,
   } as any)
+const appSchoolEvaluationRecruitmentIdIndexRoute =
+  appSchoolEvaluationRecruitmentIdIndexRouteImport.update({
+    id: '/evaluation/$recruitmentId/',
+    path: '/evaluation/$recruitmentId/',
+    getParentRoute: () => appSchoolRouteRoute,
+  } as any)
 const appDashboardRecruitmentIdResumeIdIndexRoute =
   appDashboardRecruitmentIdResumeIdIndexRouteImport.update({
     id: '/dashboard/$recruitmentId/$resumeId/',
@@ -144,6 +178,12 @@ const appApplyRecruitmentIdResumeIdIndexRoute =
     id: '/apply/$recruitmentId/$resumeId/',
     path: '/apply/$recruitmentId/$resumeId/',
     getParentRoute: () => appRouteRoute,
+  } as any)
+const appSchoolRecruitingRecruitingIdPublishedRoute =
+  appSchoolRecruitingRecruitingIdPublishedRouteImport.update({
+    id: '/recruiting/$recruitingId/published',
+    path: '/recruiting/$recruitingId/published',
+    getParentRoute: () => appSchoolRouteRoute,
   } as any)
 const appSchoolRecruitingRecruitingIdPreviewRoute =
   appSchoolRecruitingRecruitingIdPreviewRouteImport.update({
@@ -159,9 +199,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof authAuthLayoutRoute
   '/apply': typeof appApplyIndexRoute
   '/dashboard': typeof appDashboardIndexRoute
+  '/management/': typeof appManagementIndexRoute
   '/recruiting': typeof appRecruitingIndexRoute
+  '/school/': typeof appSchoolIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
+  '/management/branch': typeof appManagementBranchIndexRoute
   '/management/candidate': typeof appManagementCandidateIndexRoute
+  '/management/generation': typeof appManagementGenerationIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
   '/management/system': typeof appManagementSystemIndexRoute
   '/school/dashboard': typeof appSchoolDashboardIndexRoute
@@ -171,20 +215,24 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof authAuthRegisterIndexRoute
   '/oauth/callback': typeof oauthOauthCallbackIndexRoute
   '/school/recruiting/$recruitingId/preview': typeof appSchoolRecruitingRecruitingIdPreviewRoute
+  '/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/apply/$recruitmentId/$resumeId': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/dashboard/$recruitmentId/$resumeId': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/school/evaluation/$recruitmentId': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/management': typeof appManagementRouteRouteWithChildren
-  '/school': typeof appSchoolRouteRouteWithChildren
   '/auth': typeof authAuthLayoutRoute
   '/apply': typeof appApplyIndexRoute
   '/dashboard': typeof appDashboardIndexRoute
+  '/management': typeof appManagementIndexRoute
   '/recruiting': typeof appRecruitingIndexRoute
+  '/school': typeof appSchoolIndexRoute
   '/management/account': typeof appManagementAccountIndexRoute
+  '/management/branch': typeof appManagementBranchIndexRoute
   '/management/candidate': typeof appManagementCandidateIndexRoute
+  '/management/generation': typeof appManagementGenerationIndexRoute
   '/management/school': typeof appManagementSchoolIndexRoute
   '/management/system': typeof appManagementSystemIndexRoute
   '/school/dashboard': typeof appSchoolDashboardIndexRoute
@@ -194,8 +242,10 @@ export interface FileRoutesByTo {
   '/auth/register': typeof authAuthRegisterIndexRoute
   '/oauth/callback': typeof oauthOauthCallbackIndexRoute
   '/school/recruiting/$recruitingId/preview': typeof appSchoolRecruitingRecruitingIdPreviewRoute
+  '/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/apply/$recruitmentId/$resumeId': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/dashboard/$recruitmentId/$resumeId': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/school/evaluation/$recruitmentId': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/school/recruiting/$recruitingId': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRoutesById {
@@ -207,9 +257,13 @@ export interface FileRoutesById {
   '/(auth)/auth/_layout': typeof authAuthLayoutRoute
   '/(app)/apply/': typeof appApplyIndexRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
+  '/(app)/management/': typeof appManagementIndexRoute
   '/(app)/recruiting/': typeof appRecruitingIndexRoute
+  '/(app)/school/': typeof appSchoolIndexRoute
   '/(app)/management/account/': typeof appManagementAccountIndexRoute
+  '/(app)/management/branch/': typeof appManagementBranchIndexRoute
   '/(app)/management/candidate/': typeof appManagementCandidateIndexRoute
+  '/(app)/management/generation/': typeof appManagementGenerationIndexRoute
   '/(app)/management/school/': typeof appManagementSchoolIndexRoute
   '/(app)/management/system/': typeof appManagementSystemIndexRoute
   '/(app)/school/dashboard/': typeof appSchoolDashboardIndexRoute
@@ -219,8 +273,10 @@ export interface FileRoutesById {
   '/(auth)/auth/register/': typeof authAuthRegisterIndexRoute
   '/(oauth)/oauth/callback/': typeof oauthOauthCallbackIndexRoute
   '/(app)/school/recruiting/$recruitingId/preview': typeof appSchoolRecruitingRecruitingIdPreviewRoute
+  '/(app)/school/recruiting/$recruitingId/published': typeof appSchoolRecruitingRecruitingIdPublishedRoute
   '/(app)/apply/$recruitmentId/$resumeId/': typeof appApplyRecruitmentIdResumeIdIndexRoute
   '/(app)/dashboard/$recruitmentId/$resumeId/': typeof appDashboardRecruitmentIdResumeIdIndexRoute
+  '/(app)/school/evaluation/$recruitmentId/': typeof appSchoolEvaluationRecruitmentIdIndexRoute
   '/(app)/school/recruiting/$recruitingId/': typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -232,9 +288,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/apply'
     | '/dashboard'
+    | '/management/'
     | '/recruiting'
+    | '/school/'
     | '/management/account'
+    | '/management/branch'
     | '/management/candidate'
+    | '/management/generation'
     | '/management/school'
     | '/management/system'
     | '/school/dashboard'
@@ -244,20 +304,24 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/oauth/callback'
     | '/school/recruiting/$recruitingId/preview'
+    | '/school/recruiting/$recruitingId/published'
     | '/apply/$recruitmentId/$resumeId'
     | '/dashboard/$recruitmentId/$resumeId'
+    | '/school/evaluation/$recruitmentId'
     | '/school/recruiting/$recruitingId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/management'
-    | '/school'
     | '/auth'
     | '/apply'
     | '/dashboard'
+    | '/management'
     | '/recruiting'
+    | '/school'
     | '/management/account'
+    | '/management/branch'
     | '/management/candidate'
+    | '/management/generation'
     | '/management/school'
     | '/management/system'
     | '/school/dashboard'
@@ -267,8 +331,10 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/oauth/callback'
     | '/school/recruiting/$recruitingId/preview'
+    | '/school/recruiting/$recruitingId/published'
     | '/apply/$recruitmentId/$resumeId'
     | '/dashboard/$recruitmentId/$resumeId'
+    | '/school/evaluation/$recruitmentId'
     | '/school/recruiting/$recruitingId'
   id:
     | '__root__'
@@ -279,9 +345,13 @@ export interface FileRouteTypes {
     | '/(auth)/auth/_layout'
     | '/(app)/apply/'
     | '/(app)/dashboard/'
+    | '/(app)/management/'
     | '/(app)/recruiting/'
+    | '/(app)/school/'
     | '/(app)/management/account/'
+    | '/(app)/management/branch/'
     | '/(app)/management/candidate/'
+    | '/(app)/management/generation/'
     | '/(app)/management/school/'
     | '/(app)/management/system/'
     | '/(app)/school/dashboard/'
@@ -291,8 +361,10 @@ export interface FileRouteTypes {
     | '/(auth)/auth/register/'
     | '/(oauth)/oauth/callback/'
     | '/(app)/school/recruiting/$recruitingId/preview'
+    | '/(app)/school/recruiting/$recruitingId/published'
     | '/(app)/apply/$recruitmentId/$resumeId/'
     | '/(app)/dashboard/$recruitmentId/$resumeId/'
+    | '/(app)/school/evaluation/$recruitmentId/'
     | '/(app)/school/recruiting/$recruitingId/'
   fileRoutesById: FileRoutesById
 }
@@ -335,12 +407,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appManagementRouteRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/school/': {
+      id: '/(app)/school/'
+      path: '/'
+      fullPath: '/school/'
+      preLoaderRoute: typeof appSchoolIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
     '/(app)/recruiting/': {
       id: '/(app)/recruiting/'
       path: '/recruiting'
       fullPath: '/recruiting'
       preLoaderRoute: typeof appRecruitingIndexRouteImport
       parentRoute: typeof appRouteRoute
+    }
+    '/(app)/management/': {
+      id: '/(app)/management/'
+      path: '/'
+      fullPath: '/management/'
+      preLoaderRoute: typeof appManagementIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
     }
     '/(app)/dashboard/': {
       id: '/(app)/dashboard/'
@@ -419,11 +505,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appManagementSchoolIndexRouteImport
       parentRoute: typeof appManagementRouteRoute
     }
+    '/(app)/management/generation/': {
+      id: '/(app)/management/generation/'
+      path: '/generation'
+      fullPath: '/management/generation'
+      preLoaderRoute: typeof appManagementGenerationIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
     '/(app)/management/candidate/': {
       id: '/(app)/management/candidate/'
       path: '/candidate'
       fullPath: '/management/candidate'
       preLoaderRoute: typeof appManagementCandidateIndexRouteImport
+      parentRoute: typeof appManagementRouteRoute
+    }
+    '/(app)/management/branch/': {
+      id: '/(app)/management/branch/'
+      path: '/branch'
+      fullPath: '/management/branch'
+      preLoaderRoute: typeof appManagementBranchIndexRouteImport
       parentRoute: typeof appManagementRouteRoute
     }
     '/(app)/management/account/': {
@@ -440,6 +540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSchoolRecruitingRecruitingIdIndexRouteImport
       parentRoute: typeof appSchoolRouteRoute
     }
+    '/(app)/school/evaluation/$recruitmentId/': {
+      id: '/(app)/school/evaluation/$recruitmentId/'
+      path: '/evaluation/$recruitmentId'
+      fullPath: '/school/evaluation/$recruitmentId'
+      preLoaderRoute: typeof appSchoolEvaluationRecruitmentIdIndexRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
     '/(app)/dashboard/$recruitmentId/$resumeId/': {
       id: '/(app)/dashboard/$recruitmentId/$resumeId/'
       path: '/dashboard/$recruitmentId/$resumeId'
@@ -454,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appApplyRecruitmentIdResumeIdIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/school/recruiting/$recruitingId/published': {
+      id: '/(app)/school/recruiting/$recruitingId/published'
+      path: '/recruiting/$recruitingId/published'
+      fullPath: '/school/recruiting/$recruitingId/published'
+      preLoaderRoute: typeof appSchoolRecruitingRecruitingIdPublishedRouteImport
+      parentRoute: typeof appSchoolRouteRoute
+    }
     '/(app)/school/recruiting/$recruitingId/preview': {
       id: '/(app)/school/recruiting/$recruitingId/preview'
       path: '/recruiting/$recruitingId/preview'
@@ -465,15 +579,21 @@ declare module '@tanstack/react-router' {
 }
 
 interface appManagementRouteRouteChildren {
+  appManagementIndexRoute: typeof appManagementIndexRoute
   appManagementAccountIndexRoute: typeof appManagementAccountIndexRoute
+  appManagementBranchIndexRoute: typeof appManagementBranchIndexRoute
   appManagementCandidateIndexRoute: typeof appManagementCandidateIndexRoute
+  appManagementGenerationIndexRoute: typeof appManagementGenerationIndexRoute
   appManagementSchoolIndexRoute: typeof appManagementSchoolIndexRoute
   appManagementSystemIndexRoute: typeof appManagementSystemIndexRoute
 }
 
 const appManagementRouteRouteChildren: appManagementRouteRouteChildren = {
+  appManagementIndexRoute: appManagementIndexRoute,
   appManagementAccountIndexRoute: appManagementAccountIndexRoute,
+  appManagementBranchIndexRoute: appManagementBranchIndexRoute,
   appManagementCandidateIndexRoute: appManagementCandidateIndexRoute,
+  appManagementGenerationIndexRoute: appManagementGenerationIndexRoute,
   appManagementSchoolIndexRoute: appManagementSchoolIndexRoute,
   appManagementSystemIndexRoute: appManagementSystemIndexRoute,
 }
@@ -482,19 +602,27 @@ const appManagementRouteRouteWithChildren =
   appManagementRouteRoute._addFileChildren(appManagementRouteRouteChildren)
 
 interface appSchoolRouteRouteChildren {
+  appSchoolIndexRoute: typeof appSchoolIndexRoute
   appSchoolDashboardIndexRoute: typeof appSchoolDashboardIndexRoute
   appSchoolEvaluationIndexRoute: typeof appSchoolEvaluationIndexRoute
   appSchoolRecruitingIndexRoute: typeof appSchoolRecruitingIndexRoute
   appSchoolRecruitingRecruitingIdPreviewRoute: typeof appSchoolRecruitingRecruitingIdPreviewRoute
+  appSchoolRecruitingRecruitingIdPublishedRoute: typeof appSchoolRecruitingRecruitingIdPublishedRoute
+  appSchoolEvaluationRecruitmentIdIndexRoute: typeof appSchoolEvaluationRecruitmentIdIndexRoute
   appSchoolRecruitingRecruitingIdIndexRoute: typeof appSchoolRecruitingRecruitingIdIndexRoute
 }
 
 const appSchoolRouteRouteChildren: appSchoolRouteRouteChildren = {
+  appSchoolIndexRoute: appSchoolIndexRoute,
   appSchoolDashboardIndexRoute: appSchoolDashboardIndexRoute,
   appSchoolEvaluationIndexRoute: appSchoolEvaluationIndexRoute,
   appSchoolRecruitingIndexRoute: appSchoolRecruitingIndexRoute,
   appSchoolRecruitingRecruitingIdPreviewRoute:
     appSchoolRecruitingRecruitingIdPreviewRoute,
+  appSchoolRecruitingRecruitingIdPublishedRoute:
+    appSchoolRecruitingRecruitingIdPublishedRoute,
+  appSchoolEvaluationRecruitmentIdIndexRoute:
+    appSchoolEvaluationRecruitmentIdIndexRoute,
   appSchoolRecruitingRecruitingIdIndexRoute:
     appSchoolRecruitingRecruitingIdIndexRoute,
 }

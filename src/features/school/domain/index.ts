@@ -1,15 +1,20 @@
 /**
- * School 도메인 - 진실의 원천 (Source of Truth)
- *
- * 학교 관련 모든 타입과 상수는 이 모듈에서 export합니다.
- * 다른 곳에서 학교 관련 타입이 필요하면 이 모듈에서 import하세요.
+ * School 도메인 공개 API
  *
  * @example
+ * import { schoolKeys } from '@features/school/domain'
  * import type { PartApplyStatus, PartEvaluationStatus } from '@features/school/domain'
  */
 
+// API
 export * from './api'
-export * from './apiTypes'
+
+// Query Keys
+export { schoolKeys } from './queryKeys'
+
+// 상수
 export * from './constants'
+
+// 타입
 export * from './model'
 export * from './types'

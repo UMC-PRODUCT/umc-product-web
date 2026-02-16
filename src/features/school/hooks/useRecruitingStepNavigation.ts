@@ -15,6 +15,7 @@ type UseRecruitingStepNavigationParams = {
   partCompletion?: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>
   initialStepNumber?: number
   onStepNumberChange?: (nextStep: number) => void
+  skipInterviewSlotsValidation?: boolean
 }
 
 export const useRecruitingStepNavigation = ({
@@ -25,6 +26,7 @@ export const useRecruitingStepNavigation = ({
   partCompletion,
   initialStepNumber,
   onStepNumberChange,
+  skipInterviewSlotsValidation = false,
 }: UseRecruitingStepNavigationParams) => {
   const [step, setStep] = useState(initialStepNumber ?? 1)
   const [step3Page, setStep3Page] = useState(1)
@@ -72,8 +74,12 @@ export const useRecruitingStepNavigation = ({
     if (step === 3) {
       return getStepReady(3, values, { interviewDates }) && allPartsCompleted
     }
+    if (step === 2 && (skipInterviewSlotsValidation || interviewDates.length === 0)) {
+      // 면접 일정 수정이 잠겨있어 슬롯이 비어도 통과하도록 인터뷰 슬롯 검증을 생략
+      return getStepReady(2, values, { interviewDates, skipInterviewSlotsValidation: true })
+    }
     return getStepReady(step, values, { interviewDates })
-  }, [step, values, interviewDates, allPartsCompleted])
+  }, [step, values, interviewDates, allPartsCompleted, skipInterviewSlotsValidation])
 
   const goToPreviousStep = () => {
     if (step > 1) {
@@ -134,6 +140,7 @@ export const useRecruitingStepNavigation = ({
       if (
         !getStepReady(2, values, {
           interviewDates,
+          skipInterviewSlotsValidation,
         })
       ) {
         await triggerAndScrollToTop([
@@ -143,6 +150,7 @@ export const useRecruitingStepNavigation = ({
           'schedule.interviewStartAt',
           'schedule.interviewEndAt',
           'schedule.finalResultAt',
+          'schedule.interviewTimeTable.slotMinutes',
           'schedule.interviewTimeTable.enabledByDate',
         ])
         return false

@@ -1,8 +1,7 @@
 import { forwardRef } from 'react'
 
-import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@shared/types/component'
-import type { TypoToken } from '@shared/types/typo'
-
+import type { ButtonTone, ButtonVariant, SvgIconComponent } from '@/shared/types/component'
+import type { TypoToken } from '@/shared/types/typo'
 import Loading from '@/shared/ui/common/Loading/Loading'
 
 import { StyledButton } from './Button.style'
@@ -20,6 +19,7 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
   Icon?: SvgIconComponent
   iconColor?: string
   isLoading?: boolean
+  iconSize?: number
 }
 
 /**
@@ -40,6 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       Icon,
       className,
       iconColor,
+      iconSize = ICON_SIZE,
       isLoading = false,
       ...restProps
     },
@@ -62,7 +63,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         $typo={typo}
         {...restProps}
       >
-        {Icon && <Icon color={iconColor} width={ICON_SIZE} height={ICON_SIZE} aria-hidden />}
+        {Icon && <Icon color={iconColor} width={iconSize} height={iconSize} aria-hidden />}
         {isLoading ? (
           <Loading
             size={16}

@@ -1,7 +1,7 @@
-import Notice from '@shared/assets/icons/notice_fill.svg?react'
-import { Button } from '@shared/ui/common/Button/Button'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
+import Notice from '@/shared/assets/icons/notice_fill.svg?react'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
 const AccountSuspended = ({
   onClose,
@@ -17,8 +17,8 @@ const AccountSuspended = ({
       mode={'error'}
       onClose={onClose}
       title="경고"
-      content={`계정이 정지된 회원은 UMC 활동에 참여할 수 없습니다.
-‘${name}’님의 계정을 정지시키시겠습니까?`}
+      content={`계정이 비활성화된 회원은 UMC 활동에 참여할 수 없습니다.
+‘${name}’님의 계정을 비활성화 시키겠습니까?`}
       Icon={Notice}
     >
       <Flex
@@ -42,7 +42,7 @@ const AccountSuspended = ({
             onClose()
             onSuspend()
           }}
-          label="계정정지"
+          label="확인"
           tone="necessary"
           typo="C3.Md"
         />

@@ -1,8 +1,7 @@
 import { css } from '@emotion/react'
 
-import { media } from '@shared/styles/media'
-import { theme } from '@shared/styles/theme'
-
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import type { TypoToken } from '@/shared/types/typo'
 import { resolveTypo } from '@/shared/utils/resolveTypo'
 

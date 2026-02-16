@@ -1,0 +1,77 @@
+import dayjs from 'dayjs'
+
+import type { RecruitmentEditable } from '@/features/school/domain/model'
+import { isOtherOptionContent } from '@/features/school/utils/questionOption'
+import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shared/types/form'
+
+const toDateOnly = (value: string | null | undefined) =>
+  value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
+
+export const buildPublishedSchedulePayload = (
+  schedule: RecruitingForms['schedule'],
+  initial?: RecruitingSchedule | null,
+) => {
+  const result: Partial<RecruitmentEditable> = {}
+  type DateFieldKey = Exclude<keyof RecruitmentEditable, 'interviewTimeTable'>
+  const pushIfChanged = (key: DateFieldKey, value: string | null | undefined) => {
+    const formatted = toDateOnly(value)
+    const prev = toDateOnly(initial?.[key as keyof RecruitingSchedule] as string | null | undefined)
+    if (formatted && formatted !== prev) {
+      result[key] = formatted
+    }
+  }
+  pushIfChanged('applyStartAt', schedule.applyStartAt)
+  pushIfChanged('applyEndAt', schedule.applyEndAt)
+  pushIfChanged('docResultAt', schedule.docResultAt)
+  pushIfChanged('interviewStartAt', schedule.interviewStartAt)
+  pushIfChanged('interviewEndAt', schedule.interviewEndAt)
+  pushIfChanged('finalResultAt', schedule.finalResultAt)
+
+  const normalizeEnabledByDate = (
+    enabledByDate: RecruitingForms['schedule']['interviewTimeTable']['enabledByDate'],
+  ) => enabledByDate
+
+  const currentTable = {
+    dateRange: schedule.interviewTimeTable.dateRange,
+    timeRange: schedule.interviewTimeTable.timeRange,
+    slotMinutes: schedule.interviewTimeTable.slotMinutes || '30',
+    enabledByDate: normalizeEnabledByDate(schedule.interviewTimeTable.enabledByDate),
+    disabledByDate: [],
+  }
+  const prevTable = initial?.interviewTimeTable
+  const hasTableChange =
+    !prevTable ||
+    JSON.stringify(prevTable) !==
+      JSON.stringify({
+        ...prevTable,
+        slotMinutes: prevTable.slotMinutes || '30',
+        enabledByDate: normalizeEnabledByDate(prevTable.enabledByDate),
+        disabledByDate: [],
+      })
+  if (hasTableChange) {
+    result.interviewTimeTable = currentTable
+  }
+  return result
+}
+
+export const buildQuestionsPayload = (items: Array<RecruitingItem>) =>
+  items.map((item) => ({
+    target: {
+      kind: item.target.kind,
+      pageNo: item.target.pageNo,
+      part: item.target.part,
+    },
+    question: {
+      questionId: item.question.questionId,
+      type: item.question.type,
+      questionText: item.question.questionText,
+      required: item.question.required,
+      orderNo: item.question.orderNo,
+      options: item.question.options?.map((option) => ({
+        content: option.content,
+        orderNo: option.orderNo,
+        optionId: option.optionId,
+        isOther: option.isOther ?? isOtherOptionContent(option.content),
+      })),
+    },
+  }))

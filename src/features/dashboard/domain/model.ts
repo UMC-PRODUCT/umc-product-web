@@ -7,7 +7,7 @@ import type { DocumentStatusType, FinalStatusType } from '@features/apply/domain
 import type { PartType } from '@features/auth/domain'
 
 /** 지원서 상태 타입 */
-export type ResumeType = 'PREVIOUS' | 'NOW'
+import type { ResumeType } from '@/shared/types/umc'
 
 /** 지원 요약 정보 */
 export interface ApplySummary {

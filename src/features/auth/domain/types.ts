@@ -1,47 +1,97 @@
+import type { LinkType } from '@/shared/constants/umc'
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
-export type RegisterResponseDTO = CommonResponseDTO<{ memberId?: number }>
-export type RegisterRequestDTO = {
+import type { PartType } from './model'
+
+export type RegisterTokenPayload = {
+  memberId: string
+  accessToken: string
+  refreshToken: string
+}
+
+export type PostRegisterResponseDTO = CommonResponseDTO<RegisterTokenPayload> | RegisterTokenPayload
+
+export type PostRegisterRequestDTO = {
   oAuthVerificationToken?: string
   name?: string
   nickname?: string
   emailVerificationToken?: string
-  schoolId?: number
-  profileImageId?: number
+  schoolId?: string
+  profileImageId?: string
   termsAgreements?: Array<{
-    termsId?: number
+    termsId?: string
     isAgreed?: boolean
   }>
 }
-export type RefreshResponseDTO = CommonResponseDTO<{ accessToken?: string }>
-export type RefreshRequestDTO = {
+export type PostRefreshTokenResponseDTO = CommonResponseDTO<{
+  accessToken: string
+  refreshToken: string
+}>
+export type PostRefreshTokenRequestDTO = {
   refreshToken?: string
 }
-export type EmailVerificationRequestDTO = {
+export type PostEmailVerificationRequestDTO = {
   email?: string
 }
-export type EmailVerificationResponseDTO = { emailVerificationId?: string }
+export type PostEmailVerificationResponseDTO = { emailVerificationId?: string }
 
-export type VerificationCodeRequestDTO = {
+export type PostEmailVerificationCodeRequestDTO = {
   emailVerificationId?: string
   verificationCode?: string
 }
-export type VerificationCodeResponseDTO = { emailVerificationToken?: string }
+export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
 
-export type MyInfoResponseDTO = CommonResponseDTO<{
-  id?: number
+export type PostChallengerRecordMemberRequestDTO = {
+  code: string
+}
+
+export type GetMemberMeResponseDTO = {
+  id?: string
   name?: string
   nickname?: string
   email?: string
-  schoolId?: number
-  schoolName?: number
-  profileImageLink?: number
+  schoolId?: string
+  schoolName?: string
+  profileImageLink?: string
   status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
+  roles: Array<{
+    id: string
+    challengerId: string
+    roleType: RoleType
+    organizationType: OrganizationType
+    responsiblePart: PartType | null
+    gisuId: string
+  }>
+}
+
+export type GetMemberOAuthMeResponseDTO = Array<{
+  memberOAuthId: string
+  memberId: string
+  provider: 'KAKAO' | 'GOOGLE' | 'APPLE'
 }>
 
 export type GetTermsResponseDTO = {
   id: string
-  title: string
-  content: string
+  link: string
   isMandatory: boolean
+}
+
+export type PatchTermsRequestDTO = {
+  content: string
+}
+
+export type ExternalLink = {
+  title: string
+  type: LinkType
+  url: string
+}
+
+export type GetSchoolLinkResponseDTO = {
+  links: Array<ExternalLink>
+}
+
+export type GetActiveGisuResponseDTO = {
+  gisuId: string
+  gisu: string
 }

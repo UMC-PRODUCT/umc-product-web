@@ -1,6 +1,6 @@
-import Arrow from '@shared/assets/icons/arrow.svg?react'
-import { theme } from '@shared/styles/theme'
-import Flex from '@shared/ui/common/Flex/Flex'
+import Arrow from '@/shared/assets/icons/arrow.svg?react'
+import { theme } from '@/shared/styles/theme'
+import Flex from '@/shared/ui/common/Flex/Flex'
 
 const Navigation = ({
   currentPage,

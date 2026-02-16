@@ -2,10 +2,11 @@ import dayjs from 'dayjs'
 
 import { PAGE_INFO } from '@features/school/domain'
 
+import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
+
 import type { PartType } from '@/features/auth/domain'
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
-import { mapApiPartToPartType } from '@/features/school/utils/recruiting/items'
 import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -22,7 +23,7 @@ const Step5 = ({
 }) => {
   const formatDateLabel = (value: string | null) => (value ? dayjs(value).format('YYYY.MM.DD') : '')
   const recruitingPartLabels = formData.recruitmentParts
-    .map((part) => mapApiPartToPartType(part))
+    .map((part) => PART_TYPE_TO_SMALL_PART[part])
     .filter((part): part is NonNullable<typeof part> => Boolean(part))
   const commonItems = formData.items
     .filter((item) => item.target.kind === 'COMMON_PAGE')
@@ -30,7 +31,7 @@ const Step5 = ({
       const pageNoA = itemPageNo(a)
       const pageNoB = itemPageNo(b)
       if (pageNoA !== pageNoB) return pageNoA - pageNoB
-      return a.question.orderNo - b.question.orderNo
+      return Number(a.question.orderNo) - Number(b.question.orderNo)
     })
 
   const partItems = formData.items
@@ -39,7 +40,7 @@ const Step5 = ({
       const partA = itemPartKey(a)
       const partB = itemPartKey(b)
       if (partA !== partB) return partA.localeCompare(partB)
-      return a.question.orderNo - b.question.orderNo
+      return Number(a.question.orderNo) - Number(b.question.orderNo)
     })
 
   function itemPageNo(item: RecruitingItem) {
@@ -83,7 +84,7 @@ const Step5 = ({
           questionTitle="최종 결과 발표"
         />
       </PreviewSection>
-      <PreviewSection title="지원서 문항 작성" step={3} setStep={setStep}>
+      <PreviewSection title="지원서 문항 작성" step={3} setStep={setStep} showEdit={false}>
         {[1, 2].map((pageNumber) => {
           const pageMeta = PAGE_INFO.find((item) => item.page === pageNumber)
           const pageItems = commonItems.filter(
@@ -128,7 +129,7 @@ const Step5 = ({
                 }, {}),
               ).map((itemsForPart) => {
                 const partKey = itemsForPart[0]?.target.part ?? ''
-                const partLabel = partKey ? mapApiPartToPartType(partKey as never) : ''
+                const partLabel = partKey ? PART_TYPE_TO_SMALL_PART[partKey as never] : ''
                 return (
                   <Section
                     key={partKey}

@@ -5,18 +5,18 @@ import dayjs from 'dayjs'
 
 import type { RecruitingForms } from '@/shared/types/form'
 
-import { recruitingFormSchema } from '../schemas/validation'
+import { recruitingFormSchema, setScheduleValidationContext } from '../schemas/validation'
 import {
   buildDefaultPage2Item,
   buildPreferredPartItem,
   buildScheduleItem,
-  ensureRequiredItems,
+  normalizeItems,
 } from '../utils/recruiting/requiredItems'
 
 const defaultValues: RecruitingForms = {
   title: '',
   recruitmentParts: [],
-  maxPreferredPartCount: 2,
+  maxPreferredPartCount: '2',
   schedule: {
     applyStartAt: null,
     applyEndAt: null,
@@ -46,6 +46,11 @@ export const useRecruitingForm = () => {
     defaultValues,
   })
 
+  // 폼이 생성될 때 현재 시각 기반 정책 컨텍스트 설정
+  useEffect(() => {
+    setScheduleValidationContext({ now: dayjs().toISOString() })
+  }, [])
+
   const [title, recruitmentParts, maxPreferredPartCount, schedule, noticeContent, status, items] =
     useWatch({
       control: form.control,
@@ -59,6 +64,11 @@ export const useRecruitingForm = () => {
         'items',
       ],
     })
+
+  // 상태 변경 시 검증 컨텍스트에 반영 (DRAFT이면 잠금 규칙 비활성화)
+  useEffect(() => {
+    setScheduleValidationContext({ status })
+  }, [status])
 
   const values = useMemo(
     () => ({
@@ -75,9 +85,9 @@ export const useRecruitingForm = () => {
 
   useEffect(() => {
     const currentItems = Array.isArray(items) ? items : []
-    const nextItems = ensureRequiredItems(currentItems, recruitmentParts)
-    if (JSON.stringify(currentItems) === JSON.stringify(nextItems)) return
-    form.setValue('items', nextItems, { shouldDirty: true })
+    const { next } = normalizeItems(currentItems, recruitmentParts)
+    if (JSON.stringify(currentItems) === JSON.stringify(next)) return
+    form.setValue('items', next, { shouldDirty: true })
   }, [form, items, recruitmentParts])
 
   const interviewDates = useMemo(() => {

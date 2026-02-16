@@ -1,0 +1,54 @@
+import styled from '@emotion/styled'
+
+import { theme } from '@/shared/styles/theme'
+
+export const RadioChoiceInput = styled.input<{
+  $isChecked?: boolean
+  $isInteractive?: boolean
+}>`
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid ${theme.colors.gray[500]};
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: ${({ $isInteractive }) => ($isInteractive ? 'pointer' : 'default')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  ${({ $isChecked }) =>
+    $isChecked &&
+    `
+    border-color: ${theme.colors.white};
+    &::after {
+      content: '';
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-color: ${theme.colors.white};
+      border-radius: 50%;
+    }
+  `}
+
+  &:hover {
+    border-color: ${({ $isChecked }) => ($isChecked ? theme.colors.white : theme.colors.gray[300])};
+  }
+`
+
+export const RadioChoiceText = styled.div`
+  color: ${theme.colors.white};
+  display: flex;
+  align-items: center;
+  ${theme.typography.B3.Rg}
+`
+export const Input = styled.input<{ isActive: boolean }>`
+  background-color: transparent;
+  border-bottom: 1px solid
+    ${({ isActive }) => (isActive ? theme.colors.lime : theme.colors.gray[500])};
+  border-right: none;
+  color: ${theme.colors.white};
+`

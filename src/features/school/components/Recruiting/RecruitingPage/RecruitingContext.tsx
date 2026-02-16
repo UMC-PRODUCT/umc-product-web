@@ -5,16 +5,17 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { RecruitingForms } from '@/shared/types/form'
 
 type RecruitingContextValue = {
-  form: UseFormReturn<RecruitingForms>
-  values: RecruitingForms
-  step: number
-  setStep: (nextStep: number) => void
-  step3PageNumber: number
-  setStep3PageNumber: (nextPage: number) => void
-  step3SelectedPart: RecruitingForms['recruitmentParts'][number] | null
-  setStep3SelectedPart: (nextPart: RecruitingForms['recruitmentParts'][number] | null) => void
-  partCompletionMap: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>
-  setPartCompletionByPart: (
+  recruitmentForm: UseFormReturn<RecruitingForms>
+  recruitingFormValues: RecruitingForms
+  initialRecruitmentSchedule: RecruitingForms['schedule'] | null
+  currentStep: number
+  setCurrentStep: (nextStep: number) => void
+  applicationPageNumber: number
+  setApplicationPageNumber: (nextPage: number) => void
+  selectedQuestionPart: RecruitingForms['recruitmentParts'][number] | null
+  setSelectedQuestionPart: (nextPart: RecruitingForms['recruitmentParts'][number] | null) => void
+  questionPartCompletionMap: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>
+  setQuestionPartCompletionMap: (
     next: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>,
   ) => void
 }

@@ -1,21 +1,9 @@
-import { useNavigate } from '@tanstack/react-router'
-
-import { Button } from '@shared/ui/common/Button/Button'
-import Flex from '@shared/ui/common/Flex/Flex'
-import AlertModalLayout from '@shared/ui/modals/AlertModalLayout/AlertModalLayout'
-
 import Caution from '@/shared/assets/icons/caution.svg?react'
+import { Button } from '@/shared/ui/common/Button/Button'
+import Flex from '@/shared/ui/common/Flex/Flex'
+import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 
-const CautionSubmit = ({
-  onClose,
-  onSubmit,
-  onAllowNavigate,
-}: {
-  onClose: () => void
-  onSubmit: () => void
-  onAllowNavigate?: () => void
-}) => {
-  const navigate = useNavigate()
+const CautionSubmit = ({ onClose, onSubmit }: { onClose: () => void; onSubmit: () => void }) => {
   return (
     <AlertModalLayout
       mode={'warning'}
@@ -44,11 +32,6 @@ const CautionSubmit = ({
         <Button
           onClick={() => {
             onSubmit()
-            onClose()
-            onAllowNavigate?.()
-            navigate({
-              to: '/apply',
-            })
           }}
           label="제출하기"
           tone="lime"

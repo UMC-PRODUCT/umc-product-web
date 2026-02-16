@@ -1,10 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import type { PartType } from '@/features/auth/domain'
-import type { RecruitingForms } from '@/features/school/domain'
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/features/school/domain/types'
 import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
-import type { OptionAnswerValue } from '@/shared/types/form'
+import type { OptionAnswerValue, RecruitmentApplicationForm } from '@/shared/types/form'
 
 import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 
@@ -18,9 +17,9 @@ import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 // ============================================
 
 /** 문서 평가 상태 */
-export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASSED' | 'FAILED'
+export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASS' | 'FAIL'
 /** 최종 평가 상태 */
-export type FinalStatusType = 'PENDING' | 'SCHEDULED' | 'EVALUATING' | 'PASSED' | 'FAILED'
+export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE' | 'NONE'
 
 /** 설정한 QUESTION_TYPE_CONFIG의 키를 기반으로 하는 질문 유형 */
 export type QuestionType = keyof typeof QUESTION_TYPE_CONFIG
@@ -36,6 +35,7 @@ export interface UploadedFile {
   status: FileUploadStatus
   progress: number
   file: File
+  errorMessage?: string
 }
 
 /** 파일 업로드 응답으로 전달하는 데이터 */
@@ -178,26 +178,19 @@ export interface NavigationBlockerResult {
 }
 
 /** 지원서 폼 조회 응답 */
-export type GetApplicationFormResponseDTO = RecruitingForms
+export type GetRecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm
 
 /** 지원서 답변 조회 응답 */
-export type GetApplicationAnswerResponseDTO = {
+export type GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: string
   formId: string
   formResponseId: string
-  status: string // TODO: enum 으로 변경
+  status: 'DRAFT' | 'SUBMITTED'
   lastSavedAt: string
   submittedAt: string | null
-  answers: Array<{
-    questionId: number
-    value: {
-      addtionalProp1: {}
-      addtionalProp2: {}
-      addtionalProp3: {}
-    }
-    answeredAsType: QuestionType
-  }>
+  answers: Array<AnswerItem>
 }
+
 /** 일정 조회 응답 */
 export type GetRecruitmentSchedulesResponseDTO = {
   recruitmentId: string
@@ -209,9 +202,9 @@ export type GetRecruitmentSchedulesResponseDTO = {
   }>
 }
 /** 초안 리셋 응답 */
-export type PostResetDraftResponseDTO = RecruitmentForm
+export type PostRecruitmentApplicationDraftResetResponseDTO = RecruitmentForm
 /** 초안 생성 응답 */
-export type PostFirstDraftResponseDTO = RecruitmentForm
+export type PostRecruitmentApplicationDraftResponseDTO = RecruitmentForm
 /** 제출된 지원서 메타 정보 */
 export type RecruitmentForm = {
   recruitmentId: string
@@ -220,7 +213,7 @@ export type RecruitmentForm = {
   createdAt: string
 }
 /** 제출 응답 */
-export type PostSubmitApplicationResponseDTO = {
+export type PostRecruitmentApplicationSubmitResponseDTO = {
   recruitmentId: string
   formResponseId: string
   applicationId: string
@@ -256,14 +249,14 @@ export type GetMyApplicationStatusResponseDTO = {
   }>
 }
 /** 공고 정보 */
-export type GetRecruitmentNotice = {
+export type GetRecruitmentNoticeResponseDTO = {
   recruitmentId: string
   title: string
   content: string
   parts: Array<PartType>
 }
 /** 특정 파트 모집 정보 */
-export type GetSpecificPartRecruiting = {
+export type GetRecruitmentPartsResponseDTO = {
   recruitmentId: string
   title: string
   recruitmentPeriod: {
@@ -288,7 +281,7 @@ export type GetSpecificPartRecruiting = {
 }
 export type AnswerItem = {
   questionId: string
-  answeredType: QuestionType
+  answeredAsType: QuestionType
   value:
     | shortTextAnswer
     | longTextAnswer
@@ -327,20 +320,23 @@ export type portfolioAnswer = {
 }
 
 export type preferredPartAnswer = {
-  selections: Array<{ id: string; answer: PartType }>
+  preferredParts: Array<PartType>
 }
 
 export type scheduleAnswer = {
-  slots: TimeTableSlots
+  selected: Array<{
+    date: string
+    times: Array<string>
+  }>
 }
 
-export type PatchApplicationAnswerRequestDTO = {
+export type PatchRecruitmentApplicationAnswersRequestDTO = {
   recruitmentId: string
   formResponseId: string
   items: Array<AnswerItem>
 }
 
-export type PatchApplicationAnswerResponseDTO = {
+export type PatchRecruitmentApplicationAnswersResponseDTO = {
   formResponseId: string
   savedQuestionIds: Array<string>
 }

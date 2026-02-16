@@ -42,4 +42,13 @@ export const reset = css`
     text-decoration: none;
     color: inherit;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
 `

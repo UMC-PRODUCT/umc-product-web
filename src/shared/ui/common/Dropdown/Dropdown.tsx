@@ -1,10 +1,9 @@
 import type { ReactNode, UIEvent } from 'react'
-import { forwardRef } from 'react'
+import { forwardRef, useMemo } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
-import Arrow from '@shared/assets/icons/arrow.svg?react'
-
+import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import type { Option } from '@/shared/types/form'
 
 import * as S from './Dropdown.style'
@@ -15,12 +14,14 @@ type DropdownProps<T> = {
   value?: Option<T>
   defaultValue?: Option<T>
   onChange?: (option: Option<T>) => void
+  disabled?: boolean
   id?: string
   ariaLabelledby?: string
   css?: Interpolation<Theme>
   className?: string
   optionSuffix?: (option: Option<T>) => ReactNode
   onScrollEnd?: () => void
+  portal?: boolean
 }
 
 const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((props, ref) => {
@@ -30,17 +31,28 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
     value,
     defaultValue,
     onChange,
+    disabled = false,
     id,
     ariaLabelledby,
     className,
     css,
     optionSuffix,
     onScrollEnd,
+    portal = true,
   } = props
+  const normalizedOptions = useMemo(() => {
+    const seen = new Set<string>()
+    return options.filter((option) => {
+      const optionId = String(option.id)
+      if (seen.has(optionId)) return false
+      seen.add(optionId)
+      return true
+    })
+  }, [options])
   const isValuePropProvided = Object.prototype.hasOwnProperty.call(props, 'value')
   const controlledValue = value ? String(value.id) : ''
   const handleValueChange = (selectedValue: string) => {
-    const selectedOption = options.find((opt) => String(opt.id) === selectedValue)
+    const selectedOption = normalizedOptions.find((opt) => String(opt.id) === selectedValue)
     if (selectedOption) {
       onChange?.(selectedOption)
     }
@@ -59,6 +71,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
       value={isValuePropProvided ? controlledValue : undefined}
       defaultValue={!isValuePropProvided && defaultValue ? String(defaultValue.id) : undefined}
       onValueChange={handleValueChange}
+      disabled={disabled}
     >
       <S.StyledTrigger
         ref={ref}
@@ -66,6 +79,8 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         aria-labelledby={ariaLabelledby}
         className={className}
         css={css}
+        data-disabled={disabled || undefined}
+        disabled={disabled}
       >
         <SelectPrimitive.Value placeholder={placeholder} />
         <S.StyledIcon>
@@ -73,11 +88,28 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         </S.StyledIcon>
       </S.StyledTrigger>
 
-      <SelectPrimitive.Portal>
+      {portal ? (
+        <SelectPrimitive.Portal>
+          <S.StyledContent position="popper" sideOffset={4}>
+            <S.StyledViewport onScroll={handleScroll}>
+              {normalizedOptions.map((option) => (
+                <S.StyledItem key={String(option.id)} value={String(option.id)}>
+                  <SelectPrimitive.ItemText asChild>
+                    <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      {option.label}
+                      {optionSuffix ? optionSuffix(option) : null}
+                    </span>
+                  </SelectPrimitive.ItemText>
+                </S.StyledItem>
+              ))}
+            </S.StyledViewport>
+          </S.StyledContent>
+        </SelectPrimitive.Portal>
+      ) : (
         <S.StyledContent position="popper" sideOffset={4}>
           <S.StyledViewport onScroll={handleScroll}>
-            {options.map((option) => (
-              <S.StyledItem key={option.id} value={String(option.id)}>
+            {normalizedOptions.map((option) => (
+              <S.StyledItem key={String(option.id)} value={String(option.id)}>
                 <SelectPrimitive.ItemText asChild>
                   <span css={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                     {option.label}
@@ -88,7 +120,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
             ))}
           </S.StyledViewport>
         </S.StyledContent>
-      </SelectPrimitive.Portal>
+      )}
     </SelectPrimitive.Root>
   )
 })

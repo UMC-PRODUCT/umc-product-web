@@ -1,6 +1,7 @@
+import type { RecruitingTab } from '@/features/school/domain'
 import { theme } from '@/shared/styles/theme'
 
-const EmptyRecruiting = ({ tab }: { tab: 'ONGOING' | 'CLOSED' | 'SCHEDULED' }) => {
+const EmptyRecruiting = ({ tab }: { tab: RecruitingTab }) => {
   const label =
     tab === 'ONGOING'
       ? '진행 중인 모집이 없습니다.'

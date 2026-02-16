@@ -3,18 +3,20 @@ import { useNavigate } from '@tanstack/react-router'
 
 import ResumeContent from '@/features/apply/components/ResumeContent'
 import { useResumeForm } from '@/features/apply/pages/resume/useResumeForm'
-import { useGetApplicationFormData } from '@/features/school/hooks/useGetRecruitingData'
-import AsyncBoundary from '@/shared/components/AsyncBoundary/AsyncBoundary'
+import { useGetRecruitmentApplicationForm } from '@/features/school/hooks/useRecruitingQueries'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import ServerErrorCard from '../components/common/ServerErrorCard'
+
 const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
-  const { data } = useGetApplicationFormData(recruitingId)
+  const { data } = useGetRecruitmentApplicationForm(recruitingId)
   const questionData = data.result
 
   const { control, setValue, clearErrors, errors, isFormIncomplete, resolvedPages } = useResumeForm(
@@ -24,7 +26,8 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
   )
 
   const totalPages = resolvedPages.length
-  const previewTitle = questionData.recruitmentFormTitle || '지원서 미리보기'
+  const previewTitle =
+    questionData.noticeTitle || questionData.recruitmentFormTitle || '지원서 미리보기'
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)
@@ -63,10 +66,17 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
   )
 }
 
-const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
-  <AsyncBoundary fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}>
+export const RecruitingPreviewPage = ({ recruitingId }: { recruitingId: string }) => (
+  <AsyncBoundary
+    fallback={<SuspenseFallback label="지원서 미리보기를 불러오는 중입니다." />}
+    errorFallback={(error, reset) => (
+      <ServerErrorCard
+        errorStatus={(error as { response?: { status?: number } } | null)?.response?.status}
+        errorMessage={error.message || '데이터를 불러오지 못했어요.'}
+        onRetry={reset}
+      />
+    )}
+  >
     <RecruitingPreviewPageContent recruitingId={recruitingId} />
   </AsyncBoundary>
 )
-
-export default RecruitingPreviewPage
