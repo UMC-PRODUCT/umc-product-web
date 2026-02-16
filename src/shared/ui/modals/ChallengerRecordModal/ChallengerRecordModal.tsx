@@ -101,7 +101,9 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
             </Modal.Header>
             <Modal.Body>
               <S.Body onClick={() => inputRef.current?.focus()}>
-                <S.Description>{message}</S.Description>
+                <Modal.Description asChild>
+                  <S.Description>{message}</S.Description>
+                </Modal.Description>
                 <S.CodeRow>
                   {digits.map((digit, index) => (
                     <S.CodeBox

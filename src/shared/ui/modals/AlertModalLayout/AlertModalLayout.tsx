@@ -35,7 +35,7 @@ const AlertModalLayout = ({
                 width="100%"
                 css={{ marginBottom: '33px' }}
               >
-                <Modal.Title asChild>
+                <Modal.Title>
                   <Instruction
                     content={title}
                     typography="H2.Sb"
@@ -51,6 +51,21 @@ const AlertModalLayout = ({
                 </Modal.Close>
               </Flex>
             </Modal.Header>
+            <Modal.Description
+              css={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                padding: 0,
+                margin: -1,
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                border: 0,
+              }}
+            >
+              {content}
+            </Modal.Description>
             <Modal.Body>
               <S.ContentWrapper
                 justifyContent="flex-start"
