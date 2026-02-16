@@ -9,7 +9,7 @@ export const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
-  ${media.down(theme.breakPoints.desktop)} {
+  ${media.down('1190px')} {
     grid-template-columns: repeat(2, 1fr);
   }
   ${media.down(theme.breakPoints.mobile)} {
@@ -69,8 +69,10 @@ export const CloseButton = styled.button`
 `
 
 export const SchoolTagContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: auto;
 `
