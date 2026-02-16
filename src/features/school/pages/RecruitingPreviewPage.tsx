@@ -27,10 +27,7 @@ const RecruitingPreviewPageContent = ({ recruitingId }: { recruitingId: string }
 
   const totalPages = resolvedPages.length
   const previewTitle =
-    questionData.noticeTitle ||
-    questionData.recruitmentFormTitle ||
-    questionData.title ||
-    '지원서 미리보기'
+    questionData.noticeTitle || questionData.recruitmentFormTitle || '지원서 미리보기'
 
   const handlePageNavigation = (nextPage: number) => {
     setCurrentPage(nextPage)
