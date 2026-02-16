@@ -18,7 +18,7 @@ import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
 import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
-import StateButton from '../../StateButton/StateButton'
+import StateButton from '../../stateButton/StateButton'
 
 const GenerationList = () => {
   const [page, setPage] = useState(0)
