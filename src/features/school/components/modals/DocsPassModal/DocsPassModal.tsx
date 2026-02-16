@@ -14,6 +14,7 @@ import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { isSchoolPresidentRole } from '@/shared/utils/role'
 
 import FilterBar from '../../SchoolEvaluation/FilterBar/FilterBar'
 import DocsPassCancleCautionModal from '../DocsPassCancleCautionModal/DocsPassCancleCautionModal'
@@ -24,7 +25,7 @@ import * as S from './DocsPassModal.style'
 
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
   const roleType = useUserProfileStore((state) => state.role?.roleType)
-  const canEdit = roleType === 'SCHOOL_PRESIDENT'
+  const canEdit = isSchoolPresidentRole(roleType)
 
   const {
     Dropdown,

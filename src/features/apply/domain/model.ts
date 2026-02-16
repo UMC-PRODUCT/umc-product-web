@@ -19,7 +19,7 @@ import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 /** 문서 평가 상태 */
 export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASS' | 'FAIL'
 /** 최종 평가 상태 */
-export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE'
+export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE' | 'NONE'
 
 /** 설정한 QUESTION_TYPE_CONFIG의 키를 기반으로 하는 질문 유형 */
 export type QuestionType = keyof typeof QUESTION_TYPE_CONFIG
@@ -185,7 +185,7 @@ export type GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: string
   formId: string
   formResponseId: string
-  status: string // TODO: enum 으로 변경
+  status: 'DRAFT' | 'SUBMITTED'
   lastSavedAt: string
   submittedAt: string | null
   answers: Array<AnswerItem>

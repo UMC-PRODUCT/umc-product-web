@@ -80,7 +80,9 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     () => getSchoolDetails({ schoolId }),
   )
   const { usePatchSchool } = useManagementMutations()
+  const { useDeleteSchool } = useManagementMutations()
   const { mutate: patchSchool, isPending: isPatchLoading } = usePatchSchool()
+  const { mutate: deleteSchoolMutate, isPending: isDeleteLoading } = useDeleteSchool()
   const [openAddLink, setOpenAddLink] = useState(false)
   const [links, setLinks] = useState<Array<ExternalLink>>([])
   const [linkType, setLinkType] = useState<Option<string> | null>(null)
@@ -271,6 +273,14 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
     )
   }
 
+  const handleDeleteSchool = () => {
+    deleteSchoolMutate([schoolId], {
+      onSuccess: () => {
+        onClose()
+      },
+    })
+  }
+
   return (
     <Modal.Root
       open={isOpen}
@@ -431,16 +441,26 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
 
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
                 <Button
-                  tone="lime"
                   typo="C3.Md"
-                  variant="solid"
-                  label="저장하기"
-                  css={{ width: 'fit-content', padding: '6px 18px' }}
+                  tone="necessary"
+                  label="학교 삭제"
+                  isLoading={isDeleteLoading}
                   disabled={isPatchLoading}
-                  onClick={handleSave}
+                  onClick={handleDeleteSchool}
                 />
+                <Flex gap={8} width={'fit-content'}>
+                  <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
+                  <Button
+                    tone="lime"
+                    typo="C3.Md"
+                    variant="solid"
+                    label="저장하기"
+                    css={{ width: 'fit-content', padding: '6px 18px' }}
+                    disabled={isPatchLoading || isDeleteLoading}
+                    onClick={handleSave}
+                  />
+                </Flex>
               </S.FooterWrapper>
             </Modal.Footer>
           </S.ModalContentWrapper>

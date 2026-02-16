@@ -160,10 +160,18 @@ export const Generation = styled.div<{ isActive: boolean }>`
     isActive ? `1px solid ${theme.colors.lime}` : `1px solid ${theme.colors.gray[400]}`};
   background-color: ${({ isActive }) => (isActive ? '#2a3a2a' : theme.colors.gray[600])};
 `
+
+export const ActivityHistoryRow = styled.div`
+  display: grid;
+  grid-template-columns: 60px 80px minmax(180px, 1fr);
+  align-items: center;
+  column-gap: 24px;
+  width: 100%;
+`
+
 export const ActivityInfo = styled.div<{ isActive: boolean }>`
   ${theme.typography.C2.Rg};
   color: ${theme.colors.white};
-  margin: 0 16px 0 0;
   white-space: nowrap;
   display: flex;
   flex-direction: column;

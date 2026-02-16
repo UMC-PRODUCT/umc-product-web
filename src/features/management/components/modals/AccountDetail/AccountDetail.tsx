@@ -86,7 +86,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                 <img
                   src={profile?.profileImageLink || DefaultProfile}
                   alt="프로필 이미지"
-                  css={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                  css={{ borderRadius: '50%', width: '100px', minWidth: '100px', height: '100px' }}
                 />
                 <Flex flexDirection="column" alignItems="flex-start">
                   <Flex alignItems="center" gap={20}>
@@ -140,18 +140,21 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                     <Section
                       key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
                       variant="solid"
-                      flexDirection="row"
                       padding="15px 40px"
                     >
-                      <S.Generation isActive={history.isActive}>{`${history.gisu}기`}</S.Generation>
-                      <S.ActivityInfo isActive={history.isActive}>
-                        <span>파트</span>
-                        <span>{transformPart(history.part)}</span>
-                      </S.ActivityInfo>
-                      <S.ActivityInfo isActive={history.isActive}>
-                        <span>기간</span>
-                        <span>{history.periodText}</span>
-                      </S.ActivityInfo>
+                      <S.ActivityHistoryRow>
+                        <S.Generation
+                          isActive={history.isActive}
+                        >{`${history.gisu}기`}</S.Generation>
+                        <S.ActivityInfo isActive={history.isActive}>
+                          <span>파트</span>
+                          <span>{transformPart(history.part)}</span>
+                        </S.ActivityInfo>
+                        <S.ActivityInfo isActive={history.isActive}>
+                          <span>기간</span>
+                          <span>{history.periodText}</span>
+                        </S.ActivityInfo>
+                      </S.ActivityHistoryRow>
                     </Section>
                   ))
                 ) : (

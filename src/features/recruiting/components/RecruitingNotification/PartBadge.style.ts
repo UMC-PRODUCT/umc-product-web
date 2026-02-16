@@ -8,5 +8,6 @@ export const PartBadge = styled.div`
   background-color: ${theme.colors.gray[700]};
   border: 1px solid ${theme.colors.gray[600]};
   color: ${theme.colors.gray[300]};
+  user-select: none;
   ${theme.typography.B4.Rg}
 `

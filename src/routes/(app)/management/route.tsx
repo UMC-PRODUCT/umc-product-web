@@ -1,7 +1,8 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
+import { ensureActiveRolePool } from '@/features/auth/utils/roleGuard'
 import { NotFoundPage } from '@/shared/ui/feedback'
+import { canAccessManagementByRoles } from '@/shared/utils/role'
 
 /**
  * 관리자(Management) 라우트 그룹
@@ -12,17 +13,11 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management')({
-  beforeLoad: () => {
-    const { role, gisu } = useUserProfileStore.getState()
-    const activeRole = role && (!gisu || role.gisuId === gisu) ? role : null
+  beforeLoad: async () => {
+    const rolePool = await ensureActiveRolePool()
+    const canAccessManagement = canAccessManagementByRoles(rolePool)
 
-    if (
-      activeRole?.roleType !== 'CENTRAL_PRESIDENT' &&
-      activeRole?.roleType !== 'CENTRAL_VICE_PRESIDENT' &&
-      activeRole?.roleType !== 'CENTRAL_OPERATING_TEAM_MEMBER' &&
-      activeRole?.roleType !== 'CENTRAL_EDUCATION_TEAM_MEMBER' &&
-      activeRole?.roleType !== 'SUPER_ADMIN'
-    ) {
+    if (!canAccessManagement) {
       throw redirect({ to: '/school/dashboard' })
     }
   },

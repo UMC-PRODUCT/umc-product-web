@@ -17,6 +17,7 @@ import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
+import { isSchoolPresidentRole } from '@/shared/utils/role'
 
 import ServerErrorCard from '../../common/ServerErrorCard'
 import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
@@ -30,7 +31,7 @@ import * as RowS from './FinalEvaluationRow.style'
 const FinalEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
   const queryClient = useQueryClient()
   const roleType = useUserProfileStore((state) => state.role?.roleType)
-  const canEdit = roleType === 'SCHOOL_PRESIDENT'
+  const canEdit = isSchoolPresidentRole(roleType)
   const { Dropdown, sortOptions, sortValue, handleSortChange, part, sortId } = useDocsPassModalUi()
   const { usePatchFinalSelectionStatus } = useRecruitingMutation()
 

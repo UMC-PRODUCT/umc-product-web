@@ -613,6 +613,9 @@ const Step2 = ({
                         markTouched('interviewTimeTable')
                       }}
                       mode={canEdit.interviewTimeTable ? 'edit' : 'view'}
+                      selectedColorMode={
+                        status === 'PUBLISHED' && !canEdit.interviewTimeTable ? 'gray' : 'lime'
+                      }
                       disabledSlots={[]}
                     />
                     {fieldState.error && (

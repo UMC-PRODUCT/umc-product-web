@@ -708,7 +708,19 @@ export type DeleteInterviewAssignApplicantsResponseDTO = {
 }
 
 export type GetRecruitmentsDocumentEvaluationResponseDTO = {
-  recruitments: Array<{
+  evaluatingRecruitments: Array<{
+    recruitmentId: string
+    rootRecruitmentId: string
+    title: string
+    docReviewStartDate: string
+    docReviewEndDate: string
+    totalApplicantCount: string
+    openParts: Array<{
+      key: PartType | 'COMMON'
+      label: string
+    }>
+  }>
+  completeRecruitments: Array<{
     recruitmentId: string
     rootRecruitmentId: string
     title: string

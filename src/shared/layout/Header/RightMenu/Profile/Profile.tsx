@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { clearTokens } from '@/api/tokenManager'
+import ChallengerRecordModal from '@/features/auth/components/modals/ChallengerRecordModal/ChallengerRecordModal'
+import DeleteAccountModal from '@/features/auth/components/modals/DeleteAccountModal/DeleteAccountModal'
 import { useActiveGisuQuery, useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
@@ -9,7 +11,7 @@ import { Badge } from '@/shared/ui/common/Badge/Badge'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 import AccountModal from '@/shared/ui/modals/AccountModal/AccountModal'
-import DeleteAccountModal from '@/shared/ui/modals/DeleteAccountModal/DeleteAccountModal'
+import { getHighestPriorityRole, getRolesByGisu } from '@/shared/utils/role'
 import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './Profile.style'
@@ -22,17 +24,18 @@ const ProfileMenuContent = ({
   children?: React.ReactNode
   onOpenModal: React.Dispatch<
     React.SetStateAction<{
-      modalType: 'accountLink' | 'deleteAccount' | ''
+      modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
       isOpen: boolean
     }>
   >
   isModalOpen: {
-    modalType: 'accountLink' | 'deleteAccount' | ''
+    modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
   }
 }) => {
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setGisu, setSchoolId, setRoles } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setGisu, setSchoolId, setRoles, setRoleList } =
+    useUserProfileStore()
   const {
     data,
     isLoading: isProfileLoading,
@@ -52,16 +55,14 @@ const ProfileMenuContent = ({
     setNickname(data.nickname || '')
     setEmail(data.email || '')
     setSchoolId(data.schoolId ? data.schoolId.toString() : '')
-  }, [data, setName, setNickname, setEmail, setSchoolId])
+    setRoleList(data.roles)
+  }, [data, setName, setNickname, setEmail, setSchoolId, setRoleList])
 
   useEffect(() => {
     if (!data || !gisuId) return
-    // setGisu(gisuId)
-    // TODO: 역할 추후에 다시 주석 해제 예정
-    // const activeRole = data.roles.find((role) => role.gisuId === gisuId)
-    // if (activeRole) {
-    //   setRoles(activeRole)
-    // }
+    setGisu(gisuId)
+    const activeRoles = getRolesByGisu(data.roles, gisuId)
+    setRoles(getHighestPriorityRole(activeRoles))
   }, [data, gisuId, setGisu, setRoles])
 
   if (isProfileLoading) {
@@ -86,17 +87,30 @@ const ProfileMenuContent = ({
     setNickname('')
     setEmail('')
     setGisu('')
+    setRoleList([])
+    setRoles(null)
     clearTokens()
     navigate({
       to: '/auth/login',
     })
   }
-  const activeRoleType = data.roles.find((role) => role.gisuId === gisuId)?.roleType
+  const activeRoleLabel = data.roles
+    .filter((role) => role.gisuId === gisuId)
+    .map((role) => transformRoleKorean(role.roleType))
+    .join(', ')
 
   return (
     <>
       <Flex gap="12px">
-        <S.Avatar />
+        {data.profileImageLink ? (
+          <img
+            src={data.profileImageLink}
+            alt="프로필 이미지"
+            css={{ width: '46px', minWidth: '46px', height: '46px', borderRadius: '50%' }}
+          />
+        ) : (
+          <S.Avatar />
+        )}
         <Flex
           flexDirection="column"
           alignItems="flex-start"
@@ -121,11 +135,17 @@ const ProfileMenuContent = ({
           <Badge tone="gray" variant="solid" typo="H5.Md">
             권한
           </Badge>
-          {activeRoleType ? transformRoleKorean(activeRoleType) : '권한 없음'}
+          {activeRoleLabel || '권한 없음'}
         </S.InfoRow>
       </Flex>
       {children && <S.MobileOnly>{children}</S.MobileOnly>}
       <S.MenuWrapper alignItems="flex-start">
+        <S.ModalButton
+          type="button"
+          onClick={() => onOpenModal({ modalType: 'challengerRecord', isOpen: true })}
+        >
+          챌린저 기록 불러오기 <ArrowUp width={16} />
+        </S.ModalButton>
         <S.ModalButton
           type="button"
           onClick={() => onOpenModal({ modalType: 'accountLink', isOpen: true })}
@@ -147,11 +167,15 @@ const ProfileMenuContent = ({
           onClose={() => onOpenModal({ modalType: '', isOpen: false })}
           onClick={() => {
             onOpenModal({ modalType: '', isOpen: false })
+            handleLogout()
           }}
         />
       )}
       {isModalOpen.isOpen && isModalOpen.modalType === 'accountLink' && (
         <AccountModal onClose={() => onOpenModal({ modalType: '', isOpen: false })} />
+      )}
+      {isModalOpen.isOpen && isModalOpen.modalType === 'challengerRecord' && (
+        <ChallengerRecordModal onClose={() => onOpenModal({ modalType: '', isOpen: false })} />
       )}
     </>
   )
@@ -165,7 +189,7 @@ const ProfileMenu = ({
   children?: React.ReactNode
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<{
-    modalType: 'accountLink' | 'deleteAccount' | ''
+    modalType: 'challengerRecord' | 'accountLink' | 'deleteAccount' | ''
     isOpen: boolean
   }>({
     modalType: '',
@@ -187,6 +211,7 @@ const ProfileMenu = ({
 const Profile = ({ children }: { children?: React.ReactNode }) => {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { data: profileData } = useMemberMeQuery()
 
   useEffect(() => {
     if (!open) return
@@ -204,7 +229,13 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <S.Container ref={menuRef}>
-      <S.TriggerIcon onClick={() => setOpen(!open)} />
+      <S.TriggerButton type="button" aria-label="프로필 메뉴 열기" onClick={() => setOpen(!open)}>
+        {profileData?.profileImageLink ? (
+          <S.TriggerImage src={profileData.profileImageLink} alt="프로필 이미지" />
+        ) : (
+          <S.TriggerIcon />
+        )}
+      </S.TriggerButton>
       {open && <ProfileMenu onClose={() => setOpen(false)}>{children}</ProfileMenu>}
     </S.Container>
   )

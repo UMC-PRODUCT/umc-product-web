@@ -28,13 +28,15 @@ const FilterBarWrapper = styled(Section)`
   border-radius: 6px;
   height: fit-content;
   color: ${theme.colors.gray[400]};
+  .left {
+    width: 100%;
+  }
   .left,
   .right {
     display: flex;
     align-items: center;
     gap: ${(props) => props.gap};
     white-space: nowrap;
-    width: 100%;
   }
   overflow-x: scroll;
 `

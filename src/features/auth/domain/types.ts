@@ -4,11 +4,13 @@ import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 import type { PartType } from './model'
 
-export type PostRegisterResponseDTO = CommonResponseDTO<{
+export type RegisterTokenPayload = {
   memberId: string
   accessToken: string
   refreshToken: string
-}>
+}
+
+export type PostRegisterResponseDTO = CommonResponseDTO<RegisterTokenPayload> | RegisterTokenPayload
 
 export type PostRegisterRequestDTO = {
   oAuthVerificationToken?: string
@@ -39,6 +41,10 @@ export type PostEmailVerificationCodeRequestDTO = {
   verificationCode?: string
 }
 export type PostEmailVerificationCodeResponseDTO = { emailVerificationToken?: string }
+
+export type PostChallengerRecordMemberRequestDTO = {
+  code: string
+}
 
 export type GetMemberMeResponseDTO = {
   id?: string
@@ -87,5 +93,5 @@ export type GetSchoolLinkResponseDTO = {
 
 export type GetActiveGisuResponseDTO = {
   gisuId: string
-  generation: string
+  gisu: string
 }

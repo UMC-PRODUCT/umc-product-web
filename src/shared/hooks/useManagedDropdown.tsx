@@ -180,7 +180,7 @@ export const useGisuDropdown = (
     const gisuList = data?.result.gisuList ?? []
     return buildOptions(
       gisuList,
-      (gisu) => `${gisu.generation}기`,
+      (gisu) => `${gisu.gisu}기`,
       (gisu) => gisu.gisuId,
       allLabel,
       includeAllOption,
@@ -266,7 +266,7 @@ export const usePartDropdown = (
         placeholder={placeholder}
         value={selectedValue}
         disabled={false}
-        css={{ width: '100%', height: '100%' }}
+        css={{ width: '100%', height: '100%', maxWidth: '200px' }}
         onChange={(option) =>
           setValue(includeAllOption && option.id === ALL_ID ? undefined : option)
         }

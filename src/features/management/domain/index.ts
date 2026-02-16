@@ -19,7 +19,6 @@ export type {
   EvaluationDocumentType,
   EvaluationFinalType,
   Notice,
-  Recruiting,
   RecruitingType,
   SchoolStateType,
   University,

@@ -1,7 +1,3 @@
-/**
- * Home 도메인 상수
- * (현재 특별한 상수 없음, 추후 확장용)
- */
 import gritzyLogo from '@/shared/assets/sponsor/그릿지.svg'
 import nerdinaryLogo from '@/shared/assets/sponsor/너디너리.svg'
 import vieworksLogo from '@/shared/assets/sponsor/뷰웍스.svg'
@@ -46,8 +42,8 @@ export type Sponsor = {
 
 export const heroText = 'BREAK THE RULES!'
 
-export const projectsData: Record<number, Array<Project>> = {
-  7: [
+export const projectsData: Record<string, Array<Project>> = {
+  '7': [
     {
       emoji: '📱',
       title: '운동 메이트 매칭',
@@ -85,7 +81,7 @@ export const projectsData: Record<number, Array<Project>> = {
       tech: ['Android', 'Node.js', 'Docker'],
     },
   ],
-  8: [
+  '8': [
     {
       emoji: '🎨',
       title: '포트폴리오 빌더',
@@ -123,7 +119,7 @@ export const projectsData: Record<number, Array<Project>> = {
       tech: ['iOS', 'Node.js', 'MongoDB'],
     },
   ],
-  9: [
+  '9': [
     {
       emoji: '💼',
       title: '취업 준비 플랫폼',

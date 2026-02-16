@@ -29,6 +29,12 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
   const documentEvaluationStatus: DocumentStatusType | undefined =
     current?.documentEvaluation.status
   const finalEvaluationStatus: FinalStatusType | undefined = current?.finalEvaluation.status
+  const documentStatusLabel = documentEvaluationStatus
+    ? DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label
+    : '미정'
+  const finalStatusLabel = finalEvaluationStatus
+    ? FINAL_STATUS_CONFIG[finalEvaluationStatus].label
+    : '미정'
   return (
     <Section
       variant="solid"
@@ -79,9 +85,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {documentEvaluationStatus
-              ? DOCUMENT_STATUS_CONFIG[documentEvaluationStatus].label
-              : '미정'}
+            {documentStatusLabel}
           </Badge>
         </Flex>
         <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -91,7 +95,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
             variant="outline"
             typo="B5.Md"
           >
-            {finalEvaluationStatus ? FINAL_STATUS_CONFIG[finalEvaluationStatus].label : '미정'}
+            {finalStatusLabel}
           </Badge>
         </Flex>
       </Flex>

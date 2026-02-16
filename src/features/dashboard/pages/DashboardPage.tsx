@@ -19,6 +19,8 @@ const DashboardPageContent = () => {
   const current = dashboardData.current
   const applications = dashboardData.applications
   const displayName = `${dashboardData.nickName}/${dashboardData.name}`
+  const progressForDisplay =
+    current && current.appliedParts.length === 0 ? undefined : current?.progress
   const sectionBorder = {
     border: `1px solid ${theme.colors.gray[700]}`,
     [media.down(theme.breakPoints.tablet)]: {
@@ -42,7 +44,7 @@ const DashboardPageContent = () => {
           >
             <div css={gridStyle}>
               <ApplyStatement current={current} />
-              <ProgressStage progress={current?.progress} />
+              <ProgressStage progress={progressForDisplay} />
             </div>
           </Section>
         </Flex>

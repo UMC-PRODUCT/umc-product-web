@@ -26,16 +26,17 @@ export const InterviewTitle = styled.div`
   ${theme.typography.B4.Md}
   color: ${theme.colors.white}
 `
-export const Grid = styled.div<{ notProgress: boolean }>`
+export const Grid = styled.div<{ notProgress: boolean; empty: boolean }>`
   display: grid;
   width: 100%;
-  grid-template-columns: ${({ notProgress }) => (notProgress ? '1fr' : '1fr 1fr 1fr')};
+  grid-template-columns: ${({ notProgress, empty }) =>
+    empty ? '1fr' : notProgress ? '1fr' : '1fr 1fr 1fr'};
   gap: 14px;
   max-height: 100px;
   min-height: 100px;
   overflow-y: auto;
   ${media.down(theme.breakPoints.desktop)} {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: ${({ empty }) => (empty ? '1fr' : '1fr 1fr')};
   }
   .not-progress {
     ${theme.typography.B5.Rg}

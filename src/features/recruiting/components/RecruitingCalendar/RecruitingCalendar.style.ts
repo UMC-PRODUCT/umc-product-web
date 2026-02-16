@@ -228,6 +228,8 @@ const EventBar = styled.div<{ $isHighlighted: boolean }>`
     ${(props) => (props.$isHighlighted ? theme.typography.B3.Sb : theme.typography.B3.Md)}
     color: ${(props) => (props.$isHighlighted ? theme.colors.lime : theme.colors.white)};
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .event-range {
@@ -285,4 +287,29 @@ const EventInfo = styled.div<{ $isTodayActive?: boolean }>`
   }
 `
 
-export { DateNavigator, EventBar, EventInfo, EventItem, Header, StyledCalendarWrapper }
+const HoverTooltip = styled.div`
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(22, 22, 22, 0.96);
+  color: ${theme.colors.white};
+  ${theme.typography.B5.Md}
+  border: 1px solid ${theme.colors.gray[600]};
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+
+  ${media.down(theme.breakPoints.tablet)} {
+    display: none;
+  }
+`
+
+export {
+  DateNavigator,
+  EventBar,
+  EventInfo,
+  EventItem,
+  Header,
+  HoverTooltip,
+  StyledCalendarWrapper,
+}

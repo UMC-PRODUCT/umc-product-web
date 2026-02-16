@@ -1,13 +1,19 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getMemberMe } from '@/features/auth/domain/api'
-import { useActiveGisuQuery } from '@/features/auth/hooks/useAuthQueries'
+import { getActiveGisu, getMemberMe } from '@/features/auth/domain/api'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
+import type { RoleType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
+import {
+  getHighestPriorityRole,
+  getRolesByGisu,
+  isManagementRole,
+  isSchoolRole,
+} from '@/shared/utils/role'
 
 import { useAuthMutation } from '../hooks/useAuthMutations'
 
@@ -42,15 +48,18 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     }
   }, [])
 
+const resolveInitialPathByRole = (roleType?: RoleType | null) => {
+  if (!roleType) return '/dashboard'
+  if (isManagementRole(roleType)) return '/management/generation'
+  if (isSchoolRole(roleType)) return '/school/dashboard'
+  return '/dashboard'
+}
+
 export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { data: gisu } = useActiveGisuQuery({
-    staleTime: 1000 * 60 * 60 * 24,
-    gcTime: 1000 * 60 * 60 * 24 * 7,
-  })
-  const { setName, setNickname, setEmail, setRoles } = useUserProfileStore()
+  const { setName, setNickname, setEmail, setRoles, setRoleList, setGisu } = useUserProfileStore()
   const { usePostMemberOAuth } = useAuthMutation()
   const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()
   const { setItem: setAccessToken } = useLocalStorage('accessToken')
@@ -127,29 +136,35 @@ export const LoginRedirectPage = () => {
   ])
 
   useEffect(() => {
-    if (!accessToken || oAuthFrom) return
-    setAccessToken(accessToken)
-    if (refreshToken) {
-      setRefreshToken(refreshToken)
-    }
-    navigate({ to: '/dashboard' })
-  }, [accessToken, refreshToken, setAccessToken, setRefreshToken, navigate, oAuthFrom])
-
-  useEffect(() => {
     let cancelled = false
-    if (!accessToken) return
+    if (!accessToken || oAuthFrom) return
     const loadProfile = async () => {
       try {
-        const profile = await getMemberMe()
+        setAccessToken(accessToken)
+        if (refreshToken) {
+          setRefreshToken(refreshToken)
+        }
+
+        const [profile, activeGisuResponse] = await Promise.all([getMemberMe(), getActiveGisu()])
         if (cancelled) return
+
+        const activeGisuId = activeGisuResponse.result.gisuId
+        const activeGisuRoles = getRolesByGisu(profile.roles, activeGisuId)
+        const selectedRole = getHighestPriorityRole(activeGisuRoles)
+
         setEmail(profile.email ?? '')
         setName(profile.name ?? '')
         setNickname(profile.nickname ?? '')
-        // TODO: 역할 추후에 다시 주석 해제 예정
-        // const activeRole = profile.roles.find((role) => role.gisuId === gisu?.result.gisuId)
-        // setRoles(activeRole ?? null)
+        setRoleList(profile.roles)
+        setRoles(selectedRole)
+        if (activeGisuId) {
+          setGisu(activeGisuId)
+        }
+        const initialPath = resolveInitialPathByRole(selectedRole?.roleType ?? null)
+        navigate({ to: initialPath, replace: true })
       } catch (error) {
         console.error('회원 정보 조회 실패', error)
+        navigate({ to: '/dashboard', replace: true })
       }
     }
 
@@ -158,7 +173,20 @@ export const LoginRedirectPage = () => {
     return () => {
       cancelled = true
     }
-  }, [accessToken, setEmail, setName, setNickname, setRoles, gisu])
+  }, [
+    accessToken,
+    refreshToken,
+    setAccessToken,
+    setRefreshToken,
+    oAuthFrom,
+    setEmail,
+    setName,
+    setNickname,
+    setRoles,
+    setRoleList,
+    setGisu,
+    navigate,
+  ])
 
   return (
     <>

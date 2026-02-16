@@ -55,18 +55,6 @@ export interface UniversityBranch {
   state: SchoolStateType
 }
 
-/** 리크루팅 정보 */
-export interface Recruiting {
-  id: string
-  universityId: string
-  generation: string
-  state: RecruitingType
-  startDate: string
-  endDate: string
-  documentEvaluation: EvaluationDocumentType
-  finalEvaluation: EvaluationFinalType
-}
-
 /** 공지사항 */
 export interface Notice {
   id: string
@@ -116,7 +104,7 @@ export type Workbook = {
 
 export type GisuType = {
   gisuId: string
-  generation: string
+  gisu: string
   isActive: boolean
   startAt: string
   endAt: string

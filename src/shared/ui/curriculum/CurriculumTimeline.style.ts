@@ -107,6 +107,7 @@ export const WeekRow = styled.div`
 
 export const Dot = styled.div`
   width: 10px;
+  min-width: 10px;
   height: 10px;
   border-radius: 50%;
   background-color: ${theme.colors.lime};

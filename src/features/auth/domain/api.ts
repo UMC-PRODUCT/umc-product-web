@@ -10,6 +10,7 @@ import type {
   GetSchoolLinkResponseDTO,
   GetTermsResponseDTO,
   PatchTermsRequestDTO,
+  PostChallengerRecordMemberRequestDTO,
   PostEmailVerificationCodeRequestDTO,
   PostEmailVerificationCodeResponseDTO,
   PostEmailVerificationRequestDTO,
@@ -25,7 +26,7 @@ export async function postRegister(
   requestBody: PostRegisterRequestDTO,
 ): Promise<PostRegisterResponseDTO> {
   const { data } = await axiosInstance.post('/member/register', requestBody)
-  return data.result
+  return data
 }
 
 /** GET /schools/link/{schoolId} - 학교 링크 조회 */
@@ -136,5 +137,18 @@ export const deleteMemberOAuth = async ({
   memberOAuthId: number
 }): Promise<void> => {
   const { data } = await axiosInstance.delete(`/member-oauth/${memberOAuthId}`)
+  return data
+}
+
+/** DELETE /member - 회원 삭제 */
+export const deleteMember = async (): Promise<void> => {
+  await axiosInstance.delete('/member')
+}
+
+/** POST /challenger-record/member - 챌린저 기록 불러오기 */
+export const postChallengerRecordMember = async (
+  requestBody: PostChallengerRecordMemberRequestDTO,
+): Promise<CommonResponseDTO<null>> => {
+  const { data } = await axiosInstance.post('/challenger-record/member', requestBody)
   return data
 }

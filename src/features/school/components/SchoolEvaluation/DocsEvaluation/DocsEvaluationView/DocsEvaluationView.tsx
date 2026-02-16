@@ -42,8 +42,8 @@ const DocsEvaluationContent = () => {
         <Flex width={'fit-content'} gap={16}>
           {summary && summary.totalCount === summary.evaluatedCount && (
             <S.Button onClick={() => setModal(true)}>
-              <span>서류 합격 처리</span>
               <ArrowUp width={22} height={22} color={theme.colors.white} />
+              <span>서류 합격 처리</span>
             </S.Button>
           )}
           <Button

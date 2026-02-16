@@ -15,7 +15,7 @@ const Footer = () => {
       <Flex gap="6px" flexDirection="column">
         <S.UmcInfo gap="10px" alignItems="flex-start">
           <S.Content>
-            UMC {FOOTER_INFO.generation}th 총괄 : {FOOTER_INFO.master}{' '}
+            UMC {FOOTER_INFO.gisu}th 총괄 : {FOOTER_INFO.master}{' '}
           </S.Content>
           <S.TextDivider className="divider" />
           <S.Content

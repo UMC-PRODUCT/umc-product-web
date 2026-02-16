@@ -6,8 +6,6 @@ import { theme } from '@/shared/styles/theme'
 export const Container = styled.div`
   display: flex;
   gap: 40px;
-  padding: 40px;
-  background-color: #000000;
   min-height: fit-content;
   color: #ffffff;
   ${media.down(theme.breakPoints.desktop)} {

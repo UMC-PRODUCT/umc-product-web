@@ -36,7 +36,7 @@ export const CandidatePage = () => {
   const gisuOptions = useMemo<Array<Option<string>>>(
     () =>
       (allGisuData?.result.gisuList ?? []).map((gisu) => ({
-        label: `${gisu.generation}기`,
+        label: `${gisu.gisu}기`,
         id: gisu.gisuId,
       })),
     [allGisuData?.result.gisuList],
@@ -47,7 +47,7 @@ export const CandidatePage = () => {
     if (gisuList.length === 0) return undefined
     const active = gisuList.find((gisu) => gisu.isActive) ?? gisuList[0]
     return {
-      label: `${active.generation}기`,
+      label: `${active.gisu}기`,
       id: active.gisuId,
     }
   }, [allGisuData?.result.gisuList])

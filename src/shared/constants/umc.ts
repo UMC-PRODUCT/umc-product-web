@@ -4,9 +4,9 @@ import type { PartType } from '@/shared/types/part'
 // 하위 호환성을 위한 re-export
 export const PART: Array<PartType> = [...PART_LIST]
 
-export const FOOTER_INFO: { email: string; generation: number; master: string } = {
+export const FOOTER_INFO: { email: string; gisu: number; master: string } = {
   email: 'chattchatt@epqpf.com',
-  generation: 10,
+  gisu: 10,
   master: '전채운',
 }
 

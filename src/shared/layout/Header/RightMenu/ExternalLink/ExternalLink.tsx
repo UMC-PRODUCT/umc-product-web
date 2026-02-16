@@ -13,6 +13,7 @@ import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import ExternalLinkModal from '@/shared/ui/modals/ExternalLinkModal'
+import { canAccessSchoolByRoles, getActiveRolePool } from '@/shared/utils/role'
 
 import * as S from './ExternalLink.style'
 
@@ -26,7 +27,9 @@ const ExternalLink = ({ subLinks }: { subLinks: Array<ExternalLinkType> }) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const { role } = useUserProfileStore()
+  const { role, roles, gisu } = useUserProfileStore()
+  const rolePool = getActiveRolePool({ role, roles, gisu })
+  const hasSchoolAdminRole = canAccessSchoolByRoles(rolePool)
   const handleToggle = () => {
     setIsOpen((prev) => !prev)
   }
@@ -99,10 +102,7 @@ const ExternalLink = ({ subLinks }: { subLinks: Array<ExternalLinkType> }) => {
                 )
               })}
 
-              {role?.roleType === 'SCHOOL_PRESIDENT' ||
-              role?.roleType === 'SCHOOL_VICE_PRESIDENT' ||
-              role?.roleType === 'SCHOOL_PART_LEADER' ||
-              role?.roleType === 'SCHOOL_ETC_ADMIN' ? (
+              {hasSchoolAdminRole ? (
                 <>
                   <hr css={{ width: '100%', border: `0.5px solid ${theme.colors.gray[600]}` }} />
                   <S.SettingButton type="button" onClick={() => setModalOpen(true)}>
