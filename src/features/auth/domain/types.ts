@@ -91,5 +91,5 @@ export type GetSchoolLinkResponseDTO = {
 
 export type GetActiveGisuResponseDTO = {
   gisuId: string
-  generation: string
+  gisu: string
 }

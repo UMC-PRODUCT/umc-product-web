@@ -4,12 +4,12 @@ import type { Project } from '../../domain/constants'
 import * as S from './ProjectsSection.style'
 
 type Props = {
-  generation: number
-  onChangeGeneration: (value: number) => void
+  gisu: string
+  onChangeGeneration: (value: string) => void
   projects: Array<Project>
 }
 
-const ProjectsSection = ({ generation, onChangeGeneration, projects }: Props) => {
+const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
   const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0 })
@@ -95,8 +95,8 @@ const ProjectsSection = ({ generation, onChangeGeneration, projects }: Props) =>
           <S.GenerationTab
             key={value}
             type="button"
-            $active={generation === value}
-            onClick={() => onChangeGeneration(value)}
+            $active={gisu === String(value)}
+            onClick={() => onChangeGeneration(String(value))}
           >
             {value}기
           </S.GenerationTab>

@@ -55,15 +55,15 @@ const resolveErrorStatus = (error: unknown) =>
 
 const buildRecruitmentTitle = ({
   schoolName,
-  generation,
+  gisu,
   fallbackTitle,
 }: {
   schoolName?: string
-  generation?: string
+  gisu?: string
   fallbackTitle: string
 }) => {
-  if (!schoolName || !generation) return fallbackTitle
-  return `${schoolName} UMC ${generation}기 모집`
+  if (!schoolName || !gisu) return fallbackTitle
+  return `${schoolName} UMC ${gisu}기 모집`
 }
 
 const renderApplySections = (
@@ -108,20 +108,14 @@ const renderApplySections = (
   )
 }
 
-const ApplyPageContent = ({
-  schoolName,
-  generation,
-}: {
-  schoolName?: string
-  generation?: string
-}) => {
+const ApplyPageContent = ({ schoolName, gisu }: { schoolName?: string; gisu?: string }) => {
   const { data: recruitmentIdData } = useGetActiveRecruitmentId()
   const recruitmentId = recruitmentIdData.result.recruitmentId
   const { data: specificPartRecruitingData } = useGetRecruitmentParts(recruitmentId)
   const result = specificPartRecruitingData.result
   const composedTitle = buildRecruitmentTitle({
     schoolName,
-    generation,
+    gisu,
     fallbackTitle: result.title,
   })
 
@@ -132,7 +126,7 @@ export const ApplyPage = () => {
   const { data: memberMe } = useMemberMeQuery()
   const { data: activeGisuData } = useActiveGisuQuery()
   const schoolName = memberMe?.schoolName
-  const generation = activeGisuData?.result.generation
+  const gisu = activeGisuData?.result.gisu
 
   return (
     <AsyncBoundary
@@ -144,7 +138,7 @@ export const ApplyPage = () => {
             undefined,
             buildRecruitmentTitle({
               schoolName,
-              generation,
+              gisu,
               fallbackTitle: DEFAULT_APPLY_VIEW_DATA.title,
             }),
           )
@@ -157,7 +151,7 @@ export const ApplyPage = () => {
         )
       }
     >
-      <ApplyPageContent schoolName={schoolName} generation={generation} />
+      <ApplyPageContent schoolName={schoolName} gisu={gisu} />
     </AsyncBoundary>
   )
 }

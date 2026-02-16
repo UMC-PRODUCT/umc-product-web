@@ -6,7 +6,6 @@ import { useParams } from '@tanstack/react-router'
 import LeaveConfirmModal from '@/features/apply/components/modals/CautionLeave'
 import SubmitConfirmModal from '@/features/apply/components/modals/CautionSubmit'
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
-import { RECRUITMENT_INFO } from '@/shared/constants/recruitment'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
@@ -37,7 +36,6 @@ interface ResumeProps {
 }
 
 const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
-  const { schoolName, generation } = RECRUITMENT_INFO
   const { recruitmentId, resumeId } = useParams({ from: '/(app)/apply/$recruitmentId/$resumeId/' })
   const { data: questionsData } = useGetRecruitmentApplicationForm(recruitmentId)
   const { data: answerData } = useGetRecruitmentApplicationAnswer(recruitmentId, resumeId)
@@ -173,7 +171,7 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
   return (
     <PageLayout>
       <Flex maxWidth="956px">
-        <PageTitle title={`UMC ${schoolName} ${generation} 지원서`} />
+        <PageTitle title={questionsData.result.recruitmentFormTitle} />
       </Flex>
 
       <ResumeContent

@@ -46,8 +46,8 @@ export type Sponsor = {
 
 export const heroText = 'BREAK THE RULES!'
 
-export const projectsData: Record<number, Array<Project>> = {
-  7: [
+export const projectsData: Record<string, Array<Project>> = {
+  '7': [
     {
       emoji: '📱',
       title: '운동 메이트 매칭',
@@ -85,7 +85,7 @@ export const projectsData: Record<number, Array<Project>> = {
       tech: ['Android', 'Node.js', 'Docker'],
     },
   ],
-  8: [
+  '8': [
     {
       emoji: '🎨',
       title: '포트폴리오 빌더',
@@ -123,7 +123,7 @@ export const projectsData: Record<number, Array<Project>> = {
       tech: ['iOS', 'Node.js', 'MongoDB'],
     },
   ],
-  9: [
+  '9': [
     {
       emoji: '💼',
       title: '취업 준비 플랫폼',

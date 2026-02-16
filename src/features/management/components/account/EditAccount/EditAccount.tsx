@@ -88,7 +88,7 @@ const EditAccountContent = () => {
         name: item.name,
         nickname: item.nickname,
         school: item.schoolName,
-        generation: `${item.gisu}기`,
+        gisu: `${item.gisu}기`,
         part: transformPart(item.part),
         role:
           item.roleTypes.length > 0
@@ -160,7 +160,7 @@ const EditAccountContent = () => {
                 </TableStyles.Td>
                 <TableStyles.Td>{item.nickname}</TableStyles.Td>
                 <TableStyles.Td>{item.school}</TableStyles.Td>
-                <TableStyles.Td>{item.generation}</TableStyles.Td>
+                <TableStyles.Td>{item.gisu}</TableStyles.Td>
                 <TableStyles.Td>{item.part}</TableStyles.Td>
                 <TableStyles.Td>
                   <Flex gap={10} justifyContent="space-between">

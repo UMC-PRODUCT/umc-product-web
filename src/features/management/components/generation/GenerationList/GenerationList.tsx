@@ -36,11 +36,11 @@ const GenerationList = () => {
     },
   )
 
-  const rows = (data?.result.content ?? []).map((generation) => ({
-    id: generation.gisuId,
-    state: generation.isActive,
-    gisuName: generation.generation,
-    duration: `${formatDateToDot(generation.startAt)} ~ ${formatDateToDot(generation.endAt)}`,
+  const rows = (data?.result.content ?? []).map((gisu) => ({
+    id: gisu.gisuId,
+    state: gisu.isActive,
+    gisuName: gisu.gisu,
+    duration: `${formatDateToDot(gisu.startAt)} ~ ${formatDateToDot(gisu.endAt)}`,
   }))
 
   return (

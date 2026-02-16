@@ -180,7 +180,7 @@ export const useGisuDropdown = (
     const gisuList = data?.result.gisuList ?? []
     return buildOptions(
       gisuList,
-      (gisu) => `${gisu.generation}기`,
+      (gisu) => `${gisu.gisu}기`,
       (gisu) => gisu.gisuId,
       allLabel,
       includeAllOption,

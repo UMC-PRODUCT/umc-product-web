@@ -30,12 +30,11 @@ export const HomePage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const [typedText, setTypedText] = useState('')
   const [typingDone, setTypingDone] = useState(false)
-  const [generation, setGeneration] = useState(7)
+  const [gisu, setGisu] = useState('9')
   const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(null)
   const statsAnimated = useRef(false)
 
-  const projects = useMemo(() => projectsData[generation] ?? [], [generation])
-
+  const projects = useMemo(() => projectsData[gisu] ?? [], [gisu])
   const scrollToSection = useCallback((id: string) => {
     const element = document.getElementById(id)
     if (element) {
@@ -138,11 +137,7 @@ export const HomePage = () => {
       <ValuesSection />
       <UniversitySection />
       <CurriculumSection />
-      <ProjectsSection
-        generation={generation}
-        onChangeGeneration={setGeneration}
-        projects={projects}
-      />
+      <ProjectsSection gisu={gisu} onChangeGeneration={setGisu} projects={projects} />
       <FaqSection
         items={faqItems}
         activeIndex={activeFaqIndex}
