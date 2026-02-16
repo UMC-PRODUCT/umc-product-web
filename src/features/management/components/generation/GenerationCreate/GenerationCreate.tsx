@@ -62,7 +62,8 @@ const GenerationCreate = () => {
       <S.ButtonWrapper flexDirection="column" gap={20}>
         <Flex
           css={{
-            width: '400px !important',
+            width: '400px',
+            maxWidth: '50%',
             alignSelf: 'flex-start',
             [media.down(theme.breakPoints.tablet)]: { width: '100%' },
           }}

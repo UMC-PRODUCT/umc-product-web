@@ -45,12 +45,11 @@ const Header = ({
 
   useEffect(() => {
     if (!profileData || !gisuId) return
-    // setGisu(gisuId)
-    // TODO: 역할 추후에 다시 주석 해제 예정
-    // const activeRole = profileData.roles.find((role) => role.gisuId === gisuId)
-    // if (activeRole) {
-    //   setRoles(activeRole)
-    // }
+    setGisu(gisuId)
+    const activeRole = profileData.roles.find((role) => role.gisuId === gisuId)
+    if (activeRole) {
+      setRoles(activeRole)
+    }
   }, [profileData, gisuId, setGisu, setRoles])
 
   const { data: schoolLinkData } = useCustomQuery(

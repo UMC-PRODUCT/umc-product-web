@@ -57,12 +57,11 @@ const ProfileMenuContent = ({
 
   useEffect(() => {
     if (!data || !gisuId) return
-    // setGisu(gisuId)
-    // TODO: 역할 추후에 다시 주석 해제 예정
-    // const activeRole = data.roles.find((role) => role.gisuId === gisuId)
-    // if (activeRole) {
-    //   setRoles(activeRole)
-    // }
+    setGisu(gisuId)
+    const activeRole = data.roles.find((role) => role.gisuId === gisuId)
+    if (activeRole) {
+      setRoles(activeRole)
+    }
   }, [data, gisuId, setGisu, setRoles])
 
   if (isProfileLoading) {
@@ -92,7 +91,10 @@ const ProfileMenuContent = ({
       to: '/auth/login',
     })
   }
-  const activeRoleType = data.roles.find((role) => role.gisuId === gisuId)?.roleType
+  const activeRoleLabel = data.roles
+    .filter((role) => role.gisuId === gisuId)
+    .map((role) => transformRoleKorean(role.roleType))
+    .join(', ')
 
   return (
     <>
@@ -122,7 +124,7 @@ const ProfileMenuContent = ({
           <Badge tone="gray" variant="solid" typo="H5.Md">
             권한
           </Badge>
-          {activeRoleType ? transformRoleKorean(activeRoleType) : '권한 없음'}
+          {activeRoleLabel || '권한 없음'}
         </S.InfoRow>
       </Flex>
       {children && <S.MobileOnly>{children}</S.MobileOnly>}

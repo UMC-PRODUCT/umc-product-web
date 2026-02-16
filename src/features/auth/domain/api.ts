@@ -26,7 +26,7 @@ export async function postRegister(
   requestBody: PostRegisterRequestDTO,
 ): Promise<PostRegisterResponseDTO> {
   const { data } = await axiosInstance.post('/member/register', requestBody)
-  return data.result
+  return data
 }
 
 /** GET /schools/link/{schoolId} - 학교 링크 조회 */

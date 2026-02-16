@@ -172,12 +172,16 @@ export const useRegistrationWorkflow = ({
         },
         {
           onSuccess: (data) => {
-            console.log(data)
+            const tokenPayload = 'result' in data ? data.result : data
+            if (!tokenPayload.accessToken || !tokenPayload.refreshToken) {
+              setRegistrationError('토큰 정보가 올바르지 않습니다. 다시 시도해 주세요.')
+              return
+            }
             setRegistrationError(null)
-            setAccessToken(data.result.accessToken)
-            setRefreshToken(data.result.refreshToken)
+            setAccessToken(tokenPayload.accessToken)
+            setRefreshToken(tokenPayload.refreshToken)
             navigate({
-              to: '/auth/login',
+              to: '/dashboard',
             })
           },
           onError: (error) => {
