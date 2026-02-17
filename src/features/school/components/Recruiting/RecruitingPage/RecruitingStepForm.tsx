@@ -8,6 +8,7 @@ const RecruitingStepForm = () => {
     recruitmentForm,
     recruitingFormValues,
     initialRecruitmentSchedule,
+    extensionAllowedParts,
     currentStep,
     setCurrentStep,
     applicationPageNumber,
@@ -16,6 +17,8 @@ const RecruitingStepForm = () => {
     setSelectedQuestionPart,
     questionPartCompletionMap,
     setQuestionPartCompletionMap,
+    isExtensionMode,
+    isExtensionBaseMode,
   } = useRecruitingContext()
   const { control, setValue, setError, clearErrors } = recruitmentForm
   return (
@@ -26,7 +29,14 @@ const RecruitingStepForm = () => {
         css={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}
         method="POST"
       >
-        {currentStep === 1 && <Step1 control={control} status={recruitingFormValues.status} />}
+        {currentStep === 1 && (
+          <Step1
+            control={control}
+            status={recruitingFormValues.status}
+            isExtensionBaseMode={isExtensionBaseMode}
+            extensionAllowedParts={extensionAllowedParts}
+          />
+        )}
         {currentStep === 2 && (
           <Step2
             control={control}
@@ -35,6 +45,7 @@ const RecruitingStepForm = () => {
             clearErrors={clearErrors}
             initialSchedule={initialRecruitmentSchedule}
             status={recruitingFormValues.status}
+            isExtensionMode={isExtensionMode}
           />
         )}
         {currentStep === 3 && (

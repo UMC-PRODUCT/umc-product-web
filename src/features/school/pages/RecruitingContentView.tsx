@@ -16,6 +16,7 @@ import type { RecruitingContentLogic } from '../hooks/useRecruitingContentLogic'
 export const RecruitingContentView = ({
   scrollTopRef,
   recruitmentTitle,
+  extensionAllowedParts,
   handleBackClick,
   recruitmentForm,
   recruitingFormValues,
@@ -35,6 +36,8 @@ export const RecruitingContentView = ({
   openPreview,
   openConfirmModal,
   isEditLocked,
+  isExtensionMode,
+  isExtensionBaseMode,
   isSubmitting,
   activeModal,
   closePreview,
@@ -64,6 +67,7 @@ export const RecruitingContentView = ({
           recruitmentForm,
           recruitingFormValues,
           initialRecruitmentSchedule,
+          extensionAllowedParts,
           currentStep,
           setCurrentStep,
           applicationPageNumber,
@@ -72,6 +76,8 @@ export const RecruitingContentView = ({
           setSelectedQuestionPart,
           questionPartCompletionMap,
           setQuestionPartCompletionMap,
+          isExtensionMode,
+          isExtensionBaseMode,
         }}
       >
         <Section

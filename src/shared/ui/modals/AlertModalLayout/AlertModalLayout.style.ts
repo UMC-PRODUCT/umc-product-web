@@ -22,6 +22,7 @@ const ContentWrapper = styled(Flex)`
   border-left: 4px solid ${(props) => props.theme.colors.white};
   white-space: pre-wrap;
   word-break: keep-all;
+  max-height: fit-content;
   color: ${(props) => props.theme.colors.white};
   ${(props) => props.theme.typography.B3.Md}
   ${media.down(theme.breakPoints.tablet)} {

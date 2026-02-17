@@ -5,6 +5,8 @@ export type RecruitingProps = {
   initialStepNumber?: number
   onStepNumberChange?: (nextStep: number) => void
   forceLockedMode?: boolean
+  source?: 'temp' | 'extension'
+  baseRecruitmentId?: string
 }
 
 export type RecruitmentPart = RecruitingForms['recruitmentParts'][number]

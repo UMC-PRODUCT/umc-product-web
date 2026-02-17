@@ -26,6 +26,8 @@ export type RecruitingDraft = {
   title: string
   recruitmentParts: Array<PartType>
   maxPreferredPartCount: string
+  // true: 일반(루트) 모집, false: 추가모집(Extension)
+  isRoot?: boolean
   schedule?: RecruitingSchedule
   noticeContent: string
   status: RecruitingStatus

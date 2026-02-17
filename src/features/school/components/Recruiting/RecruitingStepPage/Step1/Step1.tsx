@@ -16,11 +16,18 @@ import * as S from '../common'
 const Step1 = ({
   control,
   status,
+  isExtensionBaseMode = false,
+  extensionAllowedParts = [],
 }: {
   control: Control<RecruitingForms>
   status: RecruitingForms['status']
+  isExtensionBaseMode?: boolean
+  extensionAllowedParts?: Array<RecruitingForms['recruitmentParts'][number]>
 }) => {
-  const isLocked = status !== 'DRAFT'
+  // 기본적으로 게시 상태는 잠금.
+  // 단, "추가모집 최초 생성 전(Base 화면)"에서는 제목/파트를 수정할 수 있도록 예외 허용
+  const isLocked = !isExtensionBaseMode && status !== 'DRAFT'
+
   return (
     <Flex flexDirection="column" gap={18}>
       <Section gap={29} variant="solid" flexDirection="column" alignItems="flex-start">
@@ -79,14 +86,17 @@ const Step1 = ({
                   const partId = part
                   const partLabel = PART_CONFIG[part].label
                   const isActive = selected.includes(partId)
+                  // 추가모집 최초 생성 전에는 "기존 Base 모집에 있던 파트"만 선택 가능
+                  const isAllowedPart =
+                    !isExtensionBaseMode || extensionAllowedParts.includes(partId)
                   return (
                     <S.Button
                       key={part}
                       isActive={isActive}
                       type="button"
-                      disabled={isLocked}
+                      disabled={isLocked || !isAllowedPart}
                       onClick={() => {
-                        if (isLocked) return
+                        if (isLocked || !isAllowedPart) return
                         const next = isActive
                           ? selected.filter((item: string) => item !== partId)
                           : [...selected, partId]
