@@ -66,7 +66,7 @@ export const RegisterFormFields = ({
         autoComplete="name"
         type="text"
         label="이름"
-        placeholder="이름을 입력해주세요."
+        placeholder="이름을 입력해 주세요."
         error={{
           error: !!errors.name,
           errorMessage: errors.name?.message || '',
@@ -91,7 +91,7 @@ export const RegisterFormFields = ({
       <LabelTextField
         autoComplete="email"
         type="email"
-        placeholder="이메일 주소를 입력해주세요."
+        placeholder="이메일 주소를 입력해 주세요."
         label="이메일 주소"
         error={{
           error: !!errors.email,
