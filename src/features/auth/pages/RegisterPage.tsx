@@ -110,14 +110,13 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
       return []
     }
     const termsEntries = [
-      ['MARKETING', marketingTerm.data],
       ['PRIVACY', privacyTerm.data],
       ['SERVICE', serviceTerm.data],
     ] as const
     return termsEntries
       .filter(([, content]) => Boolean(content.result.isMandatory))
       .map(([termKey]) => termKey)
-  }, [hasLoadedTerms, serviceTerm.data, privacyTerm.data, marketingTerm.data])
+  }, [hasLoadedTerms, serviceTerm.data, privacyTerm.data])
 
   const areTermsAgreed =
     requiredTerms.length === 0 || requiredTerms.every((termKey) => termsAgreement[termKey])
