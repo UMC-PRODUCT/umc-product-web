@@ -38,7 +38,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
   return (
     <Section
       variant="solid"
-      padding={'20px 16px'}
+      padding={'13px 20px'}
       gap={28}
       css={{ [media.down(theme.breakPoints.tablet)]: { flexDirection: 'row' } }}
     >
@@ -61,7 +61,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
               label={part === '미정' ? '미정' : PART_TYPE_TO_SMALL_PART[part]}
               onClick={() => {}}
               typo="B5.Md"
-              css={{ width: 'fit-content', height: '24px' }}
+              css={{ width: 'fit-content', height: '24px', cursor: 'default' }}
             />
           ))}
           {!hasAppliedParts && (
@@ -72,7 +72,7 @@ const ApplyStatement = ({ current }: ApplyStatementProps) => {
               label="미정"
               onClick={() => {}}
               typo="B5.Md"
-              css={{ width: 'fit-content', height: '24px' }}
+              css={{ width: 'fit-content', height: '24px', cursor: 'default' }}
             />
           )}
         </Flex>

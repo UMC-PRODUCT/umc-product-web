@@ -7,19 +7,33 @@ import { managementKeys } from '@/shared/queryKeys'
 
 import * as S from './UniversitySection.style'
 
+const TEMP_UNIVERSITIES = [
+  { src: defaultSchool, alt: '가톨릭대학교' },
+  { src: defaultSchool, alt: '한성대학교' },
+  { src: defaultSchool, alt: '가천대학교' },
+  { src: defaultSchool, alt: '숭실대학교' },
+  { src: defaultSchool, alt: '동국대학교' },
+  { src: defaultSchool, alt: '서울여자대학교' },
+  { src: defaultSchool, alt: '중앙대학교' },
+  { src: defaultSchool, alt: '동덕여자대학교' },
+  { src: defaultSchool, alt: '상명대학교' },
+  { src: defaultSchool, alt: '한양대학교' },
+]
+
 const UniversitySection = () => {
   const { data: activeGisuData } = useActiveGisuQuery()
   const activeGisuId = activeGisuData?.result.gisuId
-  const { data: universityData } = useCustomQuery(
+  const { data: universityData, isError } = useCustomQuery(
     managementKeys.getSchoolsByGisu(activeGisuId ?? ''),
     () => getSchoolsByGisu(activeGisuId ?? ''),
     { enabled: Boolean(activeGisuId) },
   )
 
-  const universities = (universityData?.result ?? []).map((school) => ({
+  const apiUniversities = (universityData?.result ?? []).map((school) => ({
     src: school.logoImageUrl || defaultSchool,
     alt: school.schoolName,
   }))
+  const universities = isError || apiUniversities.length === 0 ? TEMP_UNIVERSITIES : apiUniversities
 
   const repeatCount = 3
   const renderTrack = () =>

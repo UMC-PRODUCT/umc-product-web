@@ -25,8 +25,8 @@ export const inputShell = css`
     transform 120ms ease;
 
   &:focus-visible {
-    outline: 2px solid ${theme.colors.lime};
+    outline: 1px solid ${theme.colors.lime};
     border-color: ${theme.colors.lime};
-    box-shadow: 0 0 0 4px rgba(149, 239, 75, 0.15);
+    box-shadow: 0 0 0 2px rgba(149, 239, 75, 0.15);
   }
 `
