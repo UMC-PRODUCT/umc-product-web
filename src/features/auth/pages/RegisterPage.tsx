@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
-import { useNavigate } from '@tanstack/react-router'
 
 import Logo from '@/shared/assets/brand_logo.svg?react'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
@@ -9,12 +8,14 @@ import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
+import Loading from '@/shared/ui/common/Loading/Loading'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
 import { useSchoolSelection, useTermsAgreement } from '../hooks/register'
 import { useTerms } from '../hooks/register/useTerms'
+import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
 import { useRegisterForm } from '../hooks/useRegisterForm'
 import { useRegistrationWorkflow } from '../hooks/useRegistrationWorkflow'
 import type { RegisterForm } from '../schemas/register'
@@ -29,7 +30,7 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   const { getItem: getAccessToken } = useLocalStorage('accessToken')
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] = useState(false)
   const accessToken = getAccessToken()
-  const navigate = useNavigate()
+  const hasAccessToken = typeof accessToken === 'string' && accessToken.length > 0
   const {
     register,
     handleSubmit,
@@ -163,11 +164,24 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     setIsEmailVerificationModalOpen(false)
   }
 
-  useEffect(() => {
-    if (accessToken) {
-      navigate({ to: '/', replace: true })
-    }
-  }, [accessToken, navigate])
+  const { isResolving } = useAuthRedirectByRole({
+    enabled: hasAccessToken,
+  })
+
+  if (hasAccessToken || isResolving) {
+    return (
+      <AuthSection size="lg">
+        <ResponsiveLogo />
+        <Loading
+          size={52}
+          borderWidth={4}
+          spinnerColor={theme.colors.white}
+          gap={12}
+          aria-label="회원 정보를 확인하는 중입니다"
+        />
+      </AuthSection>
+    )
+  }
 
   return (
     <AuthSection size="lg">
