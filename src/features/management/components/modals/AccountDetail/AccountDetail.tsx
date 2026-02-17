@@ -44,6 +44,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
     isLoading,
     errorStatus,
     profile,
+    activeGisu,
     activityHistories,
     deactivateChallenger,
     isDeactivating,
@@ -86,7 +87,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
             {isNotFoundUser ? (
               <Section variant="solid" css={{ marginTop: '32px', flex: 1 }}>
                 <Flex alignItems="center" justifyContent="center" height="100%">
-                  <S.SubTitle>찾을 수 없는 유저입니다.</S.SubTitle>
+                  <S.Error>찾을 수 없는 유저입니다.</S.Error>
                 </Flex>
               </Section>
             ) : (
@@ -149,7 +150,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                     <S.Title>활동 이력</S.Title>
                     <S.SubTitle>기수별 참여 파트 정보를 확인할 수 있습니다.</S.SubTitle>
                   </Flex>
-                  <Flex flexDirection="column" gap={8} width="100%">
+                  <Flex flexDirection="column-reverse" gap={8} width="100%">
                     {activityHistories.length > 0 ? (
                       activityHistories.map((history, index) => (
                         <Section
@@ -159,7 +160,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                         >
                           <S.ActivityHistoryRow>
                             <S.Generation
-                              isActive={history.isActive}
+                              isActive={String(history.gisu) === String(activeGisu)}
                             >{`${history.gisu}기`}</S.Generation>
                             <S.ActivityInfo isActive={history.isActive}>
                               <span>파트</span>

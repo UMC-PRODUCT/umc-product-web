@@ -149,6 +149,11 @@ export const SubTitle = styled.p`
   width: 100%;
 `
 
+export const Error = styled.div`
+  color: ${theme.colors.gray[300]};
+  text-align: center;
+`
+
 export const Generation = styled.div<{ isActive: boolean }>`
   display: flex;
   width: fit-content;
