@@ -45,7 +45,7 @@ export const DOCUMENT_STATUS_CONFIG = createStatusConfig<DocumentStatusType>({
 /** 최종 평가 상태 */
 export const FINAL_STATUS_CONFIG = createStatusConfig<FinalStatusType>({
   WAITING: { label: '미정', color: 'gray' },
-  IN_PROGRESS: { label: '예정', color: 'white' },
+  IN_PROGRESS: { label: '평가 중', color: 'lime' },
   EVALUATING: { label: '평가 중', color: 'lime' },
   PENDING: { label: '미정', color: 'gray' },
   DONE: { label: '평가 완료', color: 'lime' },

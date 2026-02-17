@@ -1,9 +1,10 @@
 import type { PartType } from '@/features/auth/domain'
+import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 
 import * as S from './PartBadge.style'
 
 const PartBadge = ({ partName }: { partName: PartType }) => {
-  return <S.PartBadge>{partName}</S.PartBadge>
+  return <S.PartBadge>{PART_TYPE_TO_SMALL_PART[partName]}</S.PartBadge>
 }
 
 export default PartBadge

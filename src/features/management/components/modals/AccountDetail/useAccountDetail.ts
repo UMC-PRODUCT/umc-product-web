@@ -30,7 +30,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
   const queryClient = useQueryClient()
   const { data: myProfile } = useMemberMeQuery()
   const { data: activeGisu } = useActiveGisuQuery()
-  const { data, isLoading } = useGetMemberProfile(memberId)
+  const { data, isLoading, error } = useGetMemberProfile(memberId)
   const { data: createdRoleDetail } = useGetChallengerRole(createdRoleId)
 
   const profile = data?.result
@@ -178,6 +178,8 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
     deleteCreatedRole(createdRoleId)
   }
 
+  const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
+
   const isRoleActive = (roleType: RoleType) => {
     const hasExistingRole = activeGisuRoles.some((profileRole) => profileRole.roleType === roleType)
     return hasExistingRole || role === roleType
@@ -187,6 +189,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
     role,
     setRole,
     isLoading,
+    errorStatus,
     profile,
     activeChallengerRecord,
     activityHistories,

@@ -12,15 +12,18 @@ import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button/Button'
 import Divider from '@/shared/ui/common/Divider/Divider'
 import Instruction from '@/shared/ui/common/Instruction/Instruction'
+import Loading from '@/shared/ui/common/Loading/Loading'
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
+import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
 
 export const LoginPage = () => {
   const navigate = useNavigate()
   const { setItem, getItem: getPlatform } = useLocalStorage('platform')
   const { getItem: getAccessToken } = useLocalStorage('accessToken')
   const accessToken = getAccessToken()
+  const hasAccessToken = typeof accessToken === 'string' && accessToken.length > 0
 
   const handleSocialLogin = (platform: string) => {
     setItem(platform)
@@ -30,10 +33,26 @@ export const LoginPage = () => {
 
   const lastPlatform = getPlatform()
 
-  if (accessToken) {
-    navigate({ to: '/', replace: true })
-    return null
+  const { isResolving } = useAuthRedirectByRole({
+    enabled: hasAccessToken,
+  })
+
+  if (hasAccessToken || isResolving) {
+    return (
+      <Main>
+        <AuthSection size="md">
+          <Loading
+            size={52}
+            borderWidth={4}
+            spinnerColor={theme.colors.white}
+            gap={12}
+            aria-label="로그인 상태를 확인하는 중입니다"
+          />
+        </AuthSection>
+      </Main>
+    )
   }
+
   return (
     <Main>
       <IntroBanner />

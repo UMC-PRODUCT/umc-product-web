@@ -50,7 +50,7 @@ const DashboardPageContent = () => {
         </Flex>
         <Flex flexDirection="column" gap={22}>
           <PageTitle title={`${displayName} 님의 지원서`} />
-          <Section variant="outline" gap={16} css={sectionBorder}>
+          <Section variant="outline" gap={16} css={sectionBorder} padding={'16px'}>
             {applications.map(({ recruitmentTitle, formResponseId, badge, recruitmentId }) => (
               <ApplyResumeCard
                 key={`${recruitmentId}-${formResponseId}`}

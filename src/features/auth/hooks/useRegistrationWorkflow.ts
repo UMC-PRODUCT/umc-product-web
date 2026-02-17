@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react-hook-form'
-import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
@@ -134,7 +133,6 @@ export const useRegistrationWorkflow = ({
     },
     [clearErrors, emailVerificationId, getApiErrorMessage, setError, setValue, verifyCodeMutate],
   )
-  const navigate = useNavigate()
   const handleRegisterSubmit = useCallback(
     (formData: RegisterForm, schoolId: number | undefined, termsAgreement: TermsAgreementState) => {
       setRegistrationError(null)
@@ -180,9 +178,6 @@ export const useRegistrationWorkflow = ({
             setRegistrationError(null)
             setAccessToken(tokenPayload.accessToken)
             setRefreshToken(tokenPayload.refreshToken)
-            navigate({
-              to: '/dashboard',
-            })
           },
           onError: (error) => {
             setRegistrationError(getApiErrorMessage(error, '회원가입에 실패했습니다.'))
@@ -193,7 +188,7 @@ export const useRegistrationWorkflow = ({
         },
       )
     },
-    [getApiErrorMessage, registerMutate, terms],
+    [getApiErrorMessage, registerMutate, setAccessToken, setRefreshToken, terms],
   )
 
   const emailRequestState = useMemo(

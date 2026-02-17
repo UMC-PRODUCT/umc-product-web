@@ -112,7 +112,7 @@ export const CloseButton = styled.button`
   }
 
   &:focus-visible {
-    outline: 2px solid ${theme.colors.lime};
+    outline: 1px solid ${theme.colors.lime};
     outline-offset: 2px;
     border-radius: 4px;
   }

@@ -1,21 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getActiveGisu, getMemberMe } from '@/features/auth/domain/api'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
-import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
-import type { RoleType } from '@/shared/types/umc'
 import { Flex } from '@/shared/ui/common/Flex'
 import Loading from '@/shared/ui/common/Loading/Loading'
-import {
-  getHighestPriorityRole,
-  getRolesByGisu,
-  isManagementRole,
-  isSchoolRole,
-} from '@/shared/utils/role'
 
 import { useAuthMutation } from '../hooks/useAuthMutations'
+import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
 
 type LoginCallbackParams = {
   success?: boolean
@@ -48,22 +40,12 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     }
   }, [])
 
-const resolveInitialPathByRole = (roleType?: RoleType | null) => {
-  if (!roleType) return '/dashboard'
-  if (isManagementRole(roleType)) return '/management/generation'
-  if (isSchoolRole(roleType)) return '/school/dashboard'
-  return '/dashboard'
-}
-
 export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
   const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
   const navigate = useNavigate()
-  const { setName, setNickname, setEmail, setRoles, setRoleList, setGisu } = useUserProfileStore()
   const { usePostMemberOAuth } = useAuthMutation()
   const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()
-  const { setItem: setAccessToken } = useLocalStorage('accessToken')
-  const { setItem: setRefreshToken } = useLocalStorage('refreshToken')
   const { getItem: getOAuthRedirectFrom, removeItem: removeOAuthRedirectFrom } =
     useLocalStorage('oAuthRedirectFrom')
   const { getItem: getOAuthConnectingProvider, removeItem: removeOAuthConnectingProvider } =
@@ -83,6 +65,7 @@ export const LoginRedirectPage = () => {
   })()
   const oAuthFrom = getOAuthRedirectFrom()
   const hasRequestedAddOAuthRef = useRef(false)
+  const hasAccessToken = typeof accessToken === 'string' && accessToken.length > 0
 
   useEffect(() => {
     if (hasRequestedAddOAuthRef.current) return
@@ -135,58 +118,12 @@ export const LoginRedirectPage = () => {
     getOAuthConnectingProvider,
   ])
 
-  useEffect(() => {
-    let cancelled = false
-    if (!accessToken || oAuthFrom) return
-    const loadProfile = async () => {
-      try {
-        setAccessToken(accessToken)
-        if (refreshToken) {
-          setRefreshToken(refreshToken)
-        }
-
-        const [profile, activeGisuResponse] = await Promise.all([getMemberMe(), getActiveGisu()])
-        if (cancelled) return
-
-        const activeGisuId = activeGisuResponse.result.gisuId
-        const activeGisuRoles = getRolesByGisu(profile.roles, activeGisuId)
-        const selectedRole = getHighestPriorityRole(activeGisuRoles)
-
-        setEmail(profile.email ?? '')
-        setName(profile.name ?? '')
-        setNickname(profile.nickname ?? '')
-        setRoleList(profile.roles)
-        setRoles(selectedRole)
-        if (activeGisuId) {
-          setGisu(activeGisuId)
-        }
-        const initialPath = resolveInitialPathByRole(selectedRole?.roleType ?? null)
-        navigate({ to: initialPath, replace: true })
-      } catch (error) {
-        console.error('회원 정보 조회 실패', error)
-        navigate({ to: '/dashboard', replace: true })
-      }
-    }
-
-    void loadProfile()
-
-    return () => {
-      cancelled = true
-    }
-  }, [
-    accessToken,
-    refreshToken,
-    setAccessToken,
-    setRefreshToken,
-    oAuthFrom,
-    setEmail,
-    setName,
-    setNickname,
-    setRoles,
-    setRoleList,
-    setGisu,
-    navigate,
-  ])
+  useAuthRedirectByRole({
+    enabled: hasAccessToken && !oAuthFrom,
+    accessToken: accessToken ?? undefined,
+    refreshToken: refreshToken ?? undefined,
+    persistTokens: true,
+  })
 
   return (
     <>

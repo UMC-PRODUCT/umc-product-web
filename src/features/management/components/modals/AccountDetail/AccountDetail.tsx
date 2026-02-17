@@ -42,6 +42,7 @@ const ROLE_OPTIONS: Array<{ roleType: RoleType; label: string }> = ROLE_OPTION_T
 const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () => void }) => {
   const {
     isLoading,
+    errorStatus,
     profile,
     activityHistories,
     deactivateChallenger,
@@ -54,6 +55,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
     memberId,
     onClose,
   })
+  const isNotFoundUser = errorStatus === 404
 
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
@@ -81,112 +83,131 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                 </Modal.Close>
               </Flex>
             </Modal.Header>
-            <Section variant="solid" css={{ marginTop: '32px' }}>
-              <Flex alignItems="center" justifyContent="center" gap={25}>
-                <img
-                  src={profile?.profileImageLink || DefaultProfile}
-                  alt="프로필 이미지"
-                  css={{ borderRadius: '50%', width: '100px', minWidth: '100px', height: '100px' }}
-                />
-                <Flex flexDirection="column" alignItems="flex-start">
-                  <Flex alignItems="center" gap={20}>
-                    <S.Name>
-                      {isLoading
-                        ? '불러오는 중...'
-                        : `${profile?.nickname ?? '-'} / ${profile?.name ?? '-'}`}
-                    </S.Name>
-                    <S.Status>
-                      <S.Circle />
-                      {STATUS_LABEL[profile?.status ?? '']}
-                    </S.Status>
-                  </Flex>
-                  <S.School>{profile?.schoolName ?? '-'}</S.School>
-                  <S.SubInfo>
-                    <Mail />
-                    {profile?.email ?? '-'}
-                  </S.SubInfo>
+            {isNotFoundUser ? (
+              <Section variant="solid" css={{ marginTop: '32px', flex: 1 }}>
+                <Flex alignItems="center" justifyContent="center" height="100%">
+                  <S.SubTitle>찾을 수 없는 유저입니다.</S.SubTitle>
                 </Flex>
-              </Flex>
-            </Section>
-            <Flex flexDirection="column" gap={10}>
-              <Flex flexDirection="column" gap={4}>
-                <S.Title>권한 설정</S.Title>
-                <S.SubTitle>챌린저의 권한을 선택하세요</S.SubTitle>
-              </Flex>
-              <Section variant="solid" gap={16}>
-                <S.Grid>
-                  {ROLE_OPTIONS.map((option) => (
-                    <S.RoleButton
-                      key={option.roleType}
-                      isActive={isRoleActive(option.roleType)}
-                      onClick={() => onClickRoleOption(option.roleType)}
-                    >
-                      <S.RadioChoiceInput $isChecked={isRoleActive(option.roleType)} />
-                      {option.label}
-                    </S.RoleButton>
-                  ))}
-                </S.Grid>
               </Section>
-            </Flex>
-
-            <Flex flexDirection="column" gap={10}>
-              <Flex flexDirection="column" gap={4}>
-                <S.Title>활동 이력</S.Title>
-                <S.SubTitle>기수별 참여 파트 정보를 확인할 수 있습니다.</S.SubTitle>
-              </Flex>
-              <Flex flexDirection="column" gap={8} width="100%">
-                {activityHistories.length > 0 ? (
-                  activityHistories.map((history, index) => (
-                    <Section
-                      key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
-                      variant="solid"
-                      padding="15px 40px"
-                    >
-                      <S.ActivityHistoryRow>
-                        <S.Generation
-                          isActive={history.isActive}
-                        >{`${history.gisu}기`}</S.Generation>
-                        <S.ActivityInfo isActive={history.isActive}>
-                          <span>파트</span>
-                          <span>{transformPart(history.part)}</span>
-                        </S.ActivityInfo>
-                        <S.ActivityInfo isActive={history.isActive}>
-                          <span>기간</span>
-                          <span>{history.periodText}</span>
-                        </S.ActivityInfo>
-                      </S.ActivityHistoryRow>
-                    </Section>
-                  ))
-                ) : (
-                  <Section variant="solid" flexDirection="row" padding="15px 40px">
-                    <S.ActivityInfo isActive={false}>
-                      <span>활동 이력이 없습니다.</span>
-                    </S.ActivityInfo>
+            ) : (
+              <>
+                <Section variant="solid" css={{ marginTop: '32px' }}>
+                  <Flex alignItems="center" justifyContent="center" gap={25}>
+                    <img
+                      src={profile?.profileImageLink || DefaultProfile}
+                      alt="프로필 이미지"
+                      css={{
+                        borderRadius: '50%',
+                        width: '100px',
+                        minWidth: '100px',
+                        height: '100px',
+                      }}
+                    />
+                    <Flex flexDirection="column" alignItems="flex-start">
+                      <Flex alignItems="center" gap={20}>
+                        <S.Name>
+                          {isLoading
+                            ? '불러오는 중...'
+                            : `${profile?.nickname ?? '-'} / ${profile?.name ?? '-'}`}
+                        </S.Name>
+                        <S.Status>
+                          <S.Circle />
+                          {STATUS_LABEL[profile?.status ?? '']}
+                        </S.Status>
+                      </Flex>
+                      <S.School>{profile?.schoolName ?? '-'}</S.School>
+                      <S.SubInfo>
+                        <Mail />
+                        {profile?.email ?? '-'}
+                      </S.SubInfo>
+                    </Flex>
+                  </Flex>
+                </Section>
+                <Flex flexDirection="column" gap={10}>
+                  <Flex flexDirection="column" gap={4}>
+                    <S.Title>권한 설정</S.Title>
+                    <S.SubTitle>챌린저의 권한을 선택하세요</S.SubTitle>
+                  </Flex>
+                  <Section variant="solid" gap={16}>
+                    <S.Grid>
+                      {ROLE_OPTIONS.map((option) => (
+                        <S.RoleButton
+                          key={option.roleType}
+                          isActive={isRoleActive(option.roleType)}
+                          onClick={() => onClickRoleOption(option.roleType)}
+                        >
+                          <S.RadioChoiceInput $isChecked={isRoleActive(option.roleType)} />
+                          {option.label}
+                        </S.RoleButton>
+                      ))}
+                    </S.Grid>
                   </Section>
-                )}
-              </Flex>
-            </Flex>
+                </Flex>
+
+                <Flex flexDirection="column" gap={10}>
+                  <Flex flexDirection="column" gap={4}>
+                    <S.Title>활동 이력</S.Title>
+                    <S.SubTitle>기수별 참여 파트 정보를 확인할 수 있습니다.</S.SubTitle>
+                  </Flex>
+                  <Flex flexDirection="column" gap={8} width="100%">
+                    {activityHistories.length > 0 ? (
+                      activityHistories.map((history, index) => (
+                        <Section
+                          key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
+                          variant="solid"
+                          padding="15px 40px"
+                        >
+                          <S.ActivityHistoryRow>
+                            <S.Generation
+                              isActive={history.isActive}
+                            >{`${history.gisu}기`}</S.Generation>
+                            <S.ActivityInfo isActive={history.isActive}>
+                              <span>파트</span>
+                              <span>{transformPart(history.part)}</span>
+                            </S.ActivityInfo>
+                            <S.ActivityInfo isActive={history.isActive}>
+                              <span>기간</span>
+                              <span>{history.periodText}</span>
+                            </S.ActivityInfo>
+                          </S.ActivityHistoryRow>
+                        </Section>
+                      ))
+                    ) : (
+                      <Section variant="solid" flexDirection="row" padding="15px 40px">
+                        <S.ActivityInfo isActive={false}>
+                          <span>활동 이력이 없습니다.</span>
+                        </S.ActivityInfo>
+                      </Section>
+                    )}
+                  </Flex>
+                </Flex>
+              </>
+            )}
             <Modal.Footer>
               <S.FooterWrapper>
-                <Button
-                  typo="C3.Md"
-                  tone="necessary"
-                  label="계정 비활성화"
-                  isLoading={isDeactivating}
-                  onClick={() => deactivateChallenger()}
-                />
+                {!isNotFoundUser && (
+                  <Button
+                    typo="C3.Md"
+                    tone="necessary"
+                    label="계정 비활성화"
+                    isLoading={isDeactivating}
+                    onClick={() => deactivateChallenger()}
+                  />
+                )}
                 <Flex gap={8} width={'fit-content'}>
                   <Button typo="C3.Md" tone="gray" label="닫기" onClick={onClose} />
-                  <Button
-                    type="submit"
-                    tone="lime"
-                    typo="C3.Md"
-                    variant="solid"
-                    label="상세 정보 등록"
-                    isLoading={isSavingRole}
-                    onClick={() => createChallengerRole()}
-                    css={{ width: 'fit-content', padding: '6px 18px' }}
-                  />
+                  {!isNotFoundUser && (
+                    <Button
+                      type="submit"
+                      tone="lime"
+                      typo="C3.Md"
+                      variant="solid"
+                      label="상세 정보 등록"
+                      isLoading={isSavingRole}
+                      onClick={() => createChallengerRole()}
+                      css={{ width: 'fit-content', padding: '6px 18px' }}
+                    />
+                  )}
                 </Flex>
               </S.FooterWrapper>
             </Modal.Footer>

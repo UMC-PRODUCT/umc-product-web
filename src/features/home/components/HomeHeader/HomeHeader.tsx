@@ -13,7 +13,7 @@ const HomeHeader = ({ onScrollToSection }: Props) => {
   return (
     <S.FixedHeader>
       <S.Nav>
-        <S.Logo type="button" onClick={() => onScrollToSection('top')}>
+        <S.Logo type="button" onClick={() => onScrollToSection('top')} aria-label="홈으로 이동">
           <Logo />
         </S.Logo>
         <S.NavLinks>
