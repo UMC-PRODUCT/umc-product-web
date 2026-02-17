@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { Project } from '../../domain/constants'
 import * as S from './ProjectsSection.style'
@@ -15,12 +15,28 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
   const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0 })
   const [paused, setPaused] = useState(false)
   const listWidthRef = useRef(0)
+  const isNormalizingRef = useRef(false)
+
+  const normalizeScrollPosition = useCallback((target: HTMLDivElement) => {
+    const listWidth = listWidthRef.current
+    if (listWidth <= 0 || isNormalizingRef.current) return
+
+    if (target.scrollLeft <= 0 || target.scrollLeft >= listWidth * 2) {
+      isNormalizingRef.current = true
+      while (target.scrollLeft <= 0) target.scrollLeft += listWidth
+      while (target.scrollLeft >= listWidth * 2) target.scrollLeft -= listWidth
+      isNormalizingRef.current = false
+    }
+  }, [])
 
   useEffect(() => {
     const listEl = listRef.current
-    if (!listEl) return
+    const target = scrollRef.current
+    if (!listEl || !target) return
     listWidthRef.current = listEl.scrollWidth
-  }, [projects])
+    target.scrollLeft = listEl.scrollWidth
+    normalizeScrollPosition(target)
+  }, [projects, normalizeScrollPosition])
 
   useEffect(() => {
     const target = scrollRef.current
@@ -38,18 +54,16 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
         const listWidth = listWidthRef.current
         if (listWidth > 0) {
           target.scrollLeft += (delta * speed) / 16
-          if (target.scrollLeft >= listWidth) {
-            target.scrollLeft -= listWidth
-          }
         }
       }
+      normalizeScrollPosition(target)
 
       rafId = requestAnimationFrame(tick)
     }
 
     rafId = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafId)
-  }, [paused])
+  }, [paused, normalizeScrollPosition])
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = scrollRef.current
@@ -67,20 +81,20 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
     event.preventDefault()
     const walk = event.clientX - dragState.current.startX
     target.scrollLeft = dragState.current.scrollLeft - walk
-    const listWidth = listWidthRef.current
-    if (listWidth > 0) {
-      if (target.scrollLeft >= listWidth) target.scrollLeft -= listWidth
-      if (target.scrollLeft < 0) target.scrollLeft += listWidth
-    }
+    normalizeScrollPosition(target)
   }
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = scrollRef.current
-    if (target) {
+    if (target?.hasPointerCapture(event.pointerId)) {
       target.releasePointerCapture(event.pointerId)
     }
     dragState.current.isDown = false
     setPaused(false)
+  }
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    normalizeScrollPosition(event.currentTarget)
   }
 
   return (
@@ -109,9 +123,27 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onPointerLeave={handlePointerUp}
+        onScroll={handleScroll}
       >
         <S.ProjectsScrollContainer>
+          <S.ProjectsList aria-hidden>
+            {projects.map((project) => (
+              <S.ProjectCard key={`${project.title}-pre-dup`}>
+                <S.ProjectImage>{project.emoji}</S.ProjectImage>
+                <S.ProjectContent>
+                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                  <S.ProjectTech>
+                    {project.tech.map((tech) => (
+                      <S.TechTag key={`${project.title}-${tech}-pre-dup`}>{tech}</S.TechTag>
+                    ))}
+                  </S.ProjectTech>
+                </S.ProjectContent>
+              </S.ProjectCard>
+            ))}
+          </S.ProjectsList>
           <S.ProjectsList ref={listRef}>
             {projects.map((project) => (
               <S.ProjectCard key={project.title}>
