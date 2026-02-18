@@ -8,9 +8,17 @@ type LinkInputProps = {
   label?: string
   labelTypo?: TypoToken
   inputTypo?: TypoToken
+  responsiveInputTypo?: Partial<Record<'desktop' | 'tablet' | 'mobile', TypoToken>>
 } & InputHTMLAttributes<HTMLInputElement>
 
-const LinkInput = ({ label, id, labelTypo, inputTypo, ...props }: LinkInputProps) => {
+const LinkInput = ({
+  label,
+  id,
+  labelTypo,
+  inputTypo,
+  responsiveInputTypo,
+  ...props
+}: LinkInputProps) => {
   const resolvedId = id ?? props.name ?? label
   return (
     <S.FieldGroup>
@@ -19,7 +27,14 @@ const LinkInput = ({ label, id, labelTypo, inputTypo, ...props }: LinkInputProps
           {label}
         </S.FieldLabel>
       )}
-      <S.FieldInput id={resolvedId} type="text" autoComplete="none" typo={inputTypo} {...props} />
+      <S.FieldInput
+        id={resolvedId}
+        type="text"
+        autoComplete="none"
+        typo={inputTypo}
+        responsiveTypo={responsiveInputTypo}
+        {...props}
+      />
     </S.FieldGroup>
   )
 }

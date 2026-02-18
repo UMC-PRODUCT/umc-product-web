@@ -1,26 +1,30 @@
 import styled from '@emotion/styled'
 
+import type { LinkType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import { Flex } from '@/shared/ui/common/Flex'
 
-import { Flex } from '../../common/Flex'
-
-const TitleGroup = styled.div`
+export const TitleGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
 `
 
-const Title = styled.div`
-  ${theme.typography.H3.Sb}
-  color: ${theme.colors.white}
-`
-const Subtitle = styled.div`
-  ${theme.typography.B5.Rg}
-  color: ${theme.colors.gray[400]};
+export const Title = styled.div`
+  color: ${theme.colors.white};
+  font-size: 20px;
+  ${theme.typography.H3.Sb};
 `
 
-const ModalButton = styled.button`
+export const Subtitle = styled.div`
+  margin-top: 8px;
+  white-space: pre-line;
+  color: ${theme.colors.gray[400]};
+  ${theme.typography.B5.Rg};
+`
+
+export const ModalButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -32,70 +36,93 @@ const ModalButton = styled.button`
   cursor: pointer;
 `
 
-const ContentWrapper = styled(Flex)`
-  white-space: pre-wrap;
-  word-break: keep-all;
-  color: ${(props) => props.theme.colors.white};
-`
-
-const ModalContentWrapper = styled(Flex)`
+export const ModalContentWrapper = styled(Flex)`
   flex-direction: column;
   gap: 16px;
-  background-color: ${(props) => props.theme.colors.gray[700]};
+  background-color: ${theme.colors.gray[700]};
   border-radius: 8px;
   padding: 28px 28px 30px 34px;
   min-width: 492px;
+
   ${media.down(theme.breakPoints.tablet)} {
     gap: 8px;
     margin-top: 6px;
-    padding: 28px 20px 28px 20px;
+    padding: 28px 20px;
   }
+
   ${media.down(theme.breakPoints.mobile)} {
     min-width: 90vw;
   }
 `
-const SocialItem = styled.div`
+
+export const ContentWrapper = styled(Flex)`
+  color: ${theme.colors.white};
+  overflow: hidden;
+`
+
+export const LinkCard = styled(Flex)<{ $editing: boolean }>`
+  flex-direction: column;
   width: 100%;
-  height: 52px;
-  display: flex;
-  justify-content: space-between;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: ${theme.colors.gray[800]};
+`
+
+export const LinkIconBox = styled(Flex)<{ $type: LinkType }>`
   align-items: center;
-  button {
-    width: 80px;
-    height: 36px;
+  justify-content: center;
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background-color: ${({ $type }) =>
+    $type === 'KAKAO'
+      ? theme.colors.kakao
+      : $type === 'INSTAGRAM'
+        ? 'transparent'
+        : theme.colors.white};
+
+  ${media.down(theme.breakPoints.tablet)} {
+    width: 40px;
+    max-width: 40px;
+    min-width: 40px;
+    height: 40px;
   }
 `
-const Social = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  ${theme.typography.B2.Md}
+
+export const LinkTextGroup = styled(Flex)`
+  flex: 1;
+  min-width: 0;
 `
 
-const Logo = styled.div<{ bgColor?: string }>`
-  width: 52px;
-  height: 52px;
-  background-color: ${(props) => props.bgColor || 'transparent'};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
+export const LinkTitle = styled.div`
+  color: ${theme.colors.white};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  ${theme.typography.B3.Md};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B5.Md};
+  }
 `
-const Divider = styled.div`
+
+export const LinkUrl = styled.div`
+  color: ${theme.colors.gray[400]};
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   width: 100%;
-  height: 1px;
-  background-color: ${(props) => props.theme.colors.gray[600]};
+  max-width: 264px;
 `
 
-export {
-  ContentWrapper,
-  Divider,
-  Logo,
-  ModalButton,
-  ModalContentWrapper,
-  Social,
-  SocialItem,
-  Subtitle,
-  Title,
-  TitleGroup,
-}
+export const AddCard = styled(Flex)`
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: ${theme.colors.gray[800]};
+  border: 1px solid ${theme.colors.gray[700]};
+`
