@@ -2,6 +2,7 @@ import * as Shared from '@shared/styles/shared'
 
 import type { PartType } from '@/features/auth/domain'
 import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/useRecruitingQueries'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -36,7 +37,14 @@ const DocsEvaluation = () => {
           }}
         />
       ) : (
-        <Section variant="solid" padding="18px 22px">
+        <Section
+          variant="solid"
+          css={{
+            padding: '18px 22px',
+            [media.down(theme.breakPoints.desktop)]: { padding: '12px 12px' },
+          }}
+          gap={32}
+        >
           <Flex flexDirection="column" gap={18}>
             <Flex alignItems="center" gap={18}>
               <Button

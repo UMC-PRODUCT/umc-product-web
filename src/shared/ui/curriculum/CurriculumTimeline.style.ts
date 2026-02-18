@@ -121,7 +121,6 @@ export const WeekLabel = styled.span`
   ${theme.typography.B3.Sb}
   ${media.down(theme.breakPoints.mobile)} {
     font-size: 13px;
-    min-width: fit-content;
   }
 `
 
@@ -129,6 +128,7 @@ export const ContentLabel = styled.span`
   color: ${theme.colors.white};
   padding-left: 18px;
   border-left: 1px solid ${theme.colors.gray[500]};
+  word-break: break-word;
   ${media.down(theme.breakPoints.mobile)} {
     font-size: 13px;
   }

@@ -3,6 +3,8 @@ import { useNavigate } from '@tanstack/react-router'
 
 import DeleteConfirm from '@/features/school/components/modals/DeleteConfirm/DeleteConfirm'
 import * as S from '@/features/school/components/TempRecruitmentCard/TempRecruitmentCard.style'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -54,6 +56,11 @@ const TempRecruitmentCard = ({
                 search: { source: 'temp', step: 1 },
               })
             }}
+            css={{
+              [media.down(theme.breakPoints.tablet)]: { width: '60px', ...theme.typography.C3.Md },
+              width: '65px',
+              height: '28px',
+            }}
           />
           <Button
             label="삭제"
@@ -64,6 +71,11 @@ const TempRecruitmentCard = ({
                 name: title,
               })
             }
+            css={{
+              [media.down(theme.breakPoints.tablet)]: { width: '60px', ...theme.typography.C3.Md },
+              width: '65px',
+              height: '28px',
+            }}
           />
         </Flex>
       )}

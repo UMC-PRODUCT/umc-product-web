@@ -29,6 +29,9 @@ export const PartWrapper = styled.div`
   flex-wrap: wrap;
   ${media.down(theme.breakPoints.mobile)} {
     gap: 8px;
+    flex-wrap: nowrap;
+    max-width: 80%;
+    overflow-x: scroll;
   }
 `
 export const PartBadge = styled.span`

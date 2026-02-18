@@ -1,6 +1,7 @@
 import Close from '@/shared/assets/icons/close.svg?react'
 import Mail from '@/shared/assets/icons/mail.svg?react'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { RoleType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
@@ -102,6 +103,11 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                         width: '100px',
                         minWidth: '100px',
                         height: '100px',
+                        [media.down(theme.breakPoints.tablet)]: {
+                          width: '60px',
+                          minWidth: '60px',
+                          height: '60px',
+                        },
                       }}
                     />
                     <Flex flexDirection="column" alignItems="flex-start">
@@ -156,7 +162,10 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                         <Section
                           key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
                           variant="solid"
-                          padding="15px 40px"
+                          css={{
+                            padding: '15px 40px',
+                            [media.down(theme.breakPoints.desktop)]: { padding: '12px 16px' },
+                          }}
                         >
                           <S.ActivityHistoryRow>
                             <S.Generation

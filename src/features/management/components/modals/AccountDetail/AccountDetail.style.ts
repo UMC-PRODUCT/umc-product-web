@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -7,6 +8,9 @@ export const ModalTitle = styled.h2`
   ${theme.typography.H2.Sb};
   margin: 0;
   color: ${theme.colors.white};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.H3.Sb};
+  }
 `
 export const ModalContentWrapper = styled(Flex)`
   background-color: ${theme.colors.gray[700]};
@@ -60,6 +64,12 @@ export const RoleButton = styled.button<{ isActive: boolean }>`
     background-color: ${({ isActive }) =>
       isActive ? theme.colors.lime[600] : theme.colors.gray[500]};
   }
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 6px;
+    gap: 8px;
+    ${theme.typography.C4.Rg};
+    white-space: nowrap;
+  }
 `
 
 export const RadioChoiceInput = styled.input<{
@@ -106,12 +116,18 @@ export const Name = styled.h3`
   ${theme.typography.B1.Sb};
   margin: 0;
   color: ${theme.colors.white};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B3.Md};
+  }
 `
 
 export const School = styled.p`
   ${theme.typography.C2.Rg};
   color: ${theme.colors.white};
   margin: 0;
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.C3.Md};
+  }
 `
 
 export const Status = styled.div`
@@ -125,6 +141,9 @@ export const Status = styled.div`
   color: ${theme.colors.lime};
   gap: 5px;
   ${theme.typography.C2.Rg};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.C3.Md};
+  }
 `
 
 export const Circle = styled.div`
@@ -140,6 +159,9 @@ export const Title = styled.h3`
   color: ${theme.colors.white};
   text-align: start;
   width: 100%;
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.H4.Sb};
+  }
 `
 export const SubTitle = styled.p`
   ${theme.typography.C4.Rg};
@@ -164,6 +186,10 @@ export const Generation = styled.div<{ isActive: boolean }>`
   border: ${({ isActive }) =>
     isActive ? `1px solid ${theme.colors.lime}` : `1px solid ${theme.colors.gray[400]}`};
   background-color: ${({ isActive }) => (isActive ? '#2a3a2a' : theme.colors.gray[600])};
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 4px 8px;
+    ${theme.typography.C4.Rg};
+  }
 `
 
 export const ActivityHistoryRow = styled.div`
@@ -172,6 +198,10 @@ export const ActivityHistoryRow = styled.div`
   align-items: center;
   column-gap: 24px;
   width: 100%;
+  ${media.down(theme.breakPoints.tablet)} {
+    grid-template-columns: 40px 40px minmax(140px, 1fr);
+    column-gap: 10px;
+  }
 `
 
 export const ActivityInfo = styled.div<{ isActive: boolean }>`
@@ -182,5 +212,8 @@ export const ActivityInfo = styled.div<{ isActive: boolean }>`
   flex-direction: column;
   span {
     color: ${({ isActive }) => (isActive ? theme.colors.white : theme.colors.gray[300])};
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.C4.Rg};
   }
 `

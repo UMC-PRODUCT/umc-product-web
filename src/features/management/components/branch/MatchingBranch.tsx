@@ -161,7 +161,7 @@ const MatchingBranchContent = ({
             <TabTitle>지부 매칭</TabTitle>
             <TabSubtitle>지부별 학교를 설정할 수 있습니다.</TabSubtitle>
           </Flex>
-          <Flex width={180}>{dropdown}</Flex>
+          <Flex width={140}>{dropdown}</Flex>
         </S.Header>
 
         {branches.map((branch) => (

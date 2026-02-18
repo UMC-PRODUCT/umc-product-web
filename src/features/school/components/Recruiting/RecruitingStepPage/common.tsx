@@ -10,6 +10,7 @@ export const Title = styled.div`
 export const SubTitle = styled.div`
   color: ${theme.colors.gray[400]};
   ${theme.typography.B5.Rg}
+  word-break: keep-all;
 `
 export const Button = styled.button<{ isActive: boolean }>`
   ${theme.typography.B3.Sb}
