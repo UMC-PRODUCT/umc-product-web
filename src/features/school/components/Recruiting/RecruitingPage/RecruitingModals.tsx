@@ -3,6 +3,7 @@ import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import { Modal } from '@/shared/ui/common/Modal/Modal'
 
 import CreateRecruitingConfirm from '../../modals/CreateRecruitingConfirm/CreateRecruitingConfirm'
+import PublishBlockedRecruitmentModal from '../../modals/PublishBlockedRecruitmentModal/PublishBlockedRecruitmentModal'
 import { RecruitingPreviewContent } from '../../modals/RecruitingPreview/RecruitingPreview'
 import { RecruitingPreviewSkeletonContent } from '../../modals/RecruitingPreview/RecruitingPreviewSkeleton'
 
@@ -12,6 +13,8 @@ type RecruitingModalsProps = {
   title: string
   onClosePreview: () => void
   onCloseConfirm: () => void
+  onClosePublishBlocked: () => void
+  onConfirmPublishBlocked: () => void
   onConfirmSubmit: () => void
   recruitingId: string
 }
@@ -22,6 +25,8 @@ const RecruitingModals = ({
   title,
   onClosePreview,
   onCloseConfirm,
+  onClosePublishBlocked,
+  onConfirmPublishBlocked,
   onConfirmSubmit,
   recruitingId,
 }: RecruitingModalsProps) => {
@@ -56,6 +61,12 @@ const RecruitingModals = ({
       )}
       {isOpen && modalName === 'createRecruitingConfirm' && (
         <CreateRecruitingConfirm onClose={onCloseConfirm} onSubmit={onConfirmSubmit} />
+      )}
+      {isOpen && modalName === 'publishBlockedRecruitment' && (
+        <PublishBlockedRecruitmentModal
+          onClose={onClosePublishBlocked}
+          onConfirm={onConfirmPublishBlocked}
+        />
       )}
     </>
   )

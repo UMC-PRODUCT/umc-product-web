@@ -42,6 +42,8 @@ export const RecruitingContentView = ({
   activeModal,
   closePreview,
   closeConfirmModal,
+  closePublishBlockedModal,
+  confirmPublishBlockedModal,
   handleConfirmSubmit,
   recruitmentId,
   isBackConfirmModalOpen,
@@ -107,6 +109,8 @@ export const RecruitingContentView = ({
         title={recruitingFormValues.title}
         onClosePreview={closePreview}
         onCloseConfirm={closeConfirmModal}
+        onClosePublishBlocked={closePublishBlockedModal}
+        onConfirmPublishBlocked={confirmPublishBlockedModal}
         onConfirmSubmit={handleConfirmSubmit}
         recruitingId={recruitmentId}
       />

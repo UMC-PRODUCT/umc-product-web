@@ -95,6 +95,8 @@ export const useRecruitingContentLogic = ({
     closePreview: actions.closePreview,
     openConfirmModal: actions.openConfirmModal,
     closeConfirmModal: actions.closeConfirmModal,
+    closePublishBlockedModal: actions.closePublishBlockedModal,
+    confirmPublishBlockedModal: actions.confirmPublishBlockedModal,
     handleConfirmSubmit: actions.handleConfirmSubmit,
     // 권한/로딩/모달 상태
     isEditLocked: state.isEditLocked,

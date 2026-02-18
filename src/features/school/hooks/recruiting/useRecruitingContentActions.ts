@@ -16,6 +16,13 @@ import {
 } from '../../utils/recruiting/recruitingPayload'
 import { ensureRequiredItems } from '../../utils/recruiting/requiredItems'
 
+const getErrorCode = (error: unknown): string | undefined => {
+  if (!error || typeof error !== 'object') return undefined
+  const maybeResponse = error as { response?: { data?: { code?: unknown } } }
+  const code = maybeResponse.response?.data?.code
+  return typeof code === 'string' ? code : undefined
+}
+
 type RecruitingContentActionsParams = {
   recruitingId: string
   form: UseFormReturn<RecruitingForms>
@@ -360,6 +367,10 @@ export const useRecruitingContentActions = ({
           navigate({ to: '/school/recruiting', replace: true })
         },
         onError: (error) => {
+          if (getErrorCode(error) === 'RECRUITMENT-006') {
+            setModal({ isOpen: true, modalName: 'publishBlockedRecruitment' })
+            return
+          }
           console.error('Failed to publish recruitment:', error)
         },
         onSettled: () => setIsSubmitting(false),
@@ -416,6 +427,17 @@ export const useRecruitingContentActions = ({
     [setModal],
   )
 
+  const closePublishBlockedModal = useCallback(
+    () => setModal({ isOpen: false, modalName: '' }),
+    [setModal],
+  )
+
+  const confirmPublishBlockedModal = useCallback(() => {
+    setModal({ isOpen: false, modalName: '' })
+    navigationBlocker.allowNextNavigationOnce()
+    navigate({ to: '/school/recruiting', replace: true })
+  }, [navigate, navigationBlocker, setModal])
+
   // 뒤로가기 처리 (변경사항 있을 경우 확인)
   const handleBackClick = useCallback(() => {
     if (!isDirty) {
@@ -440,6 +462,8 @@ export const useRecruitingContentActions = ({
     closePreview,
     openConfirmModal,
     closeConfirmModal,
+    closePublishBlockedModal,
+    confirmPublishBlockedModal,
     handleConfirmSubmit,
     handleBackClick,
     handleBackStay,
