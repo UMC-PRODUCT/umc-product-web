@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import type { Interpolation, Theme } from '@emotion/react'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 
@@ -23,21 +24,53 @@ const Tab = <T extends string>({
   children,
   contentCss,
 }: TabProps<T>) => {
+  const isControlled = value !== undefined
+  const [internalValue, setInternalValue] = useState<T | undefined>(defaultValue ?? tabs[0]?.value)
+  const activeValue = isControlled ? value : internalValue
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+
+  const handleTabChange = (nextValue: string) => {
+    if (!isControlled) {
+      setInternalValue(nextValue as T)
+    }
+    onValueChange?.(nextValue as T)
+  }
+
+  useEffect(() => {
+    if (!activeValue) return
+    const activeTrigger = triggerRefs.current[String(activeValue)]
+    if (!activeTrigger) return
+
+    activeTrigger.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    })
+  }, [activeValue])
+
   return (
     <TabsPrimitive.Root
-      value={value}
+      value={activeValue}
       defaultValue={defaultValue ?? tabs[0]?.value}
-      onValueChange={onValueChange as (value: string) => void}
+      onValueChange={handleTabChange}
       asChild
     >
       <S.SectionWrapper>
-        <S.StyledList>
-          {tabs.map(({ value: tabValue, label }) => (
-            <S.StyledTrigger key={tabValue} value={tabValue}>
-              {label}
-            </S.StyledTrigger>
-          ))}
-        </S.StyledList>
+        <S.ListViewport>
+          <S.StyledList>
+            {tabs.map(({ value: tabValue, label }) => (
+              <S.StyledTrigger
+                key={tabValue}
+                value={tabValue}
+                ref={(node) => {
+                  triggerRefs.current[String(tabValue)] = node
+                }}
+              >
+                {label}
+              </S.StyledTrigger>
+            ))}
+          </S.StyledList>
+        </S.ListViewport>
         <div
           css={[
             {
