@@ -35,16 +35,18 @@ const MyEvaluation = ({
     usePatchDocumentEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
   const { mutate: patchInterviewEvaluation, isPending: isInterviewPending } =
     usePatchInterviewEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
+  const documentTargetUserId = mode === 'document' ? selectedUserId : null
+  const interviewTargetUserId = mode === 'interview' ? (selectedUserId ?? '') : ''
   const {
     data: documentData,
     isLoading: isDocumentLoading,
     refetch: refetchDocument,
-  } = useGetDocumentEvaluationMyAnswer(recruitingId ?? null, selectedUserId)
+  } = useGetDocumentEvaluationMyAnswer(recruitingId ?? null, documentTargetUserId)
   const {
     data: interviewData,
     isLoading: isInterviewLoading,
     refetch: refetchInterview,
-  } = useGetInterviewEvaluationMyAnswer(recruitingId ?? '', selectedUserId ?? '')
+  } = useGetInterviewEvaluationMyAnswer(recruitingId ?? '', interviewTargetUserId)
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
 
