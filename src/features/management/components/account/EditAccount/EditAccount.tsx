@@ -215,7 +215,7 @@ const EditAccountContent = () => {
               Icon={Search}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              css={{ width: '252px', height: '54px' }}
+              css={{ width: '252px', height: '48px' }}
             />
             <Dropdown
               options={gisuOptions}

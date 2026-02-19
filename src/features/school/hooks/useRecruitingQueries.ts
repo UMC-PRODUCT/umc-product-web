@@ -35,6 +35,7 @@ import {
   getRecruitmentApplicationFormDraft,
   getRecruitmentDashboardSummary,
   getRecruitmentDraft,
+  getRecruitmentExtensionBases,
   getRecruitments,
   getRecruitmentsDocumentEvaluation,
 } from '../domain/api'
@@ -79,6 +80,13 @@ export const useGetRecruitmentsList = (status: RecruitmentStatusType) => {
   return useCustomSuspenseQuery(schoolKeys.getRecruitments({ status }), () =>
     getRecruitments({ status }),
   )
+}
+
+/** 추가 모집 생성 가능 목록(기반 데이터) 조회 */
+export const useGetRecruitmentExtensionBases = (options?: { enabled?: boolean }) => {
+  return useCustomQuery(schoolKeys.getRecruitmentExtensionBases, getRecruitmentExtensionBases, {
+    enabled: options?.enabled,
+  })
 }
 
 /** 서류 평가 가능한 모집 목록 조회 */

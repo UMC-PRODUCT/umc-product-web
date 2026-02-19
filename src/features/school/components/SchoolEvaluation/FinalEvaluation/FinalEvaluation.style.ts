@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
@@ -112,6 +113,10 @@ export const BottomBar = styled(Section)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${media.down(theme.breakPoints.tablet)} {
+    flex-direction: column;
+    gap: 12px;
+  }
 `
 
 export const CountBadge = styled.span`

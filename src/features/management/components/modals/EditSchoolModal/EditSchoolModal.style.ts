@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 
@@ -7,6 +8,9 @@ export const ModalTitle = styled.h2`
   ${theme.typography.H2.Sb};
   margin: 0;
   color: ${theme.colors.white};
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.H3.Sb};
+  }
 `
 export const ModalContentWrapper = styled(Flex)`
   background-color: ${theme.colors.gray[700]};

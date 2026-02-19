@@ -171,7 +171,7 @@ export const transformUserRecruitmentBadgeToKorean = (input: UserApplicationBadg
   const mapping: { [key: string]: string } = {
     DRAFT: '임시 저장',
     SUBMITTED: '제출 완료',
-    PREVIOUS: '지난 모집',
+    PAST: '지난 모집',
   }
 
   return mapping[input] || input

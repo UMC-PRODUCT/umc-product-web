@@ -29,6 +29,7 @@ import type {
   GetInterviewSlotsResponseDTO,
   GetRecruitmentDashboardResponseDTO,
   GetRecruitmentDraftResponseDTO,
+  GetRecruitmentExtensionBasesResponseDTO,
   GetRecruitmentNoticesResponseDTO,
   GetRecruitmentsDocumentEvaluationResponseDTO,
   GetRecruitmentsRequestDTO,
@@ -55,6 +56,8 @@ import type {
   PostInterviewLiveQuestionRequestDTO,
   PostInterviewQuestionRequestDTO,
   PostRecruitmentCreateResponseDTO,
+  PostRecruitmentExtensionRequestDTO,
+  PostRecruitmentExtensionResponseDTO,
   PostRecruitmentPublishRequestDTO,
 } from './model'
 
@@ -63,6 +66,18 @@ export const postRecruitmentCreate = async (): Promise<
   CommonResponseDTO<PostRecruitmentCreateResponseDTO>
 > => {
   const { data } = await axiosInstance.post('/recruitments')
+  return data
+}
+
+/** POST /recruitments/{recruitmentId}/extensions - 추가 모집 최초 생성 */
+export const postRecruitmentExtension = async (
+  recruitmentId: string,
+  requestBody: PostRecruitmentExtensionRequestDTO,
+): Promise<CommonResponseDTO<PostRecruitmentExtensionResponseDTO>> => {
+  const { data } = await axiosInstance.post(
+    `/recruitments/${recruitmentId}/extensions`,
+    requestBody,
+  )
   return data
 }
 
@@ -100,6 +115,14 @@ export const getRecruitments = async (
   const { data } = await axiosInstance.get(`/recruitments`, {
     params,
   })
+  return data
+}
+
+/** GET /recruitments/extension-bases - 추가 모집 생성 가능 목록(기반 데이터) 조회 */
+export const getRecruitmentExtensionBases = async (): Promise<
+  CommonResponseDTO<GetRecruitmentExtensionBasesResponseDTO>
+> => {
+  const { data } = await axiosInstance.get('/recruitments/extension-bases')
   return data
 }
 

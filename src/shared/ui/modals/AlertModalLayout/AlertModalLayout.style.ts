@@ -20,14 +20,18 @@ const ModalButton = styled.button`
 const ContentWrapper = styled(Flex)`
   padding-left: 14px;
   border-left: 4px solid ${(props) => props.theme.colors.white};
-  white-space: pre-wrap;
+  white-space: pre-line;
   word-break: keep-all;
+  max-height: fit-content;
+  margin-top: 4px;
   color: ${(props) => props.theme.colors.white};
-  ${(props) => props.theme.typography.B3.Md}
+  ${(props) => props.theme.typography.B3.Md};
+  line-height: 1.7;
   ${media.down(theme.breakPoints.tablet)} {
     padding-left: 10px;
     border-left: 3px solid ${(props) => props.theme.colors.white};
-    ${(props) => props.theme.typography.B4.Md}
+    ${(props) => props.theme.typography.B4.Md};
+    line-height: 1.65;
   }
 `
 
@@ -38,6 +42,7 @@ const ModalContentWrapper = styled(Flex)`
   border-radius: 8px;
   padding: 28px 28px 30px 34px;
   min-width: 492px;
+  max-width: 90vw;
   ${media.down(theme.breakPoints.tablet)} {
     gap: 8px;
     margin-top: 6px;

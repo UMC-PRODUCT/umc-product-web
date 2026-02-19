@@ -20,7 +20,7 @@ const TermContent = () => {
     <Flex flexDirection="column" alignItems="flex-start">
       <TabTitle>약관 관리</TabTitle>
       <TabSubtitle>서비스 약관을 수정할 수 있습니다.</TabSubtitle>
-      <Flex flexDirection="column" margin={'30px 0 0 0 '} gap={30}>
+      <Flex flexDirection="column" margin={'30px 0 0 0 '} gap={20}>
         <S.TermCard>
           <Flex gap={20}>
             <S.Logo>

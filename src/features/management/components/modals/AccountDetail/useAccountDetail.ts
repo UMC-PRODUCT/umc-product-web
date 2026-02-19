@@ -191,6 +191,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
     isLoading,
     errorStatus,
     profile,
+    activeGisu: activeGisu?.result.gisu,
     activeChallengerRecord,
     activityHistories,
     activeGisuRoles,

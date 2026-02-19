@@ -21,6 +21,7 @@ import {
   postInterviewLiveQuestion,
   postInterviewQuestion,
   postRecruitmentCreate,
+  postRecruitmentExtension,
   postRecruitmentPublish,
 } from '../domain/api'
 import type {
@@ -33,6 +34,7 @@ import type {
   PatchRecruitmentDraftRequestDTO,
   PostInterviewLiveQuestionRequestDTO,
   PostInterviewQuestionRequestDTO,
+  PostRecruitmentExtensionRequestDTO,
   PostRecruitmentPublishRequestDTO,
   RecruitmentEditable,
 } from '../domain/model'
@@ -41,6 +43,12 @@ export function useRecruitingMutation() {
   // 모집 생성
   function usePostRecruitmentCreate() {
     return useCustomMutation(postRecruitmentCreate)
+  }
+  // 추가 모집 최초 생성
+  function usePostRecruitmentExtension(recruitmentId: string) {
+    return useCustomMutation((requestBody: PostRecruitmentExtensionRequestDTO) =>
+      postRecruitmentExtension(recruitmentId, requestBody),
+    )
   }
   // 모집 임시저장
   function usePatchRecruitmentDraft(recruitingId: string) {
@@ -242,6 +250,7 @@ export function useRecruitingMutation() {
 
   return {
     usePostRecruitmentCreate,
+    usePostRecruitmentExtension,
     usePatchRecruitmentDraft,
     usePatchRecruitmentApplicationFormDraft,
     useDeleteRecruitment,

@@ -24,8 +24,10 @@ export const TriggerButton = styled.button({
 export const TriggerIcon = styled(Icon)({
   borderRadius: '100%',
   width: 40,
+  minWidth: 40,
   [media.down(theme.breakPoints.tablet)]: {
     width: 19,
+    minWidth: 19,
   },
 })
 
@@ -33,10 +35,12 @@ export const TriggerImage = styled.img({
   borderRadius: '100%',
   width: 40,
   height: 40,
+  minWidth: 40,
   objectFit: 'cover',
   [media.down(theme.breakPoints.tablet)]: {
     width: 19,
     height: 19,
+    minWidth: 19,
   },
 })
 

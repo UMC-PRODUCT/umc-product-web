@@ -8,6 +8,7 @@ type RecruitingContextValue = {
   recruitmentForm: UseFormReturn<RecruitingForms>
   recruitingFormValues: RecruitingForms
   initialRecruitmentSchedule: RecruitingForms['schedule'] | null
+  extensionAllowedParts: Array<RecruitingForms['recruitmentParts'][number]>
   currentStep: number
   setCurrentStep: (nextStep: number) => void
   applicationPageNumber: number
@@ -18,6 +19,8 @@ type RecruitingContextValue = {
   setQuestionPartCompletionMap: (
     next: Partial<Record<RecruitingForms['recruitmentParts'][number], boolean>>,
   ) => void
+  isExtensionMode: boolean
+  isExtensionBaseMode: boolean
 }
 
 const RecruitingContext = createContext<RecruitingContextValue | null>(null)

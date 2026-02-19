@@ -30,6 +30,7 @@ const Step2 = ({
   clearErrors,
   initialSchedule,
   status,
+  isExtensionMode = false,
 }: {
   control: Control<RecruitingForms>
   setValue: UseFormSetValue<RecruitingForms>
@@ -37,6 +38,7 @@ const Step2 = ({
   clearErrors: UseFormClearErrors<RecruitingForms>
   initialSchedule: RecruitingSchedule | null
   status: RecruitingForms['status']
+  isExtensionMode?: boolean
 }) => {
   const applyStartAt = useWatch({ control, name: 'schedule.applyStartAt' })
   const applyEndAt = useWatch({ control, name: 'schedule.applyEndAt' })
@@ -99,7 +101,7 @@ const Step2 = ({
 
   const canEdit = useMemo(() => {
     if (status === 'DRAFT') {
-      return {
+      const draftEditable = {
         applyStartAt: true,
         applyEndAt: true,
         docResultAt: true,
@@ -107,6 +109,16 @@ const Step2 = ({
         interviewEndAt: true,
         interviewTimeTable: true,
         finalResultAt: true,
+      }
+      if (!isExtensionMode) return draftEditable
+      // 추가모집(isRoot=false) 제약:
+      // 면접 기간/타임테이블/최종발표일은 기존 모집 기준으로 고정
+      return {
+        ...draftEditable,
+        interviewStartAt: false,
+        interviewEndAt: false,
+        interviewTimeTable: false,
+        finalResultAt: false,
       }
     }
     const prev = initialSchedule
@@ -136,7 +148,7 @@ const Step2 = ({
       interviewTimeTable: !docResultPast,
       finalResultAt: !interviewEnded && !finalResultPast,
     }
-  }, [initialSchedule, now, status])
+  }, [initialSchedule, isExtensionMode, now, status])
 
   const interviewDates = useMemo(() => {
     if (!interviewStartAt || !interviewEndAt) return []
@@ -614,7 +626,10 @@ const Step2 = ({
                       }}
                       mode={canEdit.interviewTimeTable ? 'edit' : 'view'}
                       selectedColorMode={
-                        status === 'PUBLISHED' && !canEdit.interviewTimeTable ? 'gray' : 'lime'
+                        // 추가모집이거나(제약 모드) 게시 모집에서 타임테이블 잠금인 경우 회색 강조
+                        isExtensionMode || (status === 'PUBLISHED' && !canEdit.interviewTimeTable)
+                          ? 'gray'
+                          : 'lime'
                       }
                       disabledSlots={[]}
                     />

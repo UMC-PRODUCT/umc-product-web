@@ -228,6 +228,9 @@ export const ExternalLinkWrapper = styled.div`
   background-color: ${theme.colors.black};
   border: 2px dashed ${theme.colors.gray[600]};
   padding: 13px 22px;
+  ${media.down(theme.breakPoints.tablet)} {
+    padding: 12px;
+  }
 `
 
 export const LinkPreviewList = styled.div`
@@ -288,6 +291,14 @@ export const AddLink = styled.button`
   svg {
     width: 12px;
     height: 12px;
+  }
+  .description {
+    ${theme.typography.C5.Rg}
+    color: ${theme.colors.gray[500]};
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    height: 100px;
+    ${theme.typography.B5.Rg}
   }
   .description {
     ${theme.typography.C5.Rg}

@@ -43,6 +43,7 @@ const DetailView = ({
   recruitmentId: string
   selectedUser: {
     id: string
+    canSubmitInterview: boolean
   }
   onBack: () => void
 }) => {

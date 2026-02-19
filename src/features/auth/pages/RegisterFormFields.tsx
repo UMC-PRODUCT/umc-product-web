@@ -13,6 +13,7 @@ type FieldButtonConfig = {
   onClick: () => void
   isLoading: boolean
   completed: boolean
+  disabled?: boolean
 }
 
 type RegisterFormFieldsProps = {
@@ -102,6 +103,7 @@ export const RegisterFormFields = ({
           buttonClick: emailButton.onClick,
           validation: emailButton.completed,
           isLoading: emailButton.isLoading,
+          disabled: emailButton.disabled,
         }}
         value={formFieldValues.email}
         {...register('email')}
@@ -121,6 +123,7 @@ export const RegisterFormFields = ({
           buttonClick: verificationButton.onClick,
           validation: verificationButton.completed,
           isLoading: verificationButton.isLoading,
+          disabled: verificationButton.disabled,
         }}
         value={formFieldValues.emailVerificationCode}
         {...register('emailVerificationCode')}

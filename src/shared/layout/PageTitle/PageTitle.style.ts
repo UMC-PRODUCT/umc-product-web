@@ -6,6 +6,7 @@ import { theme } from '@/shared/styles/theme'
 export const Title = styled.div`
   align-self: flex-start;
   color: ${theme.colors.white};
+  white-space: nowrap;
   ${theme.typography.H1.Sb};
   ${media.down(theme.breakPoints.tablet)} {
     ${theme.typography.H3.Sb};

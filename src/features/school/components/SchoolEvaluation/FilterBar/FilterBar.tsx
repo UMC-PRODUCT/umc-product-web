@@ -28,9 +28,9 @@ const FilterBarWrapper = styled(Section)`
   border-radius: 6px;
   height: fit-content;
   color: ${theme.colors.gray[400]};
-  .left {
+  /* .left {
     width: 100%;
-  }
+  } */
   .left,
   .right {
     display: flex;
