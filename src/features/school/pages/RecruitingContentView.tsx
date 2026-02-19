@@ -43,6 +43,7 @@ export const RecruitingContentView = ({
   closePreview,
   closeConfirmModal,
   closePublishBlockedModal,
+  closeSubmitErrorModal,
   confirmPublishBlockedModal,
   handleConfirmSubmit,
   recruitmentId,
@@ -106,10 +107,12 @@ export const RecruitingContentView = ({
       <RecruitingModals
         isOpen={activeModal.isOpen}
         modalName={activeModal.modalName}
+        submitErrorMessage={activeModal.message}
         title={recruitingFormValues.title}
         onClosePreview={closePreview}
         onCloseConfirm={closeConfirmModal}
         onClosePublishBlocked={closePublishBlockedModal}
+        onCloseSubmitError={closeSubmitErrorModal}
         onConfirmPublishBlocked={confirmPublishBlockedModal}
         onConfirmSubmit={handleConfirmSubmit}
         recruitingId={recruitmentId}
