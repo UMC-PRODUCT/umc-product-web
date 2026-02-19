@@ -11,7 +11,7 @@ export type Curriculum = {
 }
 
 export type Project = {
-  emoji: string
+  image: string
   title: string
   description: string
   tech: Array<string>
@@ -41,123 +41,6 @@ export type Sponsor = {
 }
 
 export const heroText = 'BREAK THE RULES!'
-
-export const projectsData: Record<string, Array<Project>> = {
-  '7': [
-    {
-      emoji: '📱',
-      title: '운동 메이트 매칭',
-      description: '위치 기반 운동 메이트를 찾고 함께 운동 계획을 세울 수 있는 소셜 플랫폼',
-      tech: ['React', 'Spring Boot', 'MySQL'],
-    },
-    {
-      emoji: '🍽️',
-      title: '대학가 맛집 공유',
-      description: '학생들이 맛집을 추천하고 리뷰를 공유하는 커뮤니티 서비스',
-      tech: ['iOS', 'Node.js', 'MongoDB'],
-    },
-    {
-      emoji: '📚',
-      title: '스터디 그룹 관리',
-      description: '스터디 그룹의 일정, 과제, 자료를 체계적으로 관리하는 협업 도구',
-      tech: ['Android', 'Spring', 'AWS'],
-    },
-    {
-      emoji: '🎵',
-      title: '음악 취향 소셜',
-      description: '음악 취향이 비슷한 사람들을 연결하는 소셜 네트워크',
-      tech: ['React', 'Node.js', 'PostgreSQL'],
-    },
-    {
-      emoji: '🛒',
-      title: '중고 장터 플랫폼',
-      description: '대학 커뮤니티 기반 안전한 중고 거래 마켓플레이스',
-      tech: ['iOS', 'Spring', 'Redis'],
-    },
-    {
-      emoji: '🏃',
-      title: '러닝 크루 매칭',
-      description: '러닝 크루 매칭 및 기록 관리 애플리케이션',
-      tech: ['Android', 'Node.js', 'Docker'],
-    },
-  ],
-  '8': [
-    {
-      emoji: '🎨',
-      title: '포트폴리오 빌더',
-      description: '디자이너와 개발자를 위한 포트폴리오 제작 플랫폼',
-      tech: ['React', 'Spring Boot', 'AWS'],
-    },
-    {
-      emoji: '📖',
-      title: '독서 커뮤니티',
-      description: '독서 기록과 책 추천을 공유하는 독서 모임 서비스',
-      tech: ['iOS', 'Node.js', 'MongoDB'],
-    },
-    {
-      emoji: '🎯',
-      title: '목표 달성 챌린지',
-      description: '친구들과 함께 목표를 설정하고 달성하는 챌린지 앱',
-      tech: ['Android', 'Spring', 'MySQL'],
-    },
-    {
-      emoji: '🏠',
-      title: '원룸 매칭 서비스',
-      description: '대학생들을 위한 원룸 룸메이트 매칭 플랫폼',
-      tech: ['React', 'Node.js', 'PostgreSQL'],
-    },
-    {
-      emoji: '🎬',
-      title: '영화 추천 플랫폼',
-      description: 'AI 기반 개인화된 영화 추천 서비스',
-      tech: ['React', 'Spring Boot', 'Redis'],
-    },
-    {
-      emoji: '🌱',
-      title: '식물 케어 도우미',
-      description: '식물 관리 일정과 팁을 제공하는 가드닝 앱',
-      tech: ['iOS', 'Node.js', 'MongoDB'],
-    },
-  ],
-  '9': [
-    {
-      emoji: '💼',
-      title: '취업 준비 플랫폼',
-      description: '취업 준비생들을 위한 스터디 및 정보 공유 커뮤니티',
-      tech: ['React', 'Spring Boot', 'MySQL'],
-    },
-    {
-      emoji: '🎤',
-      title: '노래방 예약 서비스',
-      description: '실시간 노래방 예약 및 할인 정보 제공 플랫폼',
-      tech: ['Android', 'Node.js', 'Redis'],
-    },
-    {
-      emoji: '🍜',
-      title: '레시피 공유 앱',
-      description: '사용자들이 레시피를 공유하고 평가하는 요리 커뮤니티',
-      tech: ['iOS', 'Spring', 'AWS'],
-    },
-    {
-      emoji: '🚗',
-      title: '카풀 매칭 서비스',
-      description: '대학생들을 위한 안전한 카풀 매칭 플랫폼',
-      tech: ['React', 'Node.js', 'MongoDB'],
-    },
-    {
-      emoji: '📷',
-      title: '사진 공유 SNS',
-      description: '일상의 순간을 공유하는 소셜 네트워크 서비스',
-      tech: ['iOS', 'Spring Boot', 'PostgreSQL'],
-    },
-    {
-      emoji: '🎓',
-      title: '과외 매칭 플랫폼',
-      description: '학생과 선생님을 연결하는 과외 매칭 서비스',
-      tech: ['Android', 'Node.js', 'MySQL'],
-    },
-  ],
-}
 
 export const stats: Array<Stat> = [
   { value: 6000, label: '누적 활동 회원 수', delay: 0.1 },
