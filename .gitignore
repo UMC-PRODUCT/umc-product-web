@@ -33,3 +33,4 @@ coverage
 .serena
 openapi.yaml
 type.d.ts
+.playwright-cli

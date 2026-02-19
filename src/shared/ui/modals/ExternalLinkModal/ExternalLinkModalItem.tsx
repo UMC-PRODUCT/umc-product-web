@@ -80,7 +80,9 @@ const ExternalLinkModalItem = ({
       ) : (
         <Flex alignItems="center" justifyContent="space-between" width="100%" gap="12px">
           <Flex gap="12px" alignItems="center" css={{ flex: 1, minWidth: 0 }}>
-            <S.LinkIconBox $type={link.type}>{icon}</S.LinkIconBox>
+            <S.LinkIconBox width={'fit-content'} $type={link.type}>
+              {icon}
+            </S.LinkIconBox>
             <S.LinkTextGroup flexDirection="column" alignItems="flex-start">
               <S.LinkTitle>{link.title}</S.LinkTitle>
               <S.LinkUrl>{link.url}</S.LinkUrl>
