@@ -1,6 +1,6 @@
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
-import type { PartType } from '@/shared/types/umc'
+import type { PartType } from '@/shared/types/part'
 
 import {
   getAvailableInterviewParts,

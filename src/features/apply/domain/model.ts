@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
+import type { DocumentStatusType, FinalStatusType } from '@/shared/types/apply'
 import type { OptionAnswerValue, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/part'
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/shared/types/recruiting'
@@ -16,10 +17,7 @@ import type { FILE_UPLOAD_STATUS, QUESTION_TYPE_CONFIG } from './constants'
 // 질문 관련 타입
 // ============================================
 
-/** 문서 평가 상태 */
-export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASS' | 'FAIL'
-/** 최종 평가 상태 */
-export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE' | 'NONE'
+export type { DocumentStatusType, FinalStatusType }
 
 /** 설정한 QUESTION_TYPE_CONFIG의 키를 기반으로 하는 질문 유형 */
 export type QuestionType = keyof typeof QUESTION_TYPE_CONFIG
