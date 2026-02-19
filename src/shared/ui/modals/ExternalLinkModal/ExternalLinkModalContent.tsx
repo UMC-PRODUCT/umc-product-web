@@ -20,8 +20,8 @@ import LinkDropdown from '@/shared/ui/form/LinkDropdown/LinkDropdown'
 import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 
 import { Button } from '../../common/Button'
+import * as S from './ExternalLinkModal.style'
 import ExternalLinkModalItem from './ExternalLinkModalItem'
-import * as S from './index.style'
 
 type LocalExternalLink = ExternalLink & { id: string }
 

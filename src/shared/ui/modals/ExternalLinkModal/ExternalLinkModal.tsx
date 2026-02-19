@@ -3,8 +3,8 @@ import { theme } from '@/shared/styles/theme'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 
+import * as S from './ExternalLinkModal.style'
 import ExternalLinkModalContent from './ExternalLinkModalContent'
-import * as S from './index.style'
 
 type ExternalLinkModalProps = {
   onClose: () => void

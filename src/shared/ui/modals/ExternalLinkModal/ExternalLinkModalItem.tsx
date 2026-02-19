@@ -11,7 +11,7 @@ import Flex from '@/shared/ui/common/Flex/Flex'
 import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 
 import { Button } from '../../common/Button'
-import * as S from './index.style'
+import * as S from './ExternalLinkModal.style'
 
 type LocalExternalLink = ExternalLink & { id: string }
 
