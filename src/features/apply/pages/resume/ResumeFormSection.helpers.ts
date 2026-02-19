@@ -1,6 +1,5 @@
-import type { PartType } from '@features/auth/domain'
-
 import type { FormQuestion } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import type { QuestionAnswerValue } from '../../domain/model'
 

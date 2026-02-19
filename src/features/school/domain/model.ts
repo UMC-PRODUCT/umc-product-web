@@ -3,19 +3,22 @@
  * 학교 대시보드, 지원/평가 현황 관련 타입
  */
 
-import type { PartType } from '@features/auth/domain'
-import type { EvaluationDocumentType, EvaluationFinalType } from '@features/management/domain'
-
-import type { FinalStatusType } from '@/features/apply/domain'
 import type {
   CommonPagingResponseDTO,
   CommonResponseDTO,
   CommonSearchParams,
 } from '@/shared/types/api'
+import type { FinalStatusType } from '@/shared/types/apply'
 import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
+import type { EvaluationDocumentType, EvaluationFinalType } from '@/shared/types/management'
+import type { PartType } from '@/shared/types/part'
+import type { ApplicationFormPayload, Phase, RecruitingDraft } from '@/shared/types/recruiting'
+import type {
+  DocumentEvaluationAnswer,
+  DocumentEvaluationQuestion,
+  GetDocumentEvaluationApplicationResponseDTO,
+} from '@/shared/types/school'
 import type { EvaluationStatusType, SelectionsSortType } from '@/shared/types/umc'
-
-import type { ApplicationFormPayload, Phase, RecruitingDraft } from './types'
 
 // ============================================
 // Shared building blocks
@@ -226,50 +229,10 @@ export type RecruitmentEditable = {
 
 export type RecruitmentApplicationFormResponseDTO = RecruitmentApplicationForm
 
-type DocumentEvaluationQuestionOption = {
-  optionId: string
-  content: string
-  isOther: boolean
-}
-
-export type DocumentEvaluationAnswer = {
-  answeredAsType: string
-  displayText: string | null
-  rawValue: Record<string, unknown>
-}
-
-export type DocumentEvaluationQuestion = {
-  questionId: string
-  orderNo: string
-  type:
-    | 'PREFERRED_PART'
-    | 'SCHEDULE'
-    | 'LONG_TEXT'
-    | 'SHORT_TEXT'
-    | 'RADIO'
-    | 'CHECKBOX'
-    | 'PORTFOLIO'
-    | 'DROPDOWN'
-  questionText: string
-  required: boolean
-  options: Array<DocumentEvaluationQuestionOption>
-  answer: DocumentEvaluationAnswer | null
-}
-
-type DocumentEvaluationFormPage = {
-  pageNo: string
-  questions: Array<DocumentEvaluationQuestion>
-  partQuestions: Array<{
-    part: string
-    questions: Array<DocumentEvaluationQuestion>
-  }>
-}
-
-export type GetDocumentEvaluationApplicationResponseDTO = {
-  applicationId: string
-  status: string
-  applicant: ApplicantMember
-  formPages: Array<DocumentEvaluationFormPage>
+export type {
+  DocumentEvaluationAnswer,
+  DocumentEvaluationQuestion,
+  GetDocumentEvaluationApplicationResponseDTO,
 }
 
 export type GetDocumentEvaluationAnswersResponseDTO = {

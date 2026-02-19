@@ -32,8 +32,9 @@ const defaultRecruitingSchedule: RecruitingSchedule = {
 
 const toDateOnly = (value: string | null) =>
   value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
-// TODO: 추후 API 수정시 삭제
-const toDateLast = (value: string | null) =>
+// NOTE: 백엔드가 종료일을 당일 포함으로 처리하지 않아 현재는 23:59:59로 보정한다.
+// API가 종료일 inclusive semantics(또는 date-only)을 직접 지원하면 이 함수는 제거 가능하다.
+const toLegacyInclusiveEndOfDay = (value: string | null) =>
   value ? dayjs(value).format('YYYY-MM-DDT23:59:59+09:00') : null
 
 const timeToMinutes = (time: string) => {
@@ -73,11 +74,11 @@ export const buildSchedulePayload = (
   schedule: RecruitingForms['schedule'],
 ): PatchRecruitmentDraftRequestDTO['schedule'] => ({
   applyStartAt: toDateOnly(schedule.applyStartAt),
-  applyEndAt: toDateLast(schedule.applyEndAt),
+  applyEndAt: toLegacyInclusiveEndOfDay(schedule.applyEndAt),
   docResultAt: toDateOnly(schedule.docResultAt),
   interviewStartAt: toDateOnly(schedule.interviewStartAt),
-  interviewEndAt: toDateLast(schedule.interviewEndAt),
-  finalResultAt: toDateLast(schedule.finalResultAt),
+  interviewEndAt: toLegacyInclusiveEndOfDay(schedule.interviewEndAt),
+  finalResultAt: toLegacyInclusiveEndOfDay(schedule.finalResultAt),
   interviewTimeTable: {
     dateRange: {
       start: schedule.interviewTimeTable.dateRange.start,

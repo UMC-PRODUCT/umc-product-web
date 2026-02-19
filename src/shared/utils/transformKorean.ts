@@ -1,6 +1,6 @@
-import type { PartType } from '@/features/auth/domain'
 import type { RECRUITING_SCHEDULE_TYPE, UserApplicationBadgeType } from '@/shared/constants/umc'
 import type { QuestionType } from '@/shared/types/apply'
+import type { PartType } from '@/shared/types/part'
 
 import { PART_TYPE_TO_SMALL_PART } from '../constants/part'
 import type { PartSmallType } from '../types/part'

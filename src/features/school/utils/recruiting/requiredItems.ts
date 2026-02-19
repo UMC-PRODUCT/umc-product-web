@@ -1,5 +1,5 @@
-import type { PartType } from '@/features/auth/domain'
 import type { RecruitingItem } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 const PREFERRED_PART_TEXT = '희망하는 파트를 선택해 주세요.'
 const SCHEDULE_TEXT = '면접 가능한 시간을 선택해 주세요.'

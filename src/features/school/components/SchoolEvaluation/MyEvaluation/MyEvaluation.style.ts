@@ -122,21 +122,6 @@ export const DateText = styled.span`
   color: ${theme.colors.gray[400]};
 `
 
-export const SubmitButton = styled.button`
-  background-color: #b0f248;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-  &:hover {
-    background-color: #9cdb3d;
-  }
-`
-
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;

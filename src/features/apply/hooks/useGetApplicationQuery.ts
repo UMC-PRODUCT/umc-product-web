@@ -1,9 +1,9 @@
 import { getDocumentEvaluationApplicationDetail } from '@/features/school/domain/api'
-import type { GetDocumentEvaluationApplicationResponseDTO } from '@/features/school/domain/model'
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { applyKeys, schoolKeys } from '@/shared/queryKeys'
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
+import type { GetDocumentEvaluationApplicationResponseDTO } from '@/shared/types/school'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
 import {

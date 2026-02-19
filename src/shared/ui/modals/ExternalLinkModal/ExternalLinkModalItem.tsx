@@ -2,11 +2,11 @@ import type { ChangeEvent, ReactNode } from 'react'
 
 import Cancle from '@shared/assets/icons/close.svg?react'
 
-import type { ExternalLink } from '@/features/auth/domain/types'
 import Edit from '@/shared/assets/icons/edit.svg?react'
 import type { LinkType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { ExternalLink } from '@/shared/types/link'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 
@@ -80,7 +80,9 @@ const ExternalLinkModalItem = ({
       ) : (
         <Flex alignItems="center" justifyContent="space-between" width="100%" gap="12px">
           <Flex gap="12px" alignItems="center" css={{ flex: 1, minWidth: 0 }}>
-            <S.LinkIconBox $type={link.type}>{icon}</S.LinkIconBox>
+            <S.LinkIconBox width={'fit-content'} $type={link.type}>
+              {icon}
+            </S.LinkIconBox>
             <S.LinkTextGroup flexDirection="column" alignItems="flex-start">
               <S.LinkTitle>{link.title}</S.LinkTitle>
               <S.LinkUrl>{link.url}</S.LinkUrl>

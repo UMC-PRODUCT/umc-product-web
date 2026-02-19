@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 
-import type { PartType } from '@/features/auth/domain'
 import {
   useGetInterviewAssignments,
   useGetInterviewEvaluationOptions,
 } from '@/features/school/hooks/useRecruitingQueries'
+import type { PartType } from '@/shared/types/part'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
 import FilterBar from '../../FilterBar/FilterBar'

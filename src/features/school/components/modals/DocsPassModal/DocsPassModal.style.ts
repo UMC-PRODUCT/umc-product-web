@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import { Button } from '@/shared/ui/common/Button'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
@@ -90,22 +89,6 @@ export const Table = styled.table`
     color: ${theme.colors.lime};
     ${theme.typography.B3.Sb};
   }
-`
-
-export const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`
-
-export const TagGroup = styled.div`
-  display: flex;
-  gap: 4px;
-`
-
-export const ActionButton = styled(Button)`
-  width: 76px;
-  height: 28px;
 `
 
 export const BottomBar = styled(Section)`

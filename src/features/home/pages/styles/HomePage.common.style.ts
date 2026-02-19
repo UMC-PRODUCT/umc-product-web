@@ -117,33 +117,3 @@ export const FullWidthSection = styled.section`
 export const FullWidthHeader = styled(SectionHeader)`
   ${homeResponsiveSpace('padding: 0 60px;', 'padding: 0 32px;', 'padding: 0 20px;')}
 `
-
-export const ScrollWrapper = styled.div<{ $paused?: boolean }>`
-  position: relative;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 20px 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  cursor: ${({ $paused }) => ($paused ? 'grab' : 'auto')};
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  &:active {
-    cursor: ${({ $paused }) => ($paused ? 'grabbing' : 'auto')};
-  }
-`
-
-export const Reveal = styled.div`
-  opacity: 0;
-  animation: ${fadeInUp} 0.8s forwards;
-`
-
-export const RevealDelay = styled.div<{ $delay?: number }>`
-  opacity: 0;
-  animation: ${fadeInUp} 0.8s forwards;
-  animation-delay: ${({ $delay }) => ($delay ? `${$delay}s` : '0s')};
-`

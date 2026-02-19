@@ -1,9 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 
-import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { theme } from '@/shared/styles/theme'
+import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 

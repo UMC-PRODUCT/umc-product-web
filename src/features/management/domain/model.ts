@@ -3,18 +3,17 @@
  * 학교, 리크루팅 관리 관련 타입
  */
 
-import type { PartType } from '@/features/auth/domain'
-import type { LinkType } from '@/shared/constants/umc'
 import type { RoleType } from '@/shared/types'
 import type { CommonPagingResponseDTO, CommonSearchParams } from '@/shared/types/api'
-
+import type { ExternalLink } from '@/shared/types/link'
 import type {
-  EVALUATION_DOCUMENT_CONFIG,
-  EVALUATION_FINAL_CONFIG,
-  MANAGE_SCHOOL_TABS,
-  RECRUITING_STATE_CONFIG,
-  SCHOOL_STATE_CONFIG,
-} from './constants'
+  EvaluationDocumentType,
+  EvaluationFinalType,
+  Workbook,
+} from '@/shared/types/management'
+import type { PartType } from '@/shared/types/part'
+
+import type { MANAGE_SCHOOL_TABS, RECRUITING_STATE_CONFIG, SCHOOL_STATE_CONFIG } from './constants'
 
 /** 학교 상태 타입 */
 export type SchoolStateType = keyof typeof SCHOOL_STATE_CONFIG
@@ -22,13 +21,8 @@ export type SchoolStateType = keyof typeof SCHOOL_STATE_CONFIG
 /** 리크루팅 상태 타입 */
 export type RecruitingType = keyof typeof RECRUITING_STATE_CONFIG
 
-/** 서류 평가 단계 타입 */
-export type EvaluationDocumentType =
-  (typeof EVALUATION_DOCUMENT_CONFIG)[keyof typeof EVALUATION_DOCUMENT_CONFIG]['label']
-
-/** 면접 평가 단계 타입 */
-export type EvaluationFinalType =
-  (typeof EVALUATION_FINAL_CONFIG)[keyof typeof EVALUATION_FINAL_CONFIG]['label']
+export type { ExternalLink, Workbook }
+export type { EvaluationDocumentType, EvaluationFinalType }
 
 /** 대학교 정보 */
 export interface University {
@@ -89,19 +83,6 @@ export type PutCurriculumsBody = {
   workbooks: Array<PutCurriculumWorkbookItem>
 }
 
-export type Workbook = {
-  id: string
-  title: string
-  weekNo: string
-  description: string
-  workbookUrl: string
-  startDate: string
-  endDate: string
-  missionType: string
-  releasedAt: string
-  isReleased: boolean
-}
-
 export type GisuType = {
   gisuId: string
   gisu: string
@@ -133,12 +114,6 @@ export interface Branch {
   id: string
   name: string
   schools: Array<UniversitySimple>
-}
-
-export type ExternalLink = {
-  title: string
-  type: LinkType
-  url: string
 }
 
 export type GetRecruitmentsApplication = {

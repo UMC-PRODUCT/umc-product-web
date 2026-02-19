@@ -1,7 +1,7 @@
-import type { FinalStatusType } from '@/features/apply/domain'
 import { FINAL_STATUS_CONFIG } from '@/features/apply/domain/constants'
-import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
+import type { FinalStatusType } from '@/shared/types/apply'
+import type { PartType } from '@/shared/types/part'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 

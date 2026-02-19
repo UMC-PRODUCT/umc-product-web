@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { PART_CONFIG } from '@features/auth/domain'
-import type { PartType } from '@features/auth/domain/model'
 
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import * as S from '@/features/apply/components/ApplyPage.style'
+import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
 import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
 

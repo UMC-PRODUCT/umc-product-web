@@ -114,7 +114,7 @@ const resolveTypography = (token: TypoToken) => {
  * StyledButton Props
  * Transient props ($) 사용으로 DOM에 전달되지 않음
  */
-export interface StyledButtonProps {
+interface StyledButtonProps {
   $tone: ButtonTone
   $variant: ButtonVariant
   $disabled: boolean

@@ -2,16 +2,9 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { MANAGE_BRANCH_TAB_VALUES } from '@/features/management/domain/constants'
 import BranchPage from '@/features/management/pages/BranchPage'
+import { parseTabSearch } from '@/shared/router/search'
 
 type BranchTab = (typeof MANAGE_BRANCH_TAB_VALUES)[number]
-
-const isBranchTab = (value: string): value is BranchTab => MANAGE_BRANCH_TAB_VALUES.includes(value)
-
-const parseTabSearch = (search: Record<string, unknown>) => {
-  const tabValue = typeof search.tab === 'string' ? search.tab : undefined
-  const tab = tabValue && isBranchTab(tabValue) ? tabValue : undefined
-  return { tab }
-}
 
 const RouteComponent = () => {
   const { tab } = Route.useSearch()
@@ -30,6 +23,6 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management/branch/')({
-  validateSearch: (search) => parseTabSearch(search),
+  validateSearch: (search) => parseTabSearch(search, MANAGE_BRANCH_TAB_VALUES),
   component: RouteComponent,
 })

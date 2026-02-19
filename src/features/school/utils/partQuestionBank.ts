@@ -1,10 +1,10 @@
-import type { PartType } from '@/features/auth/domain'
 import { PART } from '@/shared/constants/umc'
 import type {
   PartQuestionBank,
   PartQuestionBankPayload,
   RecruitingQuestion,
 } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 const PART_KEY_MAP: Record<PartType, string> = {
   PLAN: 'Plan',

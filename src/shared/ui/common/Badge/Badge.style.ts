@@ -102,7 +102,7 @@ const resolveTypography = (token: TypoToken) => {
  * StyledBadge Props
  * Transient props ($) 사용으로 DOM에 전달되지 않음
  */
-export interface StyledBadgeProps {
+interface StyledBadgeProps {
   $tone: BadgeTone
   $variant: BadgeVariant
   $typo: TypoToken

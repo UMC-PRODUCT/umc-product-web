@@ -4,10 +4,10 @@ import { PAGE_INFO } from '@features/school/domain'
 
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
-import type { PartType } from '@/features/auth/domain'
 import PreviewSection from '@/features/school/components/Recruiting/PreviewSection/PreviewSection'
 import QuestionPreview from '@/features/school/components/Recruiting/QuestionPreview/QuestionPreview'
 import type { RecruitingForms, RecruitingItem } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import { transformQuestionTypeKorean } from '@/shared/utils/transformKorean'

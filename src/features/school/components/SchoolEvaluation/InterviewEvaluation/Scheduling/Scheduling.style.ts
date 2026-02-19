@@ -17,14 +17,6 @@ export const Wrapper = styled.div`
   }
 `
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 100vh;
-  padding: 20px;
-`
-
 export const MainLayout = styled.div`
   display: flex;
   gap: 20px;
@@ -135,15 +127,6 @@ export const ContentHeader = styled.div`
   height: 40px;
 `
 
-export const SearchInput = styled.input`
-  background: ${theme.colors.gray[800]};
-  border: 1px solid ${theme.colors.gray[700]};
-  padding: 8px 12px;
-  border-radius: 6px;
-  color: #fff;
-  width: 240px;
-`
-
 export const ApplicantList = styled(Section)`
   position: relative;
   display: flex;
@@ -175,11 +158,6 @@ export const LoadingOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.35);
   z-index: 1;
   width: 100%;
-`
-
-export const DragHandle = styled.div`
-  color: ${theme.colors.gray[500]};
-  cursor: grab;
 `
 
 export const InterviewerSection = styled(Section)`

@@ -3,9 +3,8 @@
  * 대시보드, 지원 현황 관련 타입
  */
 
-import type { DocumentStatusType, FinalStatusType } from '@features/apply/domain'
-import type { PartType } from '@features/auth/domain'
-
+import type { DocumentStatusType, FinalStatusType } from '@/shared/types/apply'
+import type { PartType } from '@/shared/types/part'
 /** 지원서 상태 타입 */
 import type { ResumeType } from '@/shared/types/umc'
 

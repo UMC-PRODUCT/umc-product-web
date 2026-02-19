@@ -2,8 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { AccountPage } from '@features/management/pages/AccountPage'
 
-const parseAccountSearch = (search: Record<string, unknown>) => {
-  const accountId = typeof search.accountId === 'string' ? search.accountId : undefined
+import type { RouteSearch } from '@/shared/router/search'
+import { parseOptionalStringSearch } from '@/shared/router/search'
+
+const parseAccountSearch = (search: RouteSearch) => {
+  const accountId = parseOptionalStringSearch(search, 'accountId')
   return { accountId }
 }
 

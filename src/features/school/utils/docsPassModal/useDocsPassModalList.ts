@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import type { PartType } from '@/features/auth/domain'
 import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import type { PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 export const useDocsPassModalList = ({

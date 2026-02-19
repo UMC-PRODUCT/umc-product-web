@@ -1,4 +1,4 @@
-import type { PartType } from '@/features/auth/domain/model'
+import type { PartType } from '@/shared/types/part'
 
 import type { DocumentStatusType, FinalStatusType } from './model'
 
