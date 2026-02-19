@@ -144,11 +144,6 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  <S.ProjectTech>
-                    {project.tech.map((tech) => (
-                      <S.TechTag key={`${project.title}-${tech}-pre-dup`}>{tech}</S.TechTag>
-                    ))}
-                  </S.ProjectTech>
                 </S.ProjectContent>
               </S.ProjectCard>
             ))}
@@ -160,11 +155,6 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  <S.ProjectTech>
-                    {project.tech.map((tech) => (
-                      <S.TechTag key={tech}>{tech}</S.TechTag>
-                    ))}
-                  </S.ProjectTech>
                 </S.ProjectContent>
               </S.ProjectCard>
             ))}
@@ -176,11 +166,6 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  <S.ProjectTech>
-                    {project.tech.map((tech) => (
-                      <S.TechTag key={`${project.title}-${tech}-dup`}>{tech}</S.TechTag>
-                    ))}
-                  </S.ProjectTech>
                 </S.ProjectContent>
               </S.ProjectCard>
             ))}

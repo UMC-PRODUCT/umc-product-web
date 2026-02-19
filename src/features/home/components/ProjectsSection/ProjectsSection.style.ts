@@ -95,7 +95,7 @@ export const ProjectCard = styled.div`
   transition: all 0.4s;
   min-width: 320px;
   max-width: 320px;
-  height: 380px;
+  height: 320px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
