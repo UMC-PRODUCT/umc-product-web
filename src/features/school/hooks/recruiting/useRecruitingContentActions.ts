@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
@@ -24,10 +25,13 @@ const getErrorCode = (error: unknown): string | undefined => {
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
-  if (!error || typeof error !== 'object') return undefined
+  if (!error || typeof error !== 'object') {
+    return error instanceof Error ? error.message : undefined
+  }
   const maybeResponse = error as { response?: { data?: { message?: unknown } } }
   const message = maybeResponse.response?.data?.message
-  return typeof message === 'string' ? message : undefined
+  if (typeof message === 'string') return message
+  return error instanceof Error ? error.message : undefined
 }
 
 type RecruitingContentActionsParams = {
@@ -39,7 +43,7 @@ type RecruitingContentActionsParams = {
   isSubmitting: boolean
   setIsSubmitting: (next: boolean) => void
   isDirty: boolean
-  setModal: (next: { modalName: string; isOpen: boolean; message?: string }) => void
+  setModal: Dispatch<SetStateAction<{ modalName: string; isOpen: boolean; message?: string }>>
   setIsBackConfirmOpen: (next: boolean) => void
   navigationBlocker: {
     allowNextNavigationOnce: () => void

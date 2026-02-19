@@ -405,7 +405,7 @@ const Step2 = ({
         'policy',
       )
     }
-  }, [status, initialSchedule, applyEndAt, updateErrorState])
+  }, [status, initialSchedule, applyEndAt, interviewStartAt, updateErrorState])
 
   return (
     <Flex flexDirection="column" gap={18}>
