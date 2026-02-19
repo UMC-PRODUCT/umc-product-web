@@ -1,5 +1,5 @@
 import * as S from '@/features/apply/components/ApplyPage.style'
-import type { PartSmallType } from '@/features/auth/domain/model'
+import type { PartSmallType } from '@/shared/types/part'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 

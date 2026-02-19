@@ -2,16 +2,9 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { MANAGE_SYSTEM_TAB_VALUES } from '@/features/management/domain/constants'
 import { SystemPage } from '@/features/management/pages/SystemPage'
+import { parseTabSearch } from '@/shared/router/search'
 
 type SystemTab = (typeof MANAGE_SYSTEM_TAB_VALUES)[number]
-
-const isSystemTab = (value: string): value is SystemTab => MANAGE_SYSTEM_TAB_VALUES.includes(value)
-
-const parseTabSearch = (search: Record<string, unknown>) => {
-  const tabValue = typeof search.tab === 'string' ? search.tab : undefined
-  const tab = tabValue && isSystemTab(tabValue) ? tabValue : undefined
-  return { tab }
-}
 
 const RouteComponent = () => {
   const { tab } = Route.useSearch()
@@ -30,6 +23,6 @@ const RouteComponent = () => {
 }
 
 export const Route = createFileRoute('/(app)/management/system/')({
-  validateSearch: (search) => parseTabSearch(search),
+  validateSearch: (search) => parseTabSearch(search, MANAGE_SYSTEM_TAB_VALUES),
   component: RouteComponent,
 })

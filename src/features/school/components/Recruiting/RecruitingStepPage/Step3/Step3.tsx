@@ -6,7 +6,6 @@ import { useRouter } from '@tanstack/react-router'
 
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
-import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
@@ -16,6 +15,7 @@ import { isPartItemsValid } from '@/features/school/utils/recruiting/validatePar
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option, RecruitingForms } from '@/shared/types/form'
+import type { PartSmallType, PartType } from '@/shared/types/part'
 import { Flex } from '@/shared/ui/common/Flex'
 import Navigation from '@/shared/ui/common/Navigation/Navigation'
 import Section from '@/shared/ui/common/Section/Section'

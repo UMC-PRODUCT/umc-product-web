@@ -2,7 +2,7 @@
  * Recruiting 도메인 상수
  */
 
-import type { PartType } from '@features/auth/domain'
+import type { PartType } from '@/shared/types/part'
 
 /** 파트별 필수 스킬 */
 export const PART_REQUIRED_SKILL: Record<PartType, string> = {

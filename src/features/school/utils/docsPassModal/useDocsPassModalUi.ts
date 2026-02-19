@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import type { PartType } from '@/features/auth/domain'
 import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import type { Option } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 type ModalName = 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null

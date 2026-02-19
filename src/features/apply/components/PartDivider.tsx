@@ -1,6 +1,6 @@
-import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { theme } from '@/shared/styles/theme'
+import type { PartType } from '@/shared/types/part'
 import Section from '@/shared/ui/common/Section/Section'
 
 const PartDivider = ({ label }: { label: PartType }) => {

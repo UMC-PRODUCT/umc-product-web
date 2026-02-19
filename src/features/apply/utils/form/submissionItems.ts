@@ -1,5 +1,3 @@
-import type { PartType } from '@features/auth/domain'
-
 import type {
   AnswerItem,
   checkboxAnswer,
@@ -12,6 +10,7 @@ import type {
   TimeTableSlots,
 } from '@/features/apply/domain/model'
 import type { FormPage, FormQuestion } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import { isOptionAnswerValue, isQuestionAnswerEmpty } from './answerUtils'
 import { getAllQuestionFieldIds, getPageQuestions } from './questionSelectors'

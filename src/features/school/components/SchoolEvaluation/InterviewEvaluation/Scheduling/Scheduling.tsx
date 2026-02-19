@@ -2,7 +2,6 @@ import type { DragEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import type { PartType } from '@/features/auth/domain'
 import {
   getInterviewSchedulingSummary,
   getInterviewSlotAssignments,
@@ -16,6 +15,7 @@ import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'

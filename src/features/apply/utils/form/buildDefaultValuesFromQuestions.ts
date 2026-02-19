@@ -4,13 +4,13 @@ import type {
   preferredPartAnswer,
   UploadedFile,
 } from '@/features/apply/domain/model'
-import type { PartType } from '@/features/auth/domain'
 import type {
   FormPage,
   FormQuestion,
   OptionAnswerValue,
   RecruitmentApplicationForm,
 } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import { isOptionAnswerValue } from './answerUtils'
 

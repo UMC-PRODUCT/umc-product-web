@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 
 import Arrow from '@shared/assets/icons/arrow.svg?react'
 
-import type { PartType } from '@/features/auth/domain'
 import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
@@ -22,6 +21,7 @@ import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
 import { managementKeys } from '@/shared/queryKeys'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'

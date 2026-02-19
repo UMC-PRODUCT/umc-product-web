@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import { z } from 'zod/v3'
 
-import type { PartType } from '@/features/auth/domain'
 import type { RecruitingForms, RecruitingSchedule, RecruitingStatus } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 type ScheduleValidationContext = {
   initialSchedule: RecruitingSchedule | null

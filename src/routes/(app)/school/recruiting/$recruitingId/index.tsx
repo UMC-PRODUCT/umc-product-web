@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { Recruiting } from '@/features/school/pages/Recruiting'
+import type { RouteSearch } from '@/shared/router/search'
+import { parseOptionalStringSearch, parsePositiveNumberSearch } from '@/shared/router/search'
 
 type RecruitingSearch = {
   // source=extension: 추가모집 흐름 진입 플래그
@@ -10,20 +12,11 @@ type RecruitingSearch = {
   step: number
 }
 
-const normalizeNumericSearch = (value: unknown, fallback: number) => {
-  const raw = typeof value === 'string' || typeof value === 'number' ? Number(value) : undefined
-  if (Number.isFinite(raw ?? fallback) && raw !== undefined && raw > 0) {
-    return raw
-  }
-  return fallback
-}
-
-const parseRecruitingSearch = (search: Record<string, unknown>): RecruitingSearch => {
-  const sourceValue = typeof search.source === 'string' ? search.source : undefined
+const parseRecruitingSearch = (search: RouteSearch): RecruitingSearch => {
+  const sourceValue = parseOptionalStringSearch(search, 'source')
   const source = sourceValue === 'temp' || sourceValue === 'extension' ? sourceValue : undefined
-  const baseRecruitmentId =
-    typeof search.baseRecruitmentId === 'string' ? search.baseRecruitmentId : undefined
-  const step = normalizeNumericSearch(search.step, 1)
+  const baseRecruitmentId = parseOptionalStringSearch(search, 'baseRecruitmentId')
+  const step = parsePositiveNumberSearch(search, 'step', 1)
   return { source, baseRecruitmentId, step }
 }
 
