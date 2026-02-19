@@ -109,6 +109,15 @@ export const ProjectCard = styled.div`
     max-width: 256px;
     height: 300px;
   }
+  img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+
+    ${media.down(theme.breakPoints.tablet)} {
+      height: 136px;
+    }
+  }
 `
 
 export const ProjectImage = styled.div`

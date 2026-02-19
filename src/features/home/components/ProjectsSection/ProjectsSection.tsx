@@ -140,7 +140,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
           <S.ProjectsList aria-hidden>
             {projects.map((project) => (
               <S.ProjectCard key={`${project.title}-pre-dup`}>
-                <S.ProjectImage>{project.emoji}</S.ProjectImage>
+                <img src={project.image} alt={project.title} />
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
@@ -156,7 +156,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
           <S.ProjectsList ref={listRef}>
             {projects.map((project) => (
               <S.ProjectCard key={project.title}>
-                <S.ProjectImage>{project.emoji}</S.ProjectImage>
+                <img src={project.image} alt={project.title} />
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
@@ -172,7 +172,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
           <S.ProjectsList aria-hidden>
             {projects.map((project) => (
               <S.ProjectCard key={`${project.title}-dup`}>
-                <S.ProjectImage>{project.emoji}</S.ProjectImage>
+                <img src={project.image} alt={project.title} />
                 <S.ProjectContent>
                   <S.ProjectTitle>{project.title}</S.ProjectTitle>
                   <S.ProjectDescription>{project.description}</S.ProjectDescription>
