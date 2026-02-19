@@ -37,6 +37,31 @@ const defaultValues: RecruitingForms = {
   items: [buildPreferredPartItem(), buildScheduleItem(), buildDefaultPage2Item()],
 }
 
+const buildItemsSignature = (items: RecruitingForms['items']) =>
+  items
+    .map((item) => {
+      const targetKey =
+        item.target.kind === 'PART'
+          ? `PART:${item.target.part}:${item.target.pageNo}`
+          : `COMMON:${item.target.pageNo}`
+      const optionsKey = (item.question.options ?? [])
+        .map(
+          (option) =>
+            `${option.optionId ?? ''}:${option.orderNo}:${option.isOther ? '1' : '0'}:${option.content}`,
+        )
+        .join('|')
+      return [
+        targetKey,
+        item.question.questionId ?? '',
+        item.question.type,
+        item.question.questionText,
+        item.question.required ? '1' : '0',
+        item.question.orderNo,
+        optionsKey,
+      ].join('::')
+    })
+    .join('||')
+
 export const useRecruitingForm = () => {
   const resolver = useMemo(() => zodResolver(recruitingFormSchema), [])
   const form = useForm<RecruitingForms>({
@@ -84,11 +109,12 @@ export const useRecruitingForm = () => {
   )
 
   useEffect(() => {
-    const currentItems = Array.isArray(items) ? items : []
-    const { next } = normalizeItems(currentItems, recruitmentParts)
-    if (JSON.stringify(currentItems) === JSON.stringify(next)) return
+    const currentItems = form.getValues('items')
+    const safeItems = Array.isArray(currentItems) ? currentItems : []
+    const { next } = normalizeItems(safeItems, recruitmentParts)
+    if (buildItemsSignature(safeItems) === buildItemsSignature(next)) return
     form.setValue('items', next, { shouldDirty: true })
-  }, [form, items, recruitmentParts])
+  }, [form, recruitmentParts])
 
   const interviewDates = useMemo(() => {
     if (!schedule.interviewStartAt || !schedule.interviewEndAt) return []

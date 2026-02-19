@@ -28,8 +28,10 @@ type RecruitingContentState = {
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
   partCompletionMap: PartCompletionMap
   setPartCompletionByPart: (next: PartCompletionMap) => void
-  modal: { modalName: string; isOpen: boolean }
-  setModal: React.Dispatch<React.SetStateAction<{ modalName: string; isOpen: boolean }>>
+  modal: { modalName: string; isOpen: boolean; message?: string }
+  setModal: React.Dispatch<
+    React.SetStateAction<{ modalName: string; isOpen: boolean; message?: string }>
+  >
   isBackConfirmOpen: boolean
   setIsBackConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>
   isEditLocked: boolean
@@ -77,7 +79,10 @@ export const useRecruitingContentState = ({
   const forceLockFromEnv = forceLockedMode ?? false
 
   // 모달/뒤로가기 확인 상태
-  const [modal, setModal] = useState({ modalName: '', isOpen: false })
+  const [modal, setModal] = useState<{ modalName: string; isOpen: boolean; message?: string }>({
+    modalName: '',
+    isOpen: false,
+  })
   const [isBackConfirmOpen, setIsBackConfirmOpen] = useState(false)
 
   // 게시 상태면 편집 잠금

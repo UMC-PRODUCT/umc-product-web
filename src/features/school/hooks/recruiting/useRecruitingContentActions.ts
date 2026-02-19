@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
@@ -23,6 +24,16 @@ const getErrorCode = (error: unknown): string | undefined => {
   return typeof code === 'string' ? code : undefined
 }
 
+const getErrorMessage = (error: unknown): string | undefined => {
+  if (!error || typeof error !== 'object') {
+    return error instanceof Error ? error.message : undefined
+  }
+  const maybeResponse = error as { response?: { data?: { message?: unknown } } }
+  const message = maybeResponse.response?.data?.message
+  if (typeof message === 'string') return message
+  return error instanceof Error ? error.message : undefined
+}
+
 type RecruitingContentActionsParams = {
   recruitingId: string
   form: UseFormReturn<RecruitingForms>
@@ -32,7 +43,7 @@ type RecruitingContentActionsParams = {
   isSubmitting: boolean
   setIsSubmitting: (next: boolean) => void
   isDirty: boolean
-  setModal: (next: { modalName: string; isOpen: boolean }) => void
+  setModal: Dispatch<SetStateAction<{ modalName: string; isOpen: boolean; message?: string }>>
   setIsBackConfirmOpen: (next: boolean) => void
   navigationBlocker: {
     allowNextNavigationOnce: () => void
@@ -340,6 +351,11 @@ export const useRecruitingContentActions = ({
       },
       onError: (error) => {
         console.error('Failed to update published recruitment:', error)
+        setModal({
+          isOpen: true,
+          modalName: 'submitRecruitingError',
+          message: getErrorMessage(error),
+        })
       },
       onSettled: () => setIsSubmitting(false),
     })
@@ -350,6 +366,7 @@ export const useRecruitingContentActions = ({
     patchPublishedRecruitmentMutate,
     queryClient,
     recruitingId,
+    setModal,
     setIsSubmitting,
     values.schedule,
   ])
@@ -372,6 +389,11 @@ export const useRecruitingContentActions = ({
             return
           }
           console.error('Failed to publish recruitment:', error)
+          setModal({
+            isOpen: true,
+            modalName: 'submitRecruitingError',
+            message: getErrorMessage(error),
+          })
         },
         onSettled: () => setIsSubmitting(false),
       },
@@ -380,6 +402,7 @@ export const useRecruitingContentActions = ({
     navigate,
     navigationBlocker,
     postPublishRecruitmentMutate,
+    setModal,
     setIsSubmitting,
     submitFormPayload,
     submitQuestionsPayload,
@@ -411,7 +434,10 @@ export const useRecruitingContentActions = ({
     setModal({ isOpen: true, modalName: 'recruitingPreview' })
   }, [queryClient, recruitingId, setModal])
 
-  const closePreview = useCallback(() => setModal({ isOpen: false, modalName: '' }), [setModal])
+  const closePreview = useCallback(
+    () => setModal({ isOpen: false, modalName: '', message: undefined }),
+    [setModal],
+  )
 
   const openConfirmModal = useCallback(() => {
     if (isExtensionBaseMode) return
@@ -423,17 +449,22 @@ export const useRecruitingContentActions = ({
   }, [handleConfirmSubmit, isEditLocked, isExtensionBaseMode, setModal])
 
   const closeConfirmModal = useCallback(
-    () => setModal({ isOpen: false, modalName: '' }),
+    () => setModal({ isOpen: false, modalName: '', message: undefined }),
     [setModal],
   )
 
   const closePublishBlockedModal = useCallback(
-    () => setModal({ isOpen: false, modalName: '' }),
+    () => setModal({ isOpen: false, modalName: '', message: undefined }),
+    [setModal],
+  )
+
+  const closeSubmitErrorModal = useCallback(
+    () => setModal({ isOpen: false, modalName: '', message: undefined }),
     [setModal],
   )
 
   const confirmPublishBlockedModal = useCallback(() => {
-    setModal({ isOpen: false, modalName: '' })
+    setModal({ isOpen: false, modalName: '', message: undefined })
     navigationBlocker.allowNextNavigationOnce()
     navigate({ to: '/school/recruiting', replace: true })
   }, [navigate, navigationBlocker, setModal])
@@ -463,6 +494,7 @@ export const useRecruitingContentActions = ({
     openConfirmModal,
     closeConfirmModal,
     closePublishBlockedModal,
+    closeSubmitErrorModal,
     confirmPublishBlockedModal,
     handleConfirmSubmit,
     handleBackClick,
