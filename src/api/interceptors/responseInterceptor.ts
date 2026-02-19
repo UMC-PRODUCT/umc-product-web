@@ -7,7 +7,7 @@ import type { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 
 import { postRefreshToken } from '@/features/auth/domain/api'
-import type { PostRefreshTokenResponseDTO } from '@/features/auth/domain/types'
+import type { PostRefreshTokenResponseDTO } from '@/shared/types/auth'
 
 import { clearTokens, getRefreshToken, setAccessToken, setRefreshToken } from '../tokenManager'
 

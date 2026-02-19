@@ -1,7 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import type { ExternalLink as ExternalLinkType } from '@/features/auth/domain/types'
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import Setting from '@/shared/assets/icons/setting.svg?react'
 import InstagramIcon from '@/shared/assets/social/instagram.svg?react'
@@ -11,6 +10,7 @@ import type { LinkType } from '@/shared/constants/umc'
 import { UMC_CENTRAL_LINKS } from '@/shared/constants/umc'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
+import type { ExternalLink as ExternalLinkType } from '@/shared/types/link'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import ExternalLinkModal from '@/shared/ui/modals/ExternalLinkModal'
 import { canAccessSchoolByRoles, getActiveRolePool } from '@/shared/utils/role'
@@ -84,7 +84,9 @@ const ExternalLink = ({ subLinks }: { subLinks: Array<ExternalLinkType> }) => {
                   </Flex>
                 </a>
               ))}
-              <hr css={{ width: '100%', border: `0.5px solid ${theme.colors.gray[600]}` }} />
+              {subLinks.length > 0 && (
+                <hr css={{ width: '100%', border: `0.5px solid ${theme.colors.gray[600]}` }} />
+              )}
               {subLinks.map((link) => {
                 const Icon = iconByType[link.type]
                 return (

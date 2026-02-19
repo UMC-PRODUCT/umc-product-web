@@ -128,27 +128,6 @@ export const ProjectCard = styled.div`
   }
 `
 
-export const ProjectImage = styled.div`
-  width: 100%;
-  height: 170px;
-  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 68px;
-  flex-shrink: 0;
-
-  ${media.down('1200px')} {
-    height: 153px;
-    font-size: 60px;
-  }
-
-  ${media.down(theme.breakPoints.tablet)} {
-    height: 136px;
-    font-size: 52px;
-  }
-`
-
 export const ProjectContent = styled.div`
   background: rgba(255, 255, 255, 0.03);
   ${homeResponsiveSpace('padding: 26px;', 'padding: 20px;', 'padding: 16px;')}
@@ -179,19 +158,4 @@ export const ProjectDescription = styled.p`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-`
-
-export const ProjectTech = styled.div`
-  display: flex;
-  ${homeResponsiveSpace('gap: 6px;', 'gap: 6px;', 'gap: 4px;')}
-  flex-wrap: wrap;
-`
-
-export const TechTag = styled.span`
-  ${homeResponsiveFont('11px', '11px', '10px')}
-  color: ${theme.colors.lime};
-  ${homeResponsiveSpace('padding: 4px 10px;', 'padding: 4px 8px;', 'padding: 3px 7px;')}
-  border: 1px solid rgba(149, 239, 75, 0.3);
-  border-radius: 6px;
-  font-weight: 600;
 `

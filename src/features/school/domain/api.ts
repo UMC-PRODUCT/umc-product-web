@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/api/axiosInstance'
-import type { PartType } from '@/features/auth/domain'
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { PartType } from '@/shared/types/part'
 
 import type {
   DeleteInterviewAssignApplicantsResponseDTO,

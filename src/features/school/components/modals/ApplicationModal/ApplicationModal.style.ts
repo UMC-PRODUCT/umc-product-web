@@ -38,10 +38,6 @@ export const TitleGroup = styled.div`
   flex-direction: column;
   gap: 6px;
 `
-export const Subtitle = styled.div`
-  ${theme.typography.B5.Rg}
-  color: ${theme.colors.gray[400]};
-`
 export const ModalButton = styled.button`
   display: inline-flex;
   align-items: center;

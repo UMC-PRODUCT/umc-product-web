@@ -140,38 +140,3 @@ export const SkillValue = styled.span`
     margin-left: 6px;
   }
 `
-
-export const TimelineGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  ${homeResponsiveSpace('column-gap: 60px;', 'column-gap: 36px;', 'column-gap: 0;')}
-  ${homeResponsiveSpace('row-gap: 24px;', 'row-gap: 16px;', 'row-gap: 12px;')}
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`
-
-export const TimelineItem = styled.div`
-  display: flex;
-  align-items: center;
-  ${homeResponsiveSpace('gap: 16px;', 'gap: 12px;', 'gap: 10px;')}
-`
-
-export const WeekNumber = styled.span`
-  color: ${theme.colors.lime};
-  font-weight: 700;
-  font-family: 'Pretendard', sans-serif;
-  min-width: 50px;
-`
-
-export const Divider = styled.div`
-  width: 1px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.2);
-`
-
-export const Content = styled.span`
-  color: #eee;
-  ${homeResponsiveFont('16px', '15px', '14px')}
-`

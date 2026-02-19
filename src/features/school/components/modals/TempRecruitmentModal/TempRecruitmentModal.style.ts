@@ -61,33 +61,7 @@ export const ModalContentWrapper = styled(Flex)`
     min-width: 90vw;
   }
 `
-export const SocialItem = styled.div`
-  width: 100%;
-  height: 52px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  button {
-    width: 80px;
-    height: 36px;
-  }
-`
-export const Social = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  ${theme.typography.B2.Md}
-`
 
-export const Logo = styled.div<{ bgColor?: string }>`
-  width: 52px;
-  height: 52px;
-  background-color: ${(props) => props.bgColor || 'transparent'};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-`
 export const MessageWrapper = styled(Flex)`
   width: 100%;
   min-height: 480px;

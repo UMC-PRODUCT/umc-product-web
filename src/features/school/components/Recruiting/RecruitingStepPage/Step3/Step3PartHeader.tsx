@@ -1,10 +1,10 @@
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
-import type { PartSmallType, PartType } from '@/features/auth/domain/model'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
+import type { PartSmallType, PartType } from '@/shared/types/part'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import { Flex } from '@/shared/ui/common/Flex'

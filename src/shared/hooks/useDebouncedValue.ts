@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export const useDebouncedValue = <T>(value: T, delayMs: number) => {
+export const useDebouncedValue = <T>(value: T, delayMs = 300) => {
   const [debouncedValue, setDebouncedValue] = useState(value)
   const latestValueRef = useRef(value)
 
@@ -18,4 +18,9 @@ export const useDebouncedValue = <T>(value: T, delayMs: number) => {
   }, [])
 
   return { debouncedValue, flush }
+}
+
+export const useDebounce = <T>(value: T, delay = 300) => {
+  const { debouncedValue } = useDebouncedValue(value, delay)
+  return debouncedValue
 }

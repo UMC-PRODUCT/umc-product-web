@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import type { PartType } from '@/features/auth/domain'
+import type { PartType } from '@/shared/types/part'
 import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 export type UserProfileRole = {

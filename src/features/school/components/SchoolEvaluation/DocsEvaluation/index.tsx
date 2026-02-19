@@ -1,9 +1,9 @@
 import * as Shared from '@shared/styles/shared'
 
-import type { PartType } from '@/features/auth/domain'
 import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/useRecruitingQueries'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'

@@ -1,7 +1,7 @@
 import type { Control } from 'react-hook-form'
 
-import type { PartType } from '@/features/auth/domain'
 import type { RecruitingForms } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 import { Flex } from '@/shared/ui/common/Flex'
 
 import QuestionList from '../../QuestionList/QuestionList'

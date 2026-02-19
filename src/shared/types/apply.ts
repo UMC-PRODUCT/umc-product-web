@@ -1,5 +1,8 @@
 import type { PartType } from './part'
 
+export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASS' | 'FAIL'
+export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE' | 'NONE'
+
 export type QuestionType =
   | 'SHORT_TEXT'
   | 'LONG_TEXT'

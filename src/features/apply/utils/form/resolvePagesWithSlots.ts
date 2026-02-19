@@ -1,8 +1,7 @@
-import type { PartType } from '@features/auth/domain'
-
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import type { FormPage, FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 import { DEFAULT_RECRUITING_PARTS } from '../../domain/constants'
 import type { ResumeFormValues } from './buildDefaultValuesFromQuestions'

@@ -1,5 +1,5 @@
-import type { PartType } from '@/features/auth/domain'
 import type { FormQuestion, RecruitmentApplicationForm } from '@/shared/types/form'
+import type { PartType } from '@/shared/types/part'
 
 /**
  * 파트 질문(PREFERRED_PART)을 찾습니다.

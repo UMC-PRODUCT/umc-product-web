@@ -2,11 +2,11 @@ import type { ChangeEvent, ReactNode } from 'react'
 
 import Cancle from '@shared/assets/icons/close.svg?react'
 
-import type { ExternalLink } from '@/features/auth/domain/types'
 import Edit from '@/shared/assets/icons/edit.svg?react'
 import type { LinkType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
+import type { ExternalLink } from '@/shared/types/link'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 

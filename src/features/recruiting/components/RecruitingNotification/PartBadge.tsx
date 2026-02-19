@@ -1,5 +1,5 @@
-import type { PartType } from '@/features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
+import type { PartType } from '@/shared/types/part'
 
 import * as S from './PartBadge.style'
 

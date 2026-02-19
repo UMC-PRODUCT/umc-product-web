@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   useDocsPassModalList,
   useDocsPassModalMutations,
@@ -24,6 +26,7 @@ import DocsEvaluationRow from './DocsEvaluationRow/DocsEvaluationRow'
 import * as S from './DocsPassModal.style'
 
 const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
+  const [processedCount, setProcessedCount] = useState(0)
   const roleType = useUserProfileStore((state) => state.role?.roleType)
   const canEdit = isSchoolPresidentRole(roleType)
 
@@ -69,7 +72,10 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
     recruitingId,
     selectedItems,
     clearSelection,
-    onBulkPassSuccess: () => setModalOpen({ open: true, modalName: 'setPassSuccess' }),
+    onBulkPassSuccess: (count) => {
+      setProcessedCount(count)
+      setModalOpen({ open: true, modalName: 'setPassSuccess' })
+    },
   })
   return (
     <Modal.Body className="body">
@@ -206,7 +212,7 @@ const DocsPassModalContent = ({ recruitingId }: { recruitingId: string }) => {
       </S.Container>
       {modalOpen.open && modalOpen.modalName === 'setPassSuccess' && (
         <SetPassSuccessModal
-          processedCount={selectedCount}
+          processedCount={processedCount}
           onClose={() => setModalOpen({ open: false, modalName: null })}
         />
       )}

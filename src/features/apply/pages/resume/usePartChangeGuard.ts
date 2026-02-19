@@ -1,6 +1,6 @@
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
-import type { PartType } from '@/features/auth/domain'
+import type { PartType } from '@/shared/types/part'
 
 import type { QuestionType } from '../../domain'
 import { usePartAnswerReset, usePartChangeModalState, usePartSelectionChange } from './hooks'
