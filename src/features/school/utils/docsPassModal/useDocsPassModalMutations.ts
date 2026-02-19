@@ -13,7 +13,7 @@ type UseDocsPassModalMutationsParams = {
   recruitingId: string
   selectedItems: Array<SelectionItem>
   clearSelection: () => void
-  onBulkPassSuccess?: () => void
+  onBulkPassSuccess?: (processedCount: number) => void
 }
 
 export const useDocsPassModalMutations = ({
@@ -100,8 +100,8 @@ export const useDocsPassModalMutations = ({
           queryKey: ['school', 'documents', 'selections', 'applicants'],
           exact: false,
         })
+        onBulkPassSuccess?.(targetIds.length)
         clearSelection()
-        onBulkPassSuccess?.()
       },
     })
   }
