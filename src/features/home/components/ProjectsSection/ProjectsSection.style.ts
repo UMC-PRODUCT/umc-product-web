@@ -76,6 +76,14 @@ export const ProjectsScrollWrapper = styled.div<{ $dragging?: boolean }>`
   }
 `
 
+export const EmptyState = styled.div`
+  ${homeResponsiveSpace('padding: 80px 60px;', 'padding: 64px 32px;', 'padding: 48px 20px;')}
+  ${homeResponsiveFont('22px', '20px', '16px')}
+  color: ${theme.colors.gray[300]};
+  text-align: center;
+  font-weight: 700;
+`
+
 export const ProjectsScrollContainer = styled.div`
   display: flex;
   width: max-content;
