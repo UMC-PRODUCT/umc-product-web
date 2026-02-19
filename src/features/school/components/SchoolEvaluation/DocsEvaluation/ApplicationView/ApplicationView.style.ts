@@ -58,17 +58,6 @@ export const PageHeader = styled.div`
   border-bottom: 1px solid ${theme.colors.gray[600]};
 `
 
-export const QuestionGroup = styled.div`
-  display: grid;
-  gap: 10px;
-  padding-top: 6px;
-`
-
-export const GroupTitle = styled.div`
-  ${theme.typography.B4.Sb};
-  color: ${theme.colors.gray[400]};
-`
-
 export const QuestionsCard = styled.div`
   display: flex;
   gap: 12px;
@@ -85,11 +74,6 @@ export const QuestionsCard = styled.div`
 export const QuestionTitle = styled.div`
   ${theme.typography.B5.Rg};
   color: ${theme.colors.gray[400]};
-`
-
-export const Required = styled.span`
-  margin-left: 6px;
-  color: ${theme.colors.lime};
 `
 
 export const AnswerText = styled.div`
@@ -113,26 +97,6 @@ export const Chip = styled.span`
   border-radius: 4px;
   padding: 4px 10px;
   ${theme.typography.B5.Md};
-  color: ${theme.colors.gray[300]};
-`
-
-export const ScheduleRow = styled.div`
-  display: grid;
-  gap: 6px;
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: ${theme.colors.gray[800]};
-  border: 1px dashed ${theme.colors.gray[600]};
-`
-
-export const ScheduleDate = styled.div`
-  ${theme.typography.B5.Sb};
-  color: ${theme.colors.gray[300]};
-`
-
-export const ScheduleTimes = styled.div`
-  ${theme.typography.B5.Rg};
   color: ${theme.colors.gray[300]};
 `
 

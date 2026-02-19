@@ -54,12 +54,6 @@ export const DetailWrapper = styled.div`
   gap: 20px;
 `
 
-export const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
-
 export const UserInfo = styled.div`
   display: flex;
   align-items: center;
@@ -75,24 +69,6 @@ export const UserInfo = styled.div`
 export const TopActions = styled.div`
   display: flex;
   gap: 10px;
-`
-
-export const ViewApplicationButton = styled.button`
-  background: ${theme.colors.gray[700]};
-  color: ${theme.colors.white};
-  border: 1px solid ${theme.colors.gray[600]};
-  padding: 8px 16px;
-  border-radius: 6px;
-  ${theme.typography.B4.Md};
-`
-
-export const BackButton = styled.button`
-  background: ${theme.colors.gray[800]};
-  color: ${theme.colors.lime};
-  border: 1px solid ${theme.colors.lime};
-  padding: 8px 16px;
-  border-radius: 6px;
-  ${theme.typography.B4.Md};
 `
 
 export const MainContent = styled.div`
@@ -176,129 +152,6 @@ export const SideColumn = styled.div`
   flex-direction: column;
   gap: 20px;
 `
-
-export const StatusHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-`
-
-export const StatusTitle = styled.h3`
-  ${theme.typography.B3.Sb};
-  color: ${theme.colors.white};
-`
-
-export const StatusSummary = styled.span`
-  color: ${theme.colors.gray[400]};
-  ${theme.typography.C5.Rg};
-`
-
-export const StatusSummaryValue = styled.span`
-  color: ${theme.colors.lime};
-`
-
-export const StatusList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`
-
-export const StatusItem = styled.div`
-  background: ${theme.colors.gray[800]};
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid ${theme.colors.gray[700]};
-  display: flex;
-  justify-content: space-between;
-`
-
-export const StatusName = styled.span`
-  ${theme.typography.B4.Rg};
-  color: ${theme.colors.gray[300]};
-`
-
-export const StatusScore = styled.span`
-  color: ${theme.colors.lime};
-  ${theme.typography.B4.Sb};
-`
-
-export const StatusScoreMax = styled.small`
-  color: ${theme.colors.gray[500]};
-`
-
-export const MyEvalTitle = styled.h3`
-  ${theme.typography.B3.Sb};
-  color: ${theme.colors.white};
-  margin-bottom: 15px;
-`
-
-export const ScoreLabel = styled.p`
-  ${theme.typography.B4.Rg};
-  color: ${theme.colors.gray[300]};
-`
-
-export const RequiredMark = styled.span`
-  color: ${theme.colors.necessary};
-`
-
-export const ScoreMax = styled.small`
-  color: ${theme.colors.gray[500]};
-  ${theme.typography.B4.Rg};
-`
-
-export const CommentHeader = styled.p`
-  ${theme.typography.B4.Rg};
-  display: flex;
-  justify-content: space-between;
-`
-
-export const CommentCount = styled.span`
-  color: ${theme.colors.gray[500]};
-`
-
-export const CommentSection = styled.div`
-  margin-top: 20px;
-`
-
-export const SubmitButton = styled.button`
-  width: 100%;
-  margin-top: 20px;
-  background: ${theme.colors.lime};
-  color: ${theme.colors.black};
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  ${theme.typography.B3.Sb};
-`
-
-export const ScoreInputBox = styled.div`
-  background-color: ${theme.colors.gray[800]};
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  margin-top: 20px;
-  .score-display {
-    color: ${theme.colors.lime};
-    ${theme.typography.H4.Sb};
-  }
-`
-
-export const CommentArea = styled.textarea`
-  width: 100%;
-  height: 120px;
-  background-color: ${theme.colors.gray[800]};
-  border: 1px solid ${theme.colors.gray[700]};
-  border-radius: 8px;
-  color: ${theme.colors.white};
-  padding: 12px;
-  margin-top: 12px;
-  resize: none;
-  outline: none;
-  ${theme.typography.B4.Rg};
-  &:focus {
-    border-color: ${theme.colors.lime};
-  }
-`
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -309,18 +162,4 @@ export const Content = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
-`
-export const ActionButton = styled.button<{ active?: boolean }>`
-  background-color: ${(props) => (props.active ? theme.colors.lime : theme.colors.gray[700])};
-  color: ${(props) => (props.active ? theme.colors.black : theme.colors.gray[500])};
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  ${theme.typography.B4.Sb};
-  cursor: pointer;
-`
-export const Tag = styled.span`
-  padding: 4px 10px;
-  border-radius: 20px;
-  ${theme.typography.C5.Md};
 `

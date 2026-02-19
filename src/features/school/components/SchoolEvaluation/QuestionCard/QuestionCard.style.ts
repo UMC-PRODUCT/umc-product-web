@@ -9,12 +9,6 @@ export const QuestionMeta = styled.div`
   flex: 1;
 `
 
-export const QuestionIndex = styled.span`
-  ${theme.typography.B5.Sb};
-  color: ${theme.colors.gray[400]};
-  flex-shrink: 0;
-`
-
 export const QuestionText = styled.p`
   ${theme.typography.B4.Rg};
   color: ${theme.colors.gray[300]};
@@ -50,19 +44,6 @@ export const QuestionItem = styled.div`
   &[data-dragging='true'] {
     opacity: 0.6;
     transform: scale(0.995);
-  }
-`
-export const ActionButton = styled.button`
-  ${theme.typography.B5.Md};
-  color: ${theme.colors.gray[300]};
-  border: 1px solid ${theme.colors.gray[600]};
-  background-color: ${theme.colors.gray[800]};
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${theme.colors.gray[700]};
   }
 `
 export const DragPlaceholder = styled.div`

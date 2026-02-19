@@ -11,15 +11,6 @@ export const ContentBox = styled.div`
   border: 1px solid ${theme.colors.gray[600]};
 `
 
-export const ActionButton = styled.button<{ active?: boolean }>`
-  background-color: ${(props) => (props.active ? theme.colors.lime : theme.colors.gray[700])};
-  color: ${(props) => (props.active ? theme.colors.black : theme.colors.gray[500])};
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  ${theme.typography.B4.Sb};
-  cursor: pointer;
-`
 export const Content = styled.div`
   display: flex;
   justify-content: space-between;
