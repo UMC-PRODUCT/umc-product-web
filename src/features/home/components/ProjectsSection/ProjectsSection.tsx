@@ -129,7 +129,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
       </S.GenerationTabs>
 
       {isNinthGeneration ? (
-        <S.EmptyState>데모데이 종료 후 공개됩니다!</S.EmptyState>
+        <S.EmptyState>2월 20일 데모데이 종료 후 공개됩니다!</S.EmptyState>
       ) : (
         <S.ProjectsScrollWrapper
           ref={scrollRef}
