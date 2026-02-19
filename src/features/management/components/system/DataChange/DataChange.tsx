@@ -6,8 +6,6 @@ import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
 // import Navigation from '@/shared/ui/common/Navigation/Navigation'
 
-// import * as S from './DataChange.style'
-
 const DataChange = () => {
   // const [page, setPage] = useState(1)
   return (
@@ -34,33 +32,3 @@ const DataChange = () => {
 }
 
 export default DataChange
-
-// const Data = ({
-//   id,
-//   title,
-//   school,
-//   date,
-//   message,
-// }: {
-//   id: string
-//   title: string
-//   school: string
-//   date: string
-//   message: string
-// }) => {
-//   return (
-//     <Flex
-//       flexDirection="column"
-//       gap={0}
-//       alignItems="flex-start"
-//       key={id}
-//       css={{ borderBottom: `1px solid ${theme.colors.gray[700]}`, paddingBottom: '16px' }}
-//     >
-//       <S.Title>
-//         <span className="title">{title}</span> <span>•</span> <span>{school}</span>
-//       </S.Title>
-//       <S.Date>{date}</S.Date>
-//       <S.Message>{message}</S.Message>
-//     </Flex>
-//   )
-// }
