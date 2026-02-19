@@ -17,6 +17,7 @@ import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
 import { formatDateTimeDot } from '@/shared/utils/date'
 
+import InterviewNotStartedModal from './InterviewNotStartedModal'
 import * as S from './MyEvaluation.style'
 
 const MyEvaluation = ({
@@ -49,6 +50,7 @@ const MyEvaluation = ({
   } = useGetInterviewEvaluationMyAnswer(recruitingId ?? '', interviewTargetUserId)
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
+  const [isInterviewNotStartedModalOpen, setIsInterviewNotStartedModalOpen] = useState(false)
 
   const canSubmit = Boolean(recruitingId) && Boolean(selectedUserId)
   const isScoreEmpty = score.trim().length === 0
@@ -98,7 +100,6 @@ const MyEvaluation = ({
 
   const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
     if (!canSubmit || isScoreEmpty || scoreError) return
-
     if (mode === 'document') {
       patchDocumentEvaluation(
         {
@@ -165,6 +166,19 @@ const MyEvaluation = ({
             void refetchInterview()
           }
         },
+        onError: (error: unknown) => {
+          const maybeResponse = error as {
+            response?: { data?: { code?: unknown; message?: unknown } }
+          }
+          const code = maybeResponse.response?.data?.code
+          const message = maybeResponse.response?.data?.message
+          const isInterviewNotStarted =
+            code === 'RECRUITMENT-0082' ||
+            message === '면접이 아직 시작되지 않은 모집을 평가할 수 없습니다'
+          if (isInterviewNotStarted) {
+            setIsInterviewNotStartedModalOpen(true)
+          }
+        },
       },
     )
   }
@@ -174,98 +188,104 @@ const MyEvaluation = ({
     setScore(digitsOnly)
   }
 
+  // number input에서 지수/부호/소수 입력을 막아 0~100 정수만 입력되게 한다.
   const handleScoreKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (['e', 'E', '+', '-', '.'].includes(event.key)) {
       event.preventDefault()
     }
   }
   return (
-    <Section
-      variant="both"
-      padding={'20px 16px'}
-      gap={'18px'}
-      css={{
-        boxSizing: 'border-box',
-        backgroundColor: `${theme.colors.gray[700]}`,
-        borderRadius: '12px',
-      }}
-    >
-      <S.Container>
-        {isLoading && (
-          <S.LoadingOverlay>
-            <Loading size={24} label="불러오는 중" labelPlacement="right" />
-          </S.LoadingOverlay>
-        )}
-        <S.Header>
-          <S.SubTitle>나의 평가</S.SubTitle>
-        </S.Header>
+    <>
+      <Section
+        variant="both"
+        padding={'20px 16px'}
+        gap={'18px'}
+        css={{
+          boxSizing: 'border-box',
+          backgroundColor: `${theme.colors.gray[700]}`,
+          borderRadius: '12px',
+        }}
+      >
+        <S.Container>
+          {isLoading && (
+            <S.LoadingOverlay>
+              <Loading size={24} label="불러오는 중" labelPlacement="right" />
+            </S.LoadingOverlay>
+          )}
+          <S.Header>
+            <S.SubTitle>나의 평가</S.SubTitle>
+          </S.Header>
 
-        <S.FormContainer>
-          {/* 점수 섹션 - 입력 가능 */}
-          <S.InputWrapper>
-            <S.ScoreHeader>
-              <Label label="점수" necessary={true} />
-              {showScoreError && <ErrorMessage typo="C3.Md" errorMessage={scoreError} />}
-            </S.ScoreHeader>
-            <S.ScoreInputBox>
-              <S.ScoreInput
-                type="number"
-                value={score}
-                onChange={(e) => handleScoreChange(e.target.value)}
-                onKeyDown={handleScoreKeyDown}
-                min="0"
-                max="100"
-                inputMode="numeric"
+          <S.FormContainer>
+            {/* 점수 섹션 - 입력 가능 */}
+            <S.InputWrapper>
+              <S.ScoreHeader>
+                <Label label="점수" necessary={true} />
+                {showScoreError && <ErrorMessage typo="C3.Md" errorMessage={scoreError} />}
+              </S.ScoreHeader>
+              <S.ScoreInputBox>
+                <S.ScoreInput
+                  type="number"
+                  value={score}
+                  onChange={(e) => handleScoreChange(e.target.value)}
+                  onKeyDown={handleScoreKeyDown}
+                  min="0"
+                  max="100"
+                  inputMode="numeric"
+                />
+                <span className="total">/ 100</span>
+              </S.ScoreInputBox>
+            </S.InputWrapper>
+
+            {/* 코멘트 섹션 */}
+            <S.InputWrapper>
+              <S.FlexHeader>
+                <Label label="코멘트" necessary={false} />
+                <S.CharCount>{comment.length} / 80</S.CharCount>
+              </S.FlexHeader>
+              <S.TextArea
+                value={comment}
+                onChange={(e) => setComment(e.target.value.slice(0, 80))}
+                placeholder="코멘트를 입력해주세요."
               />
-              <span className="total">/ 100</span>
-            </S.ScoreInputBox>
-          </S.InputWrapper>
+            </S.InputWrapper>
 
-          {/* 코멘트 섹션 */}
-          <S.InputWrapper>
-            <S.FlexHeader>
-              <Label label="코멘트" necessary={false} />
-              <S.CharCount>{comment.length} / 80</S.CharCount>
-            </S.FlexHeader>
-            <S.TextArea
-              value={comment}
-              onChange={(e) => setComment(e.target.value.slice(0, 80))}
-              placeholder="코멘트를 입력해주세요."
-            />
-          </S.InputWrapper>
-
-          <S.Footer>
-            {savedOrSubmittedAt && (
-              <S.DateText>
-                {formatDateTimeDot(savedOrSubmittedAt)} {isSubmitted ? '제출' : '저장'}
-              </S.DateText>
-            )}
-            <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
-              {mode === 'document' && !isSubmitted && (
+            <S.Footer>
+              {savedOrSubmittedAt && (
+                <S.DateText>
+                  {formatDateTimeDot(savedOrSubmittedAt)} {isSubmitted ? '제출' : '저장'}
+                </S.DateText>
+              )}
+              <Flex gap={8} width={'fit-content'} css={{ marginLeft: 'auto' }}>
+                {mode === 'document' && !isSubmitted && (
+                  <Button
+                    variant="solid"
+                    tone={'gray'}
+                    type="button"
+                    label={'임시저장'}
+                    css={{ padding: '7px 0', width: '112px' }}
+                    disabled={!canSubmit || isScoreEmpty || Boolean(scoreError) || isPending}
+                    onClick={() => handleSubmit('DRAFT_SAVE')}
+                  />
+                )}
                 <Button
                   variant="solid"
-                  tone={'gray'}
+                  tone={isSubmitted || isScoreValid ? 'lime' : 'gray'}
                   type="button"
-                  label={'임시저장'}
+                  label={isSubmitted ? '평가 재제출' : '평가 제출'}
                   css={{ padding: '7px 0', width: '112px' }}
                   disabled={!canSubmit || isScoreEmpty || Boolean(scoreError) || isPending}
-                  onClick={() => handleSubmit('DRAFT_SAVE')}
+                  onClick={() => handleSubmit('SUBMIT')}
                 />
-              )}
-              <Button
-                variant="solid"
-                tone={isSubmitted || isScoreValid ? 'lime' : 'gray'}
-                type="button"
-                label={isSubmitted ? '평가 재제출' : '평가 제출'}
-                css={{ padding: '7px 0', width: '112px' }}
-                disabled={!canSubmit || isScoreEmpty || Boolean(scoreError) || isPending}
-                onClick={() => handleSubmit('SUBMIT')}
-              />
-            </Flex>
-          </S.Footer>
-        </S.FormContainer>
-      </S.Container>
-    </Section>
+              </Flex>
+            </S.Footer>
+          </S.FormContainer>
+        </S.Container>
+      </Section>
+      {isInterviewNotStartedModalOpen && (
+        <InterviewNotStartedModal onClose={() => setIsInterviewNotStartedModalOpen(false)} />
+      )}
+    </>
   )
 }
 

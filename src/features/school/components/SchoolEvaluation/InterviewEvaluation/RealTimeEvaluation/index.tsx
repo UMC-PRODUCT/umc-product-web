@@ -9,6 +9,7 @@ const QUERY_KEYS = {
 
 type SelectedUser = {
   id: string
+  canSubmitInterview: boolean
 }
 
 const readSelectedUserFromQuery = (): SelectedUser | null => {
@@ -16,7 +17,7 @@ const readSelectedUserFromQuery = (): SelectedUser | null => {
   const params = new URLSearchParams(window.location.search)
   const assignmentId = params.get(QUERY_KEYS.assignmentId)
   if (!assignmentId) return null
-  return { id: assignmentId }
+  return { id: assignmentId, canSubmitInterview: true }
 }
 
 const writeSelectedUserToQuery = (user: SelectedUser) => {
