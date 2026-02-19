@@ -53,10 +53,15 @@ const HeaderRow = styled.div<{ $cols: number }>`
   width: max-content;
 `
 
-const HeaderCell = styled.div<{ $isAllSelected: boolean; $isInteractive?: boolean }>`
+const HeaderCell = styled.div<{
+  $isAllSelected: boolean
+  $isInteractive?: boolean
+  $readOnlyCursor?: 'default' | 'not-allowed'
+}>`
   display: flex;
   justify-content: center;
-  cursor: ${({ $isInteractive }) => ($isInteractive ? 'pointer' : 'default')};
+  cursor: ${({ $isInteractive, $readOnlyCursor }) =>
+    $isInteractive ? 'pointer' : ($readOnlyCursor ?? 'default')};
 `
 
 const TimeLabelsColumn = styled.div`
@@ -92,6 +97,7 @@ const SlotCell = styled.div<{
   $isHourBoundary: boolean
   $isInteractive?: boolean
   $selectedColorMode?: 'lime' | 'gray'
+  $readOnlyCursor?: 'default' | 'not-allowed'
 }>`
   height: 25px;
   box-sizing: border-box;
@@ -109,7 +115,7 @@ const SlotCell = styled.div<{
       ? `1px solid ${theme.colors.gray[500]}`
       : `1px solid ${theme.colors.gray[600]}`};
   cursor: ${(p) => {
-    if (!p.$isInteractive) return 'default'
+    if (!p.$isInteractive) return p.$readOnlyCursor ?? 'default'
     return p.$isDisabled ? 'not-allowed' : 'pointer'
   }};
   transition:

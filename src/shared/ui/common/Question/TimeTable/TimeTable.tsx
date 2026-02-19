@@ -28,6 +28,7 @@ interface ScheduleSelectorProps {
   onChange?: (selected: Record<string, Array<string>>) => void
   mode: QuestionMode
   selectedColorMode?: 'lime' | 'gray'
+  readOnlyCursor?: 'default' | 'not-allowed'
 }
 
 const TimeTableComponent = (
@@ -41,6 +42,7 @@ const TimeTableComponent = (
     onChange,
     mode,
     selectedColorMode = 'lime',
+    readOnlyCursor = 'default',
   }: ScheduleSelectorProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) => {
@@ -157,6 +159,7 @@ const TimeTableComponent = (
                       selectedForDate.size > 0 && selectedForDate.size === availableCount
                     }
                     $isInteractive={isEditable}
+                    $readOnlyCursor={readOnlyCursor}
                   >
                     <Badge
                       typo="C5.Md"
@@ -182,6 +185,7 @@ const TimeTableComponent = (
                       $isHourBoundary={(visualStartMin + (idx + 1) * 30) % 60 === 0}
                       $isInteractive={isEditable}
                       $selectedColorMode={selectedColorMode}
+                      $readOnlyCursor={readOnlyCursor}
                       onMouseDown={isEditable ? () => handleMouseDown(date, idx) : undefined}
                       onMouseEnter={isEditable ? () => handleMouseEnter(date, idx) : undefined}
                     />
