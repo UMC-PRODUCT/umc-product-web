@@ -40,6 +40,7 @@ const schoolKeyFactory = createQueryKeys('school', {
     queryKey: null,
     contextQueries: {
       list: (params: RecruitmentsStatusParams) => [params],
+      extensionBases: null,
       documentEvaluationList: null,
       draft: (recruitmentId: string) => [{ recruitmentId }],
       applicationForm: (recruitmentId: string) => [{ recruitmentId }],
@@ -174,6 +175,7 @@ export const schoolKeys = {
   getSchoolLink: (schoolId: string) => schoolKeyFactory.links(schoolId).queryKey,
   getRecruitments: (params: RecruitmentsStatusParams) =>
     schoolKeyFactory.recruitments._ctx.list(params).queryKey,
+  getRecruitmentExtensionBases: schoolKeyFactory.recruitments._ctx.extensionBases.queryKey,
   getRecruitmentsDocumentEvaluation:
     schoolKeyFactory.recruitments._ctx.documentEvaluationList.queryKey,
   getRecruitmentDraft: (recruitmentId: string) =>

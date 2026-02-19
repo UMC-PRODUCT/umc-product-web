@@ -4,19 +4,32 @@ import { inputShell } from '@/shared/styles/formStyles'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
-const Input = styled.input<{ IconPlaced?: 'left' | 'right' }>`
+const Input = styled.input<{ IconPlaced?: 'left' | 'right'; hasIcon?: boolean }>`
   ${inputShell};
-  padding: ${(props) =>
-    props.IconPlaced === 'left' ? '10px 10px 10px 45px' : '10px 10px 10px 20px'};
+  box-sizing: border-box;
+  height: 50px;
+  min-height: 50px;
+  padding: ${(props) => {
+    if (props.IconPlaced === 'left') return '10px 16px 10px 45px'
+    return props.hasIcon ? '10px 45px 10px 16px' : '10px 16px'
+  }};
   ::placeholder {
     color: ${theme.colors.gray[400]};
   }
   flex: 1;
   overflow-x: auto;
-  max-height: 100%;
+  max-height: 50px;
   min-width: 174px;
-  ${media.down(theme.breakPoints.mobile)} {
-    padding: 10px 8px 10px 12px;
+  ${media.down(theme.breakPoints.tablet)} {
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    padding: ${(props) => {
+      if (props.IconPlaced === 'left') return '8px 16px 8px 45px'
+      return props.hasIcon ? '8px 45px 8px 16px' : '8px 16px'
+    }};
+    min-width: 120px;
+    ${theme.typography.B4.Rg};
   }
 `
 const InputWrapper = styled.div`
@@ -27,8 +40,13 @@ const InputWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   max-height: 50px;
+  min-height: 50px;
   ${media.down(theme.breakPoints.mobile)} {
     gap: 8px;
+  }
+  ${media.down(theme.breakPoints.tablet)} {
+    max-height: 42px;
+    min-height: 42px;
   }
   button {
     width: 92px;

@@ -1,3 +1,4 @@
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -22,8 +23,11 @@ const PreviewSection = ({
     <Section
       gap={17}
       variant="both"
-      padding={'14px 20px'}
-      css={{ backgroundColor: theme.colors.gray[700] }}
+      css={{
+        padding: '14px 20px',
+        backgroundColor: theme.colors.gray[700],
+        [media.down(theme.breakPoints.tablet)]: { padding: '14px 10px' },
+      }}
     >
       <Flex justifyContent="space-between">
         <S.Title>{title}</S.Title>

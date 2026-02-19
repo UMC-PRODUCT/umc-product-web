@@ -147,7 +147,17 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
           queryClient.invalidateQueries({
             queryKey: applyKeys.getRecruitmentApplicationAnswer(recruitmentId, resumeId),
           })
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getRecruitmentParts(recruitmentId),
+          })
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getMyApplicationStatus(recruitmentId),
+          })
+          queryClient.invalidateQueries({
+            queryKey: applyKeys.getActiveRecruitmentId,
+          })
           setIsSubmitModalOpen(false)
+          navigationBlocker.allowNextNavigationOnce()
           navigate({
             to: '/apply',
           })

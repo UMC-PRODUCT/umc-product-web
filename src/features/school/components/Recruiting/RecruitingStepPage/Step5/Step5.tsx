@@ -52,7 +52,7 @@ const Step5 = ({
   }
 
   return (
-    <Section variant="solid">
+    <Section variant="solid" padding={'10px'}>
       <Flex flexDirection="column" alignItems="flex-start">
         <S.Title>최종 검토</S.Title>
         <S.SubTitle>모든 정보가 입력되었습니다. 아래 내용을 확인하고 모집을 생성하세요.</S.SubTitle>

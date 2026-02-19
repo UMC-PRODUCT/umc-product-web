@@ -19,6 +19,7 @@ type DraftSyncParams = {
     result: Parameters<typeof convertApplicationFormToItems>[0]
   }
   setInitialSchedule: (next: RecruitingSchedule | null) => void
+  forceDraftStatus?: boolean
 }
 
 export const useRecruitingContentDraftSync = ({
@@ -26,6 +27,7 @@ export const useRecruitingContentDraftSync = ({
   recruitingData,
   applicationData,
   setInitialSchedule,
+  forceDraftStatus = false,
 }: DraftSyncParams) => {
   // 리크루팅 기본 정보 초기화
   useEffect(() => {
@@ -35,15 +37,17 @@ export const useRecruitingContentDraftSync = ({
     const hasCurrentItems = Array.isArray(currentItems) && currentItems.length > 0
     form.reset({
       ...initialForm,
+      status: forceDraftStatus ? 'DRAFT' : initialForm.status,
       items: hasCurrentItems ? currentItems : initialForm.items,
     })
     setInitialSchedule(initialForm.schedule)
     setScheduleValidationContext({
       initialSchedule: initialForm.schedule,
       now: dayjs().toISOString(),
-      status: initialForm.status,
+      status: forceDraftStatus ? 'DRAFT' : initialForm.status,
+      forceLockInDraft: false,
     })
-  }, [form, recruitingData.result, setInitialSchedule])
+  }, [forceDraftStatus, form, recruitingData.result, setInitialSchedule])
 
   // 지원서 질문 설계 데이터 로딩(페이지/질문/옵션)
   useEffect(() => {

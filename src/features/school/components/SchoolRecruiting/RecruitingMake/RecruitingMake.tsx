@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
-import { getRecruitments, patchRecruitmentApplicationFormDraft } from '@/features/school/domain/api'
+import { patchRecruitmentApplicationFormDraft } from '@/features/school/domain/api'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useGetRecruitmentExtensionBases } from '@/features/school/hooks/useRecruitingQueries'
 import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import { ensureRequiredItems } from '@/features/school/utils/recruiting/requiredItems'
 import Create from '@/shared/assets/icons/create.svg?react'
@@ -20,24 +21,14 @@ import * as S from './RecruitingMake.style'
 
 const RecruitingMake = () => {
   const [openModal, setOpenModal] = useState(false)
-  const [confirmModalState, setConfirmModalState] = useState<{
-    isOpen: boolean
-    publishedRecruitmentId: string | null
-  }>({
-    isOpen: false,
-    publishedRecruitmentId: null,
-  })
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [isGetPublishedModalOpen, setIsGetPublishedModalOpen] = useState(false)
-  const [publishedRecruitments, setPublishedRecruitments] = useState<
-    Array<{
-      recruitmentId: string
-      recruitmentName: string
-      startDate: string
-      endDate: string
-    }>
-  >([])
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { data: extensionBaseData, refetch: refetchExtensionBases } =
+    useGetRecruitmentExtensionBases({
+      enabled: false,
+    })
   const { usePostRecruitmentCreate } = useRecruitingMutation()
   const { mutate: postFirstRecruitmentMutate } = usePostRecruitmentCreate()
 
@@ -45,7 +36,7 @@ const RecruitingMake = () => {
     postFirstRecruitmentMutate(undefined, {
       onSuccess: (data) => {
         queryClient.invalidateQueries({
-          queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }),
+          queryKey: schoolKeys.getRecruitmentExtensionBases,
         })
         const recruitingId = data.result.recruitmentId
         const requiredItems = ensureRequiredItems([], [], {
@@ -75,32 +66,11 @@ const RecruitingMake = () => {
 
   const handleCreateRecruiting = async () => {
     try {
-      const [ongoingResponse, scheduledResponse] = await Promise.all([
-        getRecruitments({ status: 'ONGOING' }),
-        getRecruitments({ status: 'SCHEDULED' }),
-      ])
-      const recruitments = [
-        ...ongoingResponse.result.recruitments,
-        ...scheduledResponse.result.recruitments,
-      ]
-      const publishedList = recruitments.filter(
-        (item) => item.status === 'PUBLISHED' && item.editable,
-      )
+      const { data } = await refetchExtensionBases()
+      const publishedList = data?.result.recruitments ?? []
 
       if (publishedList.length > 0) {
-        const targetRecruitment = publishedList[0]
-        setPublishedRecruitments(
-          publishedList.map((item) => ({
-            recruitmentId: String(item.recruitmentId),
-            recruitmentName: item.recruitmentName,
-            startDate: item.startDate,
-            endDate: item.endDate,
-          })),
-        )
-        setConfirmModalState({
-          isOpen: true,
-          publishedRecruitmentId: String(targetRecruitment.recruitmentId),
-        })
+        setIsConfirmModalOpen(true)
         return
       }
     } catch (error) {
@@ -149,36 +119,41 @@ const RecruitingMake = () => {
         </S.Grid>
       </Section>
       {openModal && <TempRecruitmentModal onClose={() => setOpenModal(false)} />}
-      {confirmModalState.isOpen && (
+      {isConfirmModalOpen && (
         <ConfirmGetRecruitmentModal
           onClose={() => {
-            setConfirmModalState({
-              isOpen: false,
-              publishedRecruitmentId: null,
-            })
+            setIsConfirmModalOpen(false)
           }}
           onClickAdditional={() => {
-            setConfirmModalState({
-              isOpen: false,
-              publishedRecruitmentId: null,
-            })
+            setIsConfirmModalOpen(false)
             setIsGetPublishedModalOpen(true)
           }}
           onClickNew={() => {
-            setConfirmModalState({
-              isOpen: false,
-              publishedRecruitmentId: null,
-            })
+            setIsConfirmModalOpen(false)
             createRecruitingFromScratch()
           }}
         />
       )}
       {isGetPublishedModalOpen && (
         <GetPublishedRecruitmentModal
-          recruitments={publishedRecruitments}
+          recruitments={(extensionBaseData?.result.recruitments ?? []).map((item) => ({
+            recruitmentId: String(item.recruitmentId),
+            recruitmentName: item.title,
+            startDate: item.startDate,
+            endDate: item.endDate,
+          }))}
           onClose={() => setIsGetPublishedModalOpen(false)}
           onSelect={(recruitmentId) => {
-            console.log('published recruitment id:', recruitmentId)
+            setIsGetPublishedModalOpen(false)
+            navigate({
+              to: '/school/recruiting/$recruitingId',
+              params: { recruitingId: recruitmentId },
+              search: {
+                source: 'extension',
+                baseRecruitmentId: recruitmentId,
+                step: 1,
+              },
+            })
           }}
         />
       )}

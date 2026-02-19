@@ -16,6 +16,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
   const [paused, setPaused] = useState(false)
   const listWidthRef = useRef(0)
   const isNormalizingRef = useRef(false)
+  const autoScrollRemainderRef = useRef(0)
 
   const normalizeScrollPosition = useCallback((target: HTMLDivElement) => {
     const listWidth = listWidthRef.current
@@ -53,7 +54,12 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
       if (!paused) {
         const listWidth = listWidthRef.current
         if (listWidth > 0) {
-          target.scrollLeft += (delta * speed) / 16
+          autoScrollRemainderRef.current += (delta * speed) / 16
+          const nextStep = Math.trunc(autoScrollRemainderRef.current)
+          if (nextStep !== 0) {
+            target.scrollLeft += nextStep
+            autoScrollRemainderRef.current -= nextStep
+          }
         }
       }
       normalizeScrollPosition(target)
@@ -62,7 +68,10 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
     }
 
     rafId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafId)
+    return () => {
+      autoScrollRemainderRef.current = 0
+      cancelAnimationFrame(rafId)
+    }
   }, [paused, normalizeScrollPosition])
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {

@@ -2,11 +2,16 @@ import styled from '@emotion/styled'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
 import { inputShell } from '@/shared/styles/formStyles'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 
 export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   ${inputShell};
-  padding: 12px 16px;
+  box-sizing: border-box;
+  height: 50px;
+  min-height: 50px;
+  max-height: 50px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,6 +32,14 @@ export const StyledTrigger = styled(SelectPrimitive.Trigger)`
     cursor: not-allowed;
     opacity: 0.6;
     pointer-events: none;
+  }
+
+  ${media.down(theme.breakPoints.tablet)} {
+    ${theme.typography.B4.Rg};
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    padding: 8px 16px;
   }
 `
 

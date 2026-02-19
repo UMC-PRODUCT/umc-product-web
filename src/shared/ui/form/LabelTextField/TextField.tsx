@@ -21,6 +21,7 @@ export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
     buttonClick: () => void
     validation: boolean // 버튼이 언제 validate 되는지 여부 (예시: 이메일 인증 완료시)
     isLoading?: boolean
+    disabled?: boolean
   }
   autoComplete: string
   css?: Interpolation<Theme>
@@ -57,7 +58,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const currentValue = isControlled ? value : internalValue
     const trimmedValue = (typeof currentValue === 'string' ? currentValue : '').trim()
     const isButtonLoading = button?.isLoading ?? false
-    const isButtonDisabled = isButtonLoading || !!error?.error || trimmedValue === ''
+    const isButtonDisabled =
+      isButtonLoading || !!button?.disabled || !!error?.error || trimmedValue === ''
 
     const controlledProps = value !== undefined ? { value } : undefined
 
@@ -69,6 +71,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           type={type}
           placeholder={placeholder}
           ref={ref}
+          hasIcon={!!Icon}
           IconPlaced={IconPlaced}
           {...restInputProps}
           {...controlledProps}

@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 
 import Upload from '@/shared/assets/icons/arrow_up_circle.svg?react'
+import { media } from '@/shared/styles/media'
+import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label/Label'
@@ -100,8 +102,23 @@ const AddSchool = () => {
         <S.TabSubtitle>새로운 학교를 시스템에 등록합니다.</S.TabSubtitle>
       </S.TabHeader>
       <S.Form>
-        <Section variant="solid" flexDirection="row" alignItems="flex-start" height="100%">
-          <Flex width={'50%'} gap={24} flexDirection="column">
+        <Section
+          variant="solid"
+          alignItems="flex-start"
+          height="100%"
+          css={{
+            flexDirection: 'row',
+            [media.down(theme.breakPoints.desktop)]: {
+              width: '100%',
+              flexDirection: 'column',
+            },
+          }}
+        >
+          <Flex
+            gap={24}
+            flexDirection="column"
+            css={{ width: '50%', [media.down(theme.breakPoints.desktop)]: { width: '100%' } }}
+          >
             <S.InputRow>
               <LabelTextField
                 type="text"
@@ -170,11 +187,11 @@ const AddSchool = () => {
           <Flex
             height="100%"
             minHeight={'100%'}
-            width={'50%'}
             flexDirection="column"
             alignItems="flex-start"
             gap={24}
             justifyContent="space-between"
+            css={{ width: '50%', [media.down(theme.breakPoints.desktop)]: { width: '100%' } }}
           >
             <LabelTextField
               placeholder="학교에 대한 추가 정보를 입력하세요. (선택)"

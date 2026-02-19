@@ -14,7 +14,6 @@ import * as S from './index.style'
 const QUERY_KEYS = {
   date: 'rtDate',
 } as const
-
 const formatTimeToHourMinute = (value: string) => {
   const [hour = '', minute = ''] = value.split(':')
   if (!hour || !minute) return value
@@ -56,7 +55,7 @@ const ListView = ({
   onStartEval,
 }: {
   recruitmentId: string
-  onStartEval: (user: { id: string }) => void
+  onStartEval: (user: { id: string; canSubmitInterview: boolean }) => void
 }) => {
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
   const [selectedDateId, setSelectedDateId] = useState<string | null>(() => readDateFromQuery())
@@ -135,14 +134,14 @@ const ListView = ({
                   score={Number(applicant.documentScore)}
                   tags={applicant.appliedParts.map((part) => part.key)}
                   status={applicant.evaluationProgressStatus}
-                  canStartEval={canStartEvaluation({
-                    serverNow: data.result.serverNow,
-                    slotDate: applicant.slot.date,
-                    slotStart: applicant.slot.start,
-                  })}
                   handleStartEval={() =>
                     onStartEval({
                       id: String(applicant.assignmentId),
+                      canSubmitInterview: canStartEvaluation({
+                        serverNow: data.result.serverNow,
+                        slotDate: applicant.slot.date,
+                        slotStart: applicant.slot.start,
+                      }),
                     })
                   }
                 />

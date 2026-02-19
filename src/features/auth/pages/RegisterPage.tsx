@@ -136,6 +136,7 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
       onClick: handleTriggerSendEmail,
       isLoading: isSendingEmail,
       completed: emailRequestState.isSent,
+      disabled: emailRequestState.isSent,
     },
     verificationButton: {
       label: verificationButtonLabel,

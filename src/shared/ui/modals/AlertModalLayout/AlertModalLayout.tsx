@@ -70,10 +70,10 @@ const AlertModalLayout = ({
               <S.ContentWrapper
                 justifyContent="flex-start"
                 width="fit-content"
-                minHeight="50px"
                 alignItems="center"
+                height={'fit-content'}
               >
-                {content}
+                {content.trim()}
               </S.ContentWrapper>
             </Modal.Body>
             <Modal.Footer>

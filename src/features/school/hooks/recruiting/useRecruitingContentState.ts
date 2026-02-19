@@ -9,6 +9,14 @@ import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 
 import type { PartCompletionMap, RecruitingProps } from './types'
 
+type RecruitingContentStateParams = Pick<
+  RecruitingProps,
+  'initialStepNumber' | 'onStepNumberChange' | 'forceLockedMode'
+> & {
+  isExtensionMode?: boolean
+  isExtensionBaseMode?: boolean
+}
+
 type RecruitingContentState = {
   scrollTopRef: React.MutableRefObject<HTMLDivElement | null>
   form: UseFormReturn<RecruitingForms>
@@ -25,6 +33,8 @@ type RecruitingContentState = {
   isBackConfirmOpen: boolean
   setIsBackConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>
   isEditLocked: boolean
+  isExtensionMode: boolean
+  isExtensionBaseMode: boolean
   isDirty: boolean
   navigationBlocker: ReturnType<typeof useUnsavedChangesBlocker>
   currentStep: number
@@ -42,7 +52,9 @@ export const useRecruitingContentState = ({
   initialStepNumber,
   onStepNumberChange,
   forceLockedMode,
-}: RecruitingProps): RecruitingContentState => {
+  isExtensionMode = false,
+  isExtensionBaseMode = false,
+}: RecruitingContentStateParams): RecruitingContentState => {
   // 라우팅/스크롤/폼 상태 기본 설정
   const scrollTopRef = useRef<HTMLDivElement | null>(null)
   const { form, values, interviewDates } = useRecruitingForm()
@@ -70,8 +82,8 @@ export const useRecruitingContentState = ({
 
   // 게시 상태면 편집 잠금
   const isEditLocked = useMemo(
-    () => forceLockFromEnv || values.status !== 'DRAFT',
-    [forceLockFromEnv, values.status],
+    () => forceLockFromEnv || (!isExtensionBaseMode && values.status !== 'DRAFT'),
+    [forceLockFromEnv, isExtensionBaseMode, values.status],
   )
 
   const {
@@ -144,6 +156,8 @@ export const useRecruitingContentState = ({
     isBackConfirmOpen,
     setIsBackConfirmOpen,
     isEditLocked,
+    isExtensionMode,
+    isExtensionBaseMode,
     isDirty,
     navigationBlocker,
     currentStep: step,

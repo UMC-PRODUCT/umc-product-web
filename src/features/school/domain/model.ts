@@ -125,6 +125,16 @@ export type GetRecruitmentsResponseDTO = {
   }>
 }
 
+export type GetRecruitmentExtensionBasesResponseDTO = {
+  recruitments: Array<{
+    recruitmentId: string
+    title: string
+    isRoot: boolean
+    startDate: string
+    endDate: string
+  }>
+}
+
 export type GetRecruitmentNoticesResponseDTO = {
   recruitmentId: string
   title: string
@@ -147,6 +157,17 @@ export type PostRecruitmentCreateResponseDTO = {
   recruitmentId?: string
   formId?: string
 }
+
+export type PostRecruitmentExtensionRequestDTO = {
+  recruitmentName: string
+  parts: Array<PartType>
+}
+
+export type PostRecruitmentExtensionResponseDTO = {
+  recruitmentId: string
+  formId: string
+}
+
 export type PatchRecruitmentApplicationFormDraftRequestDTO = ApplicationFormPayload
 
 export type PatchRecruitmentApplicationFormDraftResponseDTO = RecruitmentApplicationFormResponseDTO

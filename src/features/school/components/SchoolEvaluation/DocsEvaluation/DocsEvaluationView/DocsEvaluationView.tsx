@@ -35,7 +35,11 @@ const DocsEvaluationContent = () => {
   const navigate = useNavigate()
   return (
     <>
-      <Shared.TabHeader flexDirection="row" justifyContent="space-between" alignItems="center">
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        css={{ [media.down(theme.breakPoints.tablet)]: { flexDirection: 'column', gap: '12px' } }}
+      >
         <Shared.TabHeader alignItems="flex-start">
           <Shared.TabTitle>지원서 평가</Shared.TabTitle>
         </Shared.TabHeader>
@@ -59,7 +63,7 @@ const DocsEvaluationContent = () => {
             }
           />
         </Flex>
-      </Shared.TabHeader>
+      </Flex>
       <S.Wrapper>
         <ApplicantList
           recruitmentId={recruitmentId}

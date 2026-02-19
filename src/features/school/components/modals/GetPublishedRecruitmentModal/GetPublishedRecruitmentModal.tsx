@@ -58,7 +58,7 @@ const GetPublishedRecruitmentModal = ({
               기존에 게시된 모집 목록에서 불러올 모집을 선택할 수 있습니다.
             </Modal.Description>
             <Modal.Body>
-              <S.ListWrapper>
+              <S.ListWrapper gap={12}>
                 {recruitments.map((recruitment) => (
                   <S.Card key={recruitment.recruitmentId}>
                     <Flex flexDirection="column" gap={10} alignItems="flex-start">

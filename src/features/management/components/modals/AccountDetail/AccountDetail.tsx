@@ -1,6 +1,7 @@
 import Close from '@/shared/assets/icons/close.svg?react'
 import Mail from '@/shared/assets/icons/mail.svg?react'
 import DefaultProfile from '@/shared/assets/icons/profile.svg'
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { RoleType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
@@ -44,6 +45,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
     isLoading,
     errorStatus,
     profile,
+    activeGisu,
     activityHistories,
     deactivateChallenger,
     isDeactivating,
@@ -86,7 +88,7 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
             {isNotFoundUser ? (
               <Section variant="solid" css={{ marginTop: '32px', flex: 1 }}>
                 <Flex alignItems="center" justifyContent="center" height="100%">
-                  <S.SubTitle>찾을 수 없는 유저입니다.</S.SubTitle>
+                  <S.Error>찾을 수 없는 유저입니다.</S.Error>
                 </Flex>
               </Section>
             ) : (
@@ -101,6 +103,11 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                         width: '100px',
                         minWidth: '100px',
                         height: '100px',
+                        [media.down(theme.breakPoints.tablet)]: {
+                          width: '60px',
+                          minWidth: '60px',
+                          height: '60px',
+                        },
                       }}
                     />
                     <Flex flexDirection="column" alignItems="flex-start">
@@ -149,17 +156,20 @@ const AccountDetail = ({ memberId, onClose }: { memberId: string; onClose: () =>
                     <S.Title>활동 이력</S.Title>
                     <S.SubTitle>기수별 참여 파트 정보를 확인할 수 있습니다.</S.SubTitle>
                   </Flex>
-                  <Flex flexDirection="column" gap={8} width="100%">
+                  <Flex flexDirection="column-reverse" gap={8} width="100%">
                     {activityHistories.length > 0 ? (
                       activityHistories.map((history, index) => (
                         <Section
                           key={`${history.challengerId}-${history.gisu}-${history.part}-${index}`}
                           variant="solid"
-                          padding="15px 40px"
+                          css={{
+                            padding: '15px 40px',
+                            [media.down(theme.breakPoints.desktop)]: { padding: '12px 16px' },
+                          }}
                         >
                           <S.ActivityHistoryRow>
                             <S.Generation
-                              isActive={history.isActive}
+                              isActive={String(history.gisu) === String(activeGisu)}
                             >{`${history.gisu}기`}</S.Generation>
                             <S.ActivityInfo isActive={history.isActive}>
                               <span>파트</span>

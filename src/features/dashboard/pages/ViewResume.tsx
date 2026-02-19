@@ -61,7 +61,11 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
   if (totalPages === 0) {
     return (
       <PageLayout>
-        <Flex maxWidth="956px" justifyContent="space-between">
+        <Flex
+          maxWidth="956px"
+          justifyContent="space-between"
+          css={{ flexDirection: 'column', gap: '20px' }}
+        >
           <PageTitle title={`${questionsData.result.noticeTitle}`} />
           <Button
             tone="lime"

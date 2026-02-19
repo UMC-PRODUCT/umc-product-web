@@ -1,6 +1,7 @@
 import type { CSSObject } from '@emotion/react'
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { TypoGroup, TypoToken } from '@/shared/types/typo'
 
@@ -25,13 +26,33 @@ export const FieldLabel = styled.label<{ typo?: TypoToken }>`
   ${({ typo }) => resolveTypo(typo) ?? (theme.typography.C4.Rg as CSSObject)}
 `
 
-export const FieldInput = styled.input<{ typo?: TypoToken }>`
+type ResponsiveTypo = Partial<Record<'desktop' | 'tablet' | 'mobile', TypoToken>>
+
+export const FieldInput = styled.input<{ typo?: TypoToken; responsiveTypo?: ResponsiveTypo }>`
   padding: 6px 10px;
   border-radius: 8px;
   border: none;
   background-color: ${theme.colors.black};
   color: ${theme.colors.white};
   ${({ typo }) => resolveTypo(typo) ?? (theme.typography.C5.Rg as CSSObject)};
+  ${({ responsiveTypo }) =>
+    responsiveTypo?.desktop
+      ? {
+          [media.up(theme.breakPoints.desktop)]: resolveTypo(responsiveTypo.desktop),
+        }
+      : undefined}
+  ${({ responsiveTypo }) =>
+    responsiveTypo?.tablet
+      ? {
+          [media.down(theme.breakPoints.tablet)]: resolveTypo(responsiveTypo.tablet),
+        }
+      : undefined}
+  ${({ responsiveTypo }) =>
+    responsiveTypo?.mobile
+      ? {
+          [media.down(theme.breakPoints.mobile)]: resolveTypo(responsiveTypo.mobile),
+        }
+      : undefined}
   transition:
     border-color 140ms ease,
     box-shadow 140ms ease,

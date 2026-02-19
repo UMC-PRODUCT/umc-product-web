@@ -48,6 +48,7 @@ const ProfileMenuContent = ({
     gcTime: 1000 * 60 * 60 * 24 * 7,
   })
   const gisuId = gisu?.result.gisuId
+  const [failedProfileImageSrc, setFailedProfileImageSrc] = useState<string | null>(null)
 
   useEffect(() => {
     if (!data) return
@@ -102,10 +103,13 @@ const ProfileMenuContent = ({
   return (
     <>
       <Flex gap="12px">
-        {data.profileImageLink ? (
+        {data.profileImageLink && failedProfileImageSrc !== data.profileImageLink ? (
           <img
             src={data.profileImageLink}
             alt="프로필 이미지"
+            onError={(event) =>
+              setFailedProfileImageSrc(event.currentTarget.currentSrc || event.currentTarget.src)
+            }
             css={{ width: '46px', minWidth: '46px', height: '46px', borderRadius: '50%' }}
           />
         ) : (
@@ -135,7 +139,7 @@ const ProfileMenuContent = ({
           <Badge tone="gray" variant="solid" typo="H5.Md">
             권한
           </Badge>
-          {activeRoleLabel || '권한 없음'}
+          {activeRoleLabel || '일반 유저'}
         </S.InfoRow>
       </Flex>
       {children && <S.MobileOnly>{children}</S.MobileOnly>}
@@ -212,6 +216,7 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const { data: profileData } = useMemberMeQuery()
+  const [failedTriggerImageSrc, setFailedTriggerImageSrc] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
@@ -230,8 +235,14 @@ const Profile = ({ children }: { children?: React.ReactNode }) => {
   return (
     <S.Container ref={menuRef}>
       <S.TriggerButton type="button" aria-label="프로필 메뉴 열기" onClick={() => setOpen(!open)}>
-        {profileData?.profileImageLink ? (
-          <S.TriggerImage src={profileData.profileImageLink} alt="프로필 이미지" />
+        {profileData?.profileImageLink && failedTriggerImageSrc !== profileData.profileImageLink ? (
+          <S.TriggerImage
+            src={profileData.profileImageLink}
+            alt="프로필 이미지"
+            onError={(event) =>
+              setFailedTriggerImageSrc(event.currentTarget.currentSrc || event.currentTarget.src)
+            }
+          />
         ) : (
           <S.TriggerIcon />
         )}

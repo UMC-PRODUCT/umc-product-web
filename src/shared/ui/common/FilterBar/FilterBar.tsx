@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 
+import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import Section from '@/shared/ui/common/Section/Section'
 
@@ -38,4 +39,9 @@ const FilterBarWrapper = styled(Section)`
     width: 100%;
   }
   overflow-x: scroll;
+  button {
+    ${media.down(theme.breakPoints.tablet)} {
+      max-height: 42px;
+    }
+  }
 `
