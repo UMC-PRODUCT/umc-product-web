@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 
 import PartDivider from '@/features/apply/components/PartDivider'
-import type { QuestionAnswerValue } from '@/features/apply/domain'
 import {
   useGetRecruitmentApplicationAnswer,
   useGetRecruitmentApplicationForm,
@@ -11,6 +10,7 @@ import { buildDefaultValuesFromQuestions } from '@/features/apply/utils'
 import * as S from '@/features/dashboard/components/ViewResumePage.style'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
+import type { QuestionAnswerValue } from '@/shared/types/apply'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'

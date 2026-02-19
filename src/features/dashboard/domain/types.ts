@@ -1,6 +1,6 @@
-import type { DocumentStatusType, FinalStatusType } from '@/features/apply/domain'
-import type { PartType } from '@/features/auth/domain'
 import type { UserApplicationBadgeType } from '@/shared/constants/umc'
+import type { DocumentStatusType, FinalStatusType } from '@/shared/types/apply'
+import type { PartType } from '@/shared/types/part'
 
 export type RecruitingStepType =
   | 'BEFORE_APPLY'

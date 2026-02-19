@@ -1,8 +1,11 @@
-import type { LinkType } from '@/shared/constants/umc'
 import type { CommonResponseDTO } from '@/shared/types/api'
+import type { ExternalLink } from '@/shared/types/link'
 import type { OrganizationType, RoleType } from '@/shared/types/umc'
 
 import type { PartType } from './model'
+
+export type { PostRefreshTokenResponseDTO } from '@/shared/types/auth'
+export type { ExternalLink } from '@/shared/types/link'
 
 export type RegisterTokenPayload = {
   memberId: string
@@ -24,10 +27,6 @@ export type PostRegisterRequestDTO = {
     isAgreed?: boolean
   }>
 }
-export type PostRefreshTokenResponseDTO = CommonResponseDTO<{
-  accessToken: string
-  refreshToken: string
-}>
 export type PostRefreshTokenRequestDTO = {
   refreshToken?: string
 }
@@ -79,12 +78,6 @@ export type GetTermsResponseDTO = {
 
 export type PatchTermsRequestDTO = {
   content: string
-}
-
-export type ExternalLink = {
-  title: string
-  type: LinkType
-  url: string
 }
 
 export type GetSchoolLinkResponseDTO = {

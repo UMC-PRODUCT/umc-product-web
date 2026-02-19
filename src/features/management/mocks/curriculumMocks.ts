@@ -1,5 +1,5 @@
-import type { PartType } from '@/features/auth/domain'
-import type { Workbook } from '@/features/management/domain/model'
+import type { Workbook } from '@/shared/types/management'
+import type { PartType } from '@/shared/types/part'
 
 const ANDROID_CURRICULUM_MOCK: Array<Workbook> = [
   {
