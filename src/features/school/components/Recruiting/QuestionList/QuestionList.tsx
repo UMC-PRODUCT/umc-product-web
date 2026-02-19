@@ -1,5 +1,5 @@
 import type { DragEvent } from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import type { Control } from 'react-hook-form'
 import { useFieldArray, useWatch } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
@@ -49,12 +49,10 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
   const queryClient = useQueryClient()
   const applicationQueryKey = schoolKeys.getRecruitmentApplicationFormDraft(recruitingId)
   // 폼 문항 리스트 필드 배열 제어
-  const { fields, append, remove, move, update, replace } = useFieldArray<RecruitingForms, 'items'>(
-    {
-      control,
-      name: 'items',
-    },
-  )
+  const { fields, append, remove, move } = useFieldArray<RecruitingForms, 'items'>({
+    control,
+    name: 'items',
+  })
 
   const watchedItems = useWatch({
     control,
@@ -65,43 +63,33 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     () => (Array.isArray(watchedItems) ? watchedItems : []),
     [watchedItems],
   )
-  const normalizedSignature = useMemo(
-    () =>
-      normalizedItems
-        .map((item) => {
-          const targetKey =
-            item.target.kind === 'PART'
-              ? `PART:${item.target.part}`
-              : `COMMON:${item.target.pageNo}`
-          const questionKey = item.question.questionId ?? 'new'
-          return `${targetKey}|${questionKey}|${item.question.type}|${item.question.orderNo}`
-        })
-        .join('||'),
-    [normalizedItems],
-  )
-  const lastReplacedSignatureRef = useRef<string>('')
-  const fieldsSignature = useMemo(
-    () =>
-      fields
-        .map((item) => {
-          const itemTarget = item.target
-          const question = item.question
-          const targetKey =
-            itemTarget.kind === 'PART' ? `PART:${itemTarget.part}` : `COMMON:${itemTarget.pageNo}`
-          const questionKey = question.questionId ?? 'new'
-          return `${targetKey}|${questionKey}|${question.type}|${question.orderNo}`
-        })
-        .join('||'),
-    [fields],
+
+  const isSameTarget = useCallback(
+    (item: RecruitingForms['items'][number]) => {
+      if (target.kind === 'COMMON_PAGE') {
+        return item.target.kind === 'COMMON_PAGE' && item.target.pageNo === target.pageNo
+      }
+      return item.target.kind === 'PART' && item.target.part === target.part
+    },
+    [target],
   )
 
-  useEffect(() => {
-    if (normalizedSignature === lastReplacedSignatureRef.current) return
-    if (normalizedSignature !== fieldsSignature) {
-      lastReplacedSignatureRef.current = normalizedSignature
-      replace(normalizedItems)
-    }
-  }, [normalizedSignature, fieldsSignature, normalizedItems, replace])
+  const reorderTargetItems = useCallback(
+    (items: RecruitingForms['items']) => {
+      let orderNo = 1
+      return items.map((item) => {
+        if (!isSameTarget(item)) return item
+        return {
+          ...item,
+          question: {
+            ...item.question,
+            orderNo: String(orderNo++),
+          },
+        }
+      })
+    },
+    [isSameTarget],
+  )
 
   // 현재 페이지(공통/파트)에 해당하는 문항 인덱스만 추려서 orderNo 기준 정렬
   const filteredIndices = useMemo(
@@ -146,39 +134,29 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     return next
   }, [filteredIndices, normalizedItems, target])
 
-  // 화면에 보이는 순서대로 orderNo를 동기화 (드래그/추가/삭제 대응)
-  useEffect(() => {
-    filteredIndices.forEach((itemIndex, orderIndex) => {
-      const item = normalizedItems[itemIndex]
-      if (Number(item.question.orderNo) === orderIndex + 1) return
-      update(itemIndex, {
-        ...item,
-        question: {
-          ...item.question,
-          orderNo: String(orderIndex + 1),
-        },
-      })
-    })
-  }, [filteredIndices, normalizedItems, update])
-
   // 문항 추가 + 임시저장(있을 때만)
   const handleAddQuestion = () => {
     if (isLocked) return
-    const orderNo = String(filteredIndices.length + 1)
     const newItem: RecruitingForms['items'][number] = {
       target,
       question: {
         type: 'LONG_TEXT',
         questionText: '',
         required: true,
-        orderNo,
+        orderNo: String(filteredIndices.length + 1),
         options: [],
       },
     }
+    const nextItems = reorderTargetItems([...normalizedItems, newItem])
     append(newItem)
+    recruitmentForm.setValue('items', nextItems, {
+      shouldDirty: true,
+      shouldTouch: false,
+      shouldValidate: true,
+    })
     if (!recruitingId) return
     patchTempSavedRecruitQuestionsMutate(
-      { items: buildQuestionsPayload([...normalizedItems, newItem]) },
+      { items: buildQuestionsPayload(nextItems) },
       {
         onSuccess: (data) => {
           recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
@@ -197,7 +175,15 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     if (isLocked || isFixed) return
     const item = normalizedItems[index]
     const questionId = item.question.questionId
+    const nextItems = reorderTargetItems(
+      normalizedItems.filter((_, itemIndex) => itemIndex !== index),
+    )
     remove(index)
+    recruitmentForm.setValue('items', nextItems, {
+      shouldDirty: true,
+      shouldTouch: false,
+      shouldValidate: true,
+    })
     deleteSingleQuestionMutate(String(questionId), {
       onSuccess: (data) => {
         recruitmentForm.setValue('items', convertApplicationFormToItems(data.result), {
@@ -254,10 +240,21 @@ const QuestionList = ({ control, target, isLocked = false }: QuestionListProps) 
     if (isLocked) return
     event.preventDefault()
     const sourceIndex = draggingId.current
-    draggingId.current = null
-    if (sourceIndex === null || sourceIndex === targetIndex) return
+    if (sourceIndex === null || sourceIndex === targetIndex) {
+      handleDragEnd()
+      return
+    }
+    const movedItems = [...normalizedItems]
+    const [sourceItem] = movedItems.splice(sourceIndex, 1)
+    movedItems.splice(targetIndex, 0, sourceItem)
+    const nextItems = reorderTargetItems(movedItems)
     move(sourceIndex, targetIndex)
-    setPlaceholderIndex(null)
+    recruitmentForm.setValue('items', nextItems, {
+      shouldDirty: true,
+      shouldTouch: false,
+      shouldValidate: true,
+    })
+    handleDragEnd()
   }
 
   // 현재 페이지에 보여줄 문항 렌더링 순서 계산

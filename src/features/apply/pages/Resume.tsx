@@ -8,7 +8,7 @@ import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { useAutoSave } from '@/shared/hooks/useAutoSave'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
-import { applyKeys } from '@/shared/queryKeys'
+import { applyKeys, dashboardKeys } from '@/shared/queryKeys'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
@@ -155,6 +155,9 @@ const ResumeContentPage = ({ currentPage, onPageChange }: ResumeProps) => {
           })
           queryClient.invalidateQueries({
             queryKey: applyKeys.getActiveRecruitmentId,
+          })
+          queryClient.invalidateQueries({
+            queryKey: dashboardKeys.getMyApplications,
           })
           setIsSubmitModalOpen(false)
           navigationBlocker.allowNextNavigationOnce()

@@ -63,7 +63,8 @@ const interviewTimeTableSchema = z.object({
     .trim()
     .min(1, '면접 시간을 입력해 주세요.')
     .regex(/^\d+$/, '숫자만 입력해 주세요.')
-    .refine((value) => Number(value) > 0, '1분 이상 입력해 주세요.'),
+    .refine((value) => Number(value) >= 10, '10분 이상으로 입력해 주세요.')
+    .refine((value) => Number(value) <= 60, '60분 이하로 입력해 주세요.'),
   enabledByDate: z.array(
     z.object({
       date: z.string(),

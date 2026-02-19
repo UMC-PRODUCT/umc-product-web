@@ -76,6 +76,14 @@ export const ProjectsScrollWrapper = styled.div<{ $dragging?: boolean }>`
   }
 `
 
+export const EmptyState = styled.div`
+  ${homeResponsiveSpace('padding: 80px 60px;', 'padding: 64px 32px;', 'padding: 48px 20px;')}
+  ${homeResponsiveFont('22px', '20px', '16px')}
+  color: ${theme.colors.gray[300]};
+  text-align: center;
+  font-weight: 700;
+`
+
 export const ProjectsScrollContainer = styled.div`
   display: flex;
   width: max-content;
@@ -95,7 +103,7 @@ export const ProjectCard = styled.div`
   transition: all 0.4s;
   min-width: 320px;
   max-width: 320px;
-  height: 380px;
+  height: 320px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -108,6 +116,15 @@ export const ProjectCard = styled.div`
     min-width: 256px;
     max-width: 256px;
     height: 300px;
+  }
+  img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+
+    ${media.down(theme.breakPoints.tablet)} {
+      height: 136px;
+    }
   }
 `
 

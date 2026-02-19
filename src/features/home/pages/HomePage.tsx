@@ -15,14 +15,8 @@ import SponsorsSection from '../components/SponsorsSection/SponsorsSection'
 import StatsSection from '../components/StatsSection/StatsSection'
 import UniversitySection from '../components/UniversitySection/UniversitySection'
 import ValuesSection from '../components/ValuesSection/ValuesSection'
-import {
-  faqItems,
-  heroText,
-  projectsData,
-  sponsors,
-  stats,
-  timelineItems,
-} from '../domain/constants'
+import { faqItems, heroText, sponsors, stats, timelineItems } from '../domain/constants'
+import { projectsData } from '../domain/data'
 import * as S from './styles/HomePage.common.style'
 
 export const HomePage = () => {

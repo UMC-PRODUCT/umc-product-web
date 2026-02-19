@@ -130,12 +130,6 @@ const Step2 = ({
     const applyStartPast = prev?.applyStartAt ? now.isAfter(dayjs(prev.applyStartAt), 'day') : false
     const applyEndPast = prev?.applyEndAt ? now.isAfter(dayjs(prev.applyEndAt), 'day') : false
     const docResultPast = prev?.docResultAt ? now.isAfter(dayjs(prev.docResultAt), 'day') : false
-    const interviewStartPast = prev?.interviewStartAt
-      ? now.isAfter(dayjs(prev.interviewStartAt), 'day')
-      : false
-    const interviewEndPast = prev?.interviewEndAt
-      ? now.isAfter(dayjs(prev.interviewEndAt), 'day')
-      : false
     const finalResultPast = prev?.finalResultAt
       ? now.isAfter(dayjs(prev.finalResultAt), 'day')
       : false
@@ -143,12 +137,16 @@ const Step2 = ({
       applyStartAt: !applyStarted && !applyStartPast,
       applyEndAt: !applyEnded && !applyEndPast,
       docResultAt: !applyEnded && !docResultPast,
-      interviewStartAt: !interviewEnded && !interviewStartPast,
-      interviewEndAt: !interviewEnded && !interviewEndPast,
-      interviewTimeTable: !docResultPast,
+      // 운영 정책상 게시 이후 면접 시작일은 고정값으로 유지한다.
+      interviewStartAt: false,
+      // 운영 정책상 게시 이후 면접 종료일은 고정값으로 유지한다.
+      interviewEndAt: false,
+      // 운영 정책상 게시 이후 면접 시간대는 고정값으로 유지한다.
+      interviewTimeTable: false,
       finalResultAt: !interviewEnded && !finalResultPast,
     }
   }, [initialSchedule, isExtensionMode, now, status])
+  const canEditSlotMinutes = status === 'PUBLISHED' ? true : canEdit.interviewTimeTable
 
   const interviewDates = useMemo(() => {
     if (!interviewStartAt || !interviewEndAt) return []
@@ -580,7 +578,7 @@ const Step2 = ({
                   inputMode="numeric"
                   pattern="[0-9]*"
                   css={{ width: '100%' }}
-                  disabled={!canEdit.interviewTimeTable}
+                  disabled={!canEditSlotMinutes}
                   error={
                     fieldState.error?.message || localErrors.interviewTimeTable
                       ? {
@@ -631,6 +629,7 @@ const Step2 = ({
                           ? 'gray'
                           : 'lime'
                       }
+                      readOnlyCursor={!canEdit.interviewTimeTable ? 'not-allowed' : 'default'}
                       disabledSlots={[]}
                     />
                     {fieldState.error && (

@@ -29,4 +29,8 @@ export const inputShell = css`
     border-color: ${theme.colors.lime};
     box-shadow: 0 0 0 2px rgba(149, 239, 75, 0.15);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `

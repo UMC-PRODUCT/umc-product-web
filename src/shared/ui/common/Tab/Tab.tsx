@@ -27,7 +27,7 @@ const Tab = <T extends string>({
   const isControlled = value !== undefined
   const [internalValue, setInternalValue] = useState<T | undefined>(defaultValue ?? tabs[0]?.value)
   const activeValue = isControlled ? value : internalValue
-  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const listRef = useRef<HTMLDivElement | null>(null)
 
   const handleTabChange = (nextValue: string) => {
     if (!isControlled) {
@@ -38,7 +38,9 @@ const Tab = <T extends string>({
 
   useEffect(() => {
     if (!activeValue) return
-    const activeTrigger = triggerRefs.current[String(activeValue)]
+    const activeTrigger = listRef.current?.querySelector<HTMLButtonElement>(
+      'button[data-state="active"]',
+    )
     if (!activeTrigger) return
 
     activeTrigger.scrollIntoView({
@@ -57,15 +59,9 @@ const Tab = <T extends string>({
     >
       <S.SectionWrapper>
         <S.ListViewport>
-          <S.StyledList>
+          <S.StyledList ref={listRef}>
             {tabs.map(({ value: tabValue, label }) => (
-              <S.StyledTrigger
-                key={tabValue}
-                value={tabValue}
-                ref={(node) => {
-                  triggerRefs.current[String(tabValue)] = node
-                }}
-              >
+              <S.StyledTrigger key={tabValue} value={tabValue}>
                 {label}
               </S.StyledTrigger>
             ))}

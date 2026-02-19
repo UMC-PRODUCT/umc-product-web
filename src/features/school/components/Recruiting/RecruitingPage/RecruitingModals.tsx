@@ -6,14 +6,17 @@ import CreateRecruitingConfirm from '../../modals/CreateRecruitingConfirm/Create
 import PublishBlockedRecruitmentModal from '../../modals/PublishBlockedRecruitmentModal/PublishBlockedRecruitmentModal'
 import { RecruitingPreviewContent } from '../../modals/RecruitingPreview/RecruitingPreview'
 import { RecruitingPreviewSkeletonContent } from '../../modals/RecruitingPreview/RecruitingPreviewSkeleton'
+import SubmitRecruitingErrorModal from '../../modals/SubmitRecruitingErrorModal/SubmitRecruitingErrorModal'
 
 type RecruitingModalsProps = {
   isOpen: boolean
   modalName: string
+  submitErrorMessage?: string
   title: string
   onClosePreview: () => void
   onCloseConfirm: () => void
   onClosePublishBlocked: () => void
+  onCloseSubmitError: () => void
   onConfirmPublishBlocked: () => void
   onConfirmSubmit: () => void
   recruitingId: string
@@ -22,10 +25,12 @@ type RecruitingModalsProps = {
 const RecruitingModals = ({
   isOpen,
   modalName,
+  submitErrorMessage,
   title,
   onClosePreview,
   onCloseConfirm,
   onClosePublishBlocked,
+  onCloseSubmitError,
   onConfirmPublishBlocked,
   onConfirmSubmit,
   recruitingId,
@@ -67,6 +72,9 @@ const RecruitingModals = ({
           onClose={onClosePublishBlocked}
           onConfirm={onConfirmPublishBlocked}
         />
+      )}
+      {isOpen && modalName === 'submitRecruitingError' && (
+        <SubmitRecruitingErrorModal onClose={onCloseSubmitError} message={submitErrorMessage} />
       )}
     </>
   )
