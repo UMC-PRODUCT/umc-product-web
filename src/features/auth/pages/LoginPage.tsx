@@ -82,7 +82,8 @@ export const LoginPage = () => {
             Icon={Apple}
             variant="solid"
             tone="white"
-            onClick={() => handleSocialLogin('apple')}
+            // onClick={() => handleSocialLogin('apple')}
+            onClick={() => alert('Apple 로그인은 현재 지원하지 않습니다.')}
           />
           {lastPlatform && (
             <Instruction
