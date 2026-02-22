@@ -1,24 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Badge } from './Badge'
+import NoticeIcon from '@/shared/assets/icons/notice.svg?react'
+
+import Instruction from './Instruction'
 
 const meta = {
-  title: 'Common/Badge',
-  component: Badge,
+  title: 'Common/Instruction',
+  component: Instruction,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
-    tone: {
-      control: 'select',
-      options: ['darkGray', 'gray', 'lime', 'white', 'necessary', 'caution'],
-    },
-    variant: {
-      control: 'inline-radio',
-      options: ['solid', 'outline'],
-    },
-    typo: {
+    content: { control: 'text' },
+    typography: {
       control: 'select',
       options: [
         'H1.Sb',
@@ -53,32 +48,29 @@ const meta = {
         'Slogan.Md',
       ],
     },
-    children: { control: 'text' },
+    mode: {
+      control: 'inline-radio',
+      options: ['success', 'error', 'warning', 'disabled'],
+    },
+    iconSize: { control: { type: 'number', min: 12, max: 32, step: 1 } },
   },
   args: {
-    tone: 'lime',
-    variant: 'solid',
-    typo: 'B5.Sb',
-    children: '모집중',
+    content: '입력값을 확인해 주세요.',
+    typography: 'B4.Md',
+    mode: 'warning',
+    iconSize: 18,
+    Icon: NoticeIcon,
   },
-} satisfies Meta<typeof Badge>
+} satisfies Meta<typeof Instruction>
 
 export default meta
 type Story = StoryObj
 
-export const Solid: Story = {}
+export const Warning: Story = {}
 
-export const Outline: Story = {
+export const Success: Story = {
   args: {
-    tone: 'gray',
-    variant: 'outline',
-    children: '승인 대기',
-  },
-}
-
-export const Alert: Story = {
-  args: {
-    tone: 'necessary',
-    children: '마감 임박',
+    mode: 'success',
+    content: '정상적으로 저장되었습니다.',
   },
 }

@@ -9,6 +9,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const isAnalyze = mode === 'analyze'
+  const isVitest = process.env.VITEST === 'true' || mode === 'test'
 
   return {
     server: {
@@ -17,10 +18,12 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       devtools(),
-      tanstackRouter({
-        target: 'react',
-        autoCodeSplitting: true,
-      }),
+      !isVitest
+        ? tanstackRouter({
+            target: 'react',
+            autoCodeSplitting: true,
+          })
+        : null,
       svgr({ include: '**/*.svg?react' }),
       react({
         babel: {
