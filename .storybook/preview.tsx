@@ -13,6 +13,10 @@ const tanstackContext = TanStackQueryProvider.getContext()
 const StorybookProviders = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (typeof document === 'undefined') return
+
+    document.documentElement.style.backgroundColor = '#161616'
+    document.body.style.backgroundColor = '#161616'
+
     if (document.getElementById('modal-root')) return
     const modalRoot = document.createElement('div')
     modalRoot.id = 'modal-root'
@@ -33,7 +37,17 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <StorybookProviders>
-        <Story />
+        <div
+          style={{
+            backgroundColor: '#161616',
+            padding: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Story />
+        </div>
       </StorybookProviders>
     ),
   ],
@@ -43,6 +57,13 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+    backgrounds: {
+      default: 'dark',
+      values: [
+        { name: 'dark', value: '#111111' },
+        { name: 'light', value: '#ffffff' },
+      ],
     },
 
     a11y: {
