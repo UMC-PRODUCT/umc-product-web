@@ -34,3 +34,5 @@ coverage
 openapi.yaml
 type.d.ts
 .playwright-cli
+*storybook.log
+storybook-static

@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from 'eslint-plugin-storybook'
+
 // @ts-check
 import { tanstackConfig } from '@tanstack/eslint-config'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
@@ -54,18 +57,13 @@ export default [
       'sort-imports': 'off',
     },
   },
-
-  ...tanstackConfig,
-
-  // React Hooks 플러그인 등록 (.ts 포함)
+  ...tanstackConfig, // React Hooks 플러그인 등록 (.ts 포함)
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
       'react-hooks': reactHooksPlugin,
     },
-  },
-
-  // ✅ React 플러그인 설정 (JSX/TSX 파일)
+  }, // ✅ React 플러그인 설정 (JSX/TSX 파일)
   {
     files: ['**/*.{jsx,tsx}'],
     plugins: {
@@ -93,17 +91,13 @@ export default [
       // 접근성 규칙
       ...jsxA11yPlugin.configs.recommended.rules,
     },
-  },
-
-  // 최종 오버라이드: import 정렬은 simple-import-sort만 사용
+  }, // 최종 오버라이드: import 정렬은 simple-import-sort만 사용
   {
     rules: {
       'import/order': 'off',
       'sort-imports': 'off',
     },
-  },
-
-  // JS 구성/설정 파일들은 TS project 설정 없이 파싱
+  }, // JS 구성/설정 파일들은 TS project 설정 없이 파싱
   {
     files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
     languageOptions: {
@@ -117,4 +111,5 @@ export default [
       '@typescript-eslint/require-await': 'off',
     },
   },
+  ...storybook.configs['flat/recommended'],
 ]
