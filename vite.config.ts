@@ -16,6 +16,9 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: 3000,
     },
+    optimizeDeps: {
+      include: ['@emotion/styled/base'],
+    },
     plugins: [
       devtools(),
       !isVitest
