@@ -1,7 +1,7 @@
 import { css } from '@emotion/react'
 import { useNavigate } from '@tanstack/react-router'
 
-import Error from '@shared/assets/icons/error.svg?react'
+import errorIcon from '@shared/assets/icons/error.svg'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
@@ -26,11 +26,6 @@ const containerStyle = css({
     flexDirection: 'column',
     alignItems: 'center',
     gap: '24px',
-  },
-  [media.down(theme.breakPoints.mobile)]: {
-    svg: {
-      display: 'none',
-    },
   },
 })
 
@@ -86,6 +81,12 @@ const innerContainerStyle = css({
   },
 })
 
+const iconStyle = css({
+  width: 'clamp(180px, 32vw, 425px)',
+  height: 'auto',
+  flexShrink: 0,
+})
+
 const NotFoundPage = ({
   title = '페이지를 찾을 수 없습니다',
   message = `죄송합니다. 페이지를 찾을 수 없습니다.\n존재하지 않는 주소를 입력하셨거나,\n요청하신 페이지의 주소가 변경, 삭제되어 찾을 수 없습니다.`,
@@ -94,7 +95,7 @@ const NotFoundPage = ({
   const navigate = useNavigate()
   return (
     <div css={containerStyle}>
-      <Error />
+      <img css={iconStyle} src={errorIcon} alt="에러 아이콘" />
       <div css={innerContainerStyle}>
         <p css={errorCodeStyle}>404</p>
         <h1 css={titleStyle}>{title}</h1>

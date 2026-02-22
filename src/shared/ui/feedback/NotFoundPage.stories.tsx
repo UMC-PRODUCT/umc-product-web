@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import {
   createRootRoute,
@@ -21,7 +22,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const buildStoryRouter = (props?: React.ComponentProps<typeof NotFoundPage>) => {
+const buildStoryRouter = (props?: ComponentProps<typeof NotFoundPage>) => {
   const rootRoute = createRootRoute({ component: Outlet })
 
   const indexRoute = createRoute({
@@ -30,12 +31,18 @@ const buildStoryRouter = (props?: React.ComponentProps<typeof NotFoundPage>) => 
     component: () => <NotFoundPage {...props} />,
   })
 
-  const routeTree = rootRoute.addChildren([indexRoute])
+  const iframeRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/iframe.html',
+    component: () => <NotFoundPage {...props} />,
+  })
+
+  const routeTree = rootRoute.addChildren([indexRoute, iframeRoute])
   return createRouter({ routeTree })
 }
 
 export const Default: Story = {
-  render: () => <RouterProvider router={buildStoryRouter()} />,
+  render: () => <RouterProvider router={buildStoryRouter({ showHomeLink: false })} />,
 }
 
 export const CustomMessage: Story = {
@@ -44,6 +51,7 @@ export const CustomMessage: Story = {
       router={buildStoryRouter({
         title: '접근 권한이 없습니다',
         message: '요청하신 페이지는 관리자 권한이 필요합니다.\n접근 권한을 확인해 주세요.',
+        showHomeLink: false,
       })}
     />
   ),
