@@ -10,6 +10,7 @@ export const GlobalStyle = () => (
       html,
       body {
         background: ${theme.colors.black};
+        color: ${theme.colors.white};
         font-family: ${theme.typography.fontFamily.base};
         overflow-x: hidden;
         overflow-y: scroll;

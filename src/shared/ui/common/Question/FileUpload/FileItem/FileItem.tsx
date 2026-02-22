@@ -65,6 +65,7 @@ const FileItem = ({
         {status === 'error' && (
           <button
             type="button"
+            aria-label="업로드 재시도"
             onClick={isEditable ? onRetry : undefined}
             disabled={!isEditable}
             css={[
@@ -84,6 +85,7 @@ const FileItem = ({
 
         <button
           type="button"
+          aria-label="파일 삭제"
           onClick={isEditable ? removeFile : undefined}
           disabled={!isEditable}
           css={[

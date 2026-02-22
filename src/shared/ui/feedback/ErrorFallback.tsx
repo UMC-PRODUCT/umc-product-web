@@ -31,7 +31,7 @@ const messageStyle = css({
 
 const detailStyle = css({
   ...theme.typography.B4.Rg,
-  color: theme.colors.gray[500],
+  color: theme.colors.gray[300],
   backgroundColor: theme.colors.gray[800],
   padding: '12px 16px',
   borderRadius: '8px',

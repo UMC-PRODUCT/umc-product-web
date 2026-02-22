@@ -10,8 +10,8 @@ type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Roo
 export const Checkbox = forwardRef<
   React.ComponentRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
->(({ className, ...props }, ref) => (
-  <S.StyledRoot ref={ref} className={className} {...props}>
+>(({ className, 'aria-label': ariaLabel, ...props }, ref) => (
+  <S.StyledRoot ref={ref} className={className} aria-label={ariaLabel ?? '체크박스'} {...props}>
     <S.StyledIndicator>
       <CheckIcon color="black" />
     </S.StyledIndicator>

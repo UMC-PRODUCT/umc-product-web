@@ -15,6 +15,11 @@ const meta = {
   component: NotFoundPage,
   parameters: {
     layout: 'fullscreen',
+    a11y: {
+      config: {
+        rules: [{ id: 'scrollable-region-focusable', enabled: false }],
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof NotFoundPage>

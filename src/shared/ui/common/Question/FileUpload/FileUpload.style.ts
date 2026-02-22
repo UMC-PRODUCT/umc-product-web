@@ -8,6 +8,7 @@ export const FileWrapper = styled(Flex, {
   shouldForwardProp: (prop) => prop !== '$isEditable',
 })<{ $isEditable: boolean }>`
   width: 100%;
+  color: ${theme.colors.white};
   cursor: ${({ $isEditable }) => ($isEditable ? 'pointer' : 'default')};
   ${theme.typography.B4.Rg}
   .desktop-text {
@@ -21,6 +22,7 @@ export const FileWrapper = styled(Flex, {
   }
 
   .file-notification {
+    color: ${theme.colors.gray[300]};
     ${theme.typography.C5.Rg}
   }
   span {

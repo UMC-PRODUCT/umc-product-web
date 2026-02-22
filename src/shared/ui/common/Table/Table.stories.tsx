@@ -49,6 +49,7 @@ export const Management: Story = {
               <S.Td>
                 <input
                   type="checkbox"
+                  aria-label={`${row.name} 선택`}
                   checked={checkedIds.includes(row.id)}
                   onChange={() =>
                     setCheckedIds((prev) =>

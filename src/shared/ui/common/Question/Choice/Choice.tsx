@@ -21,6 +21,7 @@ const getOptionId = (option: ChoiceOption, index: number) =>
 
 export const Choice = ({ value, onChange, options, mode }: SingleChoiceQuestionProps) => {
   const isEditable = mode === 'edit'
+  const radioGroupName = 'question-choice'
   const selectedOptions = value?.selectedOptionIds ?? []
   const selectedOptionId = selectedOptions[0]
 
@@ -56,6 +57,7 @@ export const Choice = ({ value, onChange, options, mode }: SingleChoiceQuestionP
             optionId={optionId}
             content={option.content}
             value={selectedOptionId}
+            groupName={radioGroupName}
             mode={mode}
             onClick={handleClick}
             isOtherOption={isOtherOption}

@@ -89,13 +89,14 @@ ModalOverlay.displayName = 'Modal.Overlay'
 type ModalContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 
 const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, 'aria-describedby': ariaDescribedBy, ...props }, ref) => {
     const layer = useModalLayer()
     const style: CSSProperties = { '--modal-layer': layer } as CSSProperties
     return (
       <S.StyledContent
         ref={ref}
         onOpenAutoFocus={(e) => e.preventDefault()}
+        aria-describedby={ariaDescribedBy}
         style={style}
         {...props}
       >

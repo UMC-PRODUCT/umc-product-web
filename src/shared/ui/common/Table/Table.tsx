@@ -81,13 +81,16 @@ const Table = <T, TId extends string | number = string | number>({
                 {checkbox && (
                   <S.Th>
                     <Checkbox
+                      aria-label="전체 선택"
                       onCheckedChange={checkbox.onToggleAll}
                       checked={checkbox.isAllChecked}
                     />
                   </S.Th>
                 )}
-                {headerLabels.map((headerLabel) => (
-                  <S.Th key={headerLabel}>{headerLabel}</S.Th>
+                {headerLabels.map((headerLabel, index) => (
+                  <S.Th key={`${headerLabel}-${index}`}>
+                    {headerLabel || <span css={{ display: 'none' }}>{`열 ${index + 1}`}</span>}
+                  </S.Th>
                 ))}
               </tr>
             </thead>

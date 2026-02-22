@@ -27,7 +27,9 @@ export const Default: Story = {
             <Button label="10기" tone="lime" css={{ width: 90, padding: 10 }} />
           </>
         }
-        rightChild={<Button label="초기화" tone="darkGray" css={{ width: 110, padding: 10 }} />}
+        rightChild={
+          <Button label="초기화" tone="gray" variant="outline" css={{ width: 110, padding: 10 }} />
+        }
       />
     </div>
   ),
