@@ -11,18 +11,13 @@ import type { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtool
 
 import type TanStackQueryDevtools from '@app/devtools/tanstack-query'
 
-import { DEFAULT_DESCRIPTION, DESCRIPTION_RULES, HOME_DESCRIPTION } from '@/shared/constants/meta'
+import { DEFAULT_OG_IMAGE, getSiteUrl, resolveSeoConfig, SITE_NAME } from '@/shared/constants/meta'
 import { Flex } from '@/shared/ui/common/Flex'
 import { ErrorFallback, NotFoundPage } from '@/shared/ui/feedback'
+import { applySeoMeta } from '@/shared/utils/seo'
 
 interface MyRouterContext {
   queryClient: QueryClient
-}
-
-const resolveDescription = (pathname: string) => {
-  if (pathname === '/') return HOME_DESCRIPTION
-  const rule = DESCRIPTION_RULES.find((item) => pathname.startsWith(item.prefix))
-  return rule?.description ?? DEFAULT_DESCRIPTION
 }
 
 const RootErrorComponent = ({ error }: { error: Error }) => {
@@ -47,7 +42,7 @@ type DevtoolsState = {
 
 const RootComponent = () => {
   const shouldShowDevtools = import.meta.env.DEV
-  const locationKey = useRouterState({ select: (state) => state.location.href })
+  const locationHref = useRouterState({ select: (state) => state.location.href })
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const [devtools, setDevtools] = useState<DevtoolsState | null>(null)
 
@@ -58,22 +53,24 @@ const RootComponent = () => {
   }, [])
 
   useEffect(() => {
-    const description = resolveDescription(pathname)
-    const head = document.head
-    let meta = head.querySelector('meta[name="description"]')
-    if (!meta) {
-      meta = document.createElement('meta')
-      meta.setAttribute('name', 'description')
-      head.appendChild(meta)
-    }
-    if (meta.getAttribute('content') !== description) {
-      meta.setAttribute('content', description)
-    }
+    const siteUrl = getSiteUrl()
+    const { title, description, robots } = resolveSeoConfig(pathname)
+    const canonicalUrl = `${siteUrl}${pathname}`
+    const ogImageUrl = `${siteUrl}${DEFAULT_OG_IMAGE}`
+
+    applySeoMeta({
+      title,
+      description,
+      robots,
+      canonicalUrl,
+      ogImageUrl,
+      siteName: SITE_NAME,
+    })
   }, [pathname])
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0 })
-  }, [locationKey])
+  }, [locationHref])
 
   useEffect(() => {
     if (!shouldShowDevtools) return
