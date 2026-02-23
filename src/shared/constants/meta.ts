@@ -16,14 +16,6 @@ const PRIVATE_ROBOTS: SeoConfig['robots'] = 'noindex,nofollow'
 
 const SEO_RULES: Array<{ prefix: string; config: Omit<SeoConfig, 'title'> & { title: string } }> = [
   {
-    prefix: '/',
-    config: {
-      title: `홈 | ${SITE_NAME}`,
-      description: HOME_DESCRIPTION,
-      robots: 'index,follow',
-    },
-  },
-  {
     prefix: '/recruiting',
     config: {
       title: `모집 공고 | ${SITE_NAME}`,
@@ -98,7 +90,7 @@ export const resolveSeoConfig = (pathname: string): SeoConfig => {
     }
   }
 
-  const matched = SEO_RULES.find((rule) => rule.prefix !== '/' && pathname.startsWith(rule.prefix))
+  const matched = SEO_RULES.find((rule) => pathname.startsWith(rule.prefix))
 
   if (matched) {
     return matched.config
