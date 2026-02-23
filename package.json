@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "pnpm dlx chromatic --exit-once-uploaded"
   },
   "dependencies": {
     "@emotion/css": "^11.13.5",
