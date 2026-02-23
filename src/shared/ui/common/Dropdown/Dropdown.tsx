@@ -77,6 +77,7 @@ const DropdownComponent = forwardRef<HTMLButtonElement, DropdownProps<any>>((pro
         ref={ref}
         id={id}
         aria-labelledby={ariaLabelledby}
+        aria-label={ariaLabelledby ? undefined : (placeholder ?? '옵션 선택')}
         className={className}
         css={css}
         data-disabled={disabled || undefined}

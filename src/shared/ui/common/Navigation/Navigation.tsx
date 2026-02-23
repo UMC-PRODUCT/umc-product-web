@@ -30,6 +30,7 @@ const Navigation = ({
     <Flex gap="8px" alignItems="center" width="fit-content">
       <button
         type="button"
+        aria-label="이전 페이지"
         css={{
           backgroundColor: 'transparent',
           border: 'none',
@@ -44,6 +45,7 @@ const Navigation = ({
         <button
           type="button"
           key={page}
+          aria-label={`${page}페이지로 이동`}
           onClick={() => goToPage(page)}
           css={{
             background: 'transparent',
@@ -58,6 +60,7 @@ const Navigation = ({
       ))}
       <button
         type="button"
+        aria-label="다음 페이지"
         css={{
           backgroundColor: 'transparent',
           border: 'none',

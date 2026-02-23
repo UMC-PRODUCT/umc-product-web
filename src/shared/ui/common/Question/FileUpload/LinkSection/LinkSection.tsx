@@ -81,6 +81,7 @@ const LinkSection = ({ links, mode, onLinksChange }: LinkSectionProps) => {
           }}
         >
           <input
+            aria-label="링크 입력"
             placeholder="링크 붙여 넣기"
             value={linkInput}
             readOnly={!isEditable}

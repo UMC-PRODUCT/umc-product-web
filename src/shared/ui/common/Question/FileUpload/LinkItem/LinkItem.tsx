@@ -23,6 +23,7 @@ const LinkItem = ({
       </S.Item>
       <CancelIcon
         type="button"
+        aria-label="링크 삭제"
         onClick={isEditable ? onRemove : undefined}
         disabled={!isEditable}
         css={{ cursor: isEditable ? 'pointer' : 'default' }}
