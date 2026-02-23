@@ -112,10 +112,14 @@ export const resolveSeoConfig = (pathname: string): SeoConfig => {
 }
 
 const trimTrailingSlash = (url: string) => url.replace(/\/+$/, '')
+const DEV_FALLBACK_SITE_URL = 'https://dev.umc.it.kr'
 
 export const getSiteUrl = () => {
   const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim()
   if (configuredSiteUrl) return trimTrailingSlash(configuredSiteUrl)
   if (typeof window !== 'undefined') return trimTrailingSlash(window.location.origin)
-  return 'https://dev.umc.it.kr'
+  if (import.meta.env.MODE === 'production') {
+    throw new Error('VITE_SITE_URL must be configured in production environment')
+  }
+  return trimTrailingSlash(DEV_FALLBACK_SITE_URL)
 }
