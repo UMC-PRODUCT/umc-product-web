@@ -49,6 +49,10 @@ const Flex = ({
   css: cssProp,
   ...props
 }: FlexProps) => {
+  const domProps = Object.fromEntries(
+    Object.entries(props).filter(([key]) => !key.startsWith('$')),
+  ) as Omit<HTMLAttributes<HTMLDivElement>, 'style'>
+
   return (
     <div
       css={cssProp}
@@ -72,7 +76,7 @@ const Flex = ({
         flexShrink,
         ...style,
       }}
-      {...props}
+      {...domProps}
     >
       {children}
     </div>

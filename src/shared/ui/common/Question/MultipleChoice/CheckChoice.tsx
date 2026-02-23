@@ -41,21 +41,57 @@ export const CheckChoice = ({
     if (!isEditable) return
     onToggle()
   }
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isEditable) return
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault()
-      onToggle()
-    }
+
+  if (isOtherOption) {
+    return (
+      <ChoiceRow>
+        <ChoiceContainer
+          type="button"
+          $isEditable={isEditable}
+          onClick={isEditable ? handleClick : undefined}
+          disabled={!isEditable}
+          aria-pressed={isChecked}
+        >
+          <div css={{ pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
+            <Checkbox
+              css={{ border: `1.25px solid ${theme.colors.gray[400]}` }}
+              checked={isChecked}
+              disabled
+              aria-hidden
+              onCheckedChange={() => {}}
+              tabIndex={-1}
+            />
+          </div>
+          <span
+            css={{
+              color: theme.colors.gray[400],
+              userSelect: 'none',
+              ...theme.typography.B3.Rg,
+            }}
+          >
+            기타:
+          </span>
+        </ChoiceContainer>
+        <Input
+          isActive={isChecked}
+          value={otherInputValue ?? ''}
+          aria-label="기타 답변 입력"
+          disabled={!isOtherInputEnabled}
+          aria-disabled={!isOtherInputEnabled}
+          tabIndex={isOtherInputEnabled ? 0 : -1}
+          onChange={handleOtherInputChange}
+        />
+      </ChoiceRow>
+    )
   }
+
   return (
     <ChoiceContainer
+      type="button"
       $isEditable={isEditable}
       onClick={isEditable ? handleClick : undefined}
-      role={isEditable ? 'checkbox' : undefined}
-      tabIndex={isEditable ? 0 : -1}
-      onKeyDown={isEditable ? handleKeyDown : undefined}
-      aria-disabled={!isEditable}
+      disabled={!isEditable}
+      aria-pressed={isChecked}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -64,48 +100,33 @@ export const CheckChoice = ({
         <Checkbox
           css={{ border: `1.25px solid ${theme.colors.gray[400]}` }}
           checked={isChecked}
+          disabled
+          aria-hidden
           onCheckedChange={() => {}}
           tabIndex={-1}
         />
       </div>
-      {!isOtherOption && (
-        <span
-          css={{
-            color: theme.colors.white,
-            userSelect: 'none',
-            ...theme.typography.B3.Md,
-          }}
-        >
-          {content}
-        </span>
-      )}
-      {isOtherOption && (
-        <span
-          css={{
-            color: theme.colors.gray[400],
-            userSelect: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            ...theme.typography.B3.Rg,
-          }}
-        >
-          기타:
-          <Input
-            isActive={isChecked}
-            value={otherInputValue ?? ''}
-            disabled={!isOtherInputEnabled}
-            aria-disabled={!isOtherInputEnabled}
-            tabIndex={isOtherInputEnabled ? 0 : -1}
-            onChange={handleOtherInputChange}
-          />
-        </span>
-      )}
+      <span
+        css={{
+          color: theme.colors.white,
+          userSelect: 'none',
+          ...theme.typography.B3.Md,
+        }}
+      >
+        {content}
+      </span>
     </ChoiceContainer>
   )
 }
 
-const ChoiceContainer = styled.div<{ $isEditable: boolean }>`
+const ChoiceRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`
+
+const ChoiceContainer = styled.button<{ $isEditable: boolean }>`
   display: flex;
   align-items: center;
   gap: 14px;
@@ -115,6 +136,7 @@ const ChoiceContainer = styled.div<{ $isEditable: boolean }>`
   width: 100%;
   background-color: inherit;
   border: none;
+  text-align: left;
   &:focus-visible {
     button {
       box-shadow: 0 0 0 2px ${theme.colors.lime};

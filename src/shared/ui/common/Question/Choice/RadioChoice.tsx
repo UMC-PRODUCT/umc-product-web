@@ -16,6 +16,7 @@ const RadioChoice = ({
   otherInputValue,
   onOtherInputChange,
   placeholder,
+  groupName,
 }: {
   content: string
   optionId: string
@@ -26,6 +27,7 @@ const RadioChoice = ({
   otherInputValue?: string
   onOtherInputChange?: (text: string) => void
   placeholder?: string
+  groupName?: string
 }) => {
   const isChecked = value === optionId // 체크 여부 판단
   const isEditable = mode === 'edit'
@@ -50,6 +52,8 @@ const RadioChoice = ({
     >
       <S.RadioChoiceInput
         type="radio"
+        name={groupName}
+        aria-label={content}
         readOnly // onChange 대신 부모 클릭을 쓰므로 경고 방지
         checked={isChecked}
         $isChecked={isChecked} // 스타일용 props
@@ -58,11 +62,12 @@ const RadioChoice = ({
       {!isOtherOption ? (
         <S.RadioChoiceText>{content}</S.RadioChoiceText>
       ) : (
-        <S.RadioChoiceText css={{ color: `${theme.colors.gray[500]}` }}>
+        <S.RadioChoiceText css={{ color: `${theme.colors.gray[300]}` }}>
           기타:
           <S.Input
             isActive={isChecked}
             value={otherInputValue ?? ''}
+            aria-label="기타 답변 입력"
             onChange={handleOtherInputChange}
             placeholder={placeholder}
             disabled={!isOtherInputEditable}

@@ -53,6 +53,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <StyledButton
         ref={ref}
         type={type}
+        aria-label={isLoading ? (label ?? '로딩 중') : restProps['aria-label']}
         onClick={handleClick}
         disabled={isDisabled}
         className={className}
