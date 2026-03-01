@@ -15,10 +15,10 @@ type TermErrors = Partial<
 
 type TermsSectionProps = {
   terms: TermsState
-  onToggleAll: () => void
+  onToggleAll: (termKeys: Array<TermsAgreementKey>) => void
   onToggle: (key: TermsAgreementKey) => void
   errors?: TermErrors
-  termsData?: Record<TermsAgreementKey, GetTermsResponseDTO>
+  termsData?: Partial<Record<TermsAgreementKey, GetTermsResponseDTO>>
   isTermsLoading?: boolean
   termsError?: string
 }
@@ -38,31 +38,37 @@ export const TermsSection = ({
   termsError,
 }: TermsSectionProps) => {
   const hasError = !!errors?.serviceTerm || !!errors?.privacyTerm || !!errors?.marketingTerm
-  const isDisabled = !!termsError
 
   const availableTerms = useMemo(() => {
-    return (Object.keys(TERM_DEFINITIONS) as Array<TermsAgreementKey>).map((termKey) => {
-      const payload = termsData?.[termKey]
-      const definition = TERM_DEFINITIONS[termKey]
-      return {
-        key: termKey,
-        title: definition.defaultTitle,
-        necessary: payload?.isMandatory ?? definition.necessary,
-        link: payload?.link,
-      }
-    })
+    return (Object.keys(TERM_DEFINITIONS) as Array<TermsAgreementKey>)
+      .map((termKey) => {
+        const payload = termsData?.[termKey]
+        const definition = TERM_DEFINITIONS[termKey]
+
+        if (!payload && !definition.necessary) {
+          return null
+        }
+
+        return {
+          key: termKey,
+          title: definition.defaultTitle,
+          necessary: payload?.isMandatory ?? definition.necessary,
+          link: payload?.link,
+        }
+      })
+      .filter((term): term is NonNullable<typeof term> => term !== null)
   }, [termsData])
 
-  const areAllChecked = availableTerms.every(({ key }) => terms[key])
+  const areAllChecked = availableTerms.length > 0 && availableTerms.every(({ key }) => terms[key])
+  const availableTermKeys = availableTerms.map(({ key }) => key)
 
   return (
     <>
       <Flex flexDirection="column" alignItems="flex-start" gap="12px" width="100%" maxWidth="80vw">
         <Term
-          onChange={onToggleAll}
+          onChange={() => onToggleAll(availableTermKeys)}
           label="전체 동의"
           checked={areAllChecked}
-          disabled={isDisabled}
         />
         {availableTerms.map(({ key, title, necessary, link }) => (
           <Term
@@ -76,7 +82,6 @@ export const TermsSection = ({
             label="동의"
             necessary={necessary}
             checked={terms[key]}
-            disabled={isDisabled}
           />
         ))}
         {hasError && (

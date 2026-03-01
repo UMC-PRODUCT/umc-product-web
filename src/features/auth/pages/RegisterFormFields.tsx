@@ -26,8 +26,8 @@ type RegisterFormFieldsProps = {
   verificationButton: FieldButtonConfig
   termsAgreement: Record<TermsAgreementKey, boolean>
   toggleTermAgreement: (key: TermsAgreementKey) => void
-  toggleAllTermsAgreement: () => void
-  termsData?: Record<TermsAgreementKey, GetTermsResponseDTO>
+  toggleAllTermsAgreement: (termKeys: Array<TermsAgreementKey>) => void
+  termsData?: Partial<Record<TermsAgreementKey, GetTermsResponseDTO>>
   isTermsLoading?: boolean
   termsError?: string
 }

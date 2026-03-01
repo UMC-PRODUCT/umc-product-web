@@ -47,13 +47,12 @@ export function useTermsAgreement(setValue: UseFormSetValue<RegisterForm>) {
     updateTermAgreement(termKey, !currentValue)
   }
 
-  const toggleAllTermsAgreement = () => {
-    const areAllTermsAgreed =
-      termsAgreement.SERVICE && termsAgreement.PRIVACY && termsAgreement.MARKETING
+  const toggleAllTermsAgreement = (termKeys: Array<TermsAgreementKey> = ALL_TERM_KEYS) => {
+    const areAllTermsAgreed = termKeys.every((termKey) => termsAgreement[termKey])
 
     const nextAgreementValue = !areAllTermsAgreed
 
-    ALL_TERM_KEYS.forEach((termKey) => {
+    termKeys.forEach((termKey) => {
       updateTermAgreement(termKey, nextAgreementValue)
     })
   }

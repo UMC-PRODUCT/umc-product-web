@@ -13,6 +13,8 @@ import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallba
 
 import AuthSection from '../components/AuthSection/AuthSection'
 import EmailSendModal from '../components/modals/EmailSendModal/EmailSendModal'
+import type { GetTermsResponseDTO } from '../domain/types'
+import type { TermsAgreementKey } from '../hooks/register'
 import { useSchoolSelection, useTermsAgreement } from '../hooks/register'
 import { useTerms } from '../hooks/register/useTerms'
 import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
@@ -50,7 +52,45 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   const serviceTerm = useTerms({ termsType: 'SERVICE' })
   const privacyTerm = useTerms({ termsType: 'PRIVACY' })
   const marketingTerm = useTerms({ termsType: 'MARKETING' })
-  const hasLoadedTerms = serviceTerm.isSuccess && privacyTerm.isSuccess && marketingTerm.isSuccess
+  type TermsResponse = NonNullable<typeof serviceTerm.data>
+
+  const loadedTerms = useMemo<Partial<Record<TermsAgreementKey, TermsResponse>>>(() => {
+    const nextTerms: Partial<Record<TermsAgreementKey, TermsResponse>> = {}
+
+    if (serviceTerm.isSuccess) {
+      nextTerms.SERVICE = serviceTerm.data
+    }
+    if (privacyTerm.isSuccess) {
+      nextTerms.PRIVACY = privacyTerm.data
+    }
+    if (marketingTerm.isSuccess) {
+      nextTerms.MARKETING = marketingTerm.data
+    }
+
+    return nextTerms
+  }, [
+    serviceTerm.isSuccess,
+    serviceTerm.data,
+    privacyTerm.isSuccess,
+    privacyTerm.data,
+    marketingTerm.isSuccess,
+    marketingTerm.data,
+  ])
+
+  const termsData = useMemo<Partial<Record<TermsAgreementKey, GetTermsResponseDTO>>>(() => {
+    const nextTermsData: Partial<Record<TermsAgreementKey, GetTermsResponseDTO>> = {}
+
+    if (loadedTerms.SERVICE?.result) nextTermsData.SERVICE = loadedTerms.SERVICE.result
+    if (loadedTerms.PRIVACY?.result) nextTermsData.PRIVACY = loadedTerms.PRIVACY.result
+    if (loadedTerms.MARKETING?.result) nextTermsData.MARKETING = loadedTerms.MARKETING.result
+
+    return nextTermsData
+  }, [loadedTerms])
+
+  const requiredTermsFetchError =
+    serviceTerm.error || privacyTerm.error
+      ? '필수 약관 정보를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+      : undefined
 
   const {
     handleSendVerificationEmail,
@@ -68,13 +108,7 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     setError,
     clearErrors,
     onEmailSent: () => setIsEmailVerificationModalOpen(true),
-    terms: hasLoadedTerms
-      ? {
-          SERVICE: serviceTerm.data,
-          PRIVACY: privacyTerm.data,
-          MARKETING: marketingTerm.data,
-        }
-      : undefined,
+    terms: Object.keys(loadedTerms).length > 0 ? loadedTerms : undefined,
   })
 
   useEffect(() => {
@@ -107,17 +141,17 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
   }
 
   const requiredTerms = useMemo(() => {
-    if (!hasLoadedTerms) {
-      return []
-    }
-    const termsEntries = [
-      ['PRIVACY', privacyTerm.data],
-      ['SERVICE', serviceTerm.data],
-    ] as const
-    return termsEntries
-      .filter(([, content]) => Boolean(content.result.isMandatory))
-      .map(([termKey]) => termKey)
-  }, [hasLoadedTerms, serviceTerm.data, privacyTerm.data])
+    const requiredKeys: Array<TermsAgreementKey> = []
+    const serviceIsMandatory = termsData.SERVICE?.isMandatory ?? true
+    const privacyIsMandatory = termsData.PRIVACY?.isMandatory ?? true
+    const marketingIsMandatory = termsData.MARKETING?.isMandatory ?? false
+
+    if (serviceIsMandatory) requiredKeys.push('SERVICE')
+    if (privacyIsMandatory) requiredKeys.push('PRIVACY')
+    if (marketingIsMandatory) requiredKeys.push('MARKETING')
+
+    return requiredKeys
+  }, [termsData])
 
   const areTermsAgreed =
     requiredTerms.length === 0 || requiredTerms.every((termKey) => termsAgreement[termKey])
@@ -147,18 +181,9 @@ const RegisterPageContent = ({ oAuthVerificationToken, email }: RegisterPageProp
     termsAgreement,
     toggleTermAgreement,
     toggleAllTermsAgreement,
-    termsData: hasLoadedTerms
-      ? {
-          SERVICE: serviceTerm.data.result,
-          PRIVACY: privacyTerm.data.result,
-          MARKETING: marketingTerm.data.result,
-        }
-      : undefined,
+    termsData,
     isTermsLoading: serviceTerm.isFetching || privacyTerm.isFetching || marketingTerm.isFetching,
-    termsError:
-      serviceTerm.error || privacyTerm.error || marketingTerm.error
-        ? '약관 정보를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
-        : undefined,
+    termsError: requiredTermsFetchError,
   }
 
   const closeEmailVerificationModal = () => {
