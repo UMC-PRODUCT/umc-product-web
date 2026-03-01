@@ -104,7 +104,7 @@ export const resolveSeoConfig = (pathname: string): SeoConfig => {
 }
 
 const trimTrailingSlash = (url: string) => url.replace(/\/+$/, '')
-const DEV_FALLBACK_SITE_URL = 'https://dev.umc.it.kr'
+const DEV_FALLBACK_SITE_URL = 'https://prod.umc.it.kr'
 
 export const getSiteUrl = () => {
   const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim()

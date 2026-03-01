@@ -1,4 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
-Sitemap: https://dev.umc.it.kr/sitemap.xml
+Sitemap: https://prod.umc.it.kr/sitemap.xml
