@@ -23,92 +23,56 @@ export const MobileTimeline = styled.div`
   }
 `
 
-type ColumnLineProps = {
-  $showLine: boolean
-  $lineTop: number
-  $lineBottom: number
-}
+const DOT_SIZE = 10
+const ROW_VERTICAL_PADDING = 12
+const TIMELINE_LINE_WIDTH = 2
+const TIMELINE_LINE_LEFT = DOT_SIZE / 2 - TIMELINE_LINE_WIDTH / 2
+const TIMELINE_LINE_OFFSET = ROW_VERTICAL_PADDING + DOT_SIZE / 2
 
-export const FirstColumn = styled.div<ColumnLineProps>`
+export const FirstColumn = styled.div`
   display: flex;
   flex-direction: column;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: ${(props) => `${props.$lineTop}px`};
-    bottom: ${(props) => `${props.$lineBottom}px`};
-    width: 2px;
-    display: ${(props) => (props.$showLine ? 'block' : 'none')};
-    background: linear-gradient(
-      to bottom,
-      ${theme.colors.lime} 0%,
-      ${theme.colors.lime} 95%,
-      #4a6312 99%
-    );
-    opacity: 0.5;
-  }
 `
 
-export const SecondColumn = styled.div<ColumnLineProps>`
+export const SecondColumn = styled.div`
   display: flex;
   flex-direction: column;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: ${(props) => `${props.$lineTop}px`};
-    bottom: ${(props) => `${props.$lineBottom}px`};
-    width: 2px;
-    display: ${(props) => (props.$showLine ? 'block' : 'none')};
-    background: linear-gradient(
-      to bottom,
-      ${theme.colors.lime} 0%,
-      ${theme.colors.lime} 95%,
-      #4a6312 99%
-    );
-    opacity: 0.5;
-  }
 `
 
-export const MobileColumn = styled.div<ColumnLineProps>`
+export const MobileColumn = styled.div`
   display: flex;
   flex-direction: column;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: ${(props) => `${props.$lineTop}px`};
-    bottom: ${(props) => `${props.$lineBottom}px`};
-    width: 2px;
-    display: ${(props) => (props.$showLine ? 'block' : 'none')};
-    background: linear-gradient(
-      to bottom,
-      ${theme.colors.lime} 0%,
-      ${theme.colors.lime} 95%,
-      #4a6312 99%
-    );
-    opacity: 0.5;
-  }
 `
 
 export const WeekRow = styled.div`
   display: flex;
-  align-items: center;
+  position: relative;
+  align-items: flex-start;
   gap: 20px;
-  padding: 12px 0;
+  height: fit-content;
+  padding: ${ROW_VERTICAL_PADDING}px 0;
+
+  &:not(:last-of-type)::before {
+    content: '';
+    position: absolute;
+    left: ${TIMELINE_LINE_LEFT}px;
+    top: ${TIMELINE_LINE_OFFSET}px;
+    bottom: -${TIMELINE_LINE_OFFSET}px;
+    width: ${TIMELINE_LINE_WIDTH}px;
+    background: linear-gradient(
+      to bottom,
+      ${theme.colors.lime} 0%,
+      ${theme.colors.lime} 95%,
+      #4a6312 99%
+    );
+    opacity: 0.5;
+  }
 `
 
 export const Dot = styled.div`
-  width: 10px;
-  min-width: 10px;
-  height: 10px;
+  width: ${DOT_SIZE}px;
+  min-width: ${DOT_SIZE}px;
+  height: ${DOT_SIZE}px;
   border-radius: 50%;
   background-color: ${theme.colors.lime};
   z-index: 1;
@@ -118,7 +82,7 @@ export const WeekLabel = styled.span`
   color: ${theme.colors.lime};
   width: 50px;
   min-width: 50px;
-  ${theme.typography.B3.Sb}
+  ${theme.typography.B3.Sb};
   ${media.down(theme.breakPoints.mobile)} {
     font-size: 13px;
   }
@@ -127,6 +91,7 @@ export const WeekLabel = styled.span`
 export const ContentLabel = styled.span`
   color: ${theme.colors.white};
   padding-left: 18px;
+  display: flex;
   border-left: 1px solid ${theme.colors.gray[500]};
   word-break: break-word;
   ${media.down(theme.breakPoints.mobile)} {
