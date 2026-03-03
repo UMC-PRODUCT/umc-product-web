@@ -12,7 +12,7 @@ import { useAuthMutation } from './useAuthMutations'
 
 type TermsAgreementState = Record<TermsAgreementKey, boolean>
 
-type TermsContentRecord = Record<TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO>>
+type TermsContentRecord = Partial<Record<TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO>>>
 
 interface RegistrationWorkflowProps {
   watchedEmail: string
@@ -141,10 +141,12 @@ export const useRegistrationWorkflow = ({
         terms && Object.keys(terms).length > 0
           ? (
               Object.entries(terms) as Array<
-                [TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO>]
+                [TermsAgreementKey, CommonResponseDTO<GetTermsResponseDTO> | undefined]
               >
             )
               .map(([termKey, termContent]) => {
+                if (!termContent?.result) return null
+
                 const rawId = termContent.result.id
                 const termsId = typeof rawId === 'number' ? rawId : Number(rawId)
                 if (!Number.isFinite(termsId)) return null

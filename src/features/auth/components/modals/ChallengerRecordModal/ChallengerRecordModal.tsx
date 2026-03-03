@@ -41,10 +41,13 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
   )
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const onlyDigits = event.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH)
+    const normalizedCode = event.target.value
+      .toUpperCase()
+      .replace(/[^0-9A-Z]/g, '')
+      .slice(0, CODE_LENGTH)
     if (status !== 'idle') setStatus('idle')
     if (errorMessage) setErrorMessage('')
-    setCode(onlyDigits)
+    setCode(normalizedCode)
   }
 
   const handleRequest = () => {
@@ -117,7 +120,7 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
                 <S.HiddenInput
                   ref={inputRef}
                   type="text"
-                  inputMode="numeric"
+                  inputMode="text"
                   autoComplete="one-time-code"
                   maxLength={CODE_LENGTH}
                   value={code}

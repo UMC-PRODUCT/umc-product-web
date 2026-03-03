@@ -56,6 +56,9 @@ export const TabButton = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
   width: 116px;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: ${({ $isActive }) => ($isActive ? theme.colors.lime : 'rgba(255, 255, 255, 0.1)')};
