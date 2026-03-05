@@ -66,7 +66,9 @@ export const TabButton = styled.button<{ $isActive: boolean }>`
   ${media.down(theme.breakPoints.tablet)} {
     font-size: 14px;
     &:hover {
-      background: none;
+      background: ${theme.colors.lime};
+      color: ${theme.colors.black};
+      transition: all 0.4s ease;
     }
   }
   ${media.down(theme.breakPoints.mobile)} {

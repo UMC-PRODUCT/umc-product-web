@@ -74,7 +74,7 @@ export const UniversityRow = styled.div<{ $direction?: 'left' | 'right' }>`
     display: flex;
     gap: 32px;
     width: max-content;
-    animation: ${({ $direction }) => ($direction === 'right' ? marqueeRight : marqueeLeft)} 30s
+    animation: ${({ $direction }) => ($direction === 'right' ? marqueeRight : marqueeLeft)} 50s
       linear infinite;
   }
 `

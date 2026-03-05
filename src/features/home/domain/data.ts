@@ -1,22 +1,36 @@
 import archiveImage from '@/shared/assets/project/7th/Archive.webp'
-import catchYImage from '@/shared/assets/project/7th/CatchY.png'
+import catchYImage from '@/shared/assets/project/7th/CatchY.webp'
 import ddaddaImage from '@/shared/assets/project/7th/DDADDA.webp'
 import dogModeImage from '@/shared/assets/project/7th/DOG_MODE.webp'
-import edisonImage from '@/shared/assets/project/7th/Edison.png'
+import edisonImage from '@/shared/assets/project/7th/Edison.webp'
 import groaitImage from '@/shared/assets/project/7th/GROAIT.webp'
 import homeMasterImage from '@/shared/assets/project/7th/HOME_MASTER.webp'
 import hrrImage from '@/shared/assets/project/7th/HRR.webp'
-import memeSphereImage from '@/shared/assets/project/7th/MEME_SPHERE.png'
-import tttImage from '@/shared/assets/project/7th/Ttt.png'
-import baekHoImage from '@/shared/assets/project/8th/BaekHo.png'
-import chaekMoImage from '@/shared/assets/project/8th/ChaekMo.png'
-import channelingImage from '@/shared/assets/project/8th/Channeling.png'
-import coffectImage from '@/shared/assets/project/8th/Coffect.png'
-import divaryImage from '@/shared/assets/project/8th/Divary.png'
-import haRuImage from '@/shared/assets/project/8th/HaRu.png'
-import ohMaeChuImage from '@/shared/assets/project/8th/OhMaeChu.png'
+import memeSphereImage from '@/shared/assets/project/7th/MEME_SPHERE.webp'
+import tttImage from '@/shared/assets/project/7th/Ttt.webp'
+import baekHoImage from '@/shared/assets/project/8th/BaekHo.webp'
+import chaekMoImage from '@/shared/assets/project/8th/ChaekMo.webp'
+import channelingImage from '@/shared/assets/project/8th/Channeling.webp'
+import coffectImage from '@/shared/assets/project/8th/Coffect.webp'
+import divaryImage from '@/shared/assets/project/8th/Divary.webp'
+import haRuImage from '@/shared/assets/project/8th/HaRu.webp'
+import ohMaeChuImage from '@/shared/assets/project/8th/OhMaeChu.webp'
 import perfuOnMeImage from '@/shared/assets/project/8th/PerfuOnMe.webp'
 import teamieImage from '@/shared/assets/project/8th/Teamie.webp'
+import areumdapImage from '@/shared/assets/project/9th/Areumdap.webp'
+import bookrippleImage from '@/shared/assets/project/9th/BookRipple.webp'
+import donakawaImage from '@/shared/assets/project/9th/Donakawa.webp'
+import egobookImage from '@/shared/assets/project/9th/EgoBook.webp'
+import findersImage from '@/shared/assets/project/9th/Finders.webp'
+import loopOnImage from '@/shared/assets/project/9th/LoopOn.webp'
+import naeFormReformImage from '@/shared/assets/project/9th/NaeFormReform.webp'
+import playproofImage from '@/shared/assets/project/9th/Playproof.webp'
+import remuImage from '@/shared/assets/project/9th/Remu.webp'
+import scoiImage from '@/shared/assets/project/9th/Scoi.webp'
+import soksakLetterImage from '@/shared/assets/project/9th/SoksakLetter.webp'
+import ttorangImage from '@/shared/assets/project/9th/Ttorang.webp'
+import valuedImage from '@/shared/assets/project/9th/Valued.webp'
+import whatToEatImage from '@/shared/assets/project/9th/WhatToEat.webp'
 
 import type { Project } from './constants'
 
@@ -141,40 +155,88 @@ export const projectsData: Record<string, Array<Project>> = {
   ],
   '9': [
     {
-      image: '💼',
-      title: '취업 준비 플랫폼',
-      description: '취업 준비생들을 위한 스터디 및 정보 공유 커뮤니티',
-      tech: ['React', 'Spring Boot', 'MySQL'],
+      image: whatToEatImage,
+      title: '뭐해먹집?',
+      description: "반복되는 '뭐 해 먹지'를 집밥 루틴으로 바꾸다",
+      tech: [],
     },
     {
-      image: '🎤',
-      title: '노래방 예약 서비스',
-      description: '실시간 노래방 예약 및 할인 정보 제공 플랫폼',
-      tech: ['Android', 'Node.js', 'Redis'],
+      image: ttorangImage,
+      title: '또랑',
+      description: '가장 쉽고 빠른 발표 피드백',
+      tech: [],
     },
     {
-      image: '🍜',
-      title: '레시피 공유 앱',
-      description: '사용자들이 레시피를 공유하고 평가하는 요리 커뮤니티',
-      tech: ['iOS', 'Spring', 'AWS'],
+      image: egobookImage,
+      title: '에고북',
+      description: '나만의 고북이와 함께 하는 감정 기록 서비스',
+      tech: [],
     },
     {
-      image: '🚗',
-      title: '카풀 매칭 서비스',
-      description: '대학생들을 위한 안전한 카풀 매칭 플랫폼',
-      tech: ['React', 'Node.js', 'MongoDB'],
+      image: naeFormReformImage,
+      title: '내폼리폼',
+      description: '고객과 리폼러를 연결해주는 플랫폼',
+      tech: [],
     },
     {
-      image: '📷',
-      title: '사진 공유 SNS',
-      description: '일상의 순간을 공유하는 소셜 네트워크 서비스',
-      tech: ['iOS', 'Spring Boot', 'PostgreSQL'],
+      image: areumdapImage,
+      title: '아름답',
+      description: '질문을 통해 나를 알아가는 여정',
+      tech: [],
     },
     {
-      image: '🎓',
-      title: '과외 매칭 플랫폼',
-      description: '학생과 선생님을 연결하는 과외 매칭 서비스',
-      tech: ['Android', 'Node.js', 'MySQL'],
+      image: findersImage,
+      title: 'Finders',
+      description: '필름 유저들의 번거로운 현상소 탐색 과정을 간소화하는 현상소 통합 추천 서비스',
+      tech: [],
+    },
+    {
+      image: remuImage,
+      title: 'Re:MU(레뮤)',
+      description: '여행의 순간을 별로 남기다',
+      tech: [],
+    },
+    {
+      image: valuedImage,
+      title: '밸류디',
+      description: '당신을 위한, 스마트한 금융 서비스',
+      tech: [],
+    },
+    {
+      image: loopOnImage,
+      title: '루프온(LOOP:ON)',
+      description: '3일마다 다시 떠나는 나의 여정',
+      tech: [],
+    },
+    {
+      image: soksakLetterImage,
+      title: '속삭편지',
+      description: '나를 만나는 질문, 타인과 나누는 익명 편지',
+      tech: [],
+    },
+    {
+      image: scoiImage,
+      title: '스코이(SCOI)',
+      description: '편리한 스테이블 코인 결제 플랫폼',
+      tech: [],
+    },
+    {
+      image: playproofImage,
+      title: 'Playproof',
+      description: '당신의 게임을 함께할 팀원을 찾아보세요',
+      tech: [],
+    },
+    {
+      image: bookrippleImage,
+      title: '북리플',
+      description: '소통형 독서 기록 서비스',
+      tech: [],
+    },
+    {
+      image: donakawaImage,
+      title: '도나카와',
+      description: '후회 없는 쇼핑을 위한 나만의 스마트 소비 코치',
+      tech: [],
     },
   ],
 }

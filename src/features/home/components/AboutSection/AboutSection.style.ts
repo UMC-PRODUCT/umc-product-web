@@ -45,7 +45,7 @@ export const AboutTitle = styled.h3`
 `
 
 export const AboutText = styled.p`
-  ${homeResponsiveFont('17px', '16px', '10px')}
+  ${homeResponsiveFont('17px', '14px', '10px')}
   max-width: 650px;
   color: ${theme.colors.gray[400]};
   line-height: 1.8;
