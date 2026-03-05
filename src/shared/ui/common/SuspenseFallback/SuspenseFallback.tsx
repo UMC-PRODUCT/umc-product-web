@@ -1,8 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
-import { theme } from '@/shared/styles/theme'
-import { Flex } from '@/shared/ui/common/Flex'
-import Loading from '@/shared/ui/common/Loading/Loading'
+import FeedbackState from '@/shared/ui/common/FeedbackState/FeedbackState'
 
 type SuspenseFallbackProps = {
   label?: string
@@ -16,23 +14,9 @@ const SuspenseFallback = ({
   children,
   ...rest
 }: SuspenseFallbackProps) => (
-  <Flex
-    alignItems="center"
-    justifyContent="center"
-    flexDirection="column"
-    height="100%"
-    width="100%"
-    gap={gap}
-    css={{
-      padding: '60px 0',
-      color: theme.colors.gray[400],
-      textAlign: 'center',
-    }}
-    {...rest}
-  >
-    <Loading label={label} />
+  <FeedbackState mode="loading" loadingLabel={label} gap={gap} {...rest}>
     {children}
-  </Flex>
+  </FeedbackState>
 )
 
 export default SuspenseFallback
