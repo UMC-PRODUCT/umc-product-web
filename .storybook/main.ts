@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
@@ -10,5 +12,22 @@ const config: StorybookConfig = {
     '@storybook/addon-onboarding',
   ],
   framework: '@storybook/react-vite',
+  previewAnnotations: (entries = []) =>
+    (entries as Array<string | { bare?: string; absolute?: string }>).map((entry) => {
+      if (typeof entry === 'string') return entry
+
+      // Work around Storybook builder-vite preview annotation hash collision.
+      if (entry.bare === '@storybook/addon-docs/dist/preview.js') {
+        return fileURLToPath(new URL('./addon-docs-preview-shim.ts', import.meta.url))
+      }
+
+      const resolvedEntry = entry.absolute ?? entry.bare
+
+      if (!resolvedEntry) {
+        throw new Error('[storybook] Unexpected previewAnnotations entry without absolute/bare')
+      }
+
+      return resolvedEntry
+    }),
 }
 export default config
