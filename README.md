@@ -1,6 +1,7 @@
 # UMC Product Web
 
 UMC 운영팀이 정책·계정·데이터를 한 곳에서 관리할 수 있도록 만든 백오피스입니다. 권한(챌린저, 파트장, 회장단, 총괄)에 따라 다른 뷰를 제공하며, 운영 효율과 정책 반영 속도를 높이는 데 집중합니다.
+<img width="4862" height="2960" alt="github_thumbnail" src="https://github.com/user-attachments/assets/be710fad-9776-4b94-9212-443bdac71105" />
 
 ## 목차
 
