@@ -89,7 +89,7 @@ export const HeroBadge = styled.div`
 `
 
 export const HeroTitle = styled.h1`
-  ${homeResponsiveFont('92px', '62px', '38px')}
+  ${homeResponsiveFont('92px', '58px', '38px')}
   font-weight: 900;
   line-height: 1.1;
   ${homeResponsiveSpace(
