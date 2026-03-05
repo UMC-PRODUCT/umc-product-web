@@ -10,7 +10,6 @@ type Props = {
 }
 
 const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
-  const isNinthGeneration = gisu === '9'
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
   const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0 })
@@ -41,7 +40,6 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
   }, [projects, normalizeScrollPosition])
 
   useEffect(() => {
-    if (isNinthGeneration) return
     const target = scrollRef.current
     if (!target) return
 
@@ -74,7 +72,7 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
       autoScrollRemainderRef.current = 0
       cancelAnimationFrame(rafId)
     }
-  }, [isNinthGeneration, paused, normalizeScrollPosition])
+  }, [paused, normalizeScrollPosition])
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = scrollRef.current
@@ -128,56 +126,52 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
         ))}
       </S.GenerationTabs>
 
-      {isNinthGeneration ? (
-        <S.EmptyState>2월 20일 데모데이 종료 후 공개됩니다!</S.EmptyState>
-      ) : (
-        <S.ProjectsScrollWrapper
-          ref={scrollRef}
-          $dragging={paused}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-          onScroll={handleScroll}
-        >
-          <S.ProjectsScrollContainer>
-            <S.ProjectsList aria-hidden>
-              {projects.map((project) => (
-                <S.ProjectCard key={`${project.title}-pre-dup`}>
-                  <img src={project.image} alt={project.title} />
-                  <S.ProjectContent>
-                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  </S.ProjectContent>
-                </S.ProjectCard>
-              ))}
-            </S.ProjectsList>
-            <S.ProjectsList ref={listRef}>
-              {projects.map((project) => (
-                <S.ProjectCard key={project.title}>
-                  <img src={project.image} alt={project.title} />
-                  <S.ProjectContent>
-                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  </S.ProjectContent>
-                </S.ProjectCard>
-              ))}
-            </S.ProjectsList>
-            <S.ProjectsList aria-hidden>
-              {projects.map((project) => (
-                <S.ProjectCard key={`${project.title}-dup`}>
-                  <img src={project.image} alt={project.title} />
-                  <S.ProjectContent>
-                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                  </S.ProjectContent>
-                </S.ProjectCard>
-              ))}
-            </S.ProjectsList>
-          </S.ProjectsScrollContainer>
-        </S.ProjectsScrollWrapper>
-      )}
+      <S.ProjectsScrollWrapper
+        ref={scrollRef}
+        $dragging={paused}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        onScroll={handleScroll}
+      >
+        <S.ProjectsScrollContainer>
+          <S.ProjectsList aria-hidden>
+            {projects.map((project) => (
+              <S.ProjectCard key={`${project.title}-pre-dup`}>
+                <img src={project.image} alt={project.title} />
+                <S.ProjectContent>
+                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                </S.ProjectContent>
+              </S.ProjectCard>
+            ))}
+          </S.ProjectsList>
+          <S.ProjectsList ref={listRef}>
+            {projects.map((project) => (
+              <S.ProjectCard key={project.title}>
+                <img src={project.image} alt={project.title} />
+                <S.ProjectContent>
+                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                </S.ProjectContent>
+              </S.ProjectCard>
+            ))}
+          </S.ProjectsList>
+          <S.ProjectsList aria-hidden>
+            {projects.map((project) => (
+              <S.ProjectCard key={`${project.title}-dup`}>
+                <img src={project.image} alt={project.title} />
+                <S.ProjectContent>
+                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                </S.ProjectContent>
+              </S.ProjectCard>
+            ))}
+          </S.ProjectsList>
+        </S.ProjectsScrollContainer>
+      </S.ProjectsScrollWrapper>
     </S.FullWidthSection>
   )
 }
