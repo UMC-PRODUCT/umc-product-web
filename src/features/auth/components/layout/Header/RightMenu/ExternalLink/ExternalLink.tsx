@@ -1,6 +1,7 @@
 import type { KeyboardEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
+import ExternalLinkModal from '@/features/auth/components/modals/ExternalLinkModal'
 import Arrow from '@/shared/assets/icons/arrow.svg?react'
 import Setting from '@/shared/assets/icons/setting.svg?react'
 import InstagramIcon from '@/shared/assets/social/instagram.svg?react'
@@ -12,7 +13,6 @@ import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { theme } from '@/shared/styles/theme'
 import type { ExternalLink as ExternalLinkType } from '@/shared/types/link'
 import Flex from '@/shared/ui/common/Flex/Flex'
-import ExternalLinkModal from '@/shared/ui/modals/ExternalLinkModal'
 import { canAccessSchoolByRoles, getActiveRolePool } from '@/shared/utils/role'
 
 import * as S from './ExternalLink.style'

@@ -1,6 +1,6 @@
+import ExternalLink from '@/features/auth/components/layout/Header/RightMenu/ExternalLink/ExternalLink'
+import Profile from '@/features/auth/components/layout/Header/RightMenu/Profile/Profile'
 import ArrowUp from '@/shared/assets/icons/arrow_up.svg?react'
-import ExternalLink from '@/shared/layout/Header/RightMenu/ExternalLink/ExternalLink'
-import Profile from '@/shared/layout/Header/RightMenu/Profile/Profile'
 import type { ExternalLink as ExternalLinkType } from '@/shared/types/link'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 

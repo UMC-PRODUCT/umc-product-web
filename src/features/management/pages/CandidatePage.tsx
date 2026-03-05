@@ -4,7 +4,7 @@ import Search from '@shared/assets/icons/search.svg?react'
 
 import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
-import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { managementKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'

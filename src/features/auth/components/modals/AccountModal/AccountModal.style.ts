@@ -2,8 +2,7 @@ import styled from '@emotion/styled'
 
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-
-import { Flex } from '../../common/Flex'
+import { Flex } from '@/shared/ui/common/Flex'
 
 const TitleGroup = styled.div`
   display: flex;

@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import Footer from '@/shared/layout/Footer/Footer'
-import ChallengerHeader from '@/shared/layout/Header/ChallengerHeader'
-import SchoolHeader from '@/shared/layout/Header/SchoolHeader'
-import SuperHeader from '@/shared/layout/Header/SuperHeader'
+import Footer from '@/features/auth/components/layout/Footer/Footer'
+import ChallengerHeader from '@/features/auth/components/layout/Header/ChallengerHeader'
+import SchoolHeader from '@/features/auth/components/layout/Header/SchoolHeader'
+import SuperHeader from '@/features/auth/components/layout/Header/SuperHeader'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import type { RoleType } from '@/shared/types/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'

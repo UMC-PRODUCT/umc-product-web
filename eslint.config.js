@@ -57,6 +57,29 @@ export default [
       'sort-imports': 'off',
     },
   },
+  {
+    files: ['src/shared/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@features/*',
+                '@/features/*',
+                '../features/*',
+                '../../features/*',
+                '../../../features/*',
+                '../../../../features/*',
+              ],
+              message: 'shared layer must not import features layer.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   ...tanstackConfig, // React Hooks 플러그인 등록 (.ts 포함)
   {
     files: ['**/*.{ts,tsx}'],
