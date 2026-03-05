@@ -1,20 +1,17 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from 'eslint-plugin-storybook'
-
 // @ts-check
 import { tanstackConfig } from '@tanstack/eslint-config'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort'
+import storybook from 'eslint-plugin-storybook'
 
 export default [
   {
     // ✅ config 파일/빌드 산출물은 전역으로 린트에서 제외
     ignores: [
-      'eslint.config.js',
       'prettier.config.js',
-      'vite.config.ts',
       'dist/**',
       'storybook-static/**',
       'node_modules/**',

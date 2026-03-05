@@ -118,17 +118,21 @@ pnpm dev   # http://localhost:3000
 
 ## 스크립트
 
-| 명령어              | 설명                                |
-| ------------------- | ----------------------------------- |
-| `pnpm dev`          | 개발 서버 실행 (port 3000)          |
-| `pnpm build`        | TypeScript 타입체크 + 프로덕션 빌드 |
-| `pnpm preview`      | 빌드된 결과물 미리보기              |
-| `pnpm test`         | Vitest 테스트 실행                  |
-| `pnpm lint`         | ESLint 검사                         |
-| `pnpm lint:fix`     | ESLint 자동 수정                    |
-| `pnpm format`       | Prettier로 코드 포맷팅              |
-| `pnpm format:check` | 포맷팅 상태 확인                    |
-| `pnpm typecheck`    | TypeScript 타입 검사만 실행         |
+| 명령어               | 설명                                |
+| -------------------- | ----------------------------------- |
+| `pnpm dev`           | 개발 서버 실행 (port 3000)          |
+| `pnpm build`         | TypeScript 타입체크 + 프로덕션 빌드 |
+| `pnpm preview`       | 빌드된 결과물 미리보기              |
+| `pnpm test`          | Unit 테스트 실행 (`test:unit`)      |
+| `pnpm test:unit`     | Unit/Smoke 테스트 실행              |
+| `pnpm test:browser`  | Storybook Browser 테스트 실행       |
+| `pnpm test:ci`       | CI 기준 테스트 실행                 |
+| `pnpm quality:check` | typecheck + lint + test:ci          |
+| `pnpm lint`          | ESLint 검사                         |
+| `pnpm lint:fix`      | ESLint 자동 수정                    |
+| `pnpm format`        | Prettier로 코드 포맷팅              |
+| `pnpm format:check`  | 포맷팅 상태 확인                    |
+| `pnpm typecheck`     | TypeScript 타입 검사만 실행         |
 
 ---
 
@@ -338,6 +342,10 @@ pnpm lint        # 검사
 pnpm lint:fix    # 자동 수정
 ```
 
+```bash
+pnpm quality:check   # 로컬에서 CI와 동일한 품질 게이트 실행
+```
+
 ### Prettier
 
 `prettier.config.js` 주요 설정:
@@ -426,7 +434,10 @@ Closes #123
 ## 테스트
 
 ```bash
-pnpm test   # Vitest 실행
+pnpm test          # Unit 테스트 실행
+pnpm test:unit     # Unit/Smoke 테스트 실행
+pnpm test:browser  # Storybook Browser 테스트 실행
+pnpm test:ci       # CI 기준 테스트 실행
 ```
 
 ### 테스트 도구
@@ -434,6 +445,12 @@ pnpm test   # Vitest 실행
 - **Vitest**: 테스트 러너
 - **@testing-library/react**: React 컴포넌트 테스트
 - **jsdom**: 브라우저 환경 시뮬레이션
+
+### 로컬에서 CI 재현
+
+```bash
+pnpm quality:check
+```
 
 ---
 
