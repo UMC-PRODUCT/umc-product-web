@@ -126,52 +126,56 @@ const ProjectsSection = ({ gisu, onChangeGeneration, projects }: Props) => {
         ))}
       </S.GenerationTabs>
 
-      <S.ProjectsScrollWrapper
-        ref={scrollRef}
-        $dragging={paused}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onPointerLeave={handlePointerUp}
-        onScroll={handleScroll}
-      >
-        <S.ProjectsScrollContainer>
-          <S.ProjectsList aria-hidden>
-            {projects.map((project) => (
-              <S.ProjectCard key={`${project.title}-pre-dup`}>
-                <img src={project.image} alt={project.title} />
-                <S.ProjectContent>
-                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                </S.ProjectContent>
-              </S.ProjectCard>
-            ))}
-          </S.ProjectsList>
-          <S.ProjectsList ref={listRef}>
-            {projects.map((project) => (
-              <S.ProjectCard key={project.title}>
-                <img src={project.image} alt={project.title} />
-                <S.ProjectContent>
-                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                </S.ProjectContent>
-              </S.ProjectCard>
-            ))}
-          </S.ProjectsList>
-          <S.ProjectsList aria-hidden>
-            {projects.map((project) => (
-              <S.ProjectCard key={`${project.title}-dup`}>
-                <img src={project.image} alt={project.title} />
-                <S.ProjectContent>
-                  <S.ProjectTitle>{project.title}</S.ProjectTitle>
-                  <S.ProjectDescription>{project.description}</S.ProjectDescription>
-                </S.ProjectContent>
-              </S.ProjectCard>
-            ))}
-          </S.ProjectsList>
-        </S.ProjectsScrollContainer>
-      </S.ProjectsScrollWrapper>
+      {projects.length > 0 ? (
+        <S.ProjectsScrollWrapper
+          ref={scrollRef}
+          $dragging={paused}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+          onScroll={handleScroll}
+        >
+          <S.ProjectsScrollContainer>
+            <S.ProjectsList aria-hidden>
+              {projects.map((project) => (
+                <S.ProjectCard key={`${project.title}-pre-dup`}>
+                  <img src={project.image} alt={project.title} />
+                  <S.ProjectContent>
+                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                  </S.ProjectContent>
+                </S.ProjectCard>
+              ))}
+            </S.ProjectsList>
+            <S.ProjectsList ref={listRef}>
+              {projects.map((project) => (
+                <S.ProjectCard key={project.title}>
+                  <img src={project.image} alt={project.title} />
+                  <S.ProjectContent>
+                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                  </S.ProjectContent>
+                </S.ProjectCard>
+              ))}
+            </S.ProjectsList>
+            <S.ProjectsList aria-hidden>
+              {projects.map((project) => (
+                <S.ProjectCard key={`${project.title}-dup`}>
+                  <img src={project.image} alt={project.title} />
+                  <S.ProjectContent>
+                    <S.ProjectTitle>{project.title}</S.ProjectTitle>
+                    <S.ProjectDescription>{project.description}</S.ProjectDescription>
+                  </S.ProjectContent>
+                </S.ProjectCard>
+              ))}
+            </S.ProjectsList>
+          </S.ProjectsScrollContainer>
+        </S.ProjectsScrollWrapper>
+      ) : (
+        <S.EmptyState>아직 등록된 프로젝트가 없습니다.</S.EmptyState>
+      )}
     </S.FullWidthSection>
   )
 }
