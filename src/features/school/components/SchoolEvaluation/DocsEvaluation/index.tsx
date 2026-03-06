@@ -1,6 +1,6 @@
 import * as Shared from '@shared/styles/shared'
 
-import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/useRecruitingQueries'
+import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/queries/useRecruitingQueries'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/part'

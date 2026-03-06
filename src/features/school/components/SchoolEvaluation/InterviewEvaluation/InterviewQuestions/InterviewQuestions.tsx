@@ -4,11 +4,11 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { PART_CONFIG } from '@/features/auth/domain/constants'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import {
   useGetAvailableInterviewParts,
   useGetInterviewQuestions,
-} from '@/features/school/hooks/useRecruitingQueries'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
 import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge'

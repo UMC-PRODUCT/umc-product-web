@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useGetDocumentEvaluationApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import { useGetDocumentEvaluationApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import Search from '@/shared/assets/icons/search.svg?react'
 import { usePartDropdown } from '@/shared/hooks/usePartDropdown'

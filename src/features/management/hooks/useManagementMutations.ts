@@ -32,7 +32,7 @@ export function useManagementMutations() {
     return useCustomMutation(postSchool, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getGisuChapterWithSchools'],
+          queryKey: managementKeys.getGisuChapterWithSchoolsBase,
         })
       },
     })
@@ -99,8 +99,9 @@ export function useManagementMutations() {
     return useCustomMutation((gisuId: string) => deleteGisu(gisuId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['gisu'],
+          queryKey: managementKeys.getAllGisu,
         })
+        queryClient.invalidateQueries({ queryKey: managementKeys.getGisuListBase })
       },
     })
   }
@@ -113,7 +114,7 @@ export function useManagementMutations() {
     return useCustomMutation((chapterId: string) => deleteBranch(chapterId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getChapters'],
+          queryKey: managementKeys.getChapters,
         })
       },
     })
@@ -127,7 +128,7 @@ export function useManagementMutations() {
     return useCustomMutation((schoolIds: Array<string>) => deleteSchool(schoolIds), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'schoolsPaging'],
+          queryKey: managementKeys.getSchoolsPagingBase,
         })
         queryClient.invalidateQueries({
           queryKey: managementKeys.getAllSchools,

@@ -18,7 +18,7 @@ import ApplyStatus from '../components/SchoolDashboard/ApplyStatus/ApplyStatus'
 import EvaluationStatus from '../components/SchoolDashboard/EvaluationStatus/EvaluationStatus'
 import { ProgressSteps } from '../components/SchoolDashboard/ProgressSteps/ProgressSteps'
 import ScheduleSummary from '../components/SchoolDashboard/ScheduleSummary/ScheduleSummary'
-import { useGetRecruitmentDashboardSummary } from '../hooks/useRecruitingQueries'
+import { useGetRecruitmentDashboardSummary } from '../hooks/queries/useRecruitingQueries'
 
 const resolveErrorStatus = (error: unknown) =>
   (error as { response?: { status?: number } } | null)?.response?.status

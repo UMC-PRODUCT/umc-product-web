@@ -6,9 +6,9 @@ import { useRecruitingContentState } from '@/features/school/hooks/recruiting/us
 import {
   useGetRecruitmentApplicationFormDraft,
   useGetRecruitmentDraft,
-} from './useRecruitingQueries'
+} from '../queries/useRecruitingQueries'
 
-export type { PartCompletionMap, RecruitingProps, RecruitmentPart } from './recruiting/types'
+export type { PartCompletionMap, RecruitingProps, RecruitmentPart } from './types'
 
 export const useRecruitingContentLogic = ({
   recruitingId,

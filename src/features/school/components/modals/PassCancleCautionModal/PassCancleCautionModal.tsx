@@ -1,7 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import Caution from '@/shared/assets/icons/caution.svg?react'
+import { schoolKeys } from '@/shared/queryKeys'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
@@ -31,7 +32,7 @@ const PassCancleCautionModal = ({
       { applicationId, requestBody: { decision: 'WAIT' } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+          queryClient.invalidateQueries({ queryKey: schoolKeys.evaluation.finalSelection.getBase })
           onClose()
         },
       },

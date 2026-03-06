@@ -23,7 +23,7 @@ import {
   postRecruitmentCreate,
   postRecruitmentExtension,
   postRecruitmentPublish,
-} from '../domain/api'
+} from '../../domain/api'
 import type {
   PatchFinalSelectionStatusRequestDTO,
   PatchInterviewEvaluationMyAnswerRequestDTO,
@@ -37,7 +37,7 @@ import type {
   PostRecruitmentExtensionRequestDTO,
   PostRecruitmentPublishRequestDTO,
   RecruitmentEditable,
-} from '../domain/model'
+} from '../../domain/model'
 
 export function useRecruitingMutation() {
   // 모집 생성

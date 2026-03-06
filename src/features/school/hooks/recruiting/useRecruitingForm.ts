@@ -5,13 +5,13 @@ import dayjs from 'dayjs'
 
 import type { RecruitingForms } from '@/shared/types/form'
 
-import { recruitingFormSchema, setScheduleValidationContext } from '../schemas/validation'
+import { recruitingFormSchema, setScheduleValidationContext } from '../../schemas/validation'
 import {
   buildDefaultPage2Item,
   buildPreferredPartItem,
   buildScheduleItem,
   normalizeItems,
-} from '../utils/recruiting/requiredItems'
+} from '../../utils/recruiting/requiredItems'
 
 const defaultValues: RecruitingForms = {
   title: '',

@@ -19,6 +19,7 @@ type LabelCalendarProps = {
   value?: Date | null
   onChange?: (date: Date) => void
   onBlur?: () => void
+  minDate?: Date
   name?: string
   error?: {
     error: boolean
@@ -48,6 +49,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
       className,
       css,
       disabled = false,
+      minDate,
     },
     ref,
   ) => {
@@ -146,6 +148,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
                 <RecruitingFormCalendar
                   key={triggerId}
                   value={selectedValue}
+                  minDate={minDate}
                   onChange={handleDateChange}
                 />
               </Section>

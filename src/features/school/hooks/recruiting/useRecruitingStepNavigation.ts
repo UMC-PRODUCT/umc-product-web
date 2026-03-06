@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import type { RecruitingForms } from '@/shared/types/form'
 import { scrollToTop as scrollToTopUtil } from '@/shared/utils/scrollToTop'
 
-import { getStepReady, step3ItemsSchema } from '../schemas/validation'
+import { getStepReady, step3ItemsSchema } from '../../schemas/validation'
 
 type UseRecruitingStepNavigationParams = {
   values: RecruitingForms

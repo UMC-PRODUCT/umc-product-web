@@ -1,5 +1,5 @@
-import type { RecruitingProps } from '../hooks/useRecruitingContentLogic'
-import { useRecruitingContentLogic } from '../hooks/useRecruitingContentLogic'
+import type { RecruitingProps } from '../hooks/recruiting/useRecruitingContentLogic'
+import { useRecruitingContentLogic } from '../hooks/recruiting/useRecruitingContentLogic'
 import { RecruitingContentView } from './RecruitingContentView'
 
 export const RecruitingContent = (props: RecruitingProps) => {

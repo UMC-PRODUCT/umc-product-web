@@ -20,7 +20,7 @@ const RecruitingStepForm = () => {
     isExtensionMode,
     isExtensionBaseMode,
   } = useRecruitingContext()
-  const { control, setValue, setError, clearErrors } = recruitmentForm
+  const { control, setValue, trigger } = recruitmentForm
   return (
     <>
       <RecruitingStep step={currentStep} />
@@ -41,8 +41,7 @@ const RecruitingStepForm = () => {
           <Step2
             control={control}
             setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
+            trigger={trigger}
             initialSchedule={initialRecruitmentSchedule}
             status={recruitingFormValues.status}
             isExtensionMode={isExtensionMode}

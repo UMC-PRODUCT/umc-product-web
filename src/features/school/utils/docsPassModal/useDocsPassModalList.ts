@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
 import type { PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
