@@ -7,10 +7,10 @@ import type { LinkType } from '@/shared/constants/umc'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { ExternalLink } from '@/shared/types/link'
+import { Button } from '@/shared/ui/common/Button'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import LinkInput from '@/shared/ui/form/LinkInput/LinkInput'
 
-import { Button } from '../../common/Button'
 import * as S from './ExternalLinkModal.style'
 
 type LocalExternalLink = ExternalLink & { id: string }

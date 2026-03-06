@@ -1,8 +1,8 @@
-import { getTermsByType } from '@/features/auth/domain/api'
+import { useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { authKeys } from '@/shared/queryKeys'
 import type { TermsType } from '@/shared/types/umc'
 
-import { useCustomSuspenseQuery } from './customQuery'
+import { getTermsByType } from '../domain/api'
 
 export function useGetTerm({ termsType }: { termsType: TermsType }) {
   const { data: response, ...rest } = useCustomSuspenseQuery(

@@ -34,6 +34,13 @@ export const Content = styled.div`
   ${theme.typography.B4.Rg};
 `
 
+export const ContentLink = styled.a`
+  color: ${theme.colors.gray[400]};
+  white-space: nowrap;
+  text-decoration: none;
+  ${theme.typography.B4.Rg};
+`
+
 export const UmcInfo = styled(Flex)`
   ${media.down(theme.breakPoints.tablet)} {
     flex-direction: column;

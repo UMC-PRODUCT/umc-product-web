@@ -4,13 +4,13 @@ import { useState } from 'react'
 import Cancle from '@shared/assets/icons/close.svg?react'
 import Grab from '@shared/assets/icons/drag.svg?react'
 
+import { useGisuDropdown } from '@/features/management/hooks/useManagedDropdown'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import Section from '@/shared/ui/common/Section/Section'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
-import { useGisuDropdown } from '../../../../shared/hooks/useManagedDropdown'
 import type { Branch, ChapterType, UniversitySimple } from '../../domain/model'
 import { useManagementMutations } from '../../hooks/useManagementMutations'
 import {

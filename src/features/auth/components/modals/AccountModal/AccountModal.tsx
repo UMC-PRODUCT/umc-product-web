@@ -10,13 +10,13 @@ import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { authKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
+import { Button } from '@/shared/ui/common/Button'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import { Modal } from '@/shared/ui/common/Modal'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
-import * as S from '@/shared/ui/modals/AccountModal/AccountModal.style'
 
-import { Button } from '../../common/Button'
+import * as S from './AccountModal.style'
 
 type AccountModalProps = {
   onClose: () => void

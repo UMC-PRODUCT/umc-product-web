@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
+import LeftMenu from '@/features/auth/components/layout/Header/LeftMenu/LeftMenu'
+import RightMenu from '@/features/auth/components/layout/Header/RightMenu/RightMenu'
 import { getSchoolLink } from '@/features/auth/domain/api'
 import { useActiveGisuQuery, useMemberMeQuery } from '@/features/auth/hooks/useAuthQueries'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
-import LeftMenu from '@/shared/layout/Header/LeftMenu/LeftMenu'
-import RightMenu from '@/shared/layout/Header/RightMenu/RightMenu'
 import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import { getHighestPriorityRole, getRolesByGisu } from '@/shared/utils/role'

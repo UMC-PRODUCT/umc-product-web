@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
 import type { Option } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
