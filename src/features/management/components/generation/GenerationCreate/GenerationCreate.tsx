@@ -93,12 +93,14 @@ const GenerationCreate = () => {
             label="기수 시작일"
             placeholder="시작일을 선택해주세요."
             value={startAt}
+            minDate={dayjs().startOf('day').toDate()}
             onChange={(date) => setStartAt(date)}
           />
           <LabelCalendar
             label="기수 마감일"
             placeholder="마감일을 선택해주세요."
             value={endAt}
+            minDate={dayjs().startOf('day').toDate()}
             onChange={(date) => setEndAt(date)}
           />
         </Flex>

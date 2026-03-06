@@ -13,12 +13,13 @@ import 'react-calendar/dist/Calendar.css'
 
 type RecruitingCalendarProps = {
   value?: Date | null
+  minDate?: Date
   onChange?: (date: Date) => void
 }
 
 const toStartOfDay = (value: Date) => dayjs(value).startOf('day')
 
-const RecruitingFormCalendar = ({ value, onChange }: RecruitingCalendarProps) => {
+const RecruitingFormCalendar = ({ value, minDate, onChange }: RecruitingCalendarProps) => {
   const today = useMemo(() => toStartOfDay(new Date()).toDate(), [])
 
   const [activeStartDate, setActiveStartDate] = useState<Date>(() =>
@@ -73,6 +74,7 @@ const RecruitingFormCalendar = ({ value, onChange }: RecruitingCalendarProps) =>
           next2Label={null}
           prevLabel={null}
           nextLabel={null}
+          minDate={minDate ?? today}
           value={selectedValue}
           activeStartDate={activeStartDate}
           onActiveStartDateChange={handleActiveStartDateChange}

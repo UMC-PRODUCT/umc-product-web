@@ -19,19 +19,10 @@ type Props = {
   label: string
   disabled: boolean
   localError?: string
-  touchedKey: keyof RecruitingForms['schedule']
-  onTouched: (key: keyof RecruitingForms['schedule']) => void
 }
 
-const Step2ScheduleCalendarField = ({
-  control,
-  name,
-  label,
-  disabled,
-  localError,
-  touchedKey,
-  onTouched,
-}: Props) => {
+const Step2ScheduleCalendarField = ({ control, name, label, disabled, localError }: Props) => {
+  const today = dayjs().startOf('day').toDate()
   return (
     <Controller
       name={name}
@@ -41,10 +32,10 @@ const Step2ScheduleCalendarField = ({
           label={label}
           name={field.name}
           value={field.value ? new Date(field.value) : null}
+          minDate={today}
           onChange={(date) => {
             field.onChange(dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ'))
             field.onBlur()
-            onTouched(touchedKey)
           }}
           onBlur={field.onBlur}
           error={
