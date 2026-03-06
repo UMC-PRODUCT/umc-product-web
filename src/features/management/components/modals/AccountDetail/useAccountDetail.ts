@@ -8,10 +8,7 @@ import {
   postChallengerDeactivate,
   postChallengerRole,
 } from '@/features/management/domain/api'
-import {
-  useGetChallengerRole,
-  useGetMemberProfile,
-} from '@/features/management/hooks/useManagementQueries'
+import { useGetMemberProfile } from '@/features/management/hooks/useManagementQueries'
 import { getGisuPeriodText } from '@/features/management/utils/gisu'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
@@ -24,14 +21,12 @@ type UseAccountDetailParams = {
 }
 
 export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) => {
-  const [role, setRole] = useState<RoleType | null>(null)
-  const [createdRoleId, setCreatedRoleId] = useState<string>('')
+  const [selectedRoles, setSelectedRoles] = useState<Array<RoleType>>([])
 
   const queryClient = useQueryClient()
   const { data: myProfile } = useMemberMeQuery()
   const { data: activeGisu } = useActiveGisuQuery()
   const { data, isLoading, error } = useGetMemberProfile(memberId)
-  const { data: createdRoleDetail } = useGetChallengerRole(createdRoleId)
 
   const profile = data?.result
   const activeChallengerRecord =
@@ -104,53 +99,63 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
       },
     )
 
-  const { mutate: createChallengerRole, isPending: isSavingRole } =
-    useCustomMutation<CommonResponseDTO<{ challengerRoleId: string }> | null>(
-      async () => {
-        if (!profile || !role || !activeChallengerRecord) return null
+  const { mutate: createChallengerRole, isPending: isSavingRole } = useCustomMutation<null>(
+    async () => {
+      if (!profile || !activeChallengerRecord) return null
 
-        if (role === 'CHAPTER_PRESIDENT') {
+      const rolesToCreate = selectedRoles.filter(
+        (roleType) => !activeGisuRoles.some((profileRole) => profileRole.roleType === roleType),
+      )
+
+      const allowedRoles = rolesToCreate.filter((roleType) => {
+        if (roleType === 'CHAPTER_PRESIDENT') {
           alert('지부장 권한은 현재 화면에서 지부 organizationId가 없어 설정할 수 없습니다.')
-          return null
+          return false
         }
-        if (activeGisuRoles.some((profileRole) => profileRole.roleType === role)) {
-          alert('현재 기수에 이미 보유 중인 권한입니다.')
-          return null
-        }
+        return true
+      })
 
-        const organizationId = role.startsWith('SCHOOL_') ? profile.schoolId : null
-        const responsiblePart =
-          role === 'SCHOOL_PART_LEADER' || role === 'CENTRAL_EDUCATION_TEAM_MEMBER'
-            ? activeChallengerRecord.part
-            : null
+      if (allowedRoles.length === 0) {
+        alert('추가할 권한을 선택해 주세요.')
+        return null
+      }
 
-        return postChallengerRole({
-          challengerId: activeChallengerRecord.challengerId,
-          roleType: role,
-          organizationId,
-          responsiblePart,
-          gisuId: activeGisuId ?? activeChallengerRecord.gisuId,
-        })
-      },
-      {
-        onSuccess: async (created) => {
-          if (!created) return
-          const createdId = created.result.challengerRoleId
-          if (createdId) setCreatedRoleId(String(createdId))
-          await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
-          await queryClient.invalidateQueries({
-            queryKey: managementKeys.getMemberProfileDetail(memberId),
+      await Promise.all(
+        allowedRoles.map((roleType) => {
+          const organizationId = roleType.startsWith('SCHOOL_') ? profile.schoolId : null
+          const responsiblePart =
+            roleType === 'SCHOOL_PART_LEADER' || roleType === 'CENTRAL_EDUCATION_TEAM_MEMBER'
+              ? activeChallengerRecord.part
+              : null
+
+          return postChallengerRole({
+            challengerId: activeChallengerRecord.challengerId,
+            roleType,
+            organizationId,
+            responsiblePart,
+            gisuId: activeGisuId ?? activeChallengerRecord.gisuId,
           })
-          onClose()
-        },
+        }),
+      )
+
+      return null
+    },
+    {
+      onSuccess: async () => {
+        setSelectedRoles([])
+        await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
+        await queryClient.invalidateQueries({
+          queryKey: managementKeys.getMemberProfileDetail(memberId),
+        })
+        onClose()
       },
-    )
+    },
+  )
 
   const { mutate: deleteCreatedRole, isPending: isDeletingRole } = useCustomMutation(
     async (challengerRoleId: string) => deleteChallengerRole(challengerRoleId),
     {
       onSuccess: async () => {
-        setCreatedRoleId('')
         await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
         await queryClient.invalidateQueries({
           queryKey: managementKeys.getMemberProfileDetail(memberId),
@@ -166,28 +171,27 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
 
     if (selectedExistingRole) {
       deleteCreatedRole(String(selectedExistingRole.id))
-      if (role === roleType) setRole(null)
+      setSelectedRoles((prev) => prev.filter((selected) => selected !== roleType))
       return
     }
 
-    setRole((prevRole) => (prevRole === roleType ? null : roleType))
-  }
-
-  const onDeleteCreatedRole = () => {
-    if (!createdRoleId) return
-    deleteCreatedRole(createdRoleId)
+    setSelectedRoles((prevRoles) =>
+      prevRoles.includes(roleType)
+        ? prevRoles.filter((selected) => selected !== roleType)
+        : [...prevRoles, roleType],
+    )
   }
 
   const errorStatus = (error as { response?: { status?: number } } | null)?.response?.status
 
   const isRoleActive = (roleType: RoleType) => {
     const hasExistingRole = activeGisuRoles.some((profileRole) => profileRole.roleType === roleType)
-    return hasExistingRole || role === roleType
+    return hasExistingRole || selectedRoles.includes(roleType)
   }
 
   return {
-    role,
-    setRole,
+    selectedRoles,
+    setSelectedRoles,
     isLoading,
     errorStatus,
     profile,
@@ -195,12 +199,10 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
     activeChallengerRecord,
     activityHistories,
     activeGisuRoles,
-    createdRoleDetail,
     deactivateChallenger,
     isDeactivating,
     createChallengerRole,
     isSavingRole,
-    onDeleteCreatedRole,
     onClickRoleOption,
     isRoleActive,
     isDeletingRole,
