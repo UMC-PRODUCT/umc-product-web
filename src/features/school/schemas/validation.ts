@@ -34,6 +34,20 @@ type InterviewTimeTableWithEnabled = RecruitingForms['schedule']['interviewTimeT
   enabledByDate?: Array<{ date: string; times?: Array<string> }>
 }
 
+const hasSlotsForEdgeDates = (
+  dates: Array<string>,
+  enabledSlots?: Array<{ date: string; times?: Array<string> }>,
+) => {
+  if (dates.length === 0) return true
+  const startDate = dates[0]
+  const endDate = dates[dates.length - 1]
+  const hasSlotsForDate = (date: string) => {
+    const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.times ?? []
+    return slotsForDate.length > 0
+  }
+  return hasSlotsForDate(startDate) && hasSlotsForDate(endDate)
+}
+
 const recruitmentPartEnum = z.enum([
   'PLAN',
   'DESIGN',
@@ -98,6 +112,7 @@ type DateOrderValues = {
     interviewStartAt?: string | null
     interviewEndAt?: string | null
     finalResultAt?: string | null
+    interviewTimeTable?: InterviewTimeTableWithEnabled
   }
 }
 
@@ -251,7 +266,8 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.applyStartAt &&
       values.applyEndAt &&
-      dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt), 'day')
+      (dayjs(values.applyEndAt).isBefore(dayjs(values.applyStartAt), 'day') ||
+        dayjs(values.applyEndAt).isSame(dayjs(values.applyStartAt), 'day'))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -263,7 +279,8 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.applyEndAt &&
       values.docResultAt &&
-      dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt), 'day')
+      (dayjs(values.docResultAt).isBefore(dayjs(values.applyEndAt), 'day') ||
+        dayjs(values.docResultAt).isSame(dayjs(values.applyEndAt), 'day'))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -275,7 +292,8 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.docResultAt &&
       values.interviewStartAt &&
-      dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt), 'day')
+      (dayjs(values.interviewStartAt).isBefore(dayjs(values.docResultAt), 'day') ||
+        dayjs(values.interviewStartAt).isSame(dayjs(values.docResultAt), 'day'))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -287,7 +305,8 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
     if (
       values.interviewStartAt &&
       values.interviewEndAt &&
-      dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt), 'day')
+      (dayjs(values.interviewEndAt).isBefore(dayjs(values.interviewStartAt), 'day') ||
+        dayjs(values.interviewEndAt).isSame(dayjs(values.interviewStartAt), 'day'))
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -307,6 +326,28 @@ const withDateOrderRules = <T extends z.ZodTypeAny>(schema: T) =>
         message: '면접 평가 종료일과 같거나 이후로 선택해 주세요.',
       })
     }
+
+    // 면접 시작/종료일에는 최소 1개 이상 면접 시간이 있어야 함
+    if (values.interviewStartAt && values.interviewEndAt) {
+      const start = dayjs(values.interviewStartAt).startOf('day')
+      const end = dayjs(values.interviewEndAt).startOf('day')
+      if (!end.isBefore(start, 'day')) {
+        const dates: Array<string> = []
+        let current = start
+        while (!current.isAfter(end, 'day')) {
+          dates.push(current.format('YYYY-MM-DD'))
+          current = current.add(1, 'day')
+        }
+        const edgeHasSlots = hasSlotsForEdgeDates(dates, values.interviewTimeTable?.enabledByDate)
+        if (!edgeHasSlots) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['schedule', 'interviewTimeTable', 'enabledByDate'],
+            message: '시작일과 마지막일에는 최소 1개의 시간을 선택해 주세요.',
+          })
+        }
+      }
+    }
   })
 
 export const step2Schema = withDateOrderRules(
@@ -314,20 +355,6 @@ export const step2Schema = withDateOrderRules(
     schedule: baseScheduleSchema,
   }),
 )
-
-const hasSlotsForEdgeDates = (
-  dates: Array<string>,
-  enabledSlots?: Array<{ date: string; times?: Array<string> }>,
-) => {
-  if (dates.length === 0) return true
-  const startDate = dates[0]
-  const endDate = dates[dates.length - 1]
-  const hasSlotsForDate = (date: string) => {
-    const slotsForDate = enabledSlots?.find((slot) => slot.date === date)?.times ?? []
-    return slotsForDate.length > 0
-  }
-  return hasSlotsForDate(startDate) && hasSlotsForDate(endDate)
-}
 
 export const getStepReady = (
   step: number,
@@ -449,12 +476,12 @@ export const recruitingFormSchema = withDateOrderRules(
     recruitmentParts: step1Schema.shape.recruitmentParts,
     maxPreferredPartCount: z.string().min(1),
     schedule: z.object({
-      applyStartAt: baseScheduleSchema.shape.applyStartAt.nullable(),
-      applyEndAt: baseScheduleSchema.shape.applyEndAt.nullable(),
-      docResultAt: baseScheduleSchema.shape.docResultAt.nullable(),
-      interviewStartAt: baseScheduleSchema.shape.interviewStartAt.nullable(),
-      interviewEndAt: baseScheduleSchema.shape.interviewEndAt.nullable(),
-      finalResultAt: baseScheduleSchema.shape.finalResultAt.nullable(),
+      applyStartAt: baseScheduleSchema.shape.applyStartAt,
+      applyEndAt: baseScheduleSchema.shape.applyEndAt,
+      docResultAt: baseScheduleSchema.shape.docResultAt,
+      interviewStartAt: baseScheduleSchema.shape.interviewStartAt,
+      interviewEndAt: baseScheduleSchema.shape.interviewEndAt,
+      finalResultAt: baseScheduleSchema.shape.finalResultAt,
       interviewTimeTable: interviewTimeTableSchema,
     }),
     noticeContent: step4Schema.shape.noticeContent,

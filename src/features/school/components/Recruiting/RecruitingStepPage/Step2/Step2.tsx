@@ -1,4 +1,4 @@
-import type { Control, UseFormClearErrors, UseFormSetError, UseFormSetValue } from 'react-hook-form'
+import type { Control, UseFormSetValue, UseFormTrigger } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import { useStep2ScheduleState } from '@/features/school/hooks/recruiting/useStep2ScheduleState'
@@ -18,16 +18,14 @@ import Step2ScheduleCalendarField from './Step2ScheduleCalendarField'
 const Step2 = ({
   control,
   setValue,
-  setError,
-  clearErrors,
+  trigger,
   initialSchedule,
   status,
   isExtensionMode = false,
 }: {
   control: Control<RecruitingForms>
   setValue: UseFormSetValue<RecruitingForms>
-  setError: UseFormSetError<RecruitingForms>
-  clearErrors: UseFormClearErrors<RecruitingForms>
+  trigger: UseFormTrigger<RecruitingForms>
   initialSchedule: RecruitingSchedule | null
   status: RecruitingForms['status']
   isExtensionMode?: boolean
@@ -37,16 +35,13 @@ const Step2 = ({
     interviewTimeTable,
     canEdit,
     canEditSlotMinutes,
-    localErrors,
-    localTimeTableError,
-    markTouched,
+    orderErrors,
     timeRange,
     toTimeTableValue,
   } = useStep2ScheduleState({
     control,
     setValue,
-    setError,
-    clearErrors,
+    trigger,
     initialSchedule,
     status,
     isExtensionMode,
@@ -67,18 +62,14 @@ const Step2 = ({
               name="schedule.applyStartAt"
               label="서류 모집 시작일"
               disabled={!canEdit.applyStartAt}
-              localError={localErrors.applyStartAt}
-              touchedKey="applyStartAt"
-              onTouched={markTouched}
+              localError={orderErrors.applyEndAt ? '' : undefined}
             />
             <Step2ScheduleCalendarField
               control={control}
               name="schedule.applyEndAt"
               label="서류 모집 종료일"
               disabled={!canEdit.applyEndAt}
-              localError={localErrors.applyEndAt}
-              touchedKey="applyEndAt"
-              onTouched={markTouched}
+              localError={orderErrors.applyEndAt}
             />
           </Flex>
 
@@ -87,9 +78,7 @@ const Step2 = ({
             name="schedule.docResultAt"
             label="서류 결과 발표일"
             disabled={!canEdit.docResultAt}
-            localError={localErrors.docResultAt}
-            touchedKey="docResultAt"
-            onTouched={markTouched}
+            localError={orderErrors.docResultAt}
           />
 
           <Flex flexWrap="wrap" css={{ rowGap: 26, columnGap: 50 }}>
@@ -98,18 +87,14 @@ const Step2 = ({
               name="schedule.interviewStartAt"
               label="면접 평가 시작일"
               disabled={!canEdit.interviewStartAt}
-              localError={localErrors.interviewStartAt}
-              touchedKey="interviewStartAt"
-              onTouched={markTouched}
+              localError={orderErrors.interviewStartAt}
             />
             <Step2ScheduleCalendarField
               control={control}
               name="schedule.interviewEndAt"
               label="면접 평가 종료일"
               disabled={!canEdit.interviewEndAt}
-              localError={localErrors.interviewEndAt}
-              touchedKey="interviewEndAt"
-              onTouched={markTouched}
+              localError={orderErrors.interviewEndAt}
             />
           </Flex>
 
@@ -134,7 +119,6 @@ const Step2 = ({
                     const nextValue = event.target.value.replace(/\D/g, '')
                     field.onChange(nextValue)
                     field.onBlur()
-                    markTouched('interviewTimeTable')
                   }}
                   onBlur={field.onBlur}
                   inputMode="numeric"
@@ -142,12 +126,8 @@ const Step2 = ({
                   css={{ width: '100%' }}
                   disabled={!canEditSlotMinutes}
                   error={
-                    fieldState.error?.message || localErrors.interviewTimeTable
-                      ? {
-                          error: true,
-                          errorMessage:
-                            fieldState.error?.message || localErrors.interviewTimeTable || '',
-                        }
+                    fieldState.error?.message
+                      ? { error: true, errorMessage: fieldState.error.message }
                       : undefined
                   }
                 />
@@ -180,7 +160,6 @@ const Step2 = ({
                         }))
                         field.onChange(nextEnabled)
                         field.onBlur()
-                        markTouched('interviewTimeTable')
                       }}
                       mode={canEdit.interviewTimeTable ? 'edit' : 'view'}
                       selectedColorMode={
@@ -195,7 +174,7 @@ const Step2 = ({
                       <ErrorMessage
                         typo="B4.Md"
                         responsiveTypo={{ tablet: 'B4.Md' }}
-                        errorMessage={fieldState.error.message || localTimeTableError || ''}
+                        errorMessage={fieldState.error.message || ''}
                       />
                     )}
                   </Flex>
@@ -209,9 +188,7 @@ const Step2 = ({
             name="schedule.finalResultAt"
             label="최종 결과 발표일"
             disabled={!canEdit.finalResultAt}
-            localError={localErrors.finalResultAt}
-            touchedKey="finalResultAt"
-            onTouched={markTouched}
+            localError={orderErrors.finalResultAt}
           />
         </Flex>
       </Section>
