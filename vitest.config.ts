@@ -43,6 +43,8 @@ export default mergeConfig(
           ],
           test: {
             name: 'storybook-browser',
+            include: ['src/**/*.stories.{ts,tsx,js,jsx,mdx}'],
+            exclude: ['src/**/*.{test,spec}.{ts,tsx,js,jsx}', 'storybook-static/**', 'dist/**'],
             browser: {
               enabled: true,
               headless: true,

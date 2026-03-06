@@ -5,6 +5,9 @@ import { theme } from '@/shared/styles/theme'
 export const containerStyle = css({
   minHeight: '400px',
   padding: '40px 20px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 })
 
 export const detailStyle = css({

@@ -9,11 +9,6 @@ type FooterProps = {
   privacyTermsLink?: string
 }
 
-const openExternalLink = (link?: string) => {
-  if (!link) return
-  window.open(link, '_blank', 'noopener,noreferrer')
-}
-
 const Footer = ({ serviceTermsLink, privacyTermsLink }: FooterProps) => {
   return (
     <S.FooterContainer>
@@ -24,27 +19,26 @@ const Footer = ({ serviceTermsLink, privacyTermsLink }: FooterProps) => {
             UMC {FOOTER_INFO.gisu}th 총괄 : {FOOTER_INFO.master}{' '}
           </S.Content>
           <S.TextDivider className="divider" />
-          <S.Content
-            onClick={() => (window.location.href = `mailto:${FOOTER_INFO.email}`)}
-            css={{ cursor: 'pointer' }}
-          >
+          <S.ContentLink href={`mailto:${FOOTER_INFO.email}`}>
             이메일 : {FOOTER_INFO.email}
-          </S.Content>
+          </S.ContentLink>
         </S.UmcInfo>
         <Flex gap="10px">
-          <S.Content
-            onClick={() => openExternalLink(serviceTermsLink)}
-            css={{ cursor: serviceTermsLink ? 'pointer' : 'default' }}
-          >
-            서비스이용약관
-          </S.Content>
+          {serviceTermsLink ? (
+            <S.ContentLink href={serviceTermsLink} target="_blank" rel="noopener noreferrer">
+              서비스이용약관
+            </S.ContentLink>
+          ) : (
+            <S.Content>서비스이용약관</S.Content>
+          )}
           <S.TextDivider />
-          <S.Content
-            onClick={() => openExternalLink(privacyTermsLink)}
-            css={{ cursor: privacyTermsLink ? 'pointer' : 'default' }}
-          >
-            개인정보처리방침
-          </S.Content>
+          {privacyTermsLink ? (
+            <S.ContentLink href={privacyTermsLink} target="_blank" rel="noopener noreferrer">
+              개인정보처리방침
+            </S.ContentLink>
+          ) : (
+            <S.Content>개인정보처리방침</S.Content>
+          )}
         </Flex>
       </Flex>
       <Flex gap="0px" flexDirection="column">

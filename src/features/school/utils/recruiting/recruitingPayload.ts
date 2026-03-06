@@ -7,7 +7,6 @@ import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shar
 const toDateOnly = (value: string | null | undefined) => {
   if (!value) return null
 
-  // Keep the calendar date from the input text to avoid runtime timezone drift.
   const isoDate = value.match(/^(\d{4}-\d{2}-\d{2})/)?.[1]
   if (isoDate) return `${isoDate}T00:00:00+09:00`
 
