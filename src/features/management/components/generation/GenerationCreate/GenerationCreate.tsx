@@ -41,7 +41,7 @@ const GenerationCreate = () => {
           setStartAt(null)
           setEndAt(null)
           queryClient.invalidateQueries({ queryKey: managementKeys.getAllGisu })
-          queryClient.invalidateQueries({ queryKey: ['management', 'gisuList'] })
+          queryClient.invalidateQueries({ queryKey: managementKeys.getGisuListBase })
         },
         onError: (error) => {
           const status = (error as { response?: { status?: number } } | null)?.response?.status

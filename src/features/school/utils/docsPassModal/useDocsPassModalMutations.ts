@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
+import { schoolKeys } from '@/shared/queryKeys'
 
 type SelectionItem = {
   applicationId: string
@@ -33,15 +34,15 @@ export const useDocsPassModalMutations = ({
     {
       onMutate: async ({ applicationId, decision }) => {
         await queryClient.cancelQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         const previous = queryClient.getQueriesData({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         queryClient.setQueriesData(
-          { queryKey: ['school', 'getDocumentSelectedApplicants'], exact: false },
+          { queryKey: schoolKeys.evaluation.document.getSelectionsBase, exact: false },
           (oldData) => {
             if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData
             const next = structuredClone(oldData)
@@ -67,7 +68,7 @@ export const useDocsPassModalMutations = ({
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'documents', 'selections', 'applicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
       },
@@ -97,7 +98,7 @@ export const useDocsPassModalMutations = ({
     bulkPass(targetIds, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'documents', 'selections', 'applicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         onBulkPassSuccess?.(targetIds.length)

@@ -260,7 +260,7 @@ const EditSchoolModal = ({ onClose, schoolId }: { onClose: () => void; schoolId:
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['schoolsPaging'] })
+          queryClient.invalidateQueries({ queryKey: managementKeys.getSchoolsPagingBase })
           queryClient.invalidateQueries({
             queryKey: managementKeys.getAllSchools,
           })

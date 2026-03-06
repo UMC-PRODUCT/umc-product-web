@@ -118,25 +118,11 @@ const MyEvaluation = ({
               })
               queryClient.invalidateQueries({
                 predicate: (query) => {
-                  const [root, domain, feature, key, params] = query.queryKey as [
-                    string?,
-                    string?,
-                    string?,
-                    string?,
-                    any?,
-                  ]
-                  return (
-                    root === 'school' &&
-                    domain === 'documents' &&
-                    feature === 'evaluation' &&
-                    key === 'applicants' &&
-                    String(params?.recruitmentId) === String(recruitingId)
+                  return schoolKeys.evaluation.document.isApplicantsQueryForRecruitment(
+                    query.queryKey,
+                    recruitingId,
                   )
                 },
-              })
-              queryClient.invalidateQueries({
-                queryKey: ['school', 'documents', 'evaluation', 'applicants'],
-                exact: false,
               })
               void refetchDocument()
             }

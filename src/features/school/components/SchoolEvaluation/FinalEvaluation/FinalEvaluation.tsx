@@ -5,6 +5,7 @@ import type { FinalSelectionApplication } from '@/features/school/domain/model'
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import { useGetFinalSelectionApplications } from '@/features/school/hooks/useRecruitingQueries'
 import { useDocsPassModalUi } from '@/features/school/utils/docsPassModal'
+import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import * as Shared from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
@@ -142,7 +143,7 @@ const FinalEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
     processedCount: number,
     openSuccessModal: boolean,
   ) => {
-    await queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+    await queryClient.invalidateQueries({ queryKey: schoolKeys.evaluation.finalSelection.getBase })
     setSelectedIds((prev) => {
       const next = new Set(prev)
       requestedIds.forEach((id) => next.delete(id))
@@ -254,7 +255,9 @@ const FinalEvaluation = ({ recruitmentId }: { recruitmentId: string }) => {
           }),
         ),
       )
-      await queryClient.invalidateQueries({ queryKey: ['school', 'finalSelections'] })
+      await queryClient.invalidateQueries({
+        queryKey: schoolKeys.evaluation.finalSelection.getBase,
+      })
       setSelectedIds((prev) => {
         const next = new Set(prev)
         targetApplicants.forEach((item) => next.delete(item.applicationId))

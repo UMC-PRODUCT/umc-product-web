@@ -8,6 +8,7 @@ import { postGisuActivate } from '@/features/management/domain/api'
 import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
 import { formatDateToDot } from '@/features/management/utils/gisu'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
+import { managementKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
@@ -30,8 +31,8 @@ const GenerationList = () => {
     (gisuId: string) => postGisuActivate(gisuId),
     {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['management', 'gisuList'] })
-        await queryClient.invalidateQueries({ queryKey: ['management', 'gisu'] })
+        await queryClient.invalidateQueries({ queryKey: managementKeys.getGisuListBase })
+        await queryClient.invalidateQueries({ queryKey: managementKeys.getAllGisu })
       },
     },
   )

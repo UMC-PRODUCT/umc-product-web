@@ -95,7 +95,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
+          await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
           await queryClient.invalidateQueries({
             queryKey: managementKeys.getMemberProfileDetail(memberId),
           })
@@ -137,7 +137,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
           if (!created) return
           const createdId = created.result.challengerRoleId
           if (createdId) setCreatedRoleId(String(createdId))
-          await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
+          await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
           await queryClient.invalidateQueries({
             queryKey: managementKeys.getMemberProfileDetail(memberId),
           })
@@ -151,7 +151,7 @@ export const useAccountDetail = ({ memberId, onClose }: UseAccountDetailParams) 
     {
       onSuccess: async () => {
         setCreatedRoleId('')
-        await queryClient.invalidateQueries({ queryKey: ['management', 'challenger'] })
+        await queryClient.invalidateQueries({ queryKey: managementKeys.getChallengerBase })
         await queryClient.invalidateQueries({
           queryKey: managementKeys.getMemberProfileDetail(memberId),
         })

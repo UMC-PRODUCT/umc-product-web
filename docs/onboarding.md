@@ -67,6 +67,23 @@
 - 공통 Query 래퍼: `src/shared/hooks/customQuery.ts`
 - Query Key: `src/shared/queryKeys/*`
 
+### Query key/무효화 규칙
+
+1. Query key 생성은 반드시 `src/shared/queryKeys/*`의 키 팩토리를 통해서만 수행합니다.
+2. `useQuery`, `useInfiniteQuery`, `invalidateQueries`, `cancelQueries`, `setQueriesData`에서 문자열 배열 하드코딩(`['domain', ...]`)을 직접 작성하지 않습니다.
+3. 여러 파라미터 키를 한 번에 무효화할 때는 도메인별 `*Base` 키를 사용합니다.
+4. 모집/평가 도메인에서 조건부 무효화가 필요할 때는 `schoolKeys.evaluation.*`의 헬퍼를 사용해 predicate를 구성합니다.
+5. 새 API를 추가하면 같은 PR에서 query key 팩토리와 invalidate 경로를 함께 갱신합니다.
+
+### 도메인별 사용 기준
+
+- `management`: `managementKeys` 사용 (`getGisuListBase`, `getSchoolsPagingBase`, `getChallengerBase` 등)
+- `school`: `schoolKeys` 사용 (`base`, `evaluation.document.*`, `evaluation.finalSelection.*`)
+- `apply`: `applyKeys` 사용
+- `auth`: `authKeys` 사용
+- `dashboard`: `dashboardKeys` 사용
+- `gisu`: `gisuKeys` 사용
+
 ## 5. 인증/권한 처리 포인트
 
 ### 토큰 및 인터셉터

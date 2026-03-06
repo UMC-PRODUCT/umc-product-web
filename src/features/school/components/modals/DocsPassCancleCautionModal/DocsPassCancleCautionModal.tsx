@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
 import Caution from '@/shared/assets/icons/caution.svg?react'
+import { schoolKeys } from '@/shared/queryKeys'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
@@ -33,7 +34,7 @@ const DocsPassCancleCautionModal = ({
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['school', 'documents', 'selections'],
+            queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           })
           onClose()
         },
