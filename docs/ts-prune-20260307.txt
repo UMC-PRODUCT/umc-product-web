@@ -1,0 +1,519 @@
+vitest.config.ts:23 - default
+.storybook/main.ts:33 - default
+src/routeTree.gen.ts:195 - FileRoutesByFullPath (used in module)
+src/routeTree.gen.ts:224 - FileRoutesByTo (used in module)
+src/routeTree.gen.ts:251 - FileRoutesById (used in module)
+src/routeTree.gen.ts:282 - FileRouteTypes (used in module)
+src/routeTree.gen.ts:371 - RootRouteChildren (used in module)
+src/routeTree.gen.ts:668 - routeTree
+src/api/queryClient.ts:12 - queryClient
+src/api/tokenManager.ts:11 - getStoredToken (used in module)
+src/api/tokenManager.ts:24 - setToken (used in module)
+src/api/tokenManager.ts:32 - removeToken (used in module)
+src/api/tokenManager.ts:56 - removeAccessToken (used in module)
+src/api/tokenManager.ts:60 - removeRefreshToken (used in module)
+src/api/tokenManager.ts:6 - STORAGE_KEYS (used in module)
+src/app/reportWebVitals.ts:13 - default
+src/api/interceptors/index.ts:5 - setupRequestInterceptor
+src/api/interceptors/index.ts:6 - setupResponseInterceptor
+src/shared/constants/meta.ts:2 - DEFAULT_TITLE (used in module)
+src/shared/constants/meta.ts:3 - DEFAULT_DESCRIPTION (used in module)
+src/shared/constants/meta.ts:5 - HOME_DESCRIPTION (used in module)
+src/shared/constants/meta.ts:9 - SeoConfig (used in module)
+src/shared/constants/part.ts:3 - PART_CONFIG
+src/shared/constants/part.ts:39 - SMALL_PART_TO_PART_TYPE
+src/shared/constants/part.ts:49 - DEFAULT_RECRUITING_PARTS
+src/shared/hooks/useDebouncedValue.ts:23 - useDebounce
+src/shared/hooks/useFilterOptions.ts:33 - default
+src/shared/queryKeys/index.ts:1 - applyKeys
+src/shared/queryKeys/index.ts:2 - authKeys
+src/shared/queryKeys/index.ts:3 - dashboardKeys
+src/shared/queryKeys/index.ts:4 - gisuKeys
+src/shared/queryKeys/index.ts:5 - managementKeys
+src/shared/queryKeys/index.ts:6 - recruitingKeys
+src/shared/queryKeys/index.ts:7 - schoolKeys
+src/shared/schemas/common.ts:16 - affiliatedSchema
+src/shared/types/emotion.d.ts:5 - AppTheme (used in module)
+src/shared/types/form.ts:144 - RecruitingItemQuestion (used in module)
+src/shared/types/index.ts:2 - CommonPagingResponseDTO
+src/shared/types/index.ts:2 - CommonResponseDTO
+src/shared/types/index.ts:3 - PostRefreshTokenResponseDTO
+src/shared/types/index.ts:7 - DocumentStatusType
+src/shared/types/index.ts:8 - FileUploadAnswer
+src/shared/types/index.ts:9 - FileUploadStatus
+src/shared/types/index.ts:10 - FinalStatusType
+src/shared/types/index.ts:11 - QuestionAnswerValue
+src/shared/types/index.ts:12 - QuestionType
+src/shared/types/index.ts:13 - TimeTableSlots
+src/shared/types/index.ts:14 - UploadedFile
+src/shared/types/index.ts:19 - DateRange
+src/shared/types/index.ts:20 - FormOption
+src/shared/types/index.ts:21 - FormPage
+src/shared/types/index.ts:22 - FormQuestion
+src/shared/types/index.ts:23 - Option
+src/shared/types/index.ts:24 - OptionAnswerValue
+src/shared/types/index.ts:25 - QuestionMode
+src/shared/types/index.ts:26 - RecruitingForms
+src/shared/types/index.ts:27 - RecruitingInterviewTimeTable
+src/shared/types/index.ts:28 - RecruitingItem
+src/shared/types/index.ts:29 - RecruitingItemOption
+src/shared/types/index.ts:30 - RecruitingItemQuestionType
+src/shared/types/index.ts:31 - RecruitingSchedule
+src/shared/types/index.ts:32 - RecruitingStatus
+src/shared/types/index.ts:33 - RecruitmentApplicationForm
+src/shared/types/index.ts:34 - ResumeFormSectionProps
+src/shared/types/index.ts:39 - ApplicationFormPayload
+src/shared/types/index.ts:40 - ApplicationFormQuestion
+src/shared/types/index.ts:41 - InterviewTimeTableWithDisabled
+src/shared/types/index.ts:42 - Phase
+src/shared/types/index.ts:43 - QuestionOption
+src/shared/types/index.ts:44 - QuestionSummary
+src/shared/types/index.ts:45 - RecruitingDraft
+src/shared/types/index.ts:46 - RequiredSchedule
+src/shared/types/index.ts:47 - RequiredScheduleWithDisabled
+src/shared/types/index.ts:48 - ScheduleSlot
+src/shared/types/index.ts:52 - EvaluationDocumentType
+src/shared/types/index.ts:52 - EvaluationFinalType
+src/shared/types/index.ts:52 - Workbook
+src/shared/types/index.ts:55 - ExternalLink
+src/shared/types/index.ts:59 - DocumentEvaluationAnswer
+src/shared/types/index.ts:60 - DocumentEvaluationQuestion
+src/shared/types/index.ts:61 - GetDocumentEvaluationApplicationResponseDTO
+src/shared/types/index.ts:65 - CalendarEvent
+src/shared/types/index.ts:65 - CalendarEvents
+src/shared/types/index.ts:69 - BadgeTone
+src/shared/types/index.ts:70 - BadgeVariant
+src/shared/types/index.ts:71 - ButtonTone
+src/shared/types/index.ts:72 - ButtonVariant
+src/shared/types/index.ts:73 - SvgIconComponent
+src/shared/types/index.ts:77 - PartListType
+src/shared/types/index.ts:77 - PartSmallType
+src/shared/types/index.ts:77 - PartType
+src/shared/types/index.ts:80 - ButtonStyleType
+src/shared/types/index.ts:81 - TypoGroup
+src/shared/types/index.ts:81 - TypoToken
+src/shared/types/index.ts:85 - AccountLevelType
+src/shared/types/index.ts:86 - AccountStateType
+src/shared/types/index.ts:87 - EvaluationStatusType
+src/shared/types/index.ts:88 - OrganizationType
+src/shared/types/index.ts:89 - PostFileType
+src/shared/types/index.ts:90 - RecruitmentStatusType
+src/shared/types/index.ts:91 - ResumeType
+src/shared/types/index.ts:92 - RoleType
+src/shared/types/index.ts:93 - SchoolStateType
+src/shared/types/index.ts:94 - SelectionsSortType
+src/shared/types/index.ts:95 - TermsType
+src/shared/utils/index.ts:8 - formatDateTimeKorean
+src/shared/utils/index.ts:12 - formatDateTimeDot
+src/shared/utils/index.ts:16 - formatDateKorean
+src/shared/utils/index.ts:20 - formatDateRange
+src/shared/utils/index.ts:28 - formatTempSavedTime
+src/shared/utils/index.ts:1 - formatFileSize
+src/shared/utils/index.ts:3 - mappingRecruitingColor
+src/shared/utils/index.ts:22 - mappingEvaluationColor
+src/shared/utils/index.ts:23 - normalizeRecruitmentApplicationForm
+src/shared/utils/index.ts:7 - resolveTypo
+src/shared/utils/index.ts:14 - scrollToTop
+src/shared/utils/index.ts:49 - applySeoMeta
+src/shared/utils/index.ts:14 - transformStateKorean
+src/shared/utils/index.ts:29 - transformRoleKorean
+src/shared/utils/index.ts:52 - transformPart
+src/shared/utils/index.ts:62 - transformRecruitingKorean
+src/shared/utils/index.ts:76 - transformResumeStatusKorean
+src/shared/utils/index.ts:90 - transformQuestionTypeKorean
+src/shared/utils/index.ts:111 - transformApplicationStatusKorean
+src/shared/utils/index.ts:134 - transformRecruitingScheduleTypeKorean
+src/shared/utils/index.ts:152 - transformNextRecruitmentMonthKorean
+src/shared/utils/index.ts:170 - transformUserRecruitmentBadgeToKorean
+src/shared/utils/index.ts:185 - transformEvaluationStatusTypeKorean
+src/features/apply/components/ResumePage.ts:7 - BorderedSection
+src/features/apply/components/ResumePage.ts:30 - LastSavedTime
+src/features/apply/components/ResumePage.ts:37 - QuestionContainer
+src/features/apply/components/ResumePage.ts:49 - QuestionHeader
+src/features/apply/domain/constants.ts:31 - RESUME_STATUS_CONFIG
+src/features/apply/domain/index.ts:6 - DOCUMENT_STATUS_CONFIG
+src/features/apply/domain/index.ts:6 - FINAL_STATUS_CONFIG
+src/features/apply/domain/index.ts:10 - DocumentStatusType
+src/features/apply/domain/index.ts:11 - FinalStatusType
+src/features/apply/domain/index.ts:12 - QuestionAnswerValue
+src/features/apply/domain/index.ts:13 - QuestionType
+src/features/apply/domain/model.ts:61 - TextQuestion
+src/features/apply/domain/model.ts:67 - LongTextQuestion
+src/features/apply/domain/model.ts:73 - MultipleChoiceQuestion
+src/features/apply/domain/model.ts:80 - ChoiceQuestion
+src/features/apply/domain/model.ts:87 - DropdownQuestion
+src/features/apply/domain/model.ts:94 - TimeTableQuestion
+src/features/apply/domain/model.ts:103 - FileUploadQuestion
+src/features/apply/domain/model.ts:109 - PartQuestion
+src/features/apply/domain/model.ts:130 - QuestionList
+src/features/apply/domain/model.ts:149 - FileUploadValue (used in module)
+src/features/apply/domain/model.ts:207 - RecruitmentForm (used in module)
+src/features/apply/domain/queryKeys.ts:1 - applyKeys
+src/features/apply/hooks/useFileUpload.ts:12 - useFileUpload
+src/features/apply/hooks/useGetApplicationQuery.ts:99 - useGetMyApplicationStatus
+src/features/apply/schemas/applySchemas.ts:5 - createPartValidation (used in module)
+src/features/apply/utils/index.ts:1 - ResumeQuestion
+src/features/apply/utils/index.ts:2 - isOptionAnswerValue
+src/features/apply/utils/index.ts:2 - isQuestionAnswerEmpty
+src/features/apply/utils/index.ts:4 - buildDefaultValuesFromQuestions
+src/features/apply/utils/index.ts:5 - ResumeFormValues
+src/features/apply/utils/index.ts:8 - findPartQuestion
+src/features/apply/utils/index.ts:9 - getSelectedPartsForSubmission
+src/features/apply/utils/index.ts:10 - getSelectedPartsFromAnswer
+src/features/apply/utils/index.ts:13 - findFirstErrorPageIndex
+src/features/apply/utils/index.ts:14 - getAllQuestionFieldIds
+src/features/apply/utils/index.ts:15 - getAllQuestionsFromPages
+src/features/apply/utils/index.ts:16 - getPageRequiredFieldIds
+src/features/apply/utils/index.ts:18 - resolvePagesWithSlots
+src/features/apply/utils/index.ts:20 - getSubmissionFormValues
+src/features/apply/utils/index.ts:21 - getSubmissionItems
+src/features/auth/domain/api.ts:105 - patchTerms
+src/features/auth/domain/constants.ts:25 - PART_LIST
+src/features/auth/domain/index.ts:6 - PART_CONFIG
+src/features/auth/domain/index.ts:9 - PartType
+src/features/auth/domain/model.ts:11 - AccountStateType
+src/features/auth/domain/model.ts:14 - PartListType (used in module)
+src/features/auth/domain/model.ts:14 - PartSmallType (used in module)
+src/features/auth/domain/queryKeys.ts:1 - authKeys
+src/features/auth/domain/queryKeys.ts:1 - gisuKeys
+src/features/auth/domain/queryKeys.ts:1 - schoolKeys
+src/features/auth/domain/school.ts:4 - SchoolSearchPage (used in module)
+src/features/auth/domain/school.ts:11 - searchSchools
+src/features/auth/domain/types.ts:8 - ExternalLink (used in module)
+src/features/auth/domain/types.ts:10 - RegisterTokenPayload (used in module)
+src/features/auth/hooks/useAuthQueries.ts:11 - useGetMemberMe
+src/features/auth/hooks/useGetTerm.ts:7 - useGetTerm
+src/features/dashboard/domain/index.ts:6 - dashboardKeys
+src/features/dashboard/domain/index.ts:9 - RecruitingStepType
+src/features/dashboard/domain/model.ts:12 - ApplySummary
+src/features/dashboard/domain/model.ts:19 - DashboardProgress
+src/features/dashboard/domain/model.ts:26 - DashboardUser
+src/features/dashboard/domain/types.ts:27 - Current (used in module)
+src/features/dashboard/domain/types.ts:46 - Application (used in module)
+src/features/home/domain/constants.ts:8 - Curriculum
+src/features/home/domain/model.ts:7 - HeroSection
+src/features/home/domain/model.ts:15 - HomeStatistics
+src/features/home/domain/model.ts:22 - HomeNotice
+src/features/management/domain/constants.ts:19 - EVALUATION_DOCUMENT_CONFIG
+src/features/management/domain/constants.ts:27 - EVALUATION_FINAL_CONFIG
+src/features/management/domain/constants.ts:56 - DELETE_SCHOOL_TABLE_HEADER_LABEL
+src/features/management/domain/index.ts:6 - EvaluationDocumentType
+src/features/management/domain/index.ts:6 - EvaluationFinalType
+src/features/management/domain/model.ts:19 - SchoolStateType (used in module)
+src/features/management/domain/model.ts:22 - RecruitingType
+src/features/management/domain/model.ts:24 - Workbook (used in module)
+src/features/management/domain/model.ts:45 - UniversityBranch
+src/features/management/domain/model.ts:53 - Notice
+src/features/management/domain/model.ts:62 - ManageSchoolTab (used in module)
+src/features/management/domain/model.ts:72 - PutCurriculumWorkbookItem (used in module)
+src/features/management/domain/model.ts:108 - ChapterMiniType (used in module)
+src/features/management/domain/model.ts:247 - ChallengerSearchItem (used in module)
+src/features/management/domain/model.ts:267 - ChallengerPoint (used in module)
+src/features/management/domain/model.ts:293 - MemberProfileRole (used in module)
+src/features/management/hooks/useManagedDropdown.tsx:23 - useSchoolDropdown
+src/features/management/hooks/useManagedDropdown.tsx:55 - useChapterDropdown
+src/features/management/hooks/useManagementQueries.ts:29 - useGetCurriculums
+src/features/management/hooks/useManagementQueries.ts:104 - useGetSchoolDetails
+src/features/management/hooks/useManagementQueries.ts:142 - useGetGisuById
+src/features/management/hooks/useManagementQueries.ts:182 - useGetChallengerDetail
+src/features/management/hooks/useManagementQueries.ts:208 - useGetChallengerRole
+src/features/management/mocks/data.ts:1 - DATA_CHANGE_MOCK
+src/features/management/schemas/management.ts:11 - schoolRegisterSchema (used in module)
+src/features/management/schemas/management.ts:32 - accountRegisterSchema (used in module)
+src/features/management/schemas/management.ts:40 - accountEditSchema (used in module)
+src/features/management/schemas/management.ts:48 - AccountRegisterForm
+src/features/management/schemas/management.ts:50 - AccountEditForm
+src/features/recruiting/domain/index.ts:6 - PART_REQUIRED_SKILL
+src/features/recruiting/domain/index.ts:9 - CurriculumItem
+src/features/recruiting/domain/index.ts:9 - PartData
+src/features/recruiting/domain/index.ts:9 - RecruitingEvent
+src/features/recruiting/domain/index.ts:9 - RecruitingNotice
+src/features/recruiting/domain/queryKeys.ts:1 - recruitingKeys
+src/features/recruiting/mocks/recruiting.ts:5 - RAW_EVENTS
+src/features/recruiting/mocks/recruiting.ts:22 - RECRUITING_NOTICE
+src/features/recruiting/mocks/recruiting.ts:30 - MOCK_PART_CURRICULUM
+src/features/school/domain/index.ts:13 - schoolKeys
+src/features/school/domain/index.ts:65 - postRecruitmentCreate
+src/features/school/domain/index.ts:73 - postRecruitmentExtension
+src/features/school/domain/index.ts:85 - patchRecruitmentDraft
+src/features/school/domain/index.ts:94 - patchRecruitmentApplicationFormDraft
+src/features/school/domain/index.ts:105 - getRecruitmentApplicationFormDraft
+src/features/school/domain/index.ts:112 - getRecruitments
+src/features/school/domain/index.ts:122 - getRecruitmentExtensionBases
+src/features/school/domain/index.ts:130 - getRecruitmentDraft
+src/features/school/domain/index.ts:138 - getRecruitmentNotices
+src/features/school/domain/index.ts:146 - postRecruitmentPublish
+src/features/school/domain/index.ts:155 - deleteRecruitment
+src/features/school/domain/index.ts:161 - deleteRecruitmentQuestion
+src/features/school/domain/index.ts:174 - patchRecruitmentPublished
+src/features/school/domain/index.ts:186 - getRecruitmentDashboardSummary
+src/features/school/domain/index.ts:194 - deleteRecruitmentQuestionOption
+src/features/school/domain/index.ts:206 - getDocumentEvaluationApplicants
+src/features/school/domain/index.ts:222 - getDocumentEvaluationApplicationDetail
+src/features/school/domain/index.ts:233 - getDocumentEvaluationAnswers
+src/features/school/domain/index.ts:244 - getDocumentEvaluationMyAnswer
+src/features/school/domain/index.ts:255 - getDocumentSelectedApplicants
+src/features/school/domain/index.ts:269 - patchDocumentEvaluationMyAnswer
+src/features/school/domain/index.ts:282 - patchDocumentSelectionStatus
+src/features/school/domain/index.ts:295 - getFinalSelectionApplications
+src/features/school/domain/index.ts:307 - patchFinalSelectionStatus
+src/features/school/domain/index.ts:320 - patchInterviewEvaluationMyAnswer
+src/features/school/domain/index.ts:333 - getInterviewEvaluationSummary
+src/features/school/domain/index.ts:344 - getInterviewEvaluationView
+src/features/school/domain/index.ts:355 - getInterviewAssignments
+src/features/school/domain/index.ts:367 - getInterviewEvaluationOptions
+src/features/school/domain/index.ts:375 - getInterviewEvaluationMyAnswer
+src/features/school/domain/index.ts:386 - getInterviewQuestions
+src/features/school/domain/index.ts:400 - getInterviewLiveQuestions
+src/features/school/domain/index.ts:411 - getAvailableInterviewParts
+src/features/school/domain/index.ts:419 - postInterviewQuestion
+src/features/school/domain/index.ts:431 - postInterviewLiveQuestion
+src/features/school/domain/index.ts:444 - patchInterviewQuestion
+src/features/school/domain/index.ts:457 - patchInterviewLiveQuestion
+src/features/school/domain/index.ts:471 - patchInterviewQuestionOrder
+src/features/school/domain/index.ts:483 - deleteInterviewQuestion
+src/features/school/domain/index.ts:494 - deleteInterviewLiveQuestion
+src/features/school/domain/index.ts:505 - getInterviewSchedulingSlotApplicants
+src/features/school/domain/index.ts:519 - getInterviewSlots
+src/features/school/domain/index.ts:534 - getInterviewSchedulingSummary
+src/features/school/domain/index.ts:549 - getInterviewSlotAssignments
+src/features/school/domain/index.ts:563 - postInterviewAssignApplicants
+src/features/school/domain/index.ts:581 - deleteInterviewAssignApplicants
+src/features/school/domain/index.ts:592 - getRecruitmentsDocumentEvaluation
+src/features/school/domain/index.ts:5 - PAGE_INFO
+src/features/school/domain/index.ts:20 - QUESTION_INFO
+src/features/school/domain/index.ts:43 - RESPONSE_INFO
+src/features/school/domain/index.ts:54 - STEP_NAME
+src/features/school/domain/index.ts:77 - PHASE
+src/features/school/domain/index.ts:88 - EVALUATION_TAB
+src/features/school/domain/index.ts:55 - ProgressRate
+src/features/school/domain/index.ts:86 - PartApplyStatus
+src/features/school/domain/index.ts:92 - PartEvaluationStatus
+src/features/school/domain/index.ts:99 - InterviewCandidate
+src/features/school/domain/index.ts:106 - RecruitingProgressStep
+src/features/school/domain/index.ts:110 - GetRecruitmentsRequestDTO
+src/features/school/domain/index.ts:114 - GetRecruitmentsResponseDTO
+src/features/school/domain/index.ts:131 - GetRecruitmentExtensionBasesResponseDTO
+src/features/school/domain/index.ts:141 - GetRecruitmentNoticesResponseDTO
+src/features/school/domain/index.ts:148 - GetRecruitmentDraftResponseDTO
+src/features/school/domain/index.ts:150 - PostRecruitmentPublishRequestDTO
+src/features/school/domain/index.ts:155 - PatchRecruitmentDraftRequestDTO
+src/features/school/domain/index.ts:157 - PatchRecruitmentDraftResponseDTO
+src/features/school/domain/index.ts:159 - PostRecruitmentCreateResponseDTO
+src/features/school/domain/index.ts:164 - PostRecruitmentExtensionRequestDTO
+src/features/school/domain/index.ts:169 - PostRecruitmentExtensionResponseDTO
+src/features/school/domain/index.ts:174 - PatchRecruitmentApplicationFormDraftRequestDTO
+src/features/school/domain/index.ts:176 - PatchRecruitmentApplicationFormDraftResponseDTO
+src/features/school/domain/index.ts:178 - DeleteRecruitmentQuestionResponseDTO
+src/features/school/domain/index.ts:179 - DeleteRecruitmentQuestionRequestDTO
+src/features/school/domain/index.ts:183 - DeleteRecruitmentQuestionOptionRequestDTO
+src/features/school/domain/index.ts:189 - PatchRecruitmentPublishedRequestDTO
+src/features/school/domain/index.ts:194 - GetRecruitmentDashboardResponseDTO
+src/features/school/domain/index.ts:202 - SchoolLeaderProgressType
+src/features/school/domain/index.ts:214 - RecruitmentEditable
+src/features/school/domain/index.ts:230 - RecruitmentApplicationFormResponseDTO
+src/features/school/domain/index.ts:233 - DocumentEvaluationAnswer
+src/features/school/domain/index.ts:234 - DocumentEvaluationQuestion
+src/features/school/domain/index.ts:235 - GetDocumentEvaluationApplicationResponseDTO
+src/features/school/domain/index.ts:238 - GetDocumentEvaluationAnswersResponseDTO
+src/features/school/domain/index.ts:253 - ScheduleSummary
+src/features/school/domain/index.ts:265 - RecruitmentProgress
+src/features/school/domain/index.ts:276 - ApplicationStatus
+src/features/school/domain/index.ts:283 - EvaluationStatus
+src/features/school/domain/index.ts:289 - PartStatus
+src/features/school/domain/index.ts:295 - RecruitingTab
+src/features/school/domain/index.ts:297 - GetDocumentEvaluationApplicantsResponseDTO
+src/features/school/domain/index.ts:306 - GetDocumentEvaluationApplicantsRequestDTO
+src/features/school/domain/index.ts:310 - PatchDocumentEvaluationMyAnswerResponseDTO
+src/features/school/domain/index.ts:313 - PatchDocumentEvaluationMyAnswerRequestDTO
+src/features/school/domain/index.ts:319 - PatchInterviewEvaluationMyAnswerRequestDTO
+src/features/school/domain/index.ts:324 - InterviewMyEvaluation
+src/features/school/domain/index.ts:331 - PatchInterviewEvaluationMyAnswerResponseDTO
+src/features/school/domain/index.ts:335 - GetInterviewEvaluationMyAnswerResponseDTO
+src/features/school/domain/index.ts:339 - InterviewEvaluationSummary
+src/features/school/domain/index.ts:345 - GetInterviewEvaluationSummaryResponseDTO
+src/features/school/domain/index.ts:350 - InterviewEvaluationViewQuestion
+src/features/school/domain/index.ts:356 - InterviewEvaluationViewLiveQuestion
+src/features/school/domain/index.ts:364 - InterviewEvaluationViewQuestions
+src/features/school/domain/index.ts:371 - InterviewEvaluationViewAppliedPart
+src/features/school/domain/index.ts:377 - InterviewEvaluationViewResponseDTO
+src/features/school/domain/index.ts:392 - InterviewAssignmentSlot
+src/features/school/domain/index.ts:407 - GetInterviewAssignmentsResponseDTO
+src/features/school/domain/index.ts:438 - GetInterviewEvaluationOptionsResponseDTO
+src/features/school/domain/index.ts:446 - FinalSelectionSummaryByPart
+src/features/school/domain/index.ts:451 - FinalSelectionPartLabel
+src/features/school/domain/index.ts:456 - FinalSelectionApplication
+src/features/school/domain/index.ts:472 - GetFinalSelectionApplicationsRequestDTO
+src/features/school/domain/index.ts:479 - GetFinalSelectionApplicationsResponseDTO
+src/features/school/domain/index.ts:488 - PatchFinalSelectionStatusRequestDTO
+src/features/school/domain/index.ts:493 - PatchFinalSelectionStatusResponseDTO
+src/features/school/domain/index.ts:501 - MyEvaluation
+src/features/school/domain/index.ts:510 - GetDocumentEvaluationMyAnswerResponseDTO
+src/features/school/domain/index.ts:527 - GetDocumentSelectedApplicantsResponseDTO
+src/features/school/domain/index.ts:535 - GetDocumentSelectedApplicantsRequestDTO
+src/features/school/domain/index.ts:539 - PatchDocumentSelectionStatusRequestDTO
+src/features/school/domain/index.ts:543 - DocumentSelectionApplication
+src/features/school/domain/index.ts:562 - InterviewLiveQuestion
+src/features/school/domain/index.ts:570 - GetInterviewLiveQuestionsResponseDTO
+src/features/school/domain/index.ts:574 - GetInterviewQuestionsResponseDTO
+src/features/school/domain/index.ts:583 - GetInterviewAvailablePartsResponseDTO
+src/features/school/domain/index.ts:590 - PostInterviewQuestionRequestDTO
+src/features/school/domain/index.ts:595 - PostInterviewLiveQuestionRequestDTO
+src/features/school/domain/index.ts:599 - PatchInterviewLiveQuestionRequestDTO
+src/features/school/domain/index.ts:603 - PatchInterviewLiveQuestionResponseDTO
+src/features/school/domain/index.ts:608 - PatchInterviewQuestionOrderRequestDTO
+src/features/school/domain/index.ts:613 - PatchInterviewQuestionRequestDTO
+src/features/school/domain/index.ts:617 - GetInterviewSlotAssignmentsResponseDTO
+src/features/school/domain/index.ts:621 - Assignment
+src/features/school/domain/index.ts:638 - GetInterviewSchedulingSummaryResponseDTO
+src/features/school/domain/index.ts:646 - Slot
+src/features/school/domain/index.ts:654 - GetInterviewSlotsResponseDTO
+src/features/school/domain/index.ts:660 - GetInterviewSchedulingSlotApplicantsResponseDTO
+src/features/school/domain/index.ts:673 - PostInterviewAssignApplicantsResponseDTO
+src/features/school/domain/index.ts:687 - DeleteInterviewAssignApplicantsResponseDTO
+src/features/school/domain/index.ts:694 - GetRecruitmentsDocumentEvaluationResponseDTO
+src/features/school/domain/index.ts:2 - ApplicationFormPayload
+src/features/school/domain/index.ts:3 - ApplicationFormQuestion
+src/features/school/domain/index.ts:4 - InterviewTimeTableWithDisabled
+src/features/school/domain/index.ts:5 - Phase
+src/features/school/domain/index.ts:6 - QuestionOption
+src/features/school/domain/index.ts:7 - QuestionSummary
+src/features/school/domain/index.ts:8 - RecruitingDraft
+src/features/school/domain/index.ts:9 - RequiredSchedule
+src/features/school/domain/index.ts:10 - RequiredScheduleWithDisabled
+src/features/school/domain/index.ts:11 - ScheduleSlot
+src/features/school/pages/Recruiting.tsx:23 - RecruitingProps (used in module)
+src/features/school/pages/SchoolDashboard.tsx:110 - SchoolDashboardContent (used in module)
+src/features/school/schemas/validation.ts:61 - step1Schema (used in module)
+src/features/school/schemas/validation.ts:353 - step2Schema (used in module)
+src/features/school/schemas/validation.ts:385 - step4Schema (used in module)
+src/features/school/utils/partQuestionBank.ts:27 - getPartKey (used in module)
+src/features/school/utils/partQuestionBank.ts:29 - getPartFromKey
+src/features/school/utils/partQuestionBank.ts:31 - buildPartQuestionBankPayload
+src/features/school/utils/partQuestionBank.ts:42 - getAllQuestionIdsFromPartBank
+src/features/school/utils/partQuestionBank.ts:49 - getInitialPartQuestionBank
+src/features/school/utils/partQuestionBank.ts:58 - getPartQuestionBankKeys
+src/shared/api/file/api.ts:14 - PostUploadFileResponseDTO (used in module)
+src/shared/styles/theme/index.ts:5 - theme
+src/shared/ui/feedback/index.ts:1 - ErrorFallback
+src/shared/ui/feedback/index.ts:2 - NotFoundPage
+src/features/apply/hooks/fileUpload/index.ts:1 - useFileProcessing
+src/features/apply/hooks/fileUpload/index.ts:2 - useFileUploadSimulation
+src/features/apply/hooks/fileUpload/index.ts:3 - useUploadedFileState
+src/features/apply/pages/resume/useResumeForm.ts:14 - UseResumeFormReturn (used in module)
+src/features/apply/utils/form/questionSelectors.ts:6 - PageQuestion (used in module)
+src/features/apply/utils/form/questionSelectors.ts:24 - getPageQuestionsWithSchedule (used in module)
+src/features/auth/hooks/register/index.ts:2 - EmailVerificationState
+src/features/auth/hooks/register/index.ts:3 - useEmailVerification
+src/features/auth/hooks/register/index.ts:4 - useEmailVerificationSync
+src/features/auth/hooks/register/index.ts:6 - useRegisterFormSetup
+src/features/auth/hooks/register/index.ts:7 - SchoolOption
+src/features/auth/hooks/register/index.ts:7 - useSchoolSelection
+src/features/auth/hooks/register/index.ts:8 - TermsAgreementKey
+src/features/auth/hooks/register/index.ts:8 - useTermsAgreement
+src/features/auth/hooks/register/useEmailVerification.ts:32 - useEmailSend
+src/features/auth/hooks/register/useEmailVerification.ts:10 - EmailSendState (used in module)
+src/features/auth/hooks/register/useTerms.ts:15 - useTermsById
+src/features/home/components/ProjectsSection/ProjectsSection.style.ts:17 - SectionDescription (used in module)
+src/features/management/components/school/EmptySelectionNotice.tsx:4 - EmptySelectionNotice
+src/features/management/components/school/SchoolFormFields.tsx:19 - SchoolFormFields
+src/features/management/components/school/shared.ts:37 - FormCard
+src/features/management/components/school/shared.ts:50 - DropdownWrapper
+src/features/management/components/school/shared.ts:134 - FilterWrapper
+src/features/management/components/school/shared.ts:144 - Footer
+src/features/management/components/school/shared.ts:152 - Pagination
+src/features/management/components/school/shared.ts:163 - BottomButtonGroup
+src/features/management/components/school/shared.ts:168 - Td
+src/features/management/components/school/shared.ts:179 - SchoolProfile
+src/features/management/components/school/shared.ts:184 - SchoolProfileInfo
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:138 - ContentLabel (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:139 - Dot (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:140 - FirstColumn (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:142 - SecondColumn (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:145 - TimelineGrid (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:146 - WeekLabel (used in module)
+src/features/recruiting/components/PartCurriculum/PartCurriculum.style.ts:147 - WeekRow (used in module)
+src/features/school/components/modals/index.ts:1 - AdditionalQuestionModal
+src/features/school/components/modals/index.ts:2 - ApplicationModal
+src/features/school/components/modals/index.ts:3 - CreateRecruitingConfirm
+src/features/school/components/modals/index.ts:4 - DeleteConfirm
+src/features/school/components/modals/index.ts:5 - DeleteFail
+src/features/school/components/modals/index.ts:6 - DocsPassModal
+src/features/school/components/modals/index.ts:7 - PassCancleCautionModal
+src/features/school/components/modals/index.ts:8 - PassInfoModal
+src/features/school/components/modals/index.ts:9 - RecruitingPreviewContent
+src/features/school/components/modals/index.ts:10 - RecruitingPreviewSkeletonContent
+src/features/school/components/modals/index.ts:11 - SetPassPartModal
+src/features/school/components/modals/index.ts:12 - SetPassSuccessModal
+src/features/school/components/modals/index.ts:13 - TempRecruitmentModal
+src/features/school/hooks/queries/useRecruitingQueries.ts:129 - useGetDocumentEvaluationApplicationDetail
+src/features/school/hooks/queries/useRecruitingQueries.ts:30 - useGetInterviewLiveQuestions
+src/features/school/hooks/queries/useRecruitingQueries.ts:116 - useGetInterviewSlots
+src/features/school/hooks/queries/useRecruitingQueries.ts:130 - useGetInterviewSchedulingSummary
+src/features/school/hooks/queries/useRecruitingQueries.ts:138 - useGetInterviewSlotAssignments
+src/features/school/hooks/queries/useRecruitingQueries.ts:77 - useGetRecruitmentApplicationAnswer
+src/features/school/hooks/recruiting/useRecruitingContentLogic.ts:11 - PartCompletionMap
+src/features/school/hooks/recruiting/useRecruitingContentLogic.ts:11 - RecruitmentPart
+src/features/school/utils/docsPassModal/index.ts:1 - useDocsPassModalList
+src/features/school/utils/docsPassModal/index.ts:2 - useDocsPassModalMutations
+src/features/school/utils/docsPassModal/index.ts:3 - useDocsPassModalSelection
+src/features/school/utils/docsPassModal/index.ts:4 - sortOptions
+src/features/school/utils/docsPassModal/index.ts:4 - useDocsPassModalUi
+src/features/school/utils/recruiting/requiredItems.ts:37 - buildDefaultPartItem (used in module)
+src/features/school/utils/recruiting/requiredItems.ts:47 - hasPreferredPartItem (used in module)
+src/features/school/utils/recruiting/requiredItems.ts:55 - hasScheduleItem (used in module)
+src/features/school/utils/recruiting/requiredItems.ts:63 - hasPage2CommonItem (used in module)
+src/features/school/utils/recruiting/requiredItems.ts:66 - EnsureRequiredItemsOptions (used in module)
+src/shared/ui/common/Badge/index.ts:1 - Badge
+src/shared/ui/common/Button/index.ts:1 - Button
+src/shared/ui/common/Checkbox/index.ts:1 - Checkbox
+src/shared/ui/common/Divider/index.ts:1 - Divider
+src/shared/ui/common/Dropdown/index.ts:1 - Dropdown
+src/shared/ui/common/Instruction/index.ts:1 - Instruction
+src/shared/ui/common/Label/index.ts:1 - Label
+src/shared/ui/common/Label/index.ts:2 - default
+src/shared/ui/common/Modal/index.ts:2 - ModalBodyProps
+src/shared/ui/common/Modal/index.ts:3 - ModalCloseProps
+src/shared/ui/common/Modal/index.ts:4 - ModalContentProps
+src/shared/ui/common/Modal/index.ts:5 - ModalDescriptionProps
+src/shared/ui/common/Modal/index.ts:6 - ModalFooterProps
+src/shared/ui/common/Modal/index.ts:7 - ModalHeaderProps
+src/shared/ui/common/Modal/index.ts:8 - ModalOverlayProps
+src/shared/ui/common/Modal/index.ts:9 - ModalPortalProps
+src/shared/ui/common/Modal/index.ts:10 - ModalRootProps
+src/shared/ui/common/Modal/index.ts:11 - ModalTitleProps
+src/shared/ui/common/Modal/index.ts:12 - ModalTriggerProps
+src/shared/ui/common/Modal/index.ts:14 - Modal
+src/shared/ui/common/ProgressCircle/index.ts:1 - ProgressCircle
+src/shared/ui/common/ResumeNavigation/index.ts:1 - default
+src/shared/ui/common/Tab/index.ts:1 - Tab
+src/shared/ui/common/Tab/Tab.stories.tsx:23 - default
+src/shared/ui/common/Tab/Tab.stories.tsx:26 - Uncontrolled
+src/shared/ui/common/Tab/Tab.stories.tsx:38 - Controlled
+src/shared/ui/common/Table/Table.style.ts:131 - Pagination (used in module)
+src/shared/ui/common/Table/Table.tsx:18 - ManagementFooterButton
+src/features/apply/pages/resume/hooks/index.ts:2 - useFormCompleteness
+src/features/apply/pages/resume/hooks/index.ts:3 - useFormSetup
+src/features/apply/pages/resume/hooks/index.ts:4 - useFormValidationRegistration
+src/features/apply/pages/resume/hooks/index.ts:5 - useFormValuesWatch
+src/features/apply/pages/resume/hooks/index.ts:8 - usePartAnswerReset
+src/features/apply/pages/resume/hooks/index.ts:9 - PartChangePending
+src/features/apply/pages/resume/hooks/index.ts:10 - usePartChangeModalState
+src/features/apply/pages/resume/hooks/index.ts:11 - usePartSelectionChange
+src/features/auth/components/modals/AlreadyExistAccount/AlreadyExistAccount.tsx:40 - default
+src/features/auth/components/modals/ExternalLinkModal/index.ts:1 - default
+src/features/management/components/modals/AccountEditConfirm/AccountEditConfirm.tsx:41 - default
+src/features/management/components/modals/AccountSuspended/AccountSuspended.tsx:54 - default
+src/features/management/components/system/Term/Term.style.ts:39 - Info
+src/features/school/components/modals/TempRecruitmentModal/TempRecruitmentCard.tsx:104 - default
+src/features/school/components/Recruiting/RecruitingStepPage/index.ts:1 - Step1
+src/features/school/components/Recruiting/RecruitingStepPage/index.ts:2 - Step2
+src/features/school/components/Recruiting/RecruitingStepPage/index.ts:3 - Step3
+src/features/school/components/Recruiting/RecruitingStepPage/index.ts:4 - Step4
+src/features/school/components/Recruiting/RecruitingStepPage/index.ts:5 - Step5
+src/features/school/components/SchoolEvaluation/DocsEvaluation/index.tsx:126 - default
+src/features/school/components/SchoolEvaluation/FinalEvaluation/FinalEvaluationRow.tsx:106 - default
+src/shared/ui/common/Question/TimeTable/TimeTable.helpers.ts:4 - timeToMinutes (used in module)
+src/shared/ui/common/Question/TimeTable/TimeTable.helpers.ts:9 - buildVisualRange (used in module)
+src/shared/ui/common/Question/TimeTable/TimeTable.helpers.ts:24 - timeToIndex (used in module)
+src/features/school/components/SchoolEvaluation/InterviewEvaluation/RealTimeEvaluation/index.tsx:74 - default

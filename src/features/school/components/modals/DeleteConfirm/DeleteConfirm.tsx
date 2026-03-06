@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import FillNotice from '@/shared/assets/icons/notice_fill.svg?react'
 import { schoolKeys } from '@/shared/queryKeys'
-import { Button } from '@/shared/ui/common/Button/Button'
+import { Button } from '@/shared/ui/common/Button'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 

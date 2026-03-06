@@ -7,7 +7,7 @@ import Upload from '@/shared/assets/icons/arrow_up_circle.svg?react'
 import { managementKeys } from '@/shared/queryKeys'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
-import { Button } from '@/shared/ui/common/Button/Button'
+import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import Label from '@/shared/ui/common/Label/Label'
 import Section from '@/shared/ui/common/Section/Section'
@@ -68,7 +68,6 @@ const AddSchool = () => {
   })
 
   const onSubmit = (data: AddSchoolForm) => {
-    console.log('Submitting school data:', data)
     postSchool(
       {
         schoolName: data.schoolName,
