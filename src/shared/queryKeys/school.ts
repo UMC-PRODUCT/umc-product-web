@@ -210,7 +210,7 @@ const schoolEvaluationKeys = {
 // -----------------------------
 export const schoolKeys = {
   /** school 도메인 전체 prefix (`['school']`) */
-  base: schoolKeyFactory.recruitments.queryKey.slice(0, 1),
+  base: ['school'] as const,
   // 신규 접근: 평가 키 전용 네임스페이스
   evaluation: schoolEvaluationKeys,
 

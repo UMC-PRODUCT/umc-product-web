@@ -116,15 +116,13 @@ export const useStep2ScheduleState = ({
     const interviewEnded = prev?.interviewEndAt
       ? now.isAfter(dayjs(prev.interviewEndAt), 'day')
       : false
-    const applyStartPast = prev?.applyStartAt ? now.isAfter(dayjs(prev.applyStartAt), 'day') : false
-    const applyEndPast = prev?.applyEndAt ? now.isAfter(dayjs(prev.applyEndAt), 'day') : false
     const docResultPast = prev?.docResultAt ? now.isAfter(dayjs(prev.docResultAt), 'day') : false
     const finalResultPast = prev?.finalResultAt
       ? now.isAfter(dayjs(prev.finalResultAt), 'day')
       : false
     return {
-      applyStartAt: !applyStarted && !applyStartPast,
-      applyEndAt: !applyEnded && !applyEndPast,
+      applyStartAt: !applyStarted,
+      applyEndAt: !applyEnded,
       docResultAt: !applyEnded && !docResultPast,
       interviewStartAt: false,
       interviewEndAt: false,

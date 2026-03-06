@@ -82,7 +82,7 @@ const managementKeyFactory = createQueryKeys('management', {
 
 export const managementKeys = {
   /** management 도메인 전체 prefix (`['management']`) */
-  base: managementKeyFactory.gisu.queryKey.slice(0, 1),
+  base: ['management'] as const,
   /** 파트별 커리큘럼 조회 키 */
   getCurriculums: (part: PartType) => managementKeyFactory.curriculums(part).queryKey,
   /** 전체 학교 목록 조회 키 */

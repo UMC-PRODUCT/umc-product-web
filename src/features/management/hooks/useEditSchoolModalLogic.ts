@@ -95,6 +95,15 @@ export const useEditSchoolModalLogic = (schoolId: string, onClose: () => void) =
     initialDataRef.current = { schoolName: nextName, remark: nextRemark, links: resolvedLinks }
   }, [schoolDetails, reset])
 
+  useEffect(
+    () => () => {
+      if (!previewUrlRef.current) return
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    },
+    [],
+  )
+
   const handleFileInputChange = async (files: FileList | null) => {
     if (!files || files.length === 0) return
     const file = files[0]
