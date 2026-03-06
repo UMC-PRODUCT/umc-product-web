@@ -3,8 +3,8 @@ import type { UseFormReturn } from 'react-hook-form'
 
 import { useBeforeUnload } from '@/features/apply/hooks/useBeforeUnload'
 import { useUnsavedChangesBlocker } from '@/features/apply/hooks/useUnsavedChangeBlocker'
-import { useRecruitingForm } from '@/features/school/hooks/useRecruitingForm'
-import { useRecruitingStepNavigation } from '@/features/school/hooks/useRecruitingStepNavigation'
+import { useRecruitingForm } from '@/features/school/hooks/recruiting/useRecruitingForm'
+import { useRecruitingStepNavigation } from '@/features/school/hooks/recruiting/useRecruitingStepNavigation'
 import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 
 import type { PartCompletionMap, RecruitingProps } from './types'

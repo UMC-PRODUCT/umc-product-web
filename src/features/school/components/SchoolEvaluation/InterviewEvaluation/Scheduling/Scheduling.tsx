@@ -8,8 +8,8 @@ import {
   getInterviewSlots,
 } from '@/features/school/domain/api'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
-import { useGetInterviewSlotApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
+import { useGetInterviewSlotApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
 import Search from '@/shared/assets/icons/search.svg?react'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { media } from '@/shared/styles/media'

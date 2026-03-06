@@ -2,7 +2,7 @@ import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
 import ServerErrorCard from '../components/common/ServerErrorCard'
-import type { RecruitingProps } from '../hooks/useRecruitingContentLogic'
+import type { RecruitingProps } from '../hooks/recruiting/useRecruitingContentLogic'
 import { RecruitingContent } from './RecruitingContent'
 
 export const Recruiting = (props: RecruitingProps) => (

@@ -15,7 +15,7 @@ import {
   getInterviewSchedulingSummary,
   getInterviewSlotAssignments,
   getInterviewSlots,
-} from '../domain/api'
+} from '../../domain/api'
 
 /** 면접 질문지(사전 질문) 조회 */
 export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {

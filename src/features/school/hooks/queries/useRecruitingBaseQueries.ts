@@ -14,7 +14,7 @@ import {
   getRecruitmentExtensionBases,
   getRecruitments,
   getRecruitmentsDocumentEvaluation,
-} from '../domain/api'
+} from '../../domain/api'
 
 /** 모집 임시저장 조회 */
 export const useGetRecruitmentDraft = (recruitingId: string) => {

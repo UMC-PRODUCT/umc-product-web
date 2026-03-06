@@ -7,7 +7,7 @@ import { useRouter } from '@tanstack/react-router'
 
 import { useRecruitingContext } from '@/features/school/components/Recruiting/RecruitingPage/RecruitingContext'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import { convertApplicationFormToItems } from '@/features/school/utils/recruiting/applicationFormMapper'
 import { buildQuestionsPayload } from '@/features/school/utils/recruiting/recruitingPayload'
 import Plus from '@/shared/assets/icons/plus.svg?react'

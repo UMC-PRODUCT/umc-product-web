@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import {
   useGetInterviewAssignments,
   useGetInterviewEvaluationOptions,
-} from '@/features/school/hooks/useRecruitingQueries'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
 import type { PartType } from '@/shared/types/part'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 

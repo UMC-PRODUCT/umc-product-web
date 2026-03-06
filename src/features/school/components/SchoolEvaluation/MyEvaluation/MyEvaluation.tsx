@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import {
   useGetDocumentEvaluationMyAnswer,
   useGetInterviewEvaluationMyAnswer,
-} from '@/features/school/hooks/useRecruitingQueries'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'

@@ -16,7 +16,7 @@ import {
   getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
   getFinalSelectionApplications,
-} from '../domain/api'
+} from '../../domain/api'
 
 /** 서류 평가 대상자 목록 */
 export const useGetDocumentEvaluationApplicants = (
