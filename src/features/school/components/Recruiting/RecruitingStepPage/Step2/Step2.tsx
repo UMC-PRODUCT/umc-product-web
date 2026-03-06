@@ -62,7 +62,6 @@ const Step2 = ({
               name="schedule.applyStartAt"
               label="서류 모집 시작일"
               disabled={!canEdit.applyStartAt}
-              localError={orderErrors.applyEndAt ? '' : undefined}
             />
             <Step2ScheduleCalendarField
               control={control}
