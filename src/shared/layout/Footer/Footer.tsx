@@ -1,14 +1,15 @@
-import { useTerms } from '@/features/auth/hooks/register/useTerms'
 import Logo from '@/shared/assets/umc_gray.svg?react'
 import { FOOTER_INFO } from '@/shared/constants/umc'
 import Flex from '@/shared/ui/common/Flex/Flex'
 
 import * as S from './Footer.style'
 
-const Footer = () => {
-  const { data: serviceData } = useTerms({ termsType: 'SERVICE' })
-  const { data: privacyData } = useTerms({ termsType: 'PRIVACY' })
+type FooterProps = {
+  serviceTermsLink?: string
+  privacyTermsLink?: string
+}
 
+const Footer = ({ serviceTermsLink, privacyTermsLink }: FooterProps) => {
   return (
     <S.FooterContainer>
       <Logo />
@@ -18,26 +19,26 @@ const Footer = () => {
             UMC {FOOTER_INFO.gisu}th 총괄 : {FOOTER_INFO.master}{' '}
           </S.Content>
           <S.TextDivider className="divider" />
-          <S.Content
-            onClick={() => (window.location.href = `mailto:${FOOTER_INFO.email}`)}
-            css={{ cursor: 'pointer' }}
-          >
+          <S.ContentLink href={`mailto:${FOOTER_INFO.email}`}>
             이메일 : {FOOTER_INFO.email}
-          </S.Content>
+          </S.ContentLink>
         </S.UmcInfo>
         <Flex gap="10px">
-          <S.Content
-            onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
-            css={{ cursor: 'pointer' }}
-          >
-            서비스이용약관
-          </S.Content>
+          {serviceTermsLink ? (
+            <S.ContentLink href={serviceTermsLink} target="_blank" rel="noopener noreferrer">
+              서비스이용약관
+            </S.ContentLink>
+          ) : (
+            <S.Content>서비스이용약관</S.Content>
+          )}
           <S.TextDivider />
-          <S.Content
-            onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
-          >
-            개인정보처리방침
-          </S.Content>
+          {privacyTermsLink ? (
+            <S.ContentLink href={privacyTermsLink} target="_blank" rel="noopener noreferrer">
+              개인정보처리방침
+            </S.ContentLink>
+          ) : (
+            <S.Content>개인정보처리방침</S.Content>
+          )}
         </Flex>
       </Flex>
       <Flex gap="0px" flexDirection="column">

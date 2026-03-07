@@ -9,6 +9,7 @@ import { formatActivityPeriod, formatRecruitmentPeriod } from '@/shared/constant
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
+import type { MyApplicationStatusType } from '@/shared/types/apply'
 import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -32,7 +33,7 @@ type ApplyPageViewData = {
     status: string
   }>
   myApplication: {
-    status: 'DRAFT' | 'NONE' | 'SUBMITTED'
+    status: MyApplicationStatusType
     draftFormResponseId?: string
   }
 }

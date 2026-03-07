@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import {
   useGetDocumentEvaluationAnswers,
   useGetInterviewEvaluationSummary,
-} from '@/features/school/hooks/useRecruitingQueries'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'

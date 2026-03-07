@@ -1,4 +1,5 @@
 import { PART_LIST } from '@/shared/constants/part'
+import type { ApplicationSubmissionStatusType } from '@/shared/types/apply'
 import type { PartType } from '@/shared/types/part'
 
 // 하위 호환성을 위한 re-export
@@ -18,7 +19,7 @@ export type RECRUITING_SCHEDULE_TYPE =
   | 'FINAL_REVIEW_WINDOW'
   | 'FINAL_RESULT_AT'
 
-export type UserApplicationBadgeType = 'DRAFT' | 'SUBMITTED' | 'PREVIOUS'
+export type UserApplicationBadgeType = ApplicationSubmissionStatusType | 'PREVIOUS'
 
 export type LinkType = 'KAKAO' | 'YOUTUBE' | 'INSTAGRAM'
 

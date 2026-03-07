@@ -2,6 +2,7 @@ import type { PartType } from '@/shared/types/part'
 
 export type AccountLevelType = 'ADMIN' | 'MANAGER' | 'CHALLENGER' | 'USER'
 export type AccountStateType = 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
+export type AccountDeactivationType = 'WITHDRAW' | 'EXPEL'
 
 export type SchoolStateType = 'ACTIVE' | 'INACTIVE'
 
@@ -10,6 +11,9 @@ export type ResumeType = 'PREVIOUS' | 'NOW'
 export type TermsType = 'SERVICE' | 'PRIVACY' | 'MARKETING'
 
 export type { PartType }
+
+export type OAuthProviderType = 'KAKAO' | 'GOOGLE' | 'APPLE'
+export type OAuthProviderSlug = Lowercase<OAuthProviderType>
 
 export type RoleType =
   | 'SUPER_ADMIN' // 슈퍼 계정
@@ -24,6 +28,12 @@ export type RoleType =
   | 'SCHOOL_ETC_ADMIN' // 기타 교내 운영진
 
 export type OrganizationType = 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+
+export type SelectionDecisionType = 'PASS' | 'WAIT' | 'FAIL'
+
+export type SubmissionActionType = 'DRAFT_SAVE' | 'SUBMIT'
+
+export type EvaluationProgressStatusType = 'WAITING' | Exclude<EvaluationStatusType, 'NOT_STARTED'>
 
 export type RecruitmentStatusType = 'ONGOING' | 'SCHEDULED' | 'CLOSED' | 'DRAFT'
 

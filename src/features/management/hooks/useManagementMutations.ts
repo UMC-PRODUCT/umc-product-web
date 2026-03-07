@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 
+import type { LinkType } from '@/shared/constants/umc'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 
@@ -32,7 +33,7 @@ export function useManagementMutations() {
     return useCustomMutation(postSchool, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getGisuChapterWithSchools'],
+          queryKey: managementKeys.getGisuChapterWithSchoolsBase,
         })
       },
     })
@@ -83,7 +84,7 @@ export function useManagementMutations() {
           logoImageId?: string
           links?: Array<{
             title: string
-            type: 'KAKAO' | 'INSTAGRAM' | 'YOUTUBE'
+            type: LinkType
             url: string
           }> | null
         }
@@ -99,8 +100,9 @@ export function useManagementMutations() {
     return useCustomMutation((gisuId: string) => deleteGisu(gisuId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['gisu'],
+          queryKey: managementKeys.getAllGisu,
         })
+        queryClient.invalidateQueries({ queryKey: managementKeys.getGisuListBase })
       },
     })
   }
@@ -113,7 +115,7 @@ export function useManagementMutations() {
     return useCustomMutation((chapterId: string) => deleteBranch(chapterId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getChapters'],
+          queryKey: managementKeys.getChapters,
         })
       },
     })
@@ -127,7 +129,7 @@ export function useManagementMutations() {
     return useCustomMutation((schoolIds: Array<string>) => deleteSchool(schoolIds), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'schoolsPaging'],
+          queryKey: managementKeys.getSchoolsPagingBase,
         })
         queryClient.invalidateQueries({
           queryKey: managementKeys.getAllSchools,

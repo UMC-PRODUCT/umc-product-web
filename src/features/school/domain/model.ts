@@ -7,37 +7,33 @@ import type {
   CommonPagingResponseDTO,
   CommonResponseDTO,
   CommonSearchParams,
+  PaginationInfo,
 } from '@/shared/types/api'
-import type { FinalStatusType } from '@/shared/types/apply'
 import type { DateRange, RecruitingStatus, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { EvaluationDocumentType, EvaluationFinalType } from '@/shared/types/management'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType, PartFilterType, PartType } from '@/shared/types/part'
 import type { ApplicationFormPayload, Phase, RecruitingDraft } from '@/shared/types/recruiting'
 import type {
+  ApplicantMember,
   DocumentEvaluationAnswer,
   DocumentEvaluationQuestion,
   GetDocumentEvaluationApplicationResponseDTO,
 } from '@/shared/types/school'
-import type { EvaluationStatusType, SelectionsSortType } from '@/shared/types/umc'
+import type {
+  EvaluationProgressStatusType,
+  EvaluationStatusType,
+  SelectionDecisionType,
+  SelectionsSortType,
+  SubmissionActionType,
+} from '@/shared/types/umc'
 
 // ============================================
 // Shared building blocks
 // ============================================
 
-type Pagination = {
-  page: string
-  size: string
-  totalPages: string
-  totalElements: string
-}
-
 type PersonName = {
   name: string
   nickname: string
-}
-
-type ApplicantMember = PersonName & {
-  memberId: string
 }
 
 type PartKeyLabel = {
@@ -49,8 +45,6 @@ type PartLabel = {
   part: PartType
   label: string
 }
-
-type DecisionStatus = 'WAIT' | 'PASS' | 'FAIL'
 
 export type ProgressRate = {
   progressRate: string
@@ -64,14 +58,14 @@ type InterviewRules = {
 }
 
 type InterviewPartOption = {
-  part: PartType | 'ALL'
+  part: PartFilterType
   label: string
   done: boolean
 }
 
 type InterviewScheduleContext = {
   date: string
-  part: PartType | 'ALL'
+  part: PartFilterType
 }
 
 type InterviewSummary = {
@@ -301,10 +295,11 @@ export type GetDocumentEvaluationApplicantsResponseDTO = {
     evaluatedCount: string
   }
   applicationSummaries: Array<DocumentEvaluationApplicantSummary>
-  pagination: Pagination
+  pagination?: PaginationInfo
+  paination?: PaginationInfo
 }
 export type GetDocumentEvaluationApplicantsRequestDTO = CommonSearchParams & {
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   keyword?: string
 }
 export type PatchDocumentEvaluationMyAnswerResponseDTO = {
@@ -313,7 +308,7 @@ export type PatchDocumentEvaluationMyAnswerResponseDTO = {
 export type PatchDocumentEvaluationMyAnswerRequestDTO = {
   score: string
   comments: string
-  action: 'DRAFT_SAVE' | 'SUBMIT'
+  action: SubmissionActionType
 }
 
 export type PatchInterviewEvaluationMyAnswerRequestDTO = {
@@ -401,13 +396,13 @@ export type InterviewAssignmentSlot = {
   applicant: PersonName
   appliedParts: Array<InterviewEvaluationViewAppliedPart>
   documentScore: string
-  evaluationProgressStatus: 'WAITING' | 'IN_PROGRESS' | 'COMPLETED'
+  evaluationProgressStatus: EvaluationProgressStatusType
 }
 
 export type GetInterviewAssignmentsResponseDTO = {
   serverNow: string
   selectedDate: string
-  selectedPart: PartType | 'ALL'
+  selectedPart: PartFilterType
   interviewAssignmentTimeGroups: Array<{
     start: string
     end: string
@@ -430,7 +425,7 @@ export type GetInterviewAssignmentsResponseDTO = {
         label: string
       }>
       documentScore: string
-      evaluationProgressStatus: FinalStatusType
+      evaluationProgressStatus: EvaluationProgressStatusType
     }>
   }>
 }
@@ -438,7 +433,7 @@ export type GetInterviewAssignmentsResponseDTO = {
 export type GetInterviewEvaluationOptionsResponseDTO = {
   dates: Array<string>
   parts: Array<{
-    key: PartType | 'COMMON'
+    key: CommonPartType
     label: string
   }>
 }
@@ -449,7 +444,7 @@ export type FinalSelectionSummaryByPart = {
 }
 
 export type FinalSelectionPartLabel = {
-  key: PartType | 'COMMON'
+  key: CommonPartType
   label: string
 }
 
@@ -464,13 +459,13 @@ export type FinalSelectionApplication = {
   interviewScore: string
   finalScore: string
   selection: {
-    status: 'PASS' | 'WAIT' | 'FAIL'
+    status: SelectionDecisionType
     selectedPart: FinalSelectionPartLabel | null
   }
 }
 
 export type GetFinalSelectionApplicationsRequestDTO = {
-  part: PartType | 'ALL'
+  part: PartFilterType
   sort: SelectionsSortType
   page: string
   size: string
@@ -486,14 +481,14 @@ export type GetFinalSelectionApplicationsResponseDTO = {
 }
 
 export type PatchFinalSelectionStatusRequestDTO = {
-  decision: 'PASS' | 'WAIT' | 'FAIL'
+  decision: SelectionDecisionType
   selectedPart?: PartType
 }
 
 export type PatchFinalSelectionStatusResponseDTO = {
   applicationId: string
   finalResult: {
-    decision: 'PASS' | 'WAIT' | 'FAIL'
+    decision: SelectionDecisionType
     selectedPart: FinalSelectionPartLabel
   }
 }
@@ -533,11 +528,11 @@ export type GetDocumentSelectedApplicantsResponseDTO = {
   documentSelectionApplications: CommonPagingResponseDTO<DocumentSelectionApplication>
 }
 export type GetDocumentSelectedApplicantsRequestDTO = CommonSearchParams & {
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   sort?: SelectionsSortType
 }
 export type PatchDocumentSelectionStatusRequestDTO = {
-  decision: 'PASS' | 'FAIL' | 'WAIT'
+  decision: SelectionDecisionType
 }
 
 export type DocumentSelectionApplication = {
@@ -549,7 +544,7 @@ export type DocumentSelectionApplication = {
   }>
   documentScore: string
   documentResult: {
-    decision: DecisionStatus
+    decision: SelectionDecisionType
   }
 }
 
@@ -573,7 +568,7 @@ export type GetInterviewLiveQuestionsResponseDTO = {
 
 export type GetInterviewQuestionsResponseDTO = {
   part: {
-    key: PartType | 'COMMON'
+    key: CommonPartType
     label: string
     questionCount: string
   }
@@ -582,13 +577,13 @@ export type GetInterviewQuestionsResponseDTO = {
 
 export type GetInterviewAvailablePartsResponseDTO = {
   parts: Array<{
-    key: PartType | 'COMMON'
+    key: CommonPartType
     label: string
   }>
 }
 
 export type PostInterviewQuestionRequestDTO = {
-  partKey: PartType | 'COMMON'
+  partKey: CommonPartType
   questionText: string
 }
 
@@ -606,7 +601,7 @@ export type PatchInterviewLiveQuestionResponseDTO = {
 }
 
 export type PatchInterviewQuestionOrderRequestDTO = {
-  partKey: PartType | 'COMMON'
+  partKey: CommonPartType
   orderedQuestionIds: Array<string>
 }
 
@@ -630,7 +625,7 @@ export type Assignment = {
 
 type InterviewProgress = {
   scope: string
-  part: PartType | 'ALL'
+  part: PartFilterType
   total: string
   scheduled: string
 }
@@ -653,7 +648,7 @@ export type Slot = {
 
 export type GetInterviewSlotsResponseDTO = {
   date: string
-  part: PartType | 'ALL'
+  part: PartFilterType
   slots: Array<Slot>
 }
 
@@ -700,7 +695,7 @@ export type GetRecruitmentsDocumentEvaluationResponseDTO = {
     docReviewEndDate: string
     totalApplicantCount: string
     openParts: Array<{
-      key: PartType | 'COMMON'
+      key: CommonPartType
       label: string
     }>
   }>
@@ -712,7 +707,7 @@ export type GetRecruitmentsDocumentEvaluationResponseDTO = {
     docReviewEndDate: string
     totalApplicantCount: string
     openParts: Array<{
-      key: PartType | 'COMMON'
+      key: CommonPartType
       label: string
     }>
   }>

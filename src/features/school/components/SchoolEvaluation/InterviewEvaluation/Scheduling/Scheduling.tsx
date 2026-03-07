@@ -8,14 +8,14 @@ import {
   getInterviewSlots,
 } from '@/features/school/domain/api'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
-import { useGetInterviewSlotApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
+import { useGetInterviewSlotApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
 import Search from '@/shared/assets/icons/search.svg?react'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType } from '@/shared/types/part'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 import Loading from '@/shared/ui/common/Loading/Loading'
 import Section from '@/shared/ui/common/Section/Section'
@@ -57,7 +57,7 @@ const Scheduling = ({ recruitmentId }: { recruitmentId: string }) => {
   const dateFallback = summaryData?.result.dateOptions[0]
   const partFallback = summaryData?.result.partOptions[0]?.part
   const dateParam = selectedDateOption?.id ? String(selectedDateOption.id) : dateFallback
-  const partParam = (selectedPartOption?.id ?? partFallback) as PartType | 'ALL' | undefined
+  const partParam = (selectedPartOption?.id ?? partFallback) as PartFilterType | undefined
 
   const slotDate = dateParam ?? ''
   const slotPart = partParam ?? 'ALL'

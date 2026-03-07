@@ -86,7 +86,6 @@ export const LoginRedirectPage = () => {
             await addOAuthMutateAsync({
               oAuthVerificationToken,
             })
-            console.log('OAuth 연결에 성공했습니다.')
           } catch (error) {
             console.error('OAuth 연결에 실패했습니다.', error)
           } finally {

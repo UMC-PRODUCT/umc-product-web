@@ -29,7 +29,7 @@ export const CtaContent = styled.div`
 `
 
 export const CtaTitle = styled.h2`
-  ${homeResponsiveFont('56px', '42px', '24px')}
+  ${homeResponsiveFont('56px', '32px', '24px')}
   font-weight: 900;
   ${homeResponsiveSpace('margin-bottom: 20px;', 'margin-bottom: 20px;', 'margin-bottom: 0px;')}
   letter-spacing: -2px;

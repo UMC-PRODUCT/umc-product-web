@@ -2,74 +2,70 @@
 applyTo: '**'
 ---
 
-# 아키텍처·구조 검토용 Copilot 지침
+# Copilot 리뷰 지침 (FSD형 구조 + 현재 코드베이스 기준)
 
-## 언어
+## 1) 언어/응답 방식
 
-- 대화와 설명은 **한국어**로 작성하세요.
-- 개발자의 관점에서 명확하고 간결하게 전달합니다.
+- 모든 설명은 한국어로 작성합니다.
+- 칭찬 위주의 서술보다, 위반/리스크를 먼저 명확히 제시합니다.
+- 가능하면 파일 경로를 함께 제시합니다.
 
-## 역할(중요)
+## 2) 리뷰 우선순위
 
-- 단순 구현보다 **아키텍처, 구조, 폴더 관습**을 우선 점검합니다.
-- 코드 수정을 제안하기 전에 아래 항목을 반드시 검토하고, 위반 발견 시 개선안보다 먼저 지적하세요:
-  1. 폴더/파일 위치가 기존 규칙과 일치하는가?
-  2. 컴포넌트가 단일 책임 원칙(SRP)을 지키는가?
-  3. import 방향이 올바른가? (`shared` ⇒ `feature` 역방향 없음)
-  4. 명명/케이스(PascalCase vs camelCase)가 일관적인가?
-  5. 배럴(`index.ts`) 사용이 현 패턴을 따르는가?
-  6. 테스트/스토리 파일의 위치와 이름이 일관적인가?
+1. 아키텍처/레이어(FSD형) 위반
+2. 런타임 버그, 권한/인증, 데이터 흐름 리스크
+3. 테스트 누락 또는 회귀 가능성
+4. 네이밍/가독성/스타일
 
-## 프로젝트 구조 (기준)
+## 3) 현재 프로젝트 구조 기준
 
-- `src/`
-  - `app/`: 애플리케이션 엔트리, 프로바이더, 전역 설정
-  - `routes/`: TanStack Router 기반 라우팅 (`/(app)`, `/(auth)` 등)
-  - `features/`: 기능 단위 모듈 (`apply`, `auth`, `dashboard`, `home`, `management`, `recruiting`, `school`, ...)
-    - 각 기능 내에 `domain/`, `components/`, `hooks/`, `pages/`, `utils/`, `mocks/` 등 포함 가능
-  - `shared/`: 공용 UI, 유틸, 훅, 스타일, 상수, 타입, 스키마
-  - `assets/`: 전역 자산
-- `entities/` 폴더는 현재 사용하지 않으며, 도입 시 별도 아키텍처 합의 필요
-- `routeTree.gen.ts`는 자동 생성 파일로 수정 금지
+- `src/app`: 앱 엔트리, 전역 Provider, Devtools
+- `src/routes`: TanStack Router 파일 라우트 (`(app)`, `(auth)`, `(oauth)`)
+- `src/features/*`: 도메인 기능 모듈 (`domain`, `hooks`, `components`, `pages`, `utils` 등)
+- `src/shared`: 공용 UI/유틸/훅/스타일/타입/상수/스토어
+- `src/api`: axios 인스턴스/인터셉터/토큰 관리
+- `src/types`: 전역 타입
+- `src/routeTree.gen.ts`: 자동 생성 파일, 직접 수정 금지
 
-## 의존성 규칙
+## 4) FSD형 레이어 규칙 (현 구조에 맞춘 기준)
 
-- `shared`는 `features`, `routes`, `app`을 import 하지 않습니다.
-- `features`는 `shared`를 import 할 수 있습니다.
-- `routes`는 `features`, `shared`, `app`만 조합합니다.
-- 기능 전용 컴포넌트는 해당 feature 내부에 유지되어야 합니다.
+- 기본 의존 방향: `routes -> features -> shared`
+- 라우트 파일은 얇은 어댑터로 유지하고, 화면 로직은 `features/*/pages`에 둡니다.
+- `shared`는 `features/routes/app` 의존을 만들지 않습니다.
+- feature 간 직접 import는 지양하고, 필요 시 `shared` 또는 feature의 공개 API(`index.ts`)를 통해 접근합니다.
+- `src/api`는 인프라 레이어로 사용하며, 신규 코드에서 feature 의존 추가는 지양합니다.
+- 경로 별칭은 `@app`, `@features`, `@shared`, `@routes`, `@`를 우선 사용합니다.
 
-## 명명·케이스
+## 5) 데이터/상태 규칙
 
-- React 컴포넌트 파일/폴더: **PascalCase** (예: `Button/Button.tsx`)
-- 훅/유틸: **camelCase** (예: `useFoo.ts`, `formatBar.ts`)
-- 경로 케이스는 기존 관습에 따라야 하며, 부모/형제 폴더 스타일과 일치해야 함
-  - 예: `SchoolDashboard` (PascalCase), `schoolRecruiting` (camelCase)
+- 서버 상태는 `src/shared/hooks/customQuery.ts` 래퍼(`useCustomQuery`, `useCustomMutation` 등) 사용을 우선합니다.
+- Query Key는 `src/shared/queryKeys/*` 또는 도메인 query key를 재사용합니다.
+- API 호출은 우선 `features/*/domain/api.ts`에 정의하고 훅에서 감싸 사용합니다.
 
-## 배럴(`index.ts`) 규칙
+## 6) 파일/명명/배럴 규칙
 
-- 기존 스코프에서 쓰던 배럴 패턴만 사용하거나 확장하세요.
-- 새로운 배럴을 추가하기 전, 같은 영역의 관습을 먼저 확인하세요.
-- 기존 예시:
-  - `src/shared/ui/common/*/index.ts`
-  - `src/features/*/domain/index.ts`
-  - `src/features/school/components/Recruiting/RecruitingStepPage/index.ts`
+- 컴포넌트 파일/폴더: PascalCase
+- 훅/유틸 함수 파일: camelCase (`useXxx.ts`, `formatXxx.ts`)
+- 스타일 분리 시 `*.style.tsx` 패턴을 따릅니다.
+- 배럴(`index.ts`)은 기존 패턴이 있는 위치에서만 확장하고, 무분별한 신규 배럴 생성을 피합니다.
 
-## 테스트·스토리
+## 7) 테스트/스토리 규칙
 
-- `src/` 아래 테스트/스토리가 많지 않으므로 추가 시 해당 컴포넌트/훅과 같은 폴더에 위치시킵니다.
-- 명명 규칙: `MyComponent.test.tsx`, `MyComponent.stories.tsx`
+- 테스트/스토리는 코드와 같은 경로에 코로케이션합니다.
+- 명명 규칙: `*.test.ts(x)`, `*.stories.tsx`
+- PR에 영향 범위 대비 테스트가 부족하면 우선 리스크로 지적합니다.
 
-## 리뷰 출력 형식
+## 8) GitHub 협업 규칙 점검 (필수)
 
-- 응답은 아래 순서로 구성하세요:
-  1. 한 줄 요약
-  2. 발견된 위반 항목 (가능한 파일 경로 포함)
-  3. 추천 구조 (폴더 트리 형태)
-  4. 최소 리팩토링 단계 (1~5 단계)
-  5. (선택) 패치 스타일 코드 제안
+리뷰 시 PR 본문에서 아래 항목 누락 여부를 확인하고 누락 시 반드시 지적하세요.
 
-## React Hook Form & 성능
+1. Related Issue(`Closes #...`) 기입 여부
+2. GitHub Project Item, Milestone 기입 여부
 
-- `trigger()` 사용은 최소화하고, `formState`/`errors` 기반으로 상태를 판단하세요.
-- disabled·유효성 체크는 formState를 활용합니다.
+## 9) 리뷰 출력 형식
+
+1. 한 줄 요약
+2. 발견된 위반/리스크 목록 (심각도 순, 파일 경로 포함)
+3. 추천 구조 또는 수정 방향
+4. 최소 리팩토링 단계 (1~5)
+5. 필요한 테스트/검증 항목

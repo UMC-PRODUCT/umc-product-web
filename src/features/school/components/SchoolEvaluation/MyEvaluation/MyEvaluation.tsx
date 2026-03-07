@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import {
   useGetDocumentEvaluationMyAnswer,
   useGetInterviewEvaluationMyAnswer,
-} from '@/features/school/hooks/useRecruitingQueries'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
+import type { SubmissionActionType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -98,7 +99,7 @@ const MyEvaluation = ({
     setComment(evaluation.comments)
   }, [currentEvaluation, recruitingId, selectedUserId])
 
-  const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
+  const handleSubmit = (action: SubmissionActionType) => {
     if (!canSubmit || isScoreEmpty || scoreError) return
     if (mode === 'document') {
       patchDocumentEvaluation(
@@ -118,25 +119,11 @@ const MyEvaluation = ({
               })
               queryClient.invalidateQueries({
                 predicate: (query) => {
-                  const [root, domain, feature, key, params] = query.queryKey as [
-                    string?,
-                    string?,
-                    string?,
-                    string?,
-                    any?,
-                  ]
-                  return (
-                    root === 'school' &&
-                    domain === 'documents' &&
-                    feature === 'evaluation' &&
-                    key === 'applicants' &&
-                    String(params?.recruitmentId) === String(recruitingId)
+                  return schoolKeys.evaluation.document.isApplicantsQueryForRecruitment(
+                    query.queryKey,
+                    recruitingId,
                   )
                 },
-              })
-              queryClient.invalidateQueries({
-                queryKey: ['school', 'documents', 'evaluation', 'applicants'],
-                exact: false,
               })
               void refetchDocument()
             }

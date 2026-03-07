@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import { getAllSchools } from '@/shared/api/school/api'
 import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
 
 import type {
@@ -30,10 +31,13 @@ import type {
   PostGisuBody,
   PostSchoolBody,
   PutCurriculumsBody,
+  SchoolDetailsResponseDTO,
   SchoolsResponseDTO,
   University,
   UniversityFullType,
 } from './model'
+
+export { getAllSchools }
 
 /** GET /schools/gisu/{gisuId} - 기수별 학교 목록 조회 */
 export const getSchoolsByGisu = async (
@@ -51,14 +55,6 @@ export const getCurriculums = async (
   params: GetCurriculumsParams,
 ): Promise<CommonResponseDTO<Curriculum>> => {
   const { data } = await axiosInstance.get('/curriculums', { params })
-  return data
-}
-/**
- * 전체 학교 목록을 조회함
- * @returns 전체 학교 목록 응답 데이터
- */
-export const getAllSchools = async (): Promise<CommonResponseDTO<SchoolsResponseDTO>> => {
-  const { data } = await axiosInstance.get('/schools/all')
   return data
 }
 /**
@@ -135,7 +131,7 @@ export const getGisuById = async ({
  */
 export const getSchoolDetails = async ({
   schoolId,
-}: GetSchoolDetailsParams): Promise<CommonResponseDTO<UniversityFullType>> => {
+}: GetSchoolDetailsParams): Promise<CommonResponseDTO<SchoolDetailsResponseDTO>> => {
   const { data } = await axiosInstance.get(`/schools/${schoolId}`)
   return data
 }

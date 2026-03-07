@@ -121,6 +121,21 @@ const StyledCalendarWrapper = styled.div`
     align-items: center;
   }
 
+  /* 비활성(과거) 날짜 스타일 */
+  .react-calendar__tile:disabled {
+    color: ${theme.colors.gray[500]} !important;
+    cursor: not-allowed !important;
+    opacity: 0.4;
+  }
+
+  .react-calendar__tile:disabled abbr {
+    color: inherit;
+  }
+
+  .react-calendar__tile:disabled:hover {
+    background: none !important;
+  }
+
   ${media.down(theme.breakPoints.mobile)} {
     .react-calendar__tile {
       height: 38px;

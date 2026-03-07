@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
-import { useGetAllSchoolsList } from '@/features/management/hooks/useManagementQueries'
+import { useGetAllSchools } from '@/shared/hooks/useSchoolQueries'
 import type { Option } from '@/shared/types/form'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
@@ -17,7 +17,7 @@ type SchoolSelectProps = {
 }
 
 const SchoolSelect = ({ value, onChange, error }: SchoolSelectProps) => {
-  const { data } = useGetAllSchoolsList()
+  const { data } = useGetAllSchools()
   const selectedValue = useMemo<Option<string> | undefined>(
     () => (value.schoolId ? { id: value.schoolId, label: value.schoolName } : undefined),
     [value],
