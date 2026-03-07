@@ -6,7 +6,6 @@ import type { PartType } from '@/shared/types/umc'
 
 import {
   getAllGisu,
-  getAllSchools,
   getChallenger,
   getChapter,
   getCurriculums,
@@ -35,14 +34,6 @@ export function useGetCurriculumsQuery(part: PartType) {
  */
 export function useGetAllGisu() {
   return useCustomQuery(managementKeys.getAllGisu, getAllGisu)
-}
-
-/**
- * 전체 학교 목록을 조회하는 쿼리 훅.
- * @returns 전체 학교 조회 쿼리 결과
- */
-export function useGetAllSchools() {
-  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
 }
 
 /**

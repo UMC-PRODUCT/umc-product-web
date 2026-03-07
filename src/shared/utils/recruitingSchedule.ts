@@ -2,5 +2,10 @@ import type { LegacyRecruitingInterviewTimeTable, ScheduleDateSlot } from '@/sha
 
 export const resolveDisabledScheduleSlots = (
   schedule: LegacyRecruitingInterviewTimeTable,
-): Array<ScheduleDateSlot> =>
-  Array.isArray(schedule.disabled) ? schedule.disabled : schedule.disabledByDate
+): Array<ScheduleDateSlot> => {
+  if (Array.isArray(schedule.disabled)) {
+    return schedule.disabled
+  }
+
+  return Array.isArray(schedule.disabledByDate) ? schedule.disabledByDate : []
+}

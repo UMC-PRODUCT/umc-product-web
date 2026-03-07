@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import type { SchoolOption } from '@/features/auth/hooks/register/useSchoolSelection'
-import { useGetAllSchools } from '@/features/management/hooks/useManagementQueries'
+import { useGetAllSchools } from '@/shared/hooks/useSchoolQueries'
 import type { Option } from '@/shared/types/form'
 import LabelDropdown from '@/shared/ui/form/LabelDropdown/LabelDropdown'
 
