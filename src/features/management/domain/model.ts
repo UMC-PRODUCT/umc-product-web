@@ -11,7 +11,13 @@ import type {
   EvaluationFinalType,
   Workbook,
 } from '@/shared/types/management'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType, PartFilterType, PartType } from '@/shared/types/part'
+import type { SchoolListResponseDTO, SchoolSummary } from '@/shared/types/school'
+import type {
+  AccountDeactivationType,
+  AccountStateType,
+  OrganizationType,
+} from '@/shared/types/umc'
 
 import type { MANAGE_SCHOOL_TABS, RECRUITING_STATE_CONFIG, SCHOOL_STATE_CONFIG } from './constants'
 
@@ -36,10 +42,7 @@ export interface University {
   isActive: boolean
 }
 
-export interface UniversitySimple {
-  schoolId: string
-  schoolName: string
-}
+export type UniversitySimple = SchoolSummary
 
 /** 대학교 지부 정보 */
 export interface UniversityBranch {
@@ -99,6 +102,10 @@ export type UniversityFullType = University & {
   createdAt: string
   updatedAt: string
 }
+
+export type SchoolDetailsResponseDTO = Omit<UniversityFullType, 'links'> & {
+  links?: Array<ExternalLink> | null
+}
 export type ChapterType = {
   chapterId: string
   chapterName: string
@@ -120,7 +127,7 @@ export type GetRecruitmentsApplication = {
   filters: {
     chapterId?: string
     schoolId?: string
-    part?: PartType | 'ALL'
+    part?: PartFilterType
     keyword?: string
   }
   applications: CommonPagingResponseDTO<CandidateType>
@@ -139,14 +146,14 @@ export type CandidateType = {
   appliedParts: Array<{
     priority: string
     part: {
-      key: PartType | 'COMMON'
+      key: CommonPartType
       label: string
     }
   }>
   finalResult: {
     status: string
     selectedPart: {
-      key: PartType | 'COMMON'
+      key: CommonPartType
       label: string
     }
   }
@@ -166,9 +173,7 @@ export type ChaptersResponseDTO = {
   chapters: Array<ChapterMiniType>
 }
 
-export type SchoolsResponseDTO = {
-  schools: Array<UniversitySimple>
-}
+export type SchoolsResponseDTO = SchoolListResponseDTO
 
 export type GetUnassignedSchoolsParams = {
   gisuId: string
@@ -231,7 +236,7 @@ export type PatchSchoolAssignBody = {
 export type GetRecruitementsApplicationsParams = CommonSearchParams & {
   chapterId?: string
   schoolId?: string
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   keyword?: string
 }
 
@@ -287,14 +292,14 @@ export type ChallengerDetailResponseDTO = {
   schoolId: string
   schoolName: string
   profileImageLink: string | null
-  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
+  status: AccountStateType
 }
 
 export type MemberProfileRole = {
   id: string
   challengerId: string
   roleType: RoleType
-  organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+  organizationType: OrganizationType
   organizationId: string | null
   responsiblePart: PartType | null
   gisuId: string
@@ -308,14 +313,14 @@ export type MemberProfileResponseDTO = {
   schoolId: string
   schoolName: string
   profileImageLink: string
-  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'WITHDRAWN'
+  status: AccountStateType
   roles: Array<MemberProfileRole>
   challengerRecords: Array<ChallengerDetailResponseDTO>
 }
 
 export type PostChallengerDeactivateBody = {
   memberId: string
-  deactivationType: 'WITHDRAW' | 'EXPEL'
+  deactivationType: AccountDeactivationType
   modifiedBy: string
   reason: string
 }
@@ -336,9 +341,36 @@ export type ChallengerRoleDetailResponseDTO = {
   challengerRoleId: string
   challengerId: string
   roleType: RoleType
-  organizationType: 'CENTRAL' | 'CHAPTER' | 'SCHOOL'
+  organizationType: OrganizationType
   organizationId: string | null
   responsiblePart: PartType | null
   gisuId: string
   gisu: string
 }
+
+export type ChallengerRecordRoleType = RoleType | 'CHALLENGER'
+
+export type PostChallengerRecordCodeBody = {
+  gisuId: string
+  chapterId: string
+  schoolId: string
+  part: PartType
+  memberName: string
+  challengerRoleType?: ChallengerRecordRoleType
+}
+
+export type ChallengerRecordCodeResponseDTO = {
+  code: string
+  part: PartType
+  gisuId: string
+  gisu: string
+  schoolId: string
+  schoolName: string
+  chapterId: string
+  chapterName: string
+  memberName: string
+  challengerRoleType: ChallengerRecordRoleType | null
+  organizationId: string | null
+}
+
+export type BulkChallengerRecordIdResponseDTO = Array<string | number>

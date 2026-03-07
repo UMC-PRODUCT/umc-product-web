@@ -1,12 +1,14 @@
 # UMC Product Web
 
 UMC 운영팀이 정책·계정·데이터를 한 곳에서 관리할 수 있도록 만든 백오피스입니다. 권한(챌린저, 파트장, 회장단, 총괄)에 따라 다른 뷰를 제공하며, 운영 효율과 정책 반영 속도를 높이는 데 집중합니다.
+<img width="4862" height="2960" alt="github_thumbnail" src="https://github.com/user-attachments/assets/be710fad-9776-4b94-9212-443bdac71105" />
 
 ## 목차
 
 - [Contributors](#contributors)
 - [Tech Stack](#tech-stack)
 - [시작하기](#시작하기)
+- [신규 팀원 온보딩](#신규-팀원-온보딩)
 - [스크립트](#스크립트)
 - [프로젝트 구조](#프로젝트-구조)
 - [라우팅](#라우팅)
@@ -24,6 +26,15 @@ UMC 운영팀이 정책·계정·데이터를 한 곳에서 관리할 수 있도
 ---
 
 ## Contributors
+
+### 1기
+
+|                                             **김연진(코튼)**                                              |
+| :-------------------------------------------------------------------------------------------------------: |
+| <img width="150" height="150" alt="김연진" src="https://avatars.githubusercontent.com/u/111187984?v=4" /> |
+|                               [@yeonjin719](https://github.com/yeonjin719)                                |
+
+### 2기
 
 |                                             **김연진(코튼)**                                              |
 | :-------------------------------------------------------------------------------------------------------: |
@@ -114,21 +125,36 @@ VITE_APP_NAME=UMC Product Web
 pnpm dev   # http://localhost:3000
 ```
 
+## 신규 팀원 온보딩
+
+신규 합류자를 위한 상세 가이드는 아래 문서를 참고하세요.
+
+- 프로젝트 구조/레이어 규칙/코드 배치 기준
+- 핵심 라이브러리 사용 이유와 실제 적용 위치
+- 인증/권한/데이터 흐름
+- 품질 게이트(CI/로컬)와 테스트 전략
+
+문서: [docs/onboarding.md](docs/onboarding.md)
+
 ---
 
 ## 스크립트
 
-| 명령어              | 설명                                |
-| ------------------- | ----------------------------------- |
-| `pnpm dev`          | 개발 서버 실행 (port 3000)          |
-| `pnpm build`        | TypeScript 타입체크 + 프로덕션 빌드 |
-| `pnpm preview`      | 빌드된 결과물 미리보기              |
-| `pnpm test`         | Vitest 테스트 실행                  |
-| `pnpm lint`         | ESLint 검사                         |
-| `pnpm lint:fix`     | ESLint 자동 수정                    |
-| `pnpm format`       | Prettier로 코드 포맷팅              |
-| `pnpm format:check` | 포맷팅 상태 확인                    |
-| `pnpm typecheck`    | TypeScript 타입 검사만 실행         |
+| 명령어               | 설명                                |
+| -------------------- | ----------------------------------- |
+| `pnpm dev`           | 개발 서버 실행 (port 3000)          |
+| `pnpm build`         | TypeScript 타입체크 + 프로덕션 빌드 |
+| `pnpm preview`       | 빌드된 결과물 미리보기              |
+| `pnpm test`          | Unit 테스트 실행 (`test:unit`)      |
+| `pnpm test:unit`     | Unit/Smoke 테스트 실행              |
+| `pnpm test:browser`  | Storybook Browser 테스트 실행       |
+| `pnpm test:ci`       | CI 기준 테스트 실행                 |
+| `pnpm quality:check` | typecheck + lint + test:ci          |
+| `pnpm lint`          | ESLint 검사                         |
+| `pnpm lint:fix`      | ESLint 자동 수정                    |
+| `pnpm format`        | Prettier로 코드 포맷팅              |
+| `pnpm format:check`  | 포맷팅 상태 확인                    |
+| `pnpm typecheck`     | TypeScript 타입 검사만 실행         |
 
 ---
 
@@ -261,12 +287,9 @@ const { user, login, logout } = useAuthStore()
 ### 서버 상태: TanStack Query
 
 ```typescript
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useCustomQuery } from '@/shared/hooks/customQuery'
 
-const { data, isLoading } = useQuery({
-  queryKey: ['users'],
-  queryFn: fetchUsers,
-})
+const { data, isLoading } = useCustomQuery(['users'], fetchUsers)
 ```
 
 ### DevTools
@@ -336,6 +359,10 @@ ESLint 9 Flat Config를 사용합니다:
 ```bash
 pnpm lint        # 검사
 pnpm lint:fix    # 자동 수정
+```
+
+```bash
+pnpm quality:check   # 로컬에서 CI와 동일한 품질 게이트 실행
 ```
 
 ### Prettier
@@ -426,7 +453,10 @@ Closes #123
 ## 테스트
 
 ```bash
-pnpm test   # Vitest 실행
+pnpm test          # Unit 테스트 실행
+pnpm test:unit     # Unit/Smoke 테스트 실행
+pnpm test:browser  # Storybook Browser 테스트 실행
+pnpm test:ci       # CI 기준 테스트 실행
 ```
 
 ### 테스트 도구
@@ -434,6 +464,12 @@ pnpm test   # Vitest 실행
 - **Vitest**: 테스트 러너
 - **@testing-library/react**: React 컴포넌트 테스트
 - **jsdom**: 브라우저 환경 시뮬레이션
+
+### 로컬에서 CI 재현
+
+```bash
+pnpm quality:check
+```
 
 ---
 
@@ -471,6 +507,18 @@ pnpm test   # Vitest 실행
    - `.github/pull_request_template.md` 템플릿 사용
    - 관련 이슈 연결
    - 테스트 결과 첨부
+
+### 이슈/PR 운영 규칙 (필수)
+
+개발 속도/진행률 트래킹을 위해 아래 항목을 필수로 준수합니다.
+
+1. 이슈 생성 시 타입을 지정합니다: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf`, `design`
+2. 모든 이슈는 생성 직후 GitHub Project와 Milestone에 연결합니다.
+3. 이슈 상태는 Project 기준으로 관리합니다: `Todo -> In Progress -> In Review -> Done`
+4. 블로킹/의존성은 이슈 본문에 명시합니다: `Blocked by #123`, `Blocks #456` (없으면 `없음`)
+5. PR 생성 시 PR 타입과 이슈/프로젝트/마일스톤/블로킹 정보를 템플릿에 모두 작성합니다.
+6. 모든 PR은 Copilot 리뷰를 반드시 받고, Copilot/사람 리뷰 코멘트는 모두 Resolve 처리합니다.
+7. 상호 리뷰를 원칙으로 하며, 최소 1명 이상 승인 후 머지합니다.
 
 ---
 

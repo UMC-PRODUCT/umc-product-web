@@ -1,9 +1,9 @@
 export const SITE_NAME = 'UMC | University Makeus Challenge'
 export const DEFAULT_TITLE = SITE_NAME
 export const DEFAULT_DESCRIPTION =
-  'UMC 리쿠르팅 사이트입니다. 학교별 모집 공고 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다.'
+  'UMC(University Makeus Challenge)는 기획자, 디자이너, 개발자가 함께하는 대학생 IT 프로젝트 연합동아리입니다. 모집 일정 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다.'
 export const HOME_DESCRIPTION =
-  'UMC 리쿠르팅 메인 페이지입니다. 최신 모집 일정과 지원 흐름을 빠르게 확인할 수 있습니다.'
+  'UMC(University Makeus Challenge) 메인 페이지입니다. 대학생 IT 프로젝트 연합동아리 소개, 커리큘럼, 활동 정보, 모집 일정을 확인할 수 있습니다.'
 export const DEFAULT_OG_IMAGE = '/assets/images/Preview.png'
 
 export type SeoConfig = {
@@ -18,8 +18,8 @@ const SEO_RULES: Array<{ prefix: string; config: Omit<SeoConfig, 'title'> & { ti
   {
     prefix: '/recruiting',
     config: {
-      title: `모집 공고 | ${SITE_NAME}`,
-      description: 'UMC 모집 공고 및 일정 정보를 확인하는 페이지입니다.',
+      title: 'UMC 모집 공고 | 대학생 IT 프로젝트 연합동아리',
+      description: 'UMC 기수별 모집 공고, 지원 일정, 파트 정보를 확인할 수 있는 페이지입니다.',
       robots: 'index,follow',
     },
   },
@@ -84,7 +84,7 @@ const SEO_RULES: Array<{ prefix: string; config: Omit<SeoConfig, 'title'> & { ti
 export const resolveSeoConfig = (pathname: string): SeoConfig => {
   if (pathname === '/') {
     return {
-      title: `홈 | ${SITE_NAME}`,
+      title: `UMC | 대학생 IT 프로젝트 연합동아리`,
       description: HOME_DESCRIPTION,
       robots: 'index,follow',
     }

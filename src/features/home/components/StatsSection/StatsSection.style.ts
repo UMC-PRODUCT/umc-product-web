@@ -30,7 +30,7 @@ export const StatItem = styled.div`
 `
 
 export const StatNumber = styled.div`
-  ${homeResponsiveFont('72px', '56px', '28px')}
+  ${homeResponsiveFont('72px', '45px', '28px')}
   font-weight: 900;
   color: ${theme.colors.lime};
   line-height: 1;

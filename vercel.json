@@ -2,8 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/:path((?!server(?:/|$))(?!.*\\.[^/]+$).*)",
+      "destination": "/spa.html"
     }
   ]
 }

@@ -5,6 +5,7 @@ import { useController, useFormState } from 'react-hook-form'
 import { isOtherOptionContent, OTHER_OPTION_LABEL } from '@/features/school/utils/questionOption'
 import CloseIcon from '@/shared/assets/icons/close.svg?react'
 import { theme } from '@/shared/styles/theme'
+import type { QuestionOptionVariant } from '@/shared/types/apply'
 import type { RecruitingForms, RecruitingItemOption } from '@/shared/types/form'
 import { Badge } from '@/shared/ui/common/Badge'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
@@ -15,7 +16,7 @@ import * as S from './QuestionOptionsEditor.style'
 type QuestionOptionsEditorProps = {
   control: Control<RecruitingForms>
   name: string
-  variant: 'RADIO' | 'CHECKBOX'
+  variant: QuestionOptionVariant
   isLocked?: boolean
   onDeleteOption?: (optionId: string) => void
   onAppendOption?: () => void

@@ -1,9 +1,12 @@
 import { axiosInstance } from '@/api/axiosInstance'
+import { getAllSchools } from '@/shared/api/school/api'
 import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/api'
 
 import type {
   AllGisuResponseDTO,
+  BulkChallengerRecordIdResponseDTO,
   ChallengerDetailResponseDTO,
+  ChallengerRecordCodeResponseDTO,
   ChallengerRoleDetailResponseDTO,
   ChaptersResponseDTO,
   Curriculum,
@@ -24,16 +27,20 @@ import type {
   PatchSchoolBody,
   PatchSchoolUnassignBody,
   PostChallengerDeactivateBody,
+  PostChallengerRecordCodeBody,
   PostChallengerRoleBody,
   PostChallengerRoleResponseDTO,
   PostChapterBody,
   PostGisuBody,
   PostSchoolBody,
   PutCurriculumsBody,
+  SchoolDetailsResponseDTO,
   SchoolsResponseDTO,
   University,
   UniversityFullType,
 } from './model'
+
+export { getAllSchools }
 
 /** GET /schools/gisu/{gisuId} - 기수별 학교 목록 조회 */
 export const getSchoolsByGisu = async (
@@ -51,14 +58,6 @@ export const getCurriculums = async (
   params: GetCurriculumsParams,
 ): Promise<CommonResponseDTO<Curriculum>> => {
   const { data } = await axiosInstance.get('/curriculums', { params })
-  return data
-}
-/**
- * 전체 학교 목록을 조회함
- * @returns 전체 학교 목록 응답 데이터
- */
-export const getAllSchools = async (): Promise<CommonResponseDTO<SchoolsResponseDTO>> => {
-  const { data } = await axiosInstance.get('/schools/all')
   return data
 }
 /**
@@ -135,7 +134,7 @@ export const getGisuById = async ({
  */
 export const getSchoolDetails = async ({
   schoolId,
-}: GetSchoolDetailsParams): Promise<CommonResponseDTO<UniversityFullType>> => {
+}: GetSchoolDetailsParams): Promise<CommonResponseDTO<SchoolDetailsResponseDTO>> => {
   const { data } = await axiosInstance.get(`/schools/${schoolId}`)
   return data
 }
@@ -340,6 +339,42 @@ export const postChallengerRole = async (
   body: PostChallengerRoleBody,
 ): Promise<CommonResponseDTO<PostChallengerRoleResponseDTO>> => {
   const { data } = await axiosInstance.post('/authorization/challenger-role', body)
+  return data
+}
+
+/**
+ * 과거 챌린저 기록 등록용 단건 코드를 생성함
+ * @param body - 코드 생성 요청 본문
+ * @returns 생성된 챌린저 기록 코드 응답 데이터
+ */
+export const postChallengerRecordCode = async (
+  body: PostChallengerRecordCodeBody,
+): Promise<CommonResponseDTO<ChallengerRecordCodeResponseDTO>> => {
+  const { data } = await axiosInstance.post('/challenger-record', body)
+  return data
+}
+
+/**
+ * 과거 챌린저 기록 등록용 코드를 일괄 생성함
+ * @param body - 코드 생성 요청 목록
+ * @returns 생성된 챌린저 기록 코드 목록 응답 데이터
+ */
+export const postBulkChallengerRecordCode = async (
+  body: Array<PostChallengerRecordCodeBody>,
+): Promise<CommonResponseDTO<BulkChallengerRecordIdResponseDTO>> => {
+  const { data } = await axiosInstance.post('/challenger-record/bulk', body)
+  return data
+}
+
+/**
+ * ID로 과거 챌린저 기록을 조회함
+ * @param id - 조회할 기록 ID
+ * @returns ID에 해당하는 챌린저 기록 응답 데이터
+ */
+export const getChallengerRecordById = async (
+  id: string | number,
+): Promise<CommonResponseDTO<ChallengerRecordCodeResponseDTO>> => {
+  const { data } = await axiosInstance.get(`/challenger-record/id/${id}`)
   return data
 }
 

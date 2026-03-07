@@ -1,9 +1,11 @@
 import type { QuestionType } from './apply'
 import type {
+  LegacyRecruitingInterviewTimeTable,
   RecruitingInterviewTimeTable,
   RecruitingItem,
   RecruitingSchedule,
   RecruitingStatus,
+  ScheduleDateSlot,
 } from './form'
 import type { PartType } from './part'
 
@@ -19,7 +21,11 @@ export type ScheduleSlot = {
 }
 
 export type InterviewTimeTableWithDisabled = RecruitingInterviewTimeTable & {
-  disabledByDate: Array<{ date: string; times: Array<string> }>
+  disabledByDate: Array<ScheduleDateSlot>
+}
+
+export type LegacyInterviewTimeTableWithDisabled = LegacyRecruitingInterviewTimeTable & {
+  disabledByDate: Array<ScheduleDateSlot>
 }
 
 export type RecruitingDraft = {

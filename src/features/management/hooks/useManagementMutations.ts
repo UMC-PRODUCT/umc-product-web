@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 
+import type { LinkType } from '@/shared/constants/umc'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 
@@ -10,12 +11,14 @@ import {
   patchSchool,
   patchSchoolAssign,
   patchSchoolUnAssign,
+  postBulkChallengerRecordCode,
+  postChallengerRecordCode,
   postChapter,
   postGisu,
   postSchool,
   putCurriculums,
 } from '../domain/api'
-import type { PutCurriculumsBody } from '../domain/model'
+import type { PostChallengerRecordCodeBody, PutCurriculumsBody } from '../domain/model'
 
 /**
  * 관리(총괄) 영역에서 사용하는 mutation 훅 모음을 제공함.
@@ -32,7 +35,7 @@ export function useManagementMutations() {
     return useCustomMutation(postSchool, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getGisuChapterWithSchools'],
+          queryKey: managementKeys.getGisuChapterWithSchoolsBase,
         })
       },
     })
@@ -83,7 +86,7 @@ export function useManagementMutations() {
           logoImageId?: string
           links?: Array<{
             title: string
-            type: 'KAKAO' | 'INSTAGRAM' | 'YOUTUBE'
+            type: LinkType
             url: string
           }> | null
         }
@@ -99,8 +102,9 @@ export function useManagementMutations() {
     return useCustomMutation((gisuId: string) => deleteGisu(gisuId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['gisu'],
+          queryKey: managementKeys.getAllGisu,
         })
+        queryClient.invalidateQueries({ queryKey: managementKeys.getGisuListBase })
       },
     })
   }
@@ -113,7 +117,7 @@ export function useManagementMutations() {
     return useCustomMutation((chapterId: string) => deleteBranch(chapterId), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'getChapters'],
+          queryKey: managementKeys.getChapters,
         })
       },
     })
@@ -127,7 +131,7 @@ export function useManagementMutations() {
     return useCustomMutation((schoolIds: Array<string>) => deleteSchool(schoolIds), {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['management', 'schoolsPaging'],
+          queryKey: managementKeys.getSchoolsPagingBase,
         })
         queryClient.invalidateQueries({
           queryKey: managementKeys.getAllSchools,
@@ -157,6 +161,25 @@ export function useManagementMutations() {
       },
     })
   }
+
+  /**
+   * 과거 챌린저 기록 등록용 단건 코드 생성 mutation 훅.
+   * @returns 단건 코드 생성 mutation 결과
+   */
+  function usePostChallengerRecordCode() {
+    return useCustomMutation(postChallengerRecordCode)
+  }
+
+  /**
+   * 과거 챌린저 기록 등록용 벌크 코드 생성 mutation 훅.
+   * @returns 벌크 코드 생성 mutation 결과
+   */
+  function usePostBulkChallengerRecordCode() {
+    return useCustomMutation((body: Array<PostChallengerRecordCodeBody>) =>
+      postBulkChallengerRecordCode(body),
+    )
+  }
+
   return {
     usePostSchool,
     usePostChapter,
@@ -168,5 +191,7 @@ export function useManagementMutations() {
     useDeleteGeneration,
     usePostGisu,
     usePutCurriculums,
+    usePostChallengerRecordCode,
+    usePostBulkChallengerRecordCode,
   }
 }

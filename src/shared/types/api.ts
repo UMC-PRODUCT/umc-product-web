@@ -5,6 +5,13 @@ export type CommonResponseDTO<T> = {
   result: T
 }
 
+export type PaginationInfo = {
+  page: string
+  size: string
+  totalPages: string
+  totalElements: string
+}
+
 export type CommonPagingResponseDTO<T> = {
   content: Array<T>
   totalElements: string

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
-import Footer from '@/shared/layout/Footer/Footer'
+import Footer from '@/features/auth/components/layout/Footer/Footer'
 
 import AboutSection from '../components/AboutSection/AboutSection'
 import ApplySection from '../components/ApplySection/ApplySection'

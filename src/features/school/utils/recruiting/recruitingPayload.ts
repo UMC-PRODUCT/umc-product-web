@@ -4,8 +4,14 @@ import type { RecruitmentEditable } from '@/features/school/domain/model'
 import { isOtherOptionContent } from '@/features/school/utils/questionOption'
 import type { RecruitingForms, RecruitingItem, RecruitingSchedule } from '@/shared/types/form'
 
-const toDateOnly = (value: string | null | undefined) =>
-  value ? dayjs(value).format('YYYY-MM-DDT00:00:00+09:00') : null
+const toDateOnly = (value: string | null | undefined) => {
+  if (!value) return null
+
+  const isoDate = value.match(/^(\d{4}-\d{2}-\d{2})/)?.[1]
+  if (isoDate) return `${isoDate}T00:00:00+09:00`
+
+  return dayjs(value).format('YYYY-MM-DDT00:00:00+09:00')
+}
 
 export const buildPublishedSchedulePayload = (
   schedule: RecruitingForms['schedule'],

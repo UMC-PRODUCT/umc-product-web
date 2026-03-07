@@ -1,34 +1,24 @@
+import type { QueryClient } from '@tanstack/react-query'
+
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import type { CommonSearchParams } from '@/shared/types/api'
+import type { PartFilterType } from '@/shared/types/part'
 import type { PartType } from '@/shared/types/umc'
 
 import {
   getAllGisu,
-  getAllSchools,
   getChallenger,
-  getChallengerDetail,
-  getChallengerRole,
+  getChallengerRecordById,
   getChapter,
   getCurriculums,
-  getGisuById,
   getGisuChapterWithSchools,
   getGisuList,
   getMemberProfile,
   getRecruitementsApplications,
-  getSchoolDetails,
   getSchoolsPaging,
   getUnassignedSchools,
 } from '../domain/api'
-
-/**
- * 파트별 커리큘럼을 조회하는 Suspense 쿼리 훅.
- * @param part - 조회할 파트 타입
- * @returns 커리큘럼 조회 쿼리 결과
- */
-export function useGetCurriculums(part: PartType) {
-  return useCustomSuspenseQuery(managementKeys.getCurriculums(part), () => getCurriculums({ part }))
-}
 
 /**
  * 파트별 커리큘럼을 조회하는 일반 쿼리 훅.
@@ -47,14 +37,6 @@ export function useGetCurriculumsQuery(part: PartType) {
  */
 export function useGetAllGisu() {
   return useCustomQuery(managementKeys.getAllGisu, getAllGisu)
-}
-
-/**
- * 전체 학교 목록을 조회하는 쿼리 훅.
- * @returns 전체 학교 조회 쿼리 결과
- */
-export function useGetAllSchools() {
-  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
 }
 
 /**
@@ -97,30 +79,11 @@ export function useGetSchoolsPaging(
 }
 
 /**
- * 학교 상세 정보를 조회하는 Suspense 쿼리 훅.
- * @param schoolId - 학교 ID
- * @returns 학교 상세 조회 쿼리 결과
- */
-export function useGetSchoolDetails(schoolId: string) {
-  return useCustomSuspenseQuery(managementKeys.getSchoolDetails(schoolId), () =>
-    getSchoolDetails({ schoolId }),
-  )
-}
-
-/**
  * 지부 목록을 조회하는 쿼리 훅.
  * @returns 지부 목록 조회 쿼리 결과
  */
 export function useGetChapters() {
   return useCustomQuery(managementKeys.getChapters, getChapter)
-}
-
-/**
- * 전체 학교 목록을 조회하는 쿼리 훅.
- * @returns 전체 학교 조회 쿼리 결과
- */
-export function useGetAllSchoolsList() {
-  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
 }
 
 /**
@@ -135,17 +98,6 @@ export function useGetGisuList(params: CommonSearchParams) {
 }
 
 /**
- * 기수 단건 상세를 조회하는 쿼리 훅.
- * @param gisuId - 기수 ID
- * @returns 기수 상세 조회 쿼리 결과
- */
-export function useGetGisuById(gisuId: string) {
-  return useCustomQuery(managementKeys.getGisuDetail(gisuId), () => getGisuById({ gisuId }), {
-    enabled: Boolean(gisuId),
-  })
-}
-
-/**
  * 지원자 관리 목록을 조회하는 쿼리 훅.
  * @param params - 페이지/필터/검색 파라미터
  * @returns 지원자 목록 조회 쿼리 결과
@@ -154,7 +106,7 @@ export function useGetRecruitmentApplications(
   params: CommonSearchParams & {
     chapterId?: string
     schoolId?: string
-    part?: PartType | 'ALL'
+    part?: PartFilterType
     keyword?: string
   },
 ) {
@@ -175,19 +127,6 @@ export function useGetChallenger(params: Parameters<typeof getChallenger>[0]) {
 }
 
 /**
- * 챌린저 상세 정보를 조회하는 쿼리 훅.
- * @param challengerId - 챌린저 ID
- * @returns 챌린저 상세 조회 쿼리 결과
- */
-export function useGetChallengerDetail(challengerId: string) {
-  return useCustomQuery(
-    managementKeys.getChallengerDetail(challengerId),
-    () => getChallengerDetail(challengerId),
-    { enabled: Boolean(challengerId) },
-  )
-}
-
-/**
  * 회원 상세 정보를 조회하는 쿼리 훅.
  * @param memberId - 회원 ID
  * @returns 회원 상세 조회 쿼리 결과
@@ -201,14 +140,39 @@ export function useGetMemberProfile(memberId: string) {
 }
 
 /**
- * 챌린저 역할 상세를 조회하는 쿼리 훅.
- * @param challengerRoleId - 챌린저 역할 ID
- * @returns 챌린저 역할 상세 조회 쿼리 결과
+ * 과거 챌린저 기록 상세를 조회하는 쿼리 훅.
+ * @param challengerRecordId - 과거 챌린저 기록 ID
+ * @returns 과거 챌린저 기록 상세 조회 쿼리 결과
  */
-export function useGetChallengerRole(challengerRoleId: string) {
+export function useGetChallengerRecordById(
+  challengerRecordId: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  const hasId =
+    typeof challengerRecordId === 'string'
+      ? challengerRecordId.trim().length > 0
+      : challengerRecordId !== undefined
+
   return useCustomQuery(
-    managementKeys.getChallengerRoleDetail(challengerRoleId),
-    () => getChallengerRole(challengerRoleId),
-    { enabled: Boolean(challengerRoleId) },
+    managementKeys.getChallengerRecordDetail(String(challengerRecordId ?? '')),
+    () => getChallengerRecordById(challengerRecordId as string | number),
+    {
+      enabled: hasId && (options?.enabled ?? true),
+    },
   )
 }
+
+/**
+ * 과거 챌린저 기록 상세를 query key 기반으로 즉시 조회한다.
+ * @param queryClient - React Query 클라이언트
+ * @param challengerRecordId - 과거 챌린저 기록 ID
+ * @returns 과거 챌린저 기록 상세 응답 데이터
+ */
+export const fetchChallengerRecordByIdQuery = (
+  queryClient: QueryClient,
+  challengerRecordId: string | number,
+) =>
+  queryClient.fetchQuery({
+    queryKey: managementKeys.getChallengerRecordDetail(String(challengerRecordId)),
+    queryFn: () => getChallengerRecordById(challengerRecordId),
+  })

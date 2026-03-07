@@ -1,5 +1,5 @@
 import FillNotice from '@/shared/assets/icons/notice_fill.svg?react'
-import { Button } from '@/shared/ui/common/Button/Button'
+import { Button } from '@/shared/ui/common/Button'
 import Flex from '@/shared/ui/common/Flex/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
 

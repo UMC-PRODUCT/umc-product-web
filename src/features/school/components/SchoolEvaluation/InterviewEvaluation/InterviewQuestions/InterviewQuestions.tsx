@@ -4,12 +4,12 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { PART_CONFIG } from '@/features/auth/domain/constants'
 import { schoolKeys } from '@/features/school/domain/queryKeys'
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import {
   useGetAvailableInterviewParts,
   useGetInterviewQuestions,
-} from '@/features/school/hooks/useRecruitingQueries'
-import type { PartType } from '@/shared/types/part'
+} from '@/features/school/hooks/queries/useRecruitingQueries'
+import type { CommonPartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
@@ -24,7 +24,7 @@ import FilterBar from '../../FilterBar/FilterBar'
 import QuestionCard from '../../QuestionCard/QuestionCard'
 import * as S from './InterviewQuestions.style'
 
-type PartKey = PartType | 'COMMON'
+type PartKey = CommonPartType
 type QuestionItem = { id: string; text: string }
 
 const InterviewQuestionsContent = ({ recruitmentId }: { recruitmentId: string }) => {

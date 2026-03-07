@@ -2,6 +2,8 @@ import type { PartType } from './part'
 
 export type DocumentStatusType = 'PENDING' | 'EVALUATING' | 'PASS' | 'FAIL'
 export type FinalStatusType = 'WAITING' | 'IN_PROGRESS' | 'EVALUATING' | 'PENDING' | 'DONE' | 'NONE'
+export type ApplicationSubmissionStatusType = 'DRAFT' | 'SUBMITTED'
+export type MyApplicationStatusType = ApplicationSubmissionStatusType | 'NONE'
 
 export type QuestionType =
   | 'SHORT_TEXT'
@@ -12,6 +14,8 @@ export type QuestionType =
   | 'SCHEDULE'
   | 'PORTFOLIO'
   | 'PREFERRED_PART'
+
+export type QuestionOptionVariant = Extract<QuestionType, 'CHECKBOX' | 'RADIO'>
 
 export type FileUploadStatus = 'loading' | 'success' | 'error'
 

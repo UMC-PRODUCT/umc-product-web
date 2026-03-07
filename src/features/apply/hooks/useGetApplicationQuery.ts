@@ -5,10 +5,10 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { GetDocumentEvaluationApplicationResponseDTO } from '@/shared/types/school'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
+import { resolveDisabledScheduleSlots } from '@/shared/utils/recruitingSchedule'
 
 import {
   getActiveRecruitmentId,
-  getMyApplicationStatus,
   getRecruitmentApplicationAnswer,
   getRecruitmentApplicationForm,
   getRecruitmentNotice,
@@ -19,6 +19,13 @@ import {
 /** 활성 모집 ID 조회 */
 export function useGetActiveRecruitmentId() {
   return useCustomSuspenseQuery(applyKeys.getActiveRecruitmentId, getActiveRecruitmentId)
+}
+
+/** 활성 모집 ID 조회 */
+export function useGetActiveRecruitmentIdQuery(options?: { enabled?: boolean }) {
+  return useCustomQuery(applyKeys.getActiveRecruitmentId, getActiveRecruitmentId, {
+    enabled: options?.enabled,
+  })
 }
 
 /** 지원서 폼 조회 */
@@ -33,11 +40,6 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
         const normalizedPages = pages.map((page) => {
           if (!page.scheduleQuestion) return page
           const schedule = page.scheduleQuestion.schedule
-          const legacyDisabled = (schedule as { disabled?: typeof schedule.disabledByDate })
-            .disabled
-          const disabledByDate = Array.isArray(legacyDisabled)
-            ? legacyDisabled
-            : schedule.disabledByDate
 
           return {
             ...page,
@@ -45,7 +47,7 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
               ...page.scheduleQuestion,
               schedule: {
                 ...schedule,
-                disabledByDate,
+                disabledByDate: resolveDisabledScheduleSlots(schedule),
               },
             },
           }
@@ -92,13 +94,6 @@ export function useGetRecruitmentNotice(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
   return useCustomSuspenseQuery(applyKeys.getRecruitmentNotice(queryId), () =>
     getRecruitmentNotice(queryId),
-  )
-}
-
-/** 내 지원 상태 조회 */
-export function useGetMyApplicationStatus(recruitmentId: string) {
-  return useCustomSuspenseQuery(applyKeys.getMyApplicationStatus(recruitmentId), () =>
-    getMyApplicationStatus(recruitmentId),
   )
 }
 

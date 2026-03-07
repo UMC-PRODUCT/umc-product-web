@@ -2,7 +2,7 @@ import type { ChangeEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { useRecruitingMutation } from '@/features/school/hooks/useRecruitingMutation'
+import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import Close from '@/shared/assets/icons/close.svg?react'
 import { schoolKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'

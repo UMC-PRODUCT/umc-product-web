@@ -20,6 +20,8 @@ const RecruitingNotification = ({
   content: string
 }) => {
   const navigate = useNavigate()
+  const hasParts = parts.length > 0
+
   return (
     <Flex flexDirection="column" gap="24px">
       <PageTitle title="모집 공지" />
@@ -32,9 +34,11 @@ const RecruitingNotification = ({
           flexWrap="wrap"
           css={{ borderBottom: `1px solid ${theme.colors.gray[700]}`, paddingBottom: '20px' }}
         >
-          {parts.map((part) => (
-            <PartBadge key={part} partName={part} />
-          ))}
+          {hasParts ? (
+            parts.map((part) => <PartBadge key={part} partName={part} />)
+          ) : (
+            <EmptyPartLabel>-</EmptyPartLabel>
+          )}
         </Flex>
         <div css={{ height: '28px', width: '100px' }}>
           <Button
@@ -65,6 +69,11 @@ const P = styled.p`
 const Span = styled.span`
   ${theme.typography.B3.Md}
   color: ${theme.colors.white};
+`
+
+const EmptyPartLabel = styled.span`
+  ${theme.typography.B3.Rg}
+  color: ${theme.colors.gray[300]};
 `
 
 export default RecruitingNotification

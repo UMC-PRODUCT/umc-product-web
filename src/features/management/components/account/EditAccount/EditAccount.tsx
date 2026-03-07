@@ -6,7 +6,6 @@ import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
   useGetAllGisu,
-  useGetAllSchools,
   useGetChallenger,
   useGetChapters,
   useGetSchoolsPaging,
@@ -17,7 +16,8 @@ import Search from '@/shared/assets/icons/search.svg?react'
 import { PART_LIST } from '@/shared/constants/part'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
-import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
+import { useGetAllSchools } from '@/shared/hooks/useSchoolQueries'
 import { managementKeys } from '@/shared/queryKeys'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
@@ -205,6 +205,8 @@ const EditAccountContent = () => {
 
   return (
     <S.AccountContent alignItems="flex-start">
+      <S.TabTitle>계정 조회 및 수정</S.TabTitle>
+      <S.TabSubtitle>챌린저의 정보를 조회하고 수정할 수 있습니다.</S.TabSubtitle>
       <FilterBar
         leftChild={
           <>

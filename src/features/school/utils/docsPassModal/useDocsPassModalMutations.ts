@@ -3,10 +3,12 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
+import { schoolKeys } from '@/shared/queryKeys'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 
 type SelectionItem = {
   applicationId: string
-  documentResult: { decision: 'PASS' | 'FAIL' | 'WAIT' }
+  documentResult: { decision: SelectionDecisionType }
 }
 
 type UseDocsPassModalMutationsParams = {
@@ -24,24 +26,29 @@ export const useDocsPassModalMutations = ({
 }: UseDocsPassModalMutationsParams) => {
   const queryClient = useQueryClient()
   const [pendingDecisionById, setPendingDecisionById] = useState<
-    Record<string, 'PASS' | 'FAIL' | null>
+    Record<string, Exclude<SelectionDecisionType, 'WAIT'> | null>
   >({})
 
   const { mutate: patchStatus } = useCustomMutation(
-    ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
-      patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
+    ({
+      applicationId,
+      decision,
+    }: {
+      applicationId: string
+      decision: Exclude<SelectionDecisionType, 'WAIT'>
+    }) => patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
     {
       onMutate: async ({ applicationId, decision }) => {
         await queryClient.cancelQueries({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         const previous = queryClient.getQueriesData({
-          queryKey: ['school', 'getDocumentSelectedApplicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         queryClient.setQueriesData(
-          { queryKey: ['school', 'getDocumentSelectedApplicants'], exact: false },
+          { queryKey: schoolKeys.evaluation.document.getSelectionsBase, exact: false },
           (oldData) => {
             if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData
             const next = structuredClone(oldData)
@@ -67,7 +74,7 @@ export const useDocsPassModalMutations = ({
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'documents', 'selections', 'applicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
       },
@@ -77,7 +84,10 @@ export const useDocsPassModalMutations = ({
     },
   )
 
-  const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
+  const handlePatchStatus = (
+    applicationId: string,
+    decision: Exclude<SelectionDecisionType, 'WAIT'>,
+  ) => {
     patchStatus({ applicationId, decision })
   }
 
@@ -97,7 +107,7 @@ export const useDocsPassModalMutations = ({
     bulkPass(targetIds, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['school', 'documents', 'selections', 'applicants'],
+          queryKey: schoolKeys.evaluation.document.getSelectionsBase,
           exact: false,
         })
         onBulkPassSuccess?.(targetIds.length)

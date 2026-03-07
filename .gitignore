@@ -4,6 +4,7 @@ node_modules
 !.env.example
 dist
 dist-ssr
+.prerender
 *.local
 *.log
 *.tsbuildinfo
@@ -36,3 +37,4 @@ type.d.ts
 .playwright-cli
 *storybook.log
 storybook-static
+docs/ts-prune-*.txt

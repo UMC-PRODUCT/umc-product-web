@@ -19,7 +19,7 @@ export const ValuesGrid = styled.div`
 
 export const ValueCard = styled.div`
   text-align: center;
-  ${homeResponsiveSpace('padding: 60px 40px;', 'padding: 44px 28px;', 'padding: 32px 5px;')}
+  ${homeResponsiveSpace('padding: 60px 0;', 'padding: 44px 0;', 'padding: 32px 0;')}
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.6s ease-out;

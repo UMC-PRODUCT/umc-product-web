@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { useGetDocumentEvaluationApplicants } from '@/features/school/hooks/useRecruitingQueries'
+import { useGetDocumentEvaluationApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
 import CheckIcon from '@/shared/assets/icons/check.svg?react'
 import Search from '@/shared/assets/icons/search.svg?react'
-import { usePartDropdown } from '@/shared/hooks/useManagedDropdown'
+import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
 import { theme } from '@/shared/styles/theme'
 import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'

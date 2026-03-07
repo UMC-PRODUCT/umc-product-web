@@ -75,7 +75,7 @@ export function setupResponseInterceptor(instance: AxiosInstance): void {
       const status = error.response?.status
       if (status === 401) {
         const currentUrl = window.location.pathname
-        if (currentUrl === '/' || currentUrl === '/auth/signup') {
+        if (currentUrl === '/' || currentUrl === '/auth/register') {
           return Promise.reject(error)
         }
 

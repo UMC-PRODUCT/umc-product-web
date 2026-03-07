@@ -11,7 +11,7 @@ import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
 import Section from '@/shared/ui/common/Section/Section'
 
-import type { RecruitingContentLogic } from '../hooks/useRecruitingContentLogic'
+import type { RecruitingContentLogic } from '../hooks/recruiting/useRecruitingContentLogic'
 
 export const RecruitingContentView = ({
   scrollTopRef,

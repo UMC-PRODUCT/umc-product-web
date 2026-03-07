@@ -2,12 +2,11 @@
 import { useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 
+import type { SchoolSummary } from '@/shared/types/school'
+
 import type { RegisterForm } from '../../schemas/register'
 
-export interface SchoolOption {
-  schoolId: string
-  schoolName: string
-}
+export type SchoolOption = SchoolSummary
 
 const EMPTY_SCHOOL: SchoolOption = { schoolId: '', schoolName: '' }
 

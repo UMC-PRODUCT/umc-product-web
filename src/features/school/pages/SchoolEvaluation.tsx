@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from '@emotion/styled'
 
-import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/useRecruitingQueries'
+import { useGetRecruitmentsDocumentEvaluation } from '@/features/school/hooks/queries/useRecruitingQueries'
 import { media } from '@/shared/styles/media'
 import { theme } from '@/shared/styles/theme'
 import { Flex } from '@/shared/ui/common/Flex'
