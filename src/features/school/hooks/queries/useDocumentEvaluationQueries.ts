@@ -1,10 +1,6 @@
 import type { InfiniteData } from '@tanstack/react-query'
 
-import {
-  useCustomInfiniteQuery,
-  useCustomQuery,
-  useCustomSuspenseQuery,
-} from '@/shared/hooks/customQuery'
+import { useCustomInfiniteQuery, useCustomQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
 import type { PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
@@ -12,7 +8,6 @@ import type { SelectionsSortType } from '@/shared/types/umc'
 import {
   getDocumentEvaluationAnswers,
   getDocumentEvaluationApplicants,
-  getDocumentEvaluationApplicationDetail,
   getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
   getFinalSelectionApplications,
@@ -122,17 +117,6 @@ export const useGetDocumentSelectedApplicants = (
         return lastPage.result.documentSelectionApplications.hasNext ? page + 1 : undefined
       },
     },
-  )
-}
-
-/** 서류 평가용 지원서 상세 조회 */
-export const useGetDocumentEvaluationApplicationDetail = (
-  recruitingId: string,
-  applicantId: string,
-) => {
-  return useCustomSuspenseQuery(
-    schoolKeys.evaluation.document.getApplicationDetail(recruitingId, applicantId),
-    () => getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
   )
 }
 

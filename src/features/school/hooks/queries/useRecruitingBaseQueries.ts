@@ -1,9 +1,6 @@
-import {
-  getRecruitmentApplicationAnswer,
-  getRecruitmentApplicationForm,
-} from '@/features/apply/domain/api'
+import { getRecruitmentApplicationForm } from '@/features/apply/domain/api'
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
-import { applyKeys, schoolKeys } from '@/shared/queryKeys'
+import { schoolKeys } from '@/shared/queryKeys'
 import type { RecruitmentStatusType } from '@/shared/types/umc'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
@@ -70,14 +67,6 @@ export const useGetRecruitmentsDocumentEvaluation = () => {
   return useCustomQuery(
     schoolKeys.getRecruitmentsDocumentEvaluation,
     getRecruitmentsDocumentEvaluation,
-  )
-}
-
-/** 지원서 답변 조회 */
-export const useGetRecruitmentApplicationAnswer = (recruitmentId: string, formId: string) => {
-  return useCustomSuspenseQuery(
-    applyKeys.getRecruitmentApplicationAnswer(recruitmentId, formId),
-    () => getRecruitmentApplicationAnswer(recruitmentId, formId),
   )
 }
 

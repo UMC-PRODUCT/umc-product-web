@@ -8,7 +8,6 @@ import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
 
 import {
   getActiveRecruitmentId,
-  getMyApplicationStatus,
   getRecruitmentApplicationAnswer,
   getRecruitmentApplicationForm,
   getRecruitmentNotice,
@@ -92,13 +91,6 @@ export function useGetRecruitmentNotice(recruitmentId?: string) {
   const queryId = recruitmentId ?? ''
   return useCustomSuspenseQuery(applyKeys.getRecruitmentNotice(queryId), () =>
     getRecruitmentNotice(queryId),
-  )
-}
-
-/** 내 지원 상태 조회 */
-export function useGetMyApplicationStatus(recruitmentId: string) {
-  return useCustomSuspenseQuery(applyKeys.getMyApplicationStatus(recruitmentId), () =>
-    getMyApplicationStatus(recruitmentId),
   )
 }
 

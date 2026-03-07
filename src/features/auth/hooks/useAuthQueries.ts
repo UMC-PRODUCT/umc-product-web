@@ -7,11 +7,6 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 import { getActiveGisu, getMemberMe, getMemberOAuthMe } from '../domain/api'
 import type { GetActiveGisuResponseDTO } from '../domain/types'
 
-/** 내 정보 조회 */
-export function useGetMemberMe() {
-  return useCustomSuspenseQuery(authKeys.getMemberMe, getMemberMe)
-}
-
 /** 내 정보 조회 (non-suspense) */
 export function useMemberMeQuery() {
   return useCustomQuery(authKeys.getMemberMe, getMemberMe)
