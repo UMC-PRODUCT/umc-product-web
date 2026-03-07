@@ -8,6 +8,7 @@ import { useDocsPassModalUi } from '@/features/school/utils/docsPassModal'
 import { schoolKeys } from '@/shared/queryKeys'
 import { useUserProfileStore } from '@/shared/store/useUserProfileStore'
 import type { PartType } from '@/shared/types/part'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 import { isSchoolPresidentRole } from '@/shared/utils/role'
 
 type ModalName = 'setPassPart' | 'setPassSuccess' | 'cancelStatus' | 'inform' | null
@@ -30,7 +31,9 @@ export const useFinalEvaluationFlow = (recruitmentId: string) => {
     processed: number
     requestedIds: Array<string>
   } | null>(null)
-  const [cancelStatus, setCancelStatus] = useState<'PASS' | 'FAIL' | null>(null)
+  const [cancelStatus, setCancelStatus] = useState<Exclude<SelectionDecisionType, 'WAIT'> | null>(
+    null,
+  )
   const [modalOpen, setModalOpen] = useState<{ open: boolean; modalName: ModalName }>({
     open: false,
     modalName: null,
@@ -112,7 +115,10 @@ export const useFinalEvaluationFlow = (recruitmentId: string) => {
     })
   }
 
-  const openCancelStatusModal = (applicationId: string, status: 'PASS' | 'FAIL') => {
+  const openCancelStatusModal = (
+    applicationId: string,
+    status: Exclude<SelectionDecisionType, 'WAIT'>,
+  ) => {
     setActiveRowId(applicationId)
     setCancelStatus(status)
     setModalOpen({ open: true, modalName: 'cancelStatus' })

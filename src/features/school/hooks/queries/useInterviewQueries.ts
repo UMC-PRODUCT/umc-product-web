@@ -1,6 +1,6 @@
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType, PartFilterType } from '@/shared/types/part'
 
 import {
   getAvailableInterviewParts,
@@ -9,30 +9,17 @@ import {
   getInterviewEvaluationOptions,
   getInterviewEvaluationSummary,
   getInterviewEvaluationView,
-  getInterviewLiveQuestions,
   getInterviewQuestions,
   getInterviewSchedulingSlotApplicants,
-  getInterviewSchedulingSummary,
-  getInterviewSlotAssignments,
-  getInterviewSlots,
 } from '../../domain/api'
 
 /** 면접 질문지(사전 질문) 조회 */
-export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
+export const useGetInterviewQuestions = (recruitmentId: string, part: CommonPartType) => {
   return useCustomQuery(
     schoolKeys.evaluation.interview.getQuestions(recruitmentId, part),
     () => getInterviewQuestions(recruitmentId, part),
     { enabled: Boolean(recruitmentId) },
   )
-}
-
-/** 추가 질문(즉석 질문) 조회 */
-export const useGetInterviewLiveQuestions = (recruitmentId: string, assignmentId: string) => {
-  const queryKey = schoolKeys.evaluation.interview.getLiveQuestions(recruitmentId, assignmentId)
-  const enabled = Boolean(recruitmentId) && Boolean(assignmentId)
-  return useCustomQuery(queryKey, () => getInterviewLiveQuestions(recruitmentId, assignmentId), {
-    enabled,
-  })
 }
 
 /** 실시간 평가 현황 조회(평균/리스트) */
@@ -58,7 +45,7 @@ export const useGetInterviewEvaluationView = (recruitmentId: string, assignmentI
 /** 실시간 면접 평가 대상 리스트 조회 */
 export const useGetInterviewAssignments = (
   recruitmentId: string,
-  params?: { date?: string; part?: PartType | 'ALL' },
+  params?: { date?: string; part?: PartFilterType },
 ) => {
   return useCustomQuery(
     schoolKeys.evaluation.interview.getAssignments(recruitmentId, params ?? {}),
@@ -109,35 +96,5 @@ export const useGetInterviewSlotApplicants = (
     {
       enabled,
     },
-  )
-}
-
-/** 면접 슬롯 목록 조회 */
-export const useGetInterviewSlots = (
-  recruitmentId: string,
-  date?: string,
-  part?: PartType | 'ALL',
-) => {
-  const resolvedDate = date ?? ''
-  const resolvedPart = part ?? 'ALL'
-  return useCustomSuspenseQuery(
-    schoolKeys.evaluation.interview.getSlots(recruitmentId, resolvedDate, resolvedPart),
-    () => getInterviewSlots(recruitmentId, resolvedDate, resolvedPart),
-  )
-}
-
-/** 면접 스케줄링 요약 조회 */
-export const useGetInterviewSchedulingSummary = (recruitmentId: string) => {
-  return useCustomSuspenseQuery(
-    schoolKeys.evaluation.interview.getSchedulingSummary(recruitmentId),
-    () => getInterviewSchedulingSummary(recruitmentId),
-  )
-}
-
-/** 특정 면접 슬롯에 배정된 지원자 조회 */
-export const useGetInterviewSlotAssignments = (recruitmentId: string, slotId: string) => {
-  return useCustomSuspenseQuery(
-    schoolKeys.evaluation.interview.getSlotAssignments(recruitmentId, slotId),
-    () => getInterviewSlotAssignments(recruitmentId, slotId),
   )
 }

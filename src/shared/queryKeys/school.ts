@@ -1,6 +1,7 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
-import type { PartType, SelectionsSortType } from '@/shared/types/umc'
+import type { CommonPartType, PartFilterType } from '@/shared/types/part'
+import type { SelectionsSortType } from '@/shared/types/umc'
 
 import type { CommonSearchParams } from '../types/api'
 
@@ -10,17 +11,17 @@ import type { CommonSearchParams } from '../types/api'
 type RecruitmentsStatusParams = { status: string }
 
 type DocumentEvaluationApplicantsParams = CommonSearchParams & {
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   keyword?: string
 }
 
 type DocumentSelectedApplicantsParams = CommonSearchParams & {
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   sort?: SelectionsSortType
 }
 
 type FinalSelectionApplicationsParams = {
-  part: PartType | 'ALL'
+  part: PartFilterType
   sort: SelectionsSortType
   page: string
   size: string
@@ -28,7 +29,7 @@ type FinalSelectionApplicationsParams = {
 
 type InterviewAssignmentsParams = {
   date?: string
-  part?: PartType | 'ALL'
+  part?: PartFilterType
 }
 
 // -----------------------------
@@ -87,7 +88,7 @@ const schoolKeyFactory = createQueryKeys('school', {
   interviews: {
     queryKey: null,
     contextQueries: {
-      questions: (recruitmentId: string, part: PartType | 'COMMON') => [{ recruitmentId, part }],
+      questions: (recruitmentId: string, part: CommonPartType) => [{ recruitmentId, part }],
       liveQuestions: (recruitmentId: string, assignmentId: string) => [
         { recruitmentId, assignmentId },
       ],
@@ -104,7 +105,7 @@ const schoolKeyFactory = createQueryKeys('school', {
       myAnswer: (recruitmentId: string, assignmentId: string) => [{ recruitmentId, assignmentId }],
       availableParts: (recruitmentId: string) => [{ recruitmentId }],
       slotApplicants: (recruitmentId: string, slotId: string) => [{ recruitmentId, slotId }],
-      slots: (recruitmentId: string, date: string, part: PartType | 'ALL') => [
+      slots: (recruitmentId: string, date: string, part: PartFilterType) => [
         { recruitmentId, date, part },
       ],
       schedulingSummary: (recruitmentId: string) => [{ recruitmentId }],
@@ -166,7 +167,7 @@ const schoolEvaluationKeys = {
   },
   interview: {
     /** 면접 질문 조회 키 */
-    getQuestions: (recruitmentId: string, part: PartType | 'COMMON') =>
+    getQuestions: (recruitmentId: string, part: CommonPartType) =>
       schoolKeyFactory.interviews._ctx.questions(recruitmentId, part).queryKey,
     /** 실시간 면접 질문 조회 키 */
     getLiveQuestions: (recruitmentId: string, assignmentId: string) =>
@@ -193,7 +194,7 @@ const schoolEvaluationKeys = {
     getSlotApplicants: (recruitmentId: string, slotId: string) =>
       schoolKeyFactory.interviews._ctx.slotApplicants(recruitmentId, slotId).queryKey,
     /** 면접 슬롯 목록 조회 키 */
-    getSlots: (recruitmentId: string, date: string, part: PartType | 'ALL') =>
+    getSlots: (recruitmentId: string, date: string, part: PartFilterType) =>
       schoolKeyFactory.interviews._ctx.slots(recruitmentId, date, part).queryKey,
     /** 면접 스케줄 요약 조회 키 */
     getSchedulingSummary: (recruitmentId: string) =>

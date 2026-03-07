@@ -4,7 +4,7 @@ import {
   useGetInterviewAssignments,
   useGetInterviewEvaluationOptions,
 } from '@/features/school/hooks/queries/useRecruitingQueries'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType } from '@/shared/types/part'
 import { Dropdown } from '@/shared/ui/common/Dropdown'
 
 import FilterBar from '../../FilterBar/FilterBar'
@@ -59,7 +59,7 @@ const ListView = ({
 }) => {
   const { data: optionsData } = useGetInterviewEvaluationOptions(recruitmentId)
   const [selectedDateId, setSelectedDateId] = useState<string | null>(() => readDateFromQuery())
-  const [selectedPartId, setSelectedPartId] = useState<PartType | 'ALL' | null>(null)
+  const [selectedPartId, setSelectedPartId] = useState<PartFilterType | null>(null)
 
   const dateOptions = useMemo(
     () => optionsData?.result.dates.map((date) => ({ id: date, label: date })) ?? [],
@@ -79,7 +79,7 @@ const ListView = ({
     ? dateOptions.some((option) => option.id === selectedDateId)
     : false
   const resolvedDateId = (hasSelectedDate ? selectedDateId : null) ?? dateOptions[0]?.id
-  const resolvedPartId = selectedPartId as PartType | 'ALL'
+  const resolvedPartId = selectedPartId as PartFilterType
 
   const selectedDateOption = dateOptions.find((option) => option.id === resolvedDateId)
   const selectedPartOption = partOptions.find((option) => option.id === resolvedPartId)
@@ -110,7 +110,7 @@ const ListView = ({
               value={selectedPartOption}
               placeholder="전체 파트"
               css={{ height: '40px' }}
-              onChange={(option) => setSelectedPartId(option.id as PartType | 'ALL')}
+              onChange={(option) => setSelectedPartId(option.id as PartFilterType)}
             />
           </>
         }

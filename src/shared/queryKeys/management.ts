@@ -1,6 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 
-import type { PartType } from '@/shared/types/umc'
+import type { PartFilterType, PartType } from '@/shared/types/part'
 
 import type { CommonSearchParams } from '../types/api'
 
@@ -13,7 +13,7 @@ type SchoolsPagingParams = CommonSearchParams & {
 type RecruitmentApplicationsPagingParams = CommonSearchParams & {
   chapterId?: string
   schoolId?: string
-  part?: PartType | 'ALL'
+  part?: PartFilterType
   keyword?: string
 }
 

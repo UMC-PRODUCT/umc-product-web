@@ -1,18 +1,13 @@
 import type { InfiniteData } from '@tanstack/react-query'
 
-import {
-  useCustomInfiniteQuery,
-  useCustomQuery,
-  useCustomSuspenseQuery,
-} from '@/shared/hooks/customQuery'
+import { useCustomInfiniteQuery, useCustomQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import {
   getDocumentEvaluationAnswers,
   getDocumentEvaluationApplicants,
-  getDocumentEvaluationApplicationDetail,
   getDocumentEvaluationMyAnswer,
   getDocumentSelectedApplicants,
   getFinalSelectionApplications,
@@ -22,7 +17,7 @@ import {
 export const useGetDocumentEvaluationApplicants = (
   recruitingId: string,
   params: {
-    part: PartType | 'ALL'
+    part: PartFilterType
     keyword: string
     size: string
   },
@@ -48,9 +43,7 @@ export const useGetDocumentEvaluationApplicants = (
     {
       initialPageParam: 0,
       getNextPageParam: (lastPage) => {
-        const pagination =
-          (lastPage.result as { pagination?: { page: string; totalPages: string } }).pagination ??
-          (lastPage.result as { paination?: { page: string; totalPages: string } }).paination
+        const pagination = lastPage.result.pagination ?? lastPage.result.paination
         const page = Number(pagination?.page)
         const totalPages = Number(pagination?.totalPages)
         if (Number.isNaN(page) || Number.isNaN(totalPages)) return undefined
@@ -64,7 +57,7 @@ export const useGetDocumentEvaluationApplicants = (
 export const useGetFinalSelectionApplications = (
   recruitingId: string,
   params: {
-    part: PartType | 'ALL'
+    part: PartFilterType
     sort: SelectionsSortType
     size: string
   },
@@ -97,7 +90,7 @@ export const useGetFinalSelectionApplications = (
 export const useGetDocumentSelectedApplicants = (
   recruitingId: string,
   params: {
-    part?: PartType | 'ALL'
+    part?: PartFilterType
     size?: string
     sort?: SelectionsSortType
   },
@@ -122,17 +115,6 @@ export const useGetDocumentSelectedApplicants = (
         return lastPage.result.documentSelectionApplications.hasNext ? page + 1 : undefined
       },
     },
-  )
-}
-
-/** 서류 평가용 지원서 상세 조회 */
-export const useGetDocumentEvaluationApplicationDetail = (
-  recruitingId: string,
-  applicantId: string,
-) => {
-  return useCustomSuspenseQuery(
-    schoolKeys.evaluation.document.getApplicationDetail(recruitingId, applicantId),
-    () => getDocumentEvaluationApplicationDetail(recruitingId, applicantId),
   )
 }
 

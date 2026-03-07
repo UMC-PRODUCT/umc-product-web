@@ -6,7 +6,6 @@ import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import { DELETE_ACCOUNT_TABLE_HEADER_LABEL } from '@/features/management/domain/constants'
 import {
   useGetAllGisu,
-  useGetAllSchools,
   useGetChallenger,
   useGetChapters,
   useGetSchoolsPaging,
@@ -18,6 +17,7 @@ import { PART_LIST } from '@/shared/constants/part'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
+import { useGetAllSchools } from '@/shared/hooks/useSchoolQueries'
 import { managementKeys } from '@/shared/queryKeys'
 import * as S from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'

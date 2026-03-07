@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useGetDocumentSelectedApplicants } from '@/features/school/hooks/queries/useRecruitingQueries'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 export const useDocsPassModalList = ({
@@ -10,7 +10,7 @@ export const useDocsPassModalList = ({
   sortId,
 }: {
   recruitingId: string
-  part: PartType | 'ALL'
+  part: PartFilterType
   sortId: SelectionsSortType
 }) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

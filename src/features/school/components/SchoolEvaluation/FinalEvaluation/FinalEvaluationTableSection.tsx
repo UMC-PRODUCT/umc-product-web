@@ -1,5 +1,6 @@
 import type { FinalSelectionApplication } from '@/features/school/domain/model'
 import { theme } from '@/shared/styles/theme'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import { Checkbox } from '@/shared/ui/common/Checkbox'
@@ -31,7 +32,10 @@ type Props = {
   onSetActiveRow: (id: string) => void
   onToggleAll: (checked: boolean | 'indeterminate') => void
   onToggleRow: (id: string) => (checked: boolean | 'indeterminate') => void
-  onOpenCancelStatus: (applicationId: string, status: 'PASS' | 'FAIL') => void
+  onOpenCancelStatus: (
+    applicationId: string,
+    status: Exclude<SelectionDecisionType, 'WAIT'>,
+  ) => void
   onPassApplicants: (applicationIds: Array<string>, openSuccessModal?: boolean) => Promise<void>
   onFailApplicants: (applicationIds: Array<string>) => Promise<void>
   onClearSelection: () => void

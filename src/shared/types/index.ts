@@ -1,14 +1,17 @@
 // API
-export type { CommonPagingResponseDTO, CommonResponseDTO } from './api'
+export type { CommonPagingResponseDTO, CommonResponseDTO, PaginationInfo } from './api'
 export type { PostRefreshTokenResponseDTO } from './auth'
 
 // Apply / Question
 export type {
+  ApplicationSubmissionStatusType,
   DocumentStatusType,
   FileUploadAnswer,
   FileUploadStatus,
   FinalStatusType,
+  MyApplicationStatusType,
   QuestionAnswerValue,
+  QuestionOptionVariant,
   QuestionType,
   TimeTableSlots,
   UploadedFile,
@@ -56,9 +59,16 @@ export type { ExternalLink } from './link'
 
 // School shared
 export type {
+  ApplicantMember,
   DocumentEvaluationAnswer,
+  DocumentEvaluationFormPage,
   DocumentEvaluationQuestion,
+  DocumentEvaluationQuestionGroup,
+  DocumentEvaluationQuestionOption,
+  DocumentEvaluationQuestionType,
   GetDocumentEvaluationApplicationResponseDTO,
+  SchoolListResponseDTO,
+  SchoolSummary,
 } from './school'
 
 // Calendar
@@ -74,7 +84,7 @@ export type {
 } from './component'
 
 // Part
-export type { PartListType, PartSmallType, PartType } from './part'
+export type { CommonPartType, PartFilterType, PartListType, PartSmallType, PartType } from './part'
 
 // Style
 export type { ButtonStyleType } from './style'
@@ -82,15 +92,21 @@ export type { TypoGroup, TypoToken } from './typo'
 
 // Domain common
 export type {
+  AccountDeactivationType,
   AccountLevelType,
   AccountStateType,
+  EvaluationProgressStatusType,
   EvaluationStatusType,
+  OAuthProviderSlug,
+  OAuthProviderType,
   OrganizationType,
   PostFileType,
   RecruitmentStatusType,
   ResumeType,
   RoleType,
   SchoolStateType,
+  SelectionDecisionType,
   SelectionsSortType,
+  SubmissionActionType,
   TermsType,
 } from './umc'

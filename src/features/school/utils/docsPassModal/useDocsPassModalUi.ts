@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { usePartDropdown } from '@/shared/hooks/usePartDropdown'
 import type { Option } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType, PartType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 type ModalName = 'setPassPart' | 'setPassSuccess' | 'setFail' | 'inform' | null
@@ -15,7 +15,7 @@ export const sortOptions: Array<Option<string>> = [
 
 export const useDocsPassModalUi = () => {
   const { value: part, Dropdown } = usePartDropdown()
-  const resolvedPart: PartType | 'ALL' = part && part.id !== '0' ? (part.id as PartType) : 'ALL'
+  const resolvedPart: PartFilterType = part && part.id !== '0' ? (part.id as PartType) : 'ALL'
 
   const [sortId, setSortId] = useState<SelectionsSortType>('SCORE_DESC')
   const sortValue = sortOptions.find((option) => option.id === sortId)

@@ -6,6 +6,7 @@ import { PART_CONFIG } from '@features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import * as S from '@/features/apply/components/ApplyPage.style'
+import type { MyApplicationStatusType } from '@/shared/types/apply'
 import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
 import { transformResumeStatusKorean } from '@/shared/utils/transformKorean'
@@ -23,7 +24,7 @@ interface BeforeSubmitProps {
   draftFormResponseId?: string
   recruitmentId?: string
   canApply: boolean
-  submitStatus: 'DRAFT' | 'NONE' | 'SUBMITTED'
+  submitStatus: MyApplicationStatusType
 }
 
 const BeforeSubmit = ({
@@ -32,7 +33,7 @@ const BeforeSubmit = ({
   recruitmentId,
   canApply,
   draftFormResponseId,
-}: BeforeSubmitProps & { submitStatus: string }) => {
+}: BeforeSubmitProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const navigate = useNavigate()
   const openConfirmModal = () => setIsConfirmModalOpen(true)

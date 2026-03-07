@@ -17,6 +17,12 @@ export type OptionAnswerValue = {
   selectedOptionIds: Array<string>
   otherText?: string
 }
+
+export type ScheduleDateSlot = {
+  date: string
+  times: Array<string>
+}
+
 export type FormQuestion = {
   questionId: number
   type: QuestionType
@@ -45,8 +51,8 @@ export type FormPage = {
       dateRange: DateRange
       timeRange: DateRange
       slotMinutes: string
-      enabledByDate: Array<{ date: string; times: Array<string> }>
-      disabledByDate: Array<{ date: string; times: Array<string> }>
+      enabledByDate: Array<ScheduleDateSlot>
+      disabledByDate: Array<ScheduleDateSlot>
     }
   } | null
   partQuestions: Array<{
@@ -122,8 +128,12 @@ export type RecruitingInterviewTimeTable = {
   dateRange: DateRange
   timeRange: DateRange
   slotMinutes: string
-  enabledByDate: Array<{ date: string; times: Array<string> }>
-  disabledByDate: Array<{ date: string; times: Array<string> }>
+  enabledByDate: Array<ScheduleDateSlot>
+  disabledByDate: Array<ScheduleDateSlot>
+}
+
+export type LegacyRecruitingInterviewTimeTable = RecruitingInterviewTimeTable & {
+  disabled?: Array<ScheduleDateSlot>
 }
 
 export type RecruitingItemQuestionType = Exclude<QuestionType, 'PART'> | 'PREFERRED_PART'

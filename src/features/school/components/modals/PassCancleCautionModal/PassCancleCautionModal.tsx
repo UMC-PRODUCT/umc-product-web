@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useRecruitingMutation } from '@/features/school/hooks/mutations/useRecruitingMutation'
 import Caution from '@/shared/assets/icons/caution.svg?react'
 import { schoolKeys } from '@/shared/queryKeys'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import { Flex } from '@/shared/ui/common/Flex'
 import AlertModalLayout from '@/shared/ui/modals/AlertModalLayout/AlertModalLayout'
@@ -22,7 +23,7 @@ const PassCancleCautionModal = ({
   name: string
   nickname: string
   score: string
-  currentStatus: 'PASS' | 'FAIL'
+  currentStatus: Exclude<SelectionDecisionType, 'WAIT'>
 }) => {
   const queryClient = useQueryClient()
   const { usePatchFinalSelectionStatus } = useRecruitingMutation()

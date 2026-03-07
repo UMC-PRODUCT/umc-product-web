@@ -1,8 +1,9 @@
 import styled from '@emotion/styled'
 
 import { theme } from '@/shared/styles/theme'
+import type { QuestionOptionVariant } from '@/shared/types/apply'
 
-export const OptionMarker = styled.div<{ $variant: 'RADIO' | 'CHECKBOX' }>`
+export const OptionMarker = styled.div<{ $variant: QuestionOptionVariant }>`
   width: 16px;
   height: 16px;
   border: 1.25px solid ${theme.colors.gray[400]};

@@ -9,7 +9,7 @@ import {
   useGetAvailableInterviewParts,
   useGetInterviewQuestions,
 } from '@/features/school/hooks/queries/useRecruitingQueries'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
@@ -24,7 +24,7 @@ import FilterBar from '../../FilterBar/FilterBar'
 import QuestionCard from '../../QuestionCard/QuestionCard'
 import * as S from './InterviewQuestions.style'
 
-type PartKey = PartType | 'COMMON'
+type PartKey = CommonPartType
 type QuestionItem = { id: string; text: string }
 
 const InterviewQuestionsContent = ({ recruitmentId }: { recruitmentId: string }) => {

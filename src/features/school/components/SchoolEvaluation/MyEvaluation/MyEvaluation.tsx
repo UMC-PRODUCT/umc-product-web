@@ -9,6 +9,7 @@ import {
   useGetInterviewEvaluationMyAnswer,
 } from '@/features/school/hooks/queries/useRecruitingQueries'
 import { theme } from '@/shared/styles/theme'
+import type { SubmissionActionType } from '@/shared/types/umc'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
@@ -98,7 +99,7 @@ const MyEvaluation = ({
     setComment(evaluation.comments)
   }, [currentEvaluation, recruitingId, selectedUserId])
 
-  const handleSubmit = (action: 'DRAFT_SAVE' | 'SUBMIT') => {
+  const handleSubmit = (action: SubmissionActionType) => {
     if (!canSubmit || isScoreEmpty || scoreError) return
     if (mode === 'document') {
       patchDocumentEvaluation(

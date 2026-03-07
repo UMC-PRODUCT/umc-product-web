@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
+import type { SelectionDecisionType } from '@/shared/types/umc'
+
 type SelectionItem = {
   applicationId: string
-  documentResult: { decision: 'PASS' | 'FAIL' | 'WAIT' }
+  documentResult: { decision: SelectionDecisionType }
 }
 
 export const useDocsPassModalSelection = (items: Array<SelectionItem>, totalCount: number) => {

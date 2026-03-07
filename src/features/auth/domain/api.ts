@@ -9,7 +9,6 @@ import type {
   GetMemberOAuthMeResponseDTO,
   GetSchoolLinkResponseDTO,
   GetTermsResponseDTO,
-  PatchTermsRequestDTO,
   PostChallengerRecordMemberRequestDTO,
   PostEmailVerificationCodeRequestDTO,
   PostEmailVerificationCodeResponseDTO,
@@ -97,17 +96,6 @@ export const getTermsById = async (
 ): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
   const { data } = await axiosInstance.get(`/terms/${termId}`, {
     headers: SKIP_AUTH_REDIRECT_HEADER,
-  })
-  return data
-}
-
-/** PATCH /terms/{termId} - 약관 수정 */
-export const patchTerms = async (
-  termId: string,
-  requestBody: PatchTermsRequestDTO,
-): Promise<CommonResponseDTO<GetTermsResponseDTO>> => {
-  const { data } = await axiosInstance.patch(`/terms/${termId}`, JSON.stringify(requestBody), {
-    headers: { 'Content-Type': 'application/json' },
   })
   return data
 }

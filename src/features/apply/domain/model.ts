@@ -1,7 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import type { RECRUITING_SCHEDULE_TYPE } from '@/shared/constants/umc'
-import type { DocumentStatusType, FinalStatusType } from '@/shared/types/apply'
+import type {
+  ApplicationSubmissionStatusType,
+  DocumentStatusType,
+  FinalStatusType,
+  MyApplicationStatusType,
+} from '@/shared/types/apply'
 import type { OptionAnswerValue, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { PartType } from '@/shared/types/part'
 import type { QuestionSummary, RequiredScheduleWithDisabled } from '@/shared/types/recruiting'
@@ -183,7 +188,7 @@ export type GetRecruitmentApplicationAnswerResponseDTO = {
   recruitmentId: string
   formId: string
   formResponseId: string
-  status: 'DRAFT' | 'SUBMITTED'
+  status: ApplicationSubmissionStatusType
   lastSavedAt: string
   submittedAt: string | null
   answers: Array<AnswerItem>
@@ -272,7 +277,7 @@ export type GetRecruitmentPartsResponseDTO = {
     status: string
   }>
   myApplication: {
-    status: 'DRAFT' | 'NONE' | 'SUBMITTED'
+    status: MyApplicationStatusType
     draftFormResponseId: string
     applicationId: string
   }

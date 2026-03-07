@@ -1,5 +1,6 @@
 import type { FinalSelectionApplication } from '@/features/school/domain/model'
 import type { PartType } from '@/shared/types/part'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 
 import PassCancleCautionModal from '../../modals/PassCancleCautionModal/PassCancleCautionModal'
 import PassInfoModal from '../../modals/PassInfoModal/PassInfoModal'
@@ -13,14 +14,14 @@ type Props = {
   partSelectApplicant: FinalSelectionApplication | null
   processedPassCount: number
   activeApplicant: FinalSelectionApplication | null
-  cancelStatus: 'PASS' | 'FAIL' | null
+  cancelStatus: Exclude<SelectionDecisionType, 'WAIT'> | null
   selectedCount: number
   alreadyPassedCount: number
   selectedIds: Set<string>
   recruitmentId: string
   isPassing: boolean
   onClose: () => void
-  onSetCancelStatus: (status: 'PASS' | 'FAIL' | null) => void
+  onSetCancelStatus: (status: Exclude<SelectionDecisionType, 'WAIT'> | null) => void
   onConfirmPart: (selectedPart: PartType) => Promise<void>
   onConfirmSelectedPass: (ids: Array<string>) => Promise<void>
 }

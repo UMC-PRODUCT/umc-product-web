@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 
+import type { LinkType } from '@/shared/constants/umc'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 
@@ -83,7 +84,7 @@ export function useManagementMutations() {
           logoImageId?: string
           links?: Array<{
             title: string
-            type: 'KAKAO' | 'INSTAGRAM' | 'YOUTUBE'
+            type: LinkType
             url: string
           }> | null
         }
