@@ -1,11 +1,19 @@
-import { FINAL_STATUS_CONFIG } from '@/features/apply/domain/constants'
 import { PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
-import type { FinalStatusType } from '@/shared/types/apply'
 import type { PartType } from '@/shared/types/part'
+import type { EvaluationProgressStatusType } from '@/shared/types/umc'
 import { Badge } from '@/shared/ui/common/Badge'
 import { Button } from '@/shared/ui/common/Button'
 
 import * as S from './EvaluationCard.style'
+
+const INTERVIEW_EVALUATION_STATUS_CONFIG: Record<
+  EvaluationProgressStatusType,
+  { label: string; color: 'gray' | 'lime' }
+> = {
+  WAITING: { label: '미정', color: 'gray' },
+  IN_PROGRESS: { label: '평가 중', color: 'lime' },
+  COMPLETED: { label: '평가 완료', color: 'lime' },
+}
 
 const EvaluationCard = ({
   handleStartEval,
@@ -22,14 +30,18 @@ const EvaluationCard = ({
   nickname: string
   score: number
   tags: Array<PartType>
-  status: FinalStatusType
+  status: EvaluationProgressStatusType
 }) => {
   return (
     <S.ContentBox>
       <S.Header>
         <S.TimeBadge>{time}</S.TimeBadge>
-        <Badge tone={FINAL_STATUS_CONFIG[status].color} typo="B5.Md" variant="outline">
-          {FINAL_STATUS_CONFIG[status].label}
+        <Badge
+          tone={INTERVIEW_EVALUATION_STATUS_CONFIG[status].color}
+          typo="B5.Md"
+          variant="outline"
+        >
+          {INTERVIEW_EVALUATION_STATUS_CONFIG[status].label}
         </Badge>
       </S.Header>
       <S.Content>

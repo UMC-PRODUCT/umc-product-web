@@ -1,4 +1,5 @@
 import { useCustomMutation } from '@/shared/hooks/customQuery'
+import type { SelectionDecisionType, SubmissionActionType } from '@/shared/types/umc'
 
 import {
   deleteInterviewAssignApplicants,
@@ -97,14 +98,14 @@ export function useRecruitingMutation() {
   // 내 서류 평가 저장/제출
   function usePatchDocumentEvaluationMyAnswer(recruitmentId: string, applicantId: string) {
     return useCustomMutation(
-      (answers: { action: 'DRAFT_SAVE' | 'SUBMIT'; score: string; comments: string }) =>
+      (answers: { action: SubmissionActionType; score: string; comments: string }) =>
         patchDocumentEvaluationMyAnswer(recruitmentId, applicantId, answers),
     )
   }
 
   // 서류 합격 상태 변경
   function usePatchDocumentSelectionStatus(recruitmentId: string, applicantId: string) {
-    return useCustomMutation((status: { decision: 'PASS' | 'FAIL' | 'WAIT' }) =>
+    return useCustomMutation((status: { decision: SelectionDecisionType }) =>
       patchDocumentSelectionStatus(recruitmentId, applicantId, status),
     )
   }

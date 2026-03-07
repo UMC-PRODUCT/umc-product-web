@@ -9,6 +9,7 @@ import KakaoIcon from '@/shared/assets/social/kakao.svg?react'
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage'
 import { authKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
+import type { OAuthProviderSlug, OAuthProviderType } from '@/shared/types/umc'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Button } from '@/shared/ui/common/Button'
 import ErrorPage from '@/shared/ui/common/ErrorPage/ErrorPage'
@@ -29,17 +30,17 @@ const AccountModalContent = () => {
   const { setItem: setOAuthRedirectFrom } = useLocalStorage('oAuthRedirectFrom')
   const { setItem: setOAuthConnectingProvider } = useLocalStorage('oAuthConnectingProvider')
   const connectedProviders = new Set(data.map((item) => item.provider))
-  const providerByType = data.reduce<Record<'KAKAO' | 'GOOGLE' | 'APPLE', string | null>>(
+  const providerByType = data.reduce<Record<OAuthProviderType, string | null>>(
     (acc, item) => {
       acc[item.provider] = item.memberOAuthId
       return acc
     },
     { KAKAO: null, GOOGLE: null, APPLE: null },
   )
-  const isConnected = (provider: 'KAKAO' | 'GOOGLE' | 'APPLE') => connectedProviders.has(provider)
+  const isConnected = (provider: OAuthProviderType) => connectedProviders.has(provider)
   const { useDeleteMemberOAuth } = useAuthMutation()
   const { mutate: deleteOAuthMutate } = useDeleteMemberOAuth()
-  const handleConnect = (provider: 'kakao' | 'google' | 'apple') => {
+  const handleConnect = (provider: OAuthProviderSlug) => {
     if (typeof window === 'undefined') return
     setOAuthRedirectFrom('accountModal')
     setOAuthConnectingProvider(provider)
@@ -60,7 +61,7 @@ const AccountModalContent = () => {
       },
     )
   }
-  const disconnect = (provider: 'KAKAO' | 'GOOGLE' | 'APPLE') => {
+  const disconnect = (provider: OAuthProviderType) => {
     const memberOAuthId = providerByType[provider]
     if (!memberOAuthId) return
     handleDisconnect(memberOAuthId)

@@ -4,10 +4,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { patchDocumentSelectionStatus } from '@/features/school/domain/api'
 import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
+import type { SelectionDecisionType } from '@/shared/types/umc'
 
 type SelectionItem = {
   applicationId: string
-  documentResult: { decision: 'PASS' | 'FAIL' | 'WAIT' }
+  documentResult: { decision: SelectionDecisionType }
 }
 
 type UseDocsPassModalMutationsParams = {
@@ -25,12 +26,17 @@ export const useDocsPassModalMutations = ({
 }: UseDocsPassModalMutationsParams) => {
   const queryClient = useQueryClient()
   const [pendingDecisionById, setPendingDecisionById] = useState<
-    Record<string, 'PASS' | 'FAIL' | null>
+    Record<string, Exclude<SelectionDecisionType, 'WAIT'> | null>
   >({})
 
   const { mutate: patchStatus } = useCustomMutation(
-    ({ applicationId, decision }: { applicationId: string; decision: 'PASS' | 'FAIL' }) =>
-      patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
+    ({
+      applicationId,
+      decision,
+    }: {
+      applicationId: string
+      decision: Exclude<SelectionDecisionType, 'WAIT'>
+    }) => patchDocumentSelectionStatus(recruitingId, applicationId, { decision }),
     {
       onMutate: async ({ applicationId, decision }) => {
         await queryClient.cancelQueries({
@@ -78,7 +84,10 @@ export const useDocsPassModalMutations = ({
     },
   )
 
-  const handlePatchStatus = (applicationId: string, decision: 'PASS' | 'FAIL') => {
+  const handlePatchStatus = (
+    applicationId: string,
+    decision: Exclude<SelectionDecisionType, 'WAIT'>,
+  ) => {
     patchStatus({ applicationId, decision })
   }
 

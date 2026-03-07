@@ -1,6 +1,7 @@
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import type { CommonSearchParams } from '@/shared/types/api'
+import type { PartFilterType } from '@/shared/types/part'
 import type { PartType } from '@/shared/types/umc'
 
 import {
@@ -92,14 +93,6 @@ export function useGetChapters() {
 }
 
 /**
- * 전체 학교 목록을 조회하는 쿼리 훅.
- * @returns 전체 학교 조회 쿼리 결과
- */
-export function useGetAllSchoolsList() {
-  return useCustomQuery(managementKeys.getAllSchools, getAllSchools)
-}
-
-/**
  * 기수 목록(페이징)을 조회하는 쿼리 훅.
  * @param params - 페이지 파라미터
  * @returns 기수 페이징 조회 쿼리 결과
@@ -119,7 +112,7 @@ export function useGetRecruitmentApplications(
   params: CommonSearchParams & {
     chapterId?: string
     schoolId?: string
-    part?: PartType | 'ALL'
+    part?: PartFilterType
     keyword?: string
   },
 ) {

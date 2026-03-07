@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/api/axiosInstance'
 import type { CommonResponseDTO } from '@/shared/types/api'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType, PartFilterType } from '@/shared/types/part'
 
 import type {
   DeleteInterviewAssignApplicantsResponseDTO,
@@ -354,7 +354,7 @@ export const getInterviewEvaluationView = async (
 /** GET /recruitments/{recruitmentId}/interviews/assignments - 실시간 면접 평가 대상 리스트 조회 */
 export const getInterviewAssignments = async (
   recruitmentId: string,
-  params?: { date?: string; part?: PartType | 'ALL' },
+  params?: { date?: string; part?: PartFilterType },
 ): Promise<CommonResponseDTO<GetInterviewAssignmentsResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/interviews/assignments`,
@@ -385,7 +385,7 @@ export const getInterviewEvaluationMyAnswer = async (
 /** GET /recruitments/{recruitmentId}/interview-sheets/questions - 면접 질문지(사전 질문) 조회 */
 export const getInterviewQuestions = async (
   recruitmentId: string,
-  part: PartType | 'COMMON',
+  part: CommonPartType,
 ): Promise<CommonResponseDTO<GetInterviewQuestionsResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/interview-sheets/questions`,
@@ -505,7 +505,7 @@ export const deleteInterviewLiveQuestion = async (
 export const getInterviewSchedulingSlotApplicants = async (
   recruitmentId: string,
   slotId: string,
-  part?: PartType | 'ALL',
+  part?: PartFilterType,
   keyword?: string,
 ): Promise<CommonResponseDTO<GetInterviewSchedulingSlotApplicantsResponseDTO>> => {
   const { data } = await axiosInstance.get(
@@ -519,7 +519,7 @@ export const getInterviewSchedulingSlotApplicants = async (
 export const getInterviewSlots = async (
   recruitmentId: string,
   date?: string,
-  part?: PartType | 'ALL',
+  part?: PartFilterType,
 ): Promise<CommonResponseDTO<GetInterviewSlotsResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/interviews/scheduling/slots`,
@@ -534,7 +534,7 @@ export const getInterviewSlots = async (
 export const getInterviewSchedulingSummary = async (
   recruitmentId: string,
   date?: string,
-  part?: PartType | 'ALL',
+  part?: PartFilterType,
 ): Promise<CommonResponseDTO<GetInterviewSchedulingSummaryResponseDTO>> => {
   const { data } = await axiosInstance.get(
     `/recruitments/${recruitmentId}/interviews/scheduling/summary`,

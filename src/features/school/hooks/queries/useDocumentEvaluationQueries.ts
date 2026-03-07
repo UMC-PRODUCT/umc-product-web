@@ -2,7 +2,7 @@ import type { InfiniteData } from '@tanstack/react-query'
 
 import { useCustomInfiniteQuery, useCustomQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
-import type { PartType } from '@/shared/types/part'
+import type { PartFilterType } from '@/shared/types/part'
 import type { SelectionsSortType } from '@/shared/types/umc'
 
 import {
@@ -17,7 +17,7 @@ import {
 export const useGetDocumentEvaluationApplicants = (
   recruitingId: string,
   params: {
-    part: PartType | 'ALL'
+    part: PartFilterType
     keyword: string
     size: string
   },
@@ -43,9 +43,7 @@ export const useGetDocumentEvaluationApplicants = (
     {
       initialPageParam: 0,
       getNextPageParam: (lastPage) => {
-        const pagination =
-          (lastPage.result as { pagination?: { page: string; totalPages: string } }).pagination ??
-          (lastPage.result as { paination?: { page: string; totalPages: string } }).paination
+        const pagination = lastPage.result.pagination ?? lastPage.result.paination
         const page = Number(pagination?.page)
         const totalPages = Number(pagination?.totalPages)
         if (Number.isNaN(page) || Number.isNaN(totalPages)) return undefined
@@ -59,7 +57,7 @@ export const useGetDocumentEvaluationApplicants = (
 export const useGetFinalSelectionApplications = (
   recruitingId: string,
   params: {
-    part: PartType | 'ALL'
+    part: PartFilterType
     sort: SelectionsSortType
     size: string
   },
@@ -92,7 +90,7 @@ export const useGetFinalSelectionApplications = (
 export const useGetDocumentSelectedApplicants = (
   recruitingId: string,
   params: {
-    part?: PartType | 'ALL'
+    part?: PartFilterType
     size?: string
     sort?: SelectionsSortType
   },

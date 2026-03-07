@@ -5,6 +5,7 @@ import type { CommonResponseDTO } from '@/shared/types/api'
 import type { FormPage, RecruitmentApplicationForm } from '@/shared/types/form'
 import type { GetDocumentEvaluationApplicationResponseDTO } from '@/shared/types/school'
 import { normalizeRecruitmentApplicationForm } from '@/shared/utils'
+import { resolveDisabledScheduleSlots } from '@/shared/utils/recruitingSchedule'
 
 import {
   getActiveRecruitmentId,
@@ -32,11 +33,6 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
         const normalizedPages = pages.map((page) => {
           if (!page.scheduleQuestion) return page
           const schedule = page.scheduleQuestion.schedule
-          const legacyDisabled = (schedule as { disabled?: typeof schedule.disabledByDate })
-            .disabled
-          const disabledByDate = Array.isArray(legacyDisabled)
-            ? legacyDisabled
-            : schedule.disabledByDate
 
           return {
             ...page,
@@ -44,7 +40,7 @@ export function useGetRecruitmentApplicationForm(recruitmentId: string) {
               ...page.scheduleQuestion,
               schedule: {
                 ...schedule,
-                disabledByDate,
+                disabledByDate: resolveDisabledScheduleSlots(schedule),
               },
             },
           }

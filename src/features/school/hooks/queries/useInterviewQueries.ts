@@ -1,6 +1,6 @@
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { schoolKeys } from '@/shared/queryKeys'
-import type { PartType } from '@/shared/types/part'
+import type { CommonPartType, PartFilterType } from '@/shared/types/part'
 
 import {
   getAvailableInterviewParts,
@@ -14,7 +14,7 @@ import {
 } from '../../domain/api'
 
 /** 면접 질문지(사전 질문) 조회 */
-export const useGetInterviewQuestions = (recruitmentId: string, part: PartType | 'COMMON') => {
+export const useGetInterviewQuestions = (recruitmentId: string, part: CommonPartType) => {
   return useCustomQuery(
     schoolKeys.evaluation.interview.getQuestions(recruitmentId, part),
     () => getInterviewQuestions(recruitmentId, part),
@@ -45,7 +45,7 @@ export const useGetInterviewEvaluationView = (recruitmentId: string, assignmentI
 /** 실시간 면접 평가 대상 리스트 조회 */
 export const useGetInterviewAssignments = (
   recruitmentId: string,
-  params?: { date?: string; part?: PartType | 'ALL' },
+  params?: { date?: string; part?: PartFilterType },
 ) => {
   return useCustomQuery(
     schoolKeys.evaluation.interview.getAssignments(recruitmentId, params ?? {}),

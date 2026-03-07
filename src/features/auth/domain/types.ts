@@ -1,6 +1,11 @@
 import type { CommonResponseDTO } from '@/shared/types/api'
 import type { ExternalLink } from '@/shared/types/link'
-import type { OrganizationType, RoleType } from '@/shared/types/umc'
+import type {
+  AccountStateType,
+  OAuthProviderType,
+  OrganizationType,
+  RoleType,
+} from '@/shared/types/umc'
 
 import type { PartType } from './model'
 
@@ -53,7 +58,7 @@ export type GetMemberMeResponseDTO = {
   schoolId?: string
   schoolName?: string
   profileImageLink?: string
-  status?: 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN'
+  status?: AccountStateType
   roles: Array<{
     id: string
     challengerId: string
@@ -67,7 +72,7 @@ export type GetMemberMeResponseDTO = {
 export type GetMemberOAuthMeResponseDTO = Array<{
   memberOAuthId: string
   memberId: string
-  provider: 'KAKAO' | 'GOOGLE' | 'APPLE'
+  provider: OAuthProviderType
 }>
 
 export type GetTermsResponseDTO = {

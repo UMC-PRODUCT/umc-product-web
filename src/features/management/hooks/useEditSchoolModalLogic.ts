@@ -89,8 +89,9 @@ export const useEditSchoolModalLogic = (schoolId: string, onClose: () => void) =
     const nextRemark = schoolDetails.result.remark ?? ''
     reset({ schoolName: nextName, remark: nextRemark, linkTitle: '', linkUrl: '' })
 
-    const providedLinks = (schoolDetails.result as { links?: Array<ExternalLink> }).links
-    const resolvedLinks = Array.isArray(providedLinks) ? providedLinks : []
+    const resolvedLinks = Array.isArray(schoolDetails.result.links)
+      ? schoolDetails.result.links
+      : []
     setLinks(resolvedLinks)
     initialDataRef.current = { schoolName: nextName, remark: nextRemark, links: resolvedLinks }
   }, [schoolDetails, reset])

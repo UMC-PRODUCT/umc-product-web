@@ -19,6 +19,7 @@ import QuestionLayout from '@/shared/ui/common/Question/QuestionLayout'
 import { TimeTable } from '@/shared/ui/common/Question/TimeTable/TimeTable'
 import ResumeNavigation from '@/shared/ui/common/ResumeNavigation'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
+import { resolveDisabledScheduleSlots } from '@/shared/utils/recruitingSchedule'
 
 interface ViewResumeProps {
   currentPage: number
@@ -174,21 +175,7 @@ const ViewResumeContent = ({ currentPage, onPageChange }: ViewResumeProps) => {
                   Array<string>
                 >
               }
-              disabledSlots={
-                Array.isArray(
-                  (
-                    currentScheduleQuestion.schedule as {
-                      disabled?: Array<{ date: string; times: Array<string> }>
-                    }
-                  ).disabled,
-                )
-                  ? ((
-                      currentScheduleQuestion.schedule as {
-                        disabled?: Array<{ date: string; times: Array<string> }>
-                      }
-                    ).disabled ?? [])
-                  : currentScheduleQuestion.schedule.disabledByDate
-              }
+              disabledSlots={resolveDisabledScheduleSlots(currentScheduleQuestion.schedule)}
               mode="view"
             />
           </QuestionLayout>
