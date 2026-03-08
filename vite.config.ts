@@ -8,7 +8,7 @@ import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const isAnalyze = mode === 'analyze'
   const isVitest = process.env.VITEST === 'true' || mode === 'test'
 
@@ -20,6 +20,16 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ['@emotion/styled/base'],
     },
+    build: isSsrBuild
+      ? undefined
+      : {
+          rollupOptions: {
+            input: {
+              main: fileURLToPath(new URL('./index.html', import.meta.url)),
+              spa: fileURLToPath(new URL('./spa.html', import.meta.url)),
+            },
+          },
+        },
     plugins: [
       devtools(),
       !isVitest
