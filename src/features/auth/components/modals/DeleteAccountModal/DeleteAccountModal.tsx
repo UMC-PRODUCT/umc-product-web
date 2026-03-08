@@ -1,3 +1,4 @@
+import { clearTokens } from '@/api/tokenManager'
 import { useAuthMutation } from '@/features/auth/hooks/useAuthMutations'
 import FillNotice from '@/shared/assets/icons/notice_fill.svg?react'
 import { Button } from '@/shared/ui/common/Button'
@@ -23,6 +24,7 @@ ${nickname}/${name} 님의 계정을 삭제하시겠습니까?`
   const handleDelete = () => {
     deleteMemberMutate(undefined, {
       onSuccess: () => {
+        clearTokens()
         onClick()
         onClose()
       },
