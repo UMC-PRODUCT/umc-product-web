@@ -205,6 +205,8 @@ const EditAccountContent = () => {
 
   return (
     <S.AccountContent alignItems="flex-start">
+      <S.TabTitle>계정 조회 및 수정</S.TabTitle>
+      <S.TabSubtitle>챌린저의 정보를 조회하고 수정할 수 있습니다.</S.TabSubtitle>
       <FilterBar
         leftChild={
           <>

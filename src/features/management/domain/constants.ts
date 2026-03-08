@@ -51,6 +51,11 @@ export const MANAGE_BRANCH_TABS = [
   { value: 'match', label: '지부 매칭' },
 ]
 
+export const ACCOUNT_TABS = [
+  { label: '계정 조회/수정', value: 'view' },
+  { label: '계정 코드 생성', value: 'code' },
+]
+
 export const MANAGE_SCHOOL_TAB_VALUES = MANAGE_SCHOOL_TABS.map((tab) => tab.value)
 
 export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록일', '상태', '작업']
@@ -60,3 +65,5 @@ export const DELETE_ACCOUNT_TABLE_HEADER_LABEL = ['이름', '닉네임', '학교
 export const MANAGE_SYSTEM_TAB_VALUES = MANAGE_SYSTEM_TABS.map((tab) => tab.value)
 
 export const MANAGE_BRANCH_TAB_VALUES = MANAGE_BRANCH_TABS.map((tab) => tab.value)
+
+export const MANAGE_ACCOUNT_TAB_VALUES = ACCOUNT_TABS.map((tab) => tab.value)

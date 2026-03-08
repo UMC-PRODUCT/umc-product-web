@@ -11,12 +11,14 @@ import {
   patchSchool,
   patchSchoolAssign,
   patchSchoolUnAssign,
+  postBulkChallengerRecordCode,
+  postChallengerRecordCode,
   postChapter,
   postGisu,
   postSchool,
   putCurriculums,
 } from '../domain/api'
-import type { PutCurriculumsBody } from '../domain/model'
+import type { PostChallengerRecordCodeBody, PutCurriculumsBody } from '../domain/model'
 
 /**
  * 관리(총괄) 영역에서 사용하는 mutation 훅 모음을 제공함.
@@ -159,6 +161,25 @@ export function useManagementMutations() {
       },
     })
   }
+
+  /**
+   * 과거 챌린저 기록 등록용 단건 코드 생성 mutation 훅.
+   * @returns 단건 코드 생성 mutation 결과
+   */
+  function usePostChallengerRecordCode() {
+    return useCustomMutation(postChallengerRecordCode)
+  }
+
+  /**
+   * 과거 챌린저 기록 등록용 벌크 코드 생성 mutation 훅.
+   * @returns 벌크 코드 생성 mutation 결과
+   */
+  function usePostBulkChallengerRecordCode() {
+    return useCustomMutation((body: Array<PostChallengerRecordCodeBody>) =>
+      postBulkChallengerRecordCode(body),
+    )
+  }
+
   return {
     usePostSchool,
     usePostChapter,
@@ -170,5 +191,7 @@ export function useManagementMutations() {
     useDeleteGeneration,
     usePostGisu,
     usePutCurriculums,
+    usePostChallengerRecordCode,
+    usePostBulkChallengerRecordCode,
   }
 }
