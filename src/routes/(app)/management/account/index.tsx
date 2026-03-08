@@ -23,7 +23,7 @@ const parseAccountSearch = (search: RouteSearch): AccountSearch => {
 const RouteComponent = () => {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
-  const activeTab: AccountTab = tab ?? 'code'
+  const activeTab: AccountTab = tab ?? 'view'
 
   const setTab = (next: AccountTab) => {
     navigate({
