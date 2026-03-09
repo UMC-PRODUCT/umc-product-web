@@ -111,10 +111,10 @@ Vite 환경 변수는 `VITE_` 접두사를 사용합니다:
 
 ```env
 # API 서버 URL (예시)
-VITE_API_BASE_URL=https://api.example.com
+VITE_SERVER_API_URL=https://api.example.com/api/v1
 
-# 기타 설정
-VITE_APP_NAME=UMC Product Web
+# 사이트 기본 URL (프로덕션 필수)
+VITE_SITE_URL=https://prod.umc.it.kr
 ```
 
 > `.env` 파일은 `.gitignore`에 포함되어 있어 Git에 커밋되지 않습니다.
