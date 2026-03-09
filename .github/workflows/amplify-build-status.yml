@@ -2,18 +2,21 @@ name: Amplify Build Status
 
 on:
   workflow_dispatch:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+    inputs:
+      amplify_branch_name:
+        description: Amplify branch to monitor
+        required: false
+        type: choice
+        options:
+          - develop
+          - main
   push:
     branches:
-      - '**'
+      - develop
+      - main
 
 concurrency:
-  group: amplify-build-status-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: amplify-build-status-${{ github.event.inputs.amplify_branch_name || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
@@ -34,8 +37,15 @@ jobs:
         id: target
         env:
           AMPLIFY_BRANCH_OVERRIDE: ${{ vars.AMPLIFY_BRANCH_NAME }}
+          MANUAL_BRANCH_INPUT: ${{ github.event.inputs.amplify_branch_name }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          if [ -n "$MANUAL_BRANCH_INPUT" ]; then
+            echo "branch_name=$MANUAL_BRANCH_INPUT" >> "$GITHUB_OUTPUT"
+            echo "commit_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if [ -n "$AMPLIFY_BRANCH_OVERRIDE" ]; then
             echo "branch_name=$AMPLIFY_BRANCH_OVERRIDE" >> "$GITHUB_OUTPUT"
             echo "commit_sha=" >> "$GITHUB_OUTPUT"

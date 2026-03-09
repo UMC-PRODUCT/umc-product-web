@@ -534,9 +534,9 @@ pnpm build   # dist/ 폴더 생성
 
 `.github/workflows/amplify-build-status.yml`은 GitHub Actions에서 Amplify job 상태를 폴링해 진행 로그와 최종 상태를 GitHub check로 노출합니다.
 
-- 기본적으로 현재 Git 브랜치와 같은 이름의 Amplify 브랜치를 조회합니다.
+- 기본적으로 `develop`, `main` 브랜치에 push될 때만 동작합니다.
+- `workflow_dispatch`로 수동 실행할 때는 `develop` 또는 `main`을 직접 선택할 수 있습니다.
 - `vars.AMPLIFY_BRANCH_NAME`를 설정하면 현재 Git 브랜치 대신 해당 Amplify 브랜치를 조회합니다.
-- `push`, `pull_request`, `workflow_dispatch`에서 동작합니다.
 - GitHub 이벤트로 시작된 모니터링만 GitHub에서 보이며, Amplify 콘솔에서 수동으로 다시 돌린 빌드는 별도 `workflow_dispatch` 실행이 필요합니다.
 - AWS 인증은 OIDC AssumeRole(`AWS_ROLE_TO_ASSUME`)만 지원합니다.
 
