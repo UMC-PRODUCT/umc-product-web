@@ -76,6 +76,7 @@ const managementKeyFactory = createQueryKeys('management', {
     },
   },
   challengerDetail: (challengerId: string) => [challengerId],
+  challengerRecordDetail: (challengerRecordId: string) => [challengerRecordId],
   memberProfileDetail: (memberId: string) => [memberId],
   challengerRoleDetail: (challengerRoleId: string) => [challengerRoleId],
 })
@@ -126,6 +127,9 @@ export const managementKeys = {
   /** 챌린저 상세 조회 키 */
   getChallengerDetail: (challengerId: string) =>
     managementKeyFactory.challengerDetail(challengerId).queryKey,
+  /** 과거 챌린저 기록 상세 조회 키 */
+  getChallengerRecordDetail: (challengerRecordId: string) =>
+    managementKeyFactory.challengerRecordDetail(challengerRecordId).queryKey,
   /** 멤버 프로필 상세 조회 키 */
   getMemberProfileDetail: (memberId: string) =>
     managementKeyFactory.memberProfileDetail(memberId).queryKey,

@@ -347,3 +347,30 @@ export type ChallengerRoleDetailResponseDTO = {
   gisuId: string
   gisu: string
 }
+
+export type ChallengerRecordRoleType = RoleType | 'CHALLENGER'
+
+export type PostChallengerRecordCodeBody = {
+  gisuId: string
+  chapterId: string
+  schoolId: string
+  part: PartType
+  memberName: string
+  challengerRoleType?: ChallengerRecordRoleType
+}
+
+export type ChallengerRecordCodeResponseDTO = {
+  code: string
+  part: PartType
+  gisuId: string
+  gisu: string
+  schoolId: string
+  schoolName: string
+  chapterId: string
+  chapterName: string
+  memberName: string
+  challengerRoleType: ChallengerRecordRoleType | null
+  organizationId: string | null
+}
+
+export type BulkChallengerRecordIdResponseDTO = Array<string | number>

@@ -6,16 +6,16 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="UMC 리쿠르팅 사이트입니다. 학교별 모집 공고 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
+      content="UMC(University Makeus Challenge)는 기획자, 디자이너, 개발자가 함께하는 대학생 IT 프로젝트 연합동아리입니다. 모집 일정 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
     />
     <meta name="robots" content="index,follow" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="UMC | University Makeus Challenge" />
-    <meta property="og:title" content="UMC | University Makeus Challenge" />
+    <meta property="og:title" content="UMC | 대학생 IT 프로젝트 연합동아리" />
     <meta
       property="og:description"
-      content="UMC 리쿠르팅 사이트입니다. 학교별 모집 공고 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
+      content="UMC(University Makeus Challenge)는 기획자, 디자이너, 개발자가 함께하는 대학생 IT 프로젝트 연합동아리입니다. 모집 일정 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
     />
     <meta property="og:url" content="%VITE_SITE_URL%/" />
     <meta property="og:image" content="%VITE_SITE_URL%/assets/images/Preview.png" />
@@ -23,10 +23,10 @@
     <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="UMC | University Makeus Challenge" />
+    <meta name="twitter:title" content="UMC | 대학생 IT 프로젝트 연합동아리" />
     <meta
       name="twitter:description"
-      content="UMC 리쿠르팅 사이트입니다. 학교별 모집 공고 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
+      content="UMC(University Makeus Challenge)는 기획자, 디자이너, 개발자가 함께하는 대학생 IT 프로젝트 연합동아리입니다. 모집 일정 확인부터 지원서 제출까지 한 번에 진행할 수 있습니다."
     />
     <meta name="twitter:url" content="%VITE_SITE_URL%/" />
     <meta name="twitter:image" content="%VITE_SITE_URL%/assets/images/Preview.png" />
@@ -38,10 +38,41 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <title>UMC | University Makeus Challenge</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://prod.umc.it.kr/#organization",
+            "name": "UMC",
+            "alternateName": "University Makeus Challenge",
+            "url": "https://prod.umc.it.kr/",
+            "logo": "https://prod.umc.it.kr/assets/images/Preview.png",
+            "sameAs": [
+              "https://www.instagram.com/uni_makeus_challenge/",
+              "https://www.youtube.com/@UniversityMakeUsChallenge"
+            ],
+            "description": "기획자, 디자이너, 개발자가 함께하는 대학생 IT 프로젝트 연합동아리 UMC"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://prod.umc.it.kr/#website",
+            "name": "UMC",
+            "alternateName": "University Makeus Challenge",
+            "url": "https://prod.umc.it.kr/",
+            "publisher": {
+              "@id": "https://prod.umc.it.kr/#organization"
+            },
+            "inLanguage": "ko-KR"
+          }
+        ]
+      }
+    </script>
+    <title>UMC | 대학생 IT 프로젝트 연합동아리</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-prerendered="false"><!--app-html--></div>
     <div id="modal-root"></div>
     <script type="module" src="/src/app/main.tsx"></script>
   </body>

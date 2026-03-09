@@ -21,6 +21,13 @@ export function useGetActiveRecruitmentId() {
   return useCustomSuspenseQuery(applyKeys.getActiveRecruitmentId, getActiveRecruitmentId)
 }
 
+/** 활성 모집 ID 조회 */
+export function useGetActiveRecruitmentIdQuery(options?: { enabled?: boolean }) {
+  return useCustomQuery(applyKeys.getActiveRecruitmentId, getActiveRecruitmentId, {
+    enabled: options?.enabled,
+  })
+}
+
 /** 지원서 폼 조회 */
 export function useGetRecruitmentApplicationForm(recruitmentId: string) {
   type RecruitmentApplicationFormResponse = CommonResponseDTO<RecruitmentApplicationForm>
