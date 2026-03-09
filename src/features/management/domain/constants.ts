@@ -56,6 +56,8 @@ export const ACCOUNT_TABS = [
   { label: '계정 코드 생성', value: 'code' },
 ]
 
+export type AccountTab = (typeof ACCOUNT_TABS)[number]['value']
+
 export const MANAGE_SCHOOL_TAB_VALUES = MANAGE_SCHOOL_TABS.map((tab) => tab.value)
 
 export const DELETE_SCHOOL_TABLE_HEADER_LABEL = ['학교명', '지부', '등록일', '상태', '작업']

@@ -6,7 +6,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/:path((?!server(?:/|$))(?!.*\\.[^/]+$).*)",
       "destination": "/spa.html"
     }
   ]

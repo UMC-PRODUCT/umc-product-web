@@ -2,11 +2,10 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { AccountPage } from '@features/management/pages/AccountPage'
 
+import type { AccountTab } from '@/features/management/domain/constants'
 import { MANAGE_ACCOUNT_TAB_VALUES } from '@/features/management/domain/constants'
 import type { RouteSearch } from '@/shared/router/search'
 import { parseOptionalStringSearch, parseTabSearch } from '@/shared/router/search'
-
-type AccountTab = (typeof MANAGE_ACCOUNT_TAB_VALUES)[number]
 
 type AccountSearch = {
   accountId?: string

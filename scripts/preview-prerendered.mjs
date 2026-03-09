@@ -61,6 +61,12 @@ createServer(async (request, response) => {
     return
   }
 
+  if (pathname === '/server' || pathname.startsWith('/server/')) {
+    response.writeHead(404)
+    response.end('Not Found')
+    return
+  }
+
   const asset = normalizedPath ? await tryReadFile(assetPath) : null
   if (asset) {
     response.writeHead(200, { 'Content-Type': resolveContentType(assetPath) })

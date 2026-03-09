@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 
-import {
-  getChallengerRecordById,
-  getGisuChapterWithSchools,
-} from '@/features/management/domain/api'
+import { getGisuChapterWithSchools } from '@/features/management/domain/api'
 import type {
   ChallengerRecordCodeResponseDTO,
   ChallengerRecordRoleType,
   PostChallengerRecordCodeBody,
 } from '@/features/management/domain/model'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
-import { useGetAllGisu } from '@/features/management/hooks/useManagementQueries'
+import {
+  fetchChallengerRecordByIdQuery,
+  useGetAllGisu,
+} from '@/features/management/hooks/useManagementQueries'
 import Plus from '@/shared/assets/icons/plus.svg?react'
 import Trash from '@/shared/assets/icons/trash.svg?react'
 import { PART_LIST, PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
@@ -48,6 +49,8 @@ type FeedbackState = {
 } | null
 
 const RESULT_TABLE_HEADER_LABELS = ['코드', '이름', '학교 / 지부', '기수 / 파트', '역할', '']
+const MAX_BULK_CODE_ROWS = 20
+const MAX_DETAIL_FETCH_CONCURRENCY = 4
 
 const CHALLENGER_RECORD_ROLE_OPTIONS: Array<ChallengerRecordRoleType> = [
   'CHALLENGER',
@@ -107,6 +110,7 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 }
 
 const AccountCode = () => {
+  const queryClient = useQueryClient()
   const [selectedGisuId, setSelectedGisuId] = useState<string>()
   const [bulkRows, setBulkRows] = useState<Array<BulkDraftRow>>(createInitialBulkRows)
   const [generatedCodes, setGeneratedCodes] = useState<Array<ChallengerRecordCodeResponseDTO>>([])
@@ -217,6 +221,37 @@ const AccountCode = () => {
     setBulkRows(createInitialBulkRows())
   }
 
+  const fetchGeneratedCodeDetails = async (ids: Array<string | number>) => {
+    const details = new Array<ChallengerRecordCodeResponseDTO | undefined>(ids.length)
+    const failedIds: Array<string | number> = []
+    let currentIndex = 0
+
+    const workerCount = Math.min(MAX_DETAIL_FETCH_CONCURRENCY, ids.length)
+
+    await Promise.all(
+      Array.from({ length: workerCount }, async () => {
+        while (currentIndex < ids.length) {
+          const nextIndex = currentIndex
+          currentIndex += 1
+
+          try {
+            const detail = await fetchChallengerRecordByIdQuery(queryClient, ids[nextIndex])
+            details[nextIndex] = detail.result
+          } catch {
+            failedIds.push(ids[nextIndex])
+          }
+        }
+      }),
+    )
+
+    return {
+      details: details.filter(
+        (detail): detail is ChallengerRecordCodeResponseDTO => detail !== undefined,
+      ),
+      failedIds,
+    }
+  }
+
   const clearGisuPromptTimer = () => {
     if (gisuPromptTimeoutRef.current !== null) {
       window.clearTimeout(gisuPromptTimeoutRef.current)
@@ -273,6 +308,14 @@ const AccountCode = () => {
   }
 
   const handleAddBulkRow = () => {
+    if (bulkRows.length >= MAX_BULK_CODE_ROWS) {
+      setFeedback({
+        tone: 'error',
+        message: `한 번에 최대 ${MAX_BULK_CODE_ROWS}건까지 발급할 수 있습니다.`,
+      })
+      return
+    }
+
     setBulkRows((prev) => [...prev, createBulkDraftRow()])
   }
 
@@ -327,6 +370,14 @@ const AccountCode = () => {
       return
     }
 
+    if (normalizedRows.length > MAX_BULK_CODE_ROWS) {
+      setFeedback({
+        tone: 'error',
+        message: `한 번에 최대 ${MAX_BULK_CODE_ROWS}건까지 발급할 수 있습니다.`,
+      })
+      return
+    }
+
     try {
       if (normalizedRows.length === 1) {
         const response = await createSingleCode(buildPayload(normalizedRows[0]))
@@ -337,17 +388,26 @@ const AccountCode = () => {
         })
       } else {
         const response = await createBulkCode(normalizedRows.map(buildPayload))
-        const codeDetails = await Promise.all(
-          response.result.map(async (id) => {
-            const detail = await getChallengerRecordById(id)
-            return detail.result
-          }),
-        )
-        appendGeneratedCodes(codeDetails)
-        setFeedback({
-          tone: 'success',
-          message: `${response.result.length}건의 챌린저 기록 코드를 발급했습니다.`,
-        })
+        const { details, failedIds } = await fetchGeneratedCodeDetails(response.result)
+
+        if (details.length > 0) {
+          appendGeneratedCodes(details)
+        }
+
+        if (failedIds.length > 0) {
+          setFeedback({
+            tone: 'error',
+            message:
+              details.length > 0
+                ? `${response.result.length}건을 발급했고, ${failedIds.length}건의 상세 조회에 실패했습니다. 잠시 후 다시 확인해 주세요.`
+                : '코드는 발급되었지만 상세 조회에 실패했습니다. 잠시 후 다시 시도해 주세요.',
+          })
+        } else {
+          setFeedback({
+            tone: 'success',
+            message: `${response.result.length}건의 챌린저 기록 코드를 발급했습니다.`,
+          })
+        }
       }
 
       setBulkRows(createInitialBulkRows())
@@ -406,8 +466,8 @@ const AccountCode = () => {
             <S.SectionTitleWrap alignItems="flex-start">
               <S.SectionTitle>코드 생성</S.SectionTitle>
               <S.SectionDescription>
-                기본은 1행부터 시작합니다. 필요할 때만 행을 추가하면 같은 화면에서 여러 건을
-                연속으로 발급할 수 있습니다.
+                기본은 1행부터 시작하며, 한 번에 최대 {MAX_BULK_CODE_ROWS}건까지 같은 화면에서 연속
+                발급할 수 있습니다.
               </S.SectionDescription>
             </S.SectionTitleWrap>
 
@@ -418,7 +478,7 @@ const AccountCode = () => {
                 variant="outline"
                 Icon={Plus}
                 onClick={handleAddBulkRow}
-                disabled={isSubmitting}
+                disabled={isSubmitting || bulkRows.length >= MAX_BULK_CODE_ROWS}
                 css={{ width: '108px', height: '41px' }}
               />
               <Button

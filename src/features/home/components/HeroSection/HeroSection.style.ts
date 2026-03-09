@@ -77,7 +77,7 @@ export const Hero = styled.section`
   }
 `
 
-export const HeroBadge = styled.h1`
+export const HeroBadge = styled.div`
   ${homeResponsiveFont('13px', '12px', '8px')}
   font-weight: 700;
   color: ${theme.colors.lime};
@@ -88,7 +88,7 @@ export const HeroBadge = styled.h1`
   animation: ${fadeInUp} 0.8s forwards;
 `
 
-export const HeroTitle = styled.p`
+export const HeroTitle = styled.h1`
   ${homeResponsiveFont('92px', '58px', '38px')}
   font-weight: 900;
   line-height: 1.1;

@@ -3,14 +3,15 @@ import { Tab } from '@/shared/ui/common/Tab'
 
 import AccountCode from '../components/account/AccountCode/AccountCode'
 import EditAccount from '../components/account/EditAccount/EditAccount'
+import type { AccountTab } from '../domain/constants'
 import { ACCOUNT_TABS } from '../domain/constants'
 
 export const AccountPage = ({
   activeTab,
   onTabChange,
 }: {
-  activeTab: string
-  onTabChange: (tab: string) => void
+  activeTab: AccountTab
+  onTabChange: (tab: AccountTab) => void
 }) => {
   return (
     <PageLayout
