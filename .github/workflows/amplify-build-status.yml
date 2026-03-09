@@ -33,8 +33,15 @@ jobs:
       - name: Resolve branch and commit
         id: target
         env:
+          AMPLIFY_BRANCH_OVERRIDE: ${{ vars.AMPLIFY_BRANCH_NAME }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          if [ -n "$AMPLIFY_BRANCH_OVERRIDE" ]; then
+            echo "branch_name=$AMPLIFY_BRANCH_OVERRIDE" >> "$GITHUB_OUTPUT"
+            echo "commit_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           echo "branch_name=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
 
           if [ -n "$PR_HEAD_SHA" ]; then

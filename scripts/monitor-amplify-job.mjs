@@ -28,11 +28,33 @@ const appendSummary = (line = '') => {
   appendFileSync(summaryFile, `${line}\n`)
 }
 
+const isBranchNotFoundError = (error) => {
+  const stderr = `${error?.stderr ?? ''}`
+  return stderr.includes('NotFoundException') && stderr.includes(`Branch ${branchName} not found`)
+}
+
 const runAws = (...args) => {
-  const output = execFileSync('aws', ['amplify', ...args, '--output', 'json'], {
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-  })
+  let output = ''
+
+  try {
+    output = execFileSync('aws', ['amplify', ...args, '--output', 'json'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+  } catch (error) {
+    if (isBranchNotFoundError(error)) {
+      appendSummary('- Final status: `BRANCH_NOT_FOUND`')
+      appendSummary()
+      appendSummary(`Amplify branch \`${branchName}\` was not found for app \`${appId}\`.`)
+      appendSummary(
+        'Use `vars.AMPLIFY_BRANCH_NAME` to override the monitored branch, or enable the branch in Amplify first.',
+      )
+      console.log(`Amplify branch ${branchName} was not found for app ${appId}.`)
+      process.exit(0)
+    }
+
+    throw error
+  }
 
   return output ? JSON.parse(output) : {}
 }
