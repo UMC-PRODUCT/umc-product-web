@@ -1,0 +1,153 @@
+name: Amplify Build Status
+
+on:
+  workflow_dispatch:
+    inputs:
+      amplify_branch_name:
+        description: Amplify branch to monitor
+        required: false
+        type: choice
+        options:
+          - develop
+          - main
+  push:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  group: amplify-build-status-${{ github.event.inputs.amplify_branch_name || vars.AMPLIFY_BRANCH_NAME || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Check Amplify monitor configuration
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.config.outputs.configured }}
+      missing: ${{ steps.config.outputs.missing }}
+      branch_name: ${{ steps.target.outputs.branch_name }}
+      commit_sha: ${{ steps.target.outputs.commit_sha }}
+
+    steps:
+      - name: Resolve branch and commit
+        id: target
+        env:
+          AMPLIFY_BRANCH_OVERRIDE: ${{ vars.AMPLIFY_BRANCH_NAME }}
+          MANUAL_BRANCH_INPUT: ${{ github.event.inputs.amplify_branch_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ -n "$MANUAL_BRANCH_INPUT" ]; then
+            echo "branch_name=$MANUAL_BRANCH_INPUT" >> "$GITHUB_OUTPUT"
+            echo "commit_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -n "$AMPLIFY_BRANCH_OVERRIDE" ]; then
+            echo "branch_name=$AMPLIFY_BRANCH_OVERRIDE" >> "$GITHUB_OUTPUT"
+            echo "commit_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "branch_name=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$PR_HEAD_SHA" ]; then
+            echo "commit_sha=$PR_HEAD_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo "commit_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check required variables and secrets
+        id: config
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AMPLIFY_APP_ID: ${{ vars.AMPLIFY_APP_ID }}
+          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        run: |
+          missing=()
+
+          [ -n "$AWS_REGION" ] || missing+=("vars.AWS_REGION")
+          [ -n "$AMPLIFY_APP_ID" ] || missing+=("vars.AMPLIFY_APP_ID")
+          [ -n "$AWS_ROLE_TO_ASSUME" ] || missing+=("secrets.AWS_ROLE_TO_ASSUME")
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            joined_missing=$(IFS=,; printf '%s' "${missing[*]}")
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "missing=$joined_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+          echo "missing=" >> "$GITHUB_OUTPUT"
+
+  monitor:
+    name: Monitor Amplify build
+    needs: preflight
+    if: ${{ needs.preflight.outputs.configured == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AMPLIFY_APP_ID: ${{ vars.AMPLIFY_APP_ID }}
+      AMPLIFY_BRANCH_NAME: ${{ needs.preflight.outputs.branch_name }}
+      AMPLIFY_COMMIT_SHA: ${{ needs.preflight.outputs.commit_sha }}
+      AMPLIFY_POLL_INTERVAL_MS: '15000'
+      AMPLIFY_TIMEOUT_MS: '2700000'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: Show selected Amplify target
+        run: |
+          echo "App ID: $AMPLIFY_APP_ID"
+          echo "Branch: $AMPLIFY_BRANCH_NAME"
+          echo "Commit: $AMPLIFY_COMMIT_SHA"
+
+      - name: Check AWS CLI
+        run: aws --version
+
+      - name: Monitor Amplify job
+        run: node scripts/monitor-amplify-job.mjs
+
+  not-configured:
+    name: Amplify monitor not configured
+    needs: preflight
+    if: ${{ needs.preflight.outputs.configured != 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Explain missing repository configuration
+        env:
+          MISSING: ${{ needs.preflight.outputs.missing }}
+        run: |
+          echo "## Amplify monitor skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "필수 Repository Variables/Secrets가 아직 설정되지 않아 Amplify 상태 모니터링을 실행하지 않았습니다." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "누락 항목:" >> "$GITHUB_STEP_SUMMARY"
+
+          IFS=',' read -ra ITEMS <<< "$MISSING"
+          for item in "${ITEMS[@]}"; do
+            [ -z "$item" ] && continue
+            echo "- \`$item\`" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          echo "::notice title=Amplify monitor skipped::Repository configuration is incomplete."

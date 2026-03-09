@@ -111,10 +111,10 @@ Vite 환경 변수는 `VITE_` 접두사를 사용합니다:
 
 ```env
 # API 서버 URL (예시)
-VITE_API_BASE_URL=https://api.example.com
+VITE_SERVER_API_URL=https://api.example.com/api/v1
 
-# 기타 설정
-VITE_APP_NAME=UMC Product Web
+# 사이트 기본 URL (프로덕션 필수)
+VITE_SITE_URL=https://prod.umc.it.kr
 ```
 
 > `.env` 파일은 `.gitignore`에 포함되어 있어 Git에 커밋되지 않습니다.
@@ -529,6 +529,28 @@ pnpm build   # dist/ 폴더 생성
 ```
 
 빌드된 `dist/` 폴더를 정적 호스팅 서비스에 배포합니다.
+
+### Amplify 빌드 상태를 GitHub에서 확인하기
+
+`.github/workflows/amplify-build-status.yml`은 GitHub Actions에서 Amplify job 상태를 폴링해 진행 로그와 최종 상태를 GitHub check로 노출합니다.
+
+- 기본적으로 `develop`, `main` 브랜치에 push될 때만 동작합니다.
+- `workflow_dispatch`로 수동 실행할 때는 `develop` 또는 `main`을 직접 선택할 수 있습니다.
+- `vars.AMPLIFY_BRANCH_NAME`를 설정하면 현재 Git 브랜치 대신 해당 Amplify 브랜치를 조회합니다.
+- GitHub 이벤트로 시작된 모니터링만 GitHub에서 보이며, Amplify 콘솔에서 수동으로 다시 돌린 빌드는 별도 `workflow_dispatch` 실행이 필요합니다.
+- AWS 인증은 OIDC AssumeRole(`AWS_ROLE_TO_ASSUME`)만 지원합니다.
+
+필수 Repository Variables / Secrets:
+
+- `vars.AWS_REGION`
+- `vars.AMPLIFY_APP_ID`
+- `secrets.AWS_ROLE_TO_ASSUME`
+
+선택 Repository Variables:
+
+- `vars.AMPLIFY_BRANCH_NAME`
+  - Amplify에 실제로 연결된 브랜치 이름을 강제로 지정할 때 사용합니다.
+  - 이 값을 쓰면 현재 Git 커밋 기준 추적 대신 해당 Amplify 브랜치의 최신 job 기준으로 모니터링합니다.
 
 ---
 
