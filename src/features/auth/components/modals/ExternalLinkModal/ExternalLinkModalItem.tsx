@@ -47,9 +47,7 @@ const ExternalLinkModalItem = ({
             width="100%"
             css={{ gap: '18px', [media.down(theme.breakPoints.tablet)]: { gap: '12px' } }}
           >
-            <S.LinkIconBox width={'fit-content'} $type={link.type}>
-              {icon}
-            </S.LinkIconBox>
+            <S.LinkIconBox $type={link.type}>{icon}</S.LinkIconBox>
             <Flex flexDirection="column" css={{ flex: 1, minWidth: 0 }} gap="10px">
               <LinkInput
                 inputTypo="B2.Md"
