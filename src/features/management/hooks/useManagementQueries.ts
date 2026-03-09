@@ -148,7 +148,10 @@ export function useGetChallengerRecordById(
   challengerRecordId: string | number | undefined,
   options?: { enabled?: boolean },
 ) {
-  const hasId = challengerRecordId !== undefined
+  const hasId =
+    typeof challengerRecordId === 'string'
+      ? challengerRecordId.trim().length > 0
+      : challengerRecordId !== undefined
 
   return useCustomQuery(
     managementKeys.getChallengerRecordDetail(String(challengerRecordId ?? '')),

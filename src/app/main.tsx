@@ -25,8 +25,10 @@ const rootElement = document.getElementById('app')
 
 if (rootElement) {
   const app = <App router={router} queryClient={queryClient} />
+  const isPrerendered =
+    rootElement.dataset.prerendered === 'true' && rootElement.innerHTML.trim().length > 0
 
-  if (rootElement.hasChildNodes()) {
+  if (isPrerendered) {
     hydrateRoot(rootElement, app)
   } else {
     createRoot(rootElement).render(app)

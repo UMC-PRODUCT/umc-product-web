@@ -349,6 +349,14 @@ export const StatusBanner = styled.div<{ $tone: 'success' | 'error' }>`
   ${theme.typography.C3.Md};
 `
 
+export const ScopeErrorActions = styled(Flex)`
+  width: 100%;
+
+  ${media.down(theme.breakPoints.tablet)} {
+    flex-direction: column;
+  }
+`
+
 export const EmptyState = styled(Flex)`
   width: 100%;
   min-height: 180px;

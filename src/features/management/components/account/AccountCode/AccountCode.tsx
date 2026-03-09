@@ -126,7 +126,13 @@ const AccountCode = () => {
   const { mutateAsync: createBulkCode, isPending: isCreatingBulkCode } =
     usePostBulkChallengerRecordCode()
 
-  const { data: gisuScopeData, isLoading: isScopeLoading } = useCustomQuery(
+  const {
+    data: gisuScopeData,
+    isLoading: isScopeLoading,
+    isError: isScopeError,
+    error: scopeError,
+    refetch: refetchScope,
+  } = useCustomQuery(
     managementKeys.getGisuChapterWithSchools(selectedGisuId ?? ''),
     () => getGisuChapterWithSchools({ gisuId: selectedGisuId ?? '' }),
     { enabled: Boolean(selectedGisuId) },
@@ -424,8 +430,12 @@ const AccountCode = () => {
     .join('\n')
 
   const isSubmitting = isCreatingSingleCode || isCreatingBulkCode
-  const isFormDisabled = !selectedGisuId || isScopeLoading
+  const isFormDisabled = !selectedGisuId || isScopeLoading || isScopeError
   const shouldGuardScopedDropdowns = !selectedGisuId && !isGisuLoading
+  const scopeErrorMessage =
+    selectedGisuId && isScopeError
+      ? getErrorMessage(scopeError, '기수 범위 정보를 불러오지 못했습니다. 다시 시도해 주세요.')
+      : null
 
   useEffect(
     () => () => {
@@ -459,6 +469,18 @@ const AccountCode = () => {
               : '기수를 선택하면 아래 기록 항목을 입력할 수 있어요.'}
           </S.GisuGuideText>
         </S.GisuSelector>
+        {scopeErrorMessage && (
+          <S.ScopeErrorActions alignItems="stretch" gap={10}>
+            <S.StatusBanner $tone="error">{scopeErrorMessage}</S.StatusBanner>
+            <Button
+              label="다시 불러오기"
+              tone="gray"
+              variant="outline"
+              onClick={() => void refetchScope()}
+              css={{ width: '136px', height: '41px' }}
+            />
+          </S.ScopeErrorActions>
+        )}
         {feedback && <S.StatusBanner $tone={feedback.tone}>{feedback.message}</S.StatusBanner>}
 
         <Section variant="solid" padding="20px" gap={20}>

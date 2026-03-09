@@ -9,6 +9,9 @@ const distDir = path.join(projectRoot, 'dist')
 const prerenderDir = path.join(projectRoot, '.prerender')
 const serverDir = path.join(prerenderDir, 'server')
 const rootHtmlPath = path.join(distDir, 'index.html')
+const APP_HTML_MARKER = '<!--app-html-->'
+const APP_PRERENDERED_FALSE = 'data-prerendered="false"'
+const APP_PRERENDERED_TRUE = 'data-prerendered="true"'
 
 const resolveServerEntryPath = async () => {
   const serverFiles = await readdir(serverDir)
@@ -26,12 +29,16 @@ try {
   const serverEntryPath = await resolveServerEntryPath()
   const { renderRootPage } = await import(pathToFileURL(serverEntryPath).href)
   const appHtml = await renderRootPage()
-
-  const prerenderedHtml = rootHtml.replace('<div id="app"></div>', `<div id="app">${appHtml}</div>`)
-
-  if (prerenderedHtml === rootHtml) {
-    throw new Error('Failed to inject prerendered root markup into dist/index.html.')
+  if (!rootHtml.includes(APP_HTML_MARKER)) {
+    throw new Error('Prerender marker was not found in dist/index.html.')
   }
+  if (!rootHtml.includes(APP_PRERENDERED_FALSE)) {
+    throw new Error('Prerender root attribute was not found in dist/index.html.')
+  }
+
+  const prerenderedHtml = rootHtml
+    .replace(APP_HTML_MARKER, appHtml)
+    .replace(APP_PRERENDERED_FALSE, APP_PRERENDERED_TRUE)
 
   await writeFile(rootHtmlPath, prerenderedHtml, 'utf8')
 } finally {
