@@ -16,11 +16,22 @@ const requireEnv = (name) => {
   return value
 }
 
+const parseDurationMs = (name, defaultValue, minValue) => {
+  const rawValue = process.env[name]?.trim()
+  const parsedValue = rawValue ? Number.parseInt(rawValue, 10) : Number.NaN
+
+  if (Number.isFinite(parsedValue) && parsedValue >= minValue) {
+    return parsedValue
+  }
+
+  return defaultValue
+}
+
 const appId = requireEnv('AMPLIFY_APP_ID')
 const branchName = requireEnv('AMPLIFY_BRANCH_NAME')
 const commitSha = process.env.AMPLIFY_COMMIT_SHA?.trim() ?? ''
-const pollIntervalMs = Number.parseInt(process.env.AMPLIFY_POLL_INTERVAL_MS ?? '15000', 10)
-const timeoutMs = Number.parseInt(process.env.AMPLIFY_TIMEOUT_MS ?? '2700000', 10)
+const pollIntervalMs = parseDurationMs('AMPLIFY_POLL_INTERVAL_MS', 15000, 1000)
+const timeoutMs = parseDurationMs('AMPLIFY_TIMEOUT_MS', 2700000, pollIntervalMs)
 const summaryFile = process.env.GITHUB_STEP_SUMMARY
 
 const appendSummary = (line = '') => {
