@@ -18,7 +18,6 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   preflight:
@@ -50,31 +49,17 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
           AMPLIFY_APP_ID: ${{ vars.AMPLIFY_APP_ID }}
           AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           missing=()
-          has_role=false
-          has_keys=false
 
           [ -n "$AWS_REGION" ] || missing+=("vars.AWS_REGION")
           [ -n "$AMPLIFY_APP_ID" ] || missing+=("vars.AMPLIFY_APP_ID")
-
-          if [ -n "$AWS_ROLE_TO_ASSUME" ]; then
-            has_role=true
-          fi
-
-          if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
-            has_keys=true
-          fi
-
-          if [ "$has_role" = false ] && [ "$has_keys" = false ]; then
-            missing+=("secrets.AWS_ROLE_TO_ASSUME or secrets.AWS_ACCESS_KEY_ID/secrets.AWS_SECRET_ACCESS_KEY")
-          fi
+          [ -n "$AWS_ROLE_TO_ASSUME" ] || missing+=("secrets.AWS_ROLE_TO_ASSUME")
 
           if [ ${#missing[@]} -gt 0 ]; then
+            joined_missing=$(IFS=,; printf '%s' "${missing[*]}")
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "missing=$(IFS=,; echo "${missing[*]}")" >> "$GITHUB_OUTPUT"
+            echo "missing=$joined_missing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -87,12 +72,14 @@ jobs:
     if: ${{ needs.preflight.outputs.configured == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
       AMPLIFY_APP_ID: ${{ vars.AMPLIFY_APP_ID }}
       AMPLIFY_BRANCH_NAME: ${{ needs.preflight.outputs.branch_name }}
       AMPLIFY_COMMIT_SHA: ${{ needs.preflight.outputs.commit_sha }}
-      AMPLIFY_COMMIT_WAIT_MS: '300000'
       AMPLIFY_POLL_INTERVAL_MS: '15000'
       AMPLIFY_TIMEOUT_MS: '2700000'
 
@@ -106,19 +93,10 @@ jobs:
           node-version: 22
 
       - name: Configure AWS credentials via OIDC
-        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-
-      - name: Configure AWS credentials via access keys
-        if: ${{ secrets.AWS_ROLE_TO_ASSUME == '' && secrets.AWS_ACCESS_KEY_ID != '' && secrets.AWS_SECRET_ACCESS_KEY != '' }}
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Show selected Amplify target
         run: |

@@ -19,7 +19,6 @@ const requireEnv = (name) => {
 const appId = requireEnv('AMPLIFY_APP_ID')
 const branchName = requireEnv('AMPLIFY_BRANCH_NAME')
 const commitSha = process.env.AMPLIFY_COMMIT_SHA?.trim() ?? ''
-const commitWaitMs = Number.parseInt(process.env.AMPLIFY_COMMIT_WAIT_MS ?? '300000', 10)
 const pollIntervalMs = Number.parseInt(process.env.AMPLIFY_POLL_INTERVAL_MS ?? '15000', 10)
 const timeoutMs = Number.parseInt(process.env.AMPLIFY_TIMEOUT_MS ?? '2700000', 10)
 const summaryFile = process.env.GITHUB_STEP_SUMMARY
@@ -71,14 +70,16 @@ const listJobs = () => {
   return Array.isArray(response.jobSummaries) ? response.jobSummaries : []
 }
 
-const selectJob = (jobs, allowFallback) => {
+const selectJob = (jobs) => {
   const sortedJobs = sortByStartTimeDesc(jobs)
-  const commitJobs = sortedJobs.filter(commitMatches)
-  const activeCommitJob = commitJobs.find((job) => ACTIVE_STATUSES.has(job.status))
+  if (commitSha) {
+    const commitJobs = sortedJobs.filter(commitMatches)
+    const activeCommitJob = commitJobs.find((job) => ACTIVE_STATUSES.has(job.status))
 
-  if (activeCommitJob) return activeCommitJob
-  if (commitJobs.length > 0) return commitJobs[0]
-  if (!allowFallback && commitSha) return null
+    if (activeCommitJob) return activeCommitJob
+    if (commitJobs.length > 0) return commitJobs[0]
+    return null
+  }
 
   const activeJob = sortedJobs.find((job) => ACTIVE_STATUSES.has(job.status))
   if (activeJob) return activeJob
@@ -136,7 +137,6 @@ let targetJob = null
 
 while (!targetJob && Date.now() - startedAt < timeoutMs) {
   const jobs = listJobs()
-  const allowFallback = !commitSha || Date.now() - startedAt >= commitWaitMs
 
   if (jobs.length === 0) {
     console.log('No Amplify jobs found yet. Waiting for a job to start...')
@@ -144,7 +144,7 @@ while (!targetJob && Date.now() - startedAt < timeoutMs) {
     continue
   }
 
-  targetJob = selectJob(jobs, allowFallback)
+  targetJob = selectJob(jobs)
 
   if (!targetJob) {
     console.log('Waiting for an Amplify job that matches the current commit...')
@@ -153,7 +153,15 @@ while (!targetJob && Date.now() - startedAt < timeoutMs) {
 }
 
 if (!targetJob) {
-  appendSummary('- Final status: `TIMEOUT`')
+  appendSummary(`- Final status: \`${commitSha ? 'NO_MATCHING_JOB' : 'TIMEOUT'}\``)
+  if (commitSha) {
+    appendSummary()
+    appendSummary(`No Amplify job matched commit \`${commitSha}\` before the timeout.`)
+    throw new Error(
+      `Timed out after ${timeoutMs}ms while waiting for an Amplify job for commit ${commitSha}.`,
+    )
+  }
+
   throw new Error(`Timed out after ${timeoutMs}ms while waiting for an Amplify job.`)
 }
 

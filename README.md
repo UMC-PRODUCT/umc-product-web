@@ -537,13 +537,13 @@ pnpm build   # dist/ 폴더 생성
 - 기본적으로 현재 Git 브랜치와 같은 이름의 Amplify 브랜치를 조회합니다.
 - `push`, `pull_request`, `workflow_dispatch`에서 동작합니다.
 - GitHub 이벤트로 시작된 모니터링만 GitHub에서 보이며, Amplify 콘솔에서 수동으로 다시 돌린 빌드는 별도 `workflow_dispatch` 실행이 필요합니다.
+- AWS 인증은 OIDC AssumeRole(`AWS_ROLE_TO_ASSUME`)만 지원합니다.
 
 필수 Repository Variables / Secrets:
 
 - `vars.AWS_REGION`
 - `vars.AMPLIFY_APP_ID`
 - `secrets.AWS_ROLE_TO_ASSUME`
-  또는 `secrets.AWS_ACCESS_KEY_ID`, `secrets.AWS_SECRET_ACCESS_KEY`
 
 ---
 
