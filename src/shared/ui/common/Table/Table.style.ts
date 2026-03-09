@@ -89,11 +89,11 @@ const Footer = styled.div`
     left: 22px;
     width: fit-content;
   }
-  ${media.down(theme.breakPoints.tablet)} {
+  ${media.down(theme.breakPoints.desktop)} {
     margin-top: 20px;
     height: 80px;
     span {
-      bottom: 0px;
+      top: 0;
     }
   }
 `

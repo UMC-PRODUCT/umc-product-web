@@ -1,3 +1,5 @@
+import type { QueryClient } from '@tanstack/react-query'
+
 import { useCustomQuery, useCustomSuspenseQuery } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import type { CommonSearchParams } from '@/shared/types/api'
@@ -7,6 +9,7 @@ import type { PartType } from '@/shared/types/umc'
 import {
   getAllGisu,
   getChallenger,
+  getChallengerRecordById,
   getChapter,
   getCurriculums,
   getGisuChapterWithSchools,
@@ -135,3 +138,41 @@ export function useGetMemberProfile(memberId: string) {
     { enabled: Boolean(memberId) },
   )
 }
+
+/**
+ * 과거 챌린저 기록 상세를 조회하는 쿼리 훅.
+ * @param challengerRecordId - 과거 챌린저 기록 ID
+ * @returns 과거 챌린저 기록 상세 조회 쿼리 결과
+ */
+export function useGetChallengerRecordById(
+  challengerRecordId: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  const hasId =
+    typeof challengerRecordId === 'string'
+      ? challengerRecordId.trim().length > 0
+      : challengerRecordId !== undefined
+
+  return useCustomQuery(
+    managementKeys.getChallengerRecordDetail(String(challengerRecordId ?? '')),
+    () => getChallengerRecordById(challengerRecordId as string | number),
+    {
+      enabled: hasId && (options?.enabled ?? true),
+    },
+  )
+}
+
+/**
+ * 과거 챌린저 기록 상세를 query key 기반으로 즉시 조회한다.
+ * @param queryClient - React Query 클라이언트
+ * @param challengerRecordId - 과거 챌린저 기록 ID
+ * @returns 과거 챌린저 기록 상세 응답 데이터
+ */
+export const fetchChallengerRecordByIdQuery = (
+  queryClient: QueryClient,
+  challengerRecordId: string | number,
+) =>
+  queryClient.fetchQuery({
+    queryKey: managementKeys.getChallengerRecordDetail(String(challengerRecordId)),
+    queryFn: () => getChallengerRecordById(challengerRecordId),
+  })

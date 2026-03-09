@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import { fileURLToPath, URL } from 'node:url'
 
 import { devtools } from '@tanstack/devtools-vite'
@@ -7,10 +8,40 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
 
+const MODERN_MAC_EDITOR_PATHS = [
+  '/Applications/Visual Studio Code.app/Contents/MacOS/Code',
+  '/Applications/Visual Studio Code - Insiders.app/Contents/MacOS/Code - Insiders',
+  '/Applications/VSCodium.app/Contents/MacOS/VSCodium',
+] as const
+
+const ensureLaunchEditor = () => {
+  if (process.platform !== 'darwin') return
+  if (process.env.LAUNCH_EDITOR || process.env.EDITOR || process.env.VISUAL) return
+
+  try {
+    const processList = execFileSync('ps', ['x', '-o', 'comm='], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    const runningEditors = new Set(processList.split('\n'))
+    const launchEditor = MODERN_MAC_EDITOR_PATHS.find((path) => runningEditors.has(path))
+
+    if (launchEditor) {
+      process.env.LAUNCH_EDITOR = launchEditor
+    }
+  } catch {
+    // Ignore editor auto-detection failures and fall back to Vite's defaults.
+  }
+}
+
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode, isSsrBuild }) => {
   const isAnalyze = mode === 'analyze'
   const isVitest = process.env.VITEST === 'true' || mode === 'test'
+
+  if (command === 'serve') {
+    ensureLaunchEditor()
+  }
 
   return {
     server: {
@@ -20,6 +51,16 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ['@emotion/styled/base'],
     },
+    build: isSsrBuild
+      ? undefined
+      : {
+          rollupOptions: {
+            input: {
+              main: fileURLToPath(new URL('./index.html', import.meta.url)),
+              spa: fileURLToPath(new URL('./spa.html', import.meta.url)),
+            },
+          },
+        },
     plugins: [
       devtools(),
       !isVitest

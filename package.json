@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "vite --port 3000",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "build": "tsc && vite build && vite build --ssr src/app/prerender-root.tsx --outDir .prerender/server && node scripts/prerender-root.mjs",
+    "preview": "node scripts/preview-prerendered.mjs",
     "test": "pnpm test:unit",
     "test:unit": "vitest run --project unit",
     "test:browser": "vitest run --project storybook-browser",
