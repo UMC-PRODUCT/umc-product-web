@@ -9,6 +9,7 @@ import {
 } from '@/features/management/domain/constants'
 import type { AuditLogAction, AuditLogDomain } from '@/features/management/domain/model'
 import { useGetAuditLogs } from '@/features/management/hooks/useManagementQueries'
+import RetryIcon from '@/shared/assets/icons/retry.svg?react'
 import { TabHeader, TabSubtitle, TabTitle } from '@/shared/styles/shared'
 import { theme } from '@/shared/styles/theme'
 import type { Option } from '@/shared/types/form'
@@ -26,7 +27,7 @@ import { formatDateTimeDot } from '@/shared/utils/date'
 import * as S from './AuditLog.style'
 
 const ALL_OPTION_ID = '0'
-const PAGE_SIZE = 20
+const PAGE_SIZE = 5
 
 type AuditLogFilterState = {
   from: string
@@ -60,6 +61,16 @@ const isMemberProfileId = (value: number | string | null | undefined) =>
 
 const isMemberTarget = (targetType: string | null | undefined) =>
   targetType?.trim().toLowerCase() === 'member'
+
+const canOpenTargetMemberProfile = ({
+  targetType,
+  targetId,
+  action,
+}: {
+  targetType: string | null | undefined
+  targetId: string | null | undefined
+  action: AuditLogAction
+}) => isMemberTarget(targetType) && isMemberProfileId(targetId) && action !== 'WITHDRAW'
 
 const resolveActionTone = (action: AuditLogAction) => {
   switch (action) {
@@ -251,9 +262,24 @@ const AuditLog = () => {
       </Section>
 
       <Flex justifyContent="space-between" alignItems="flex-end" gap={12} flexWrap="wrap">
-        <Flex gap={4} width="fit-content">
-          <S.SummaryLabel>전체 로그</S.SummaryLabel>
-          <S.SummaryValue>{data?.result.totalElements ?? 0}건</S.SummaryValue>
+        <Flex gap={10} alignItems="center" flexWrap="wrap" width="fit-content">
+          <Flex gap={4} width="fit-content">
+            <S.SummaryLabel>전체 로그</S.SummaryLabel>
+            <S.SummaryValue>{data?.result.totalElements ?? 0}건</S.SummaryValue>
+          </Flex>
+          <Button
+            typo="C4.Rg"
+            label="새로고침"
+            tone="gray"
+            variant="outline"
+            Icon={RetryIcon}
+            iconSize={16}
+            isLoading={isFetching}
+            onClick={() => {
+              void refetch()
+            }}
+            css={{ width: '112px', height: '34px', padding: '8px 12px' }}
+          />
         </Flex>
         <S.SummaryMeta>
           {`${dayjs(filters.from).format('YYYY.MM.DD')} ~ ${dayjs(filters.to).format('YYYY.MM.DD')}`}
@@ -323,7 +349,7 @@ const AuditLog = () => {
                 <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '90px' }}>
                   <S.TargetInfo>
                     <span>{log.targetType || '-'}</span>
-                    {isMemberTarget(log.targetType) && isMemberProfileId(log.targetId) ? (
+                    {canOpenTargetMemberProfile(log) ? (
                       <S.MemberLinkButton
                         type="button"
                         onClick={() => setSelectedMemberId(log.targetId)}
