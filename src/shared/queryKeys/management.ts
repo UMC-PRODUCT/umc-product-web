@@ -26,8 +26,22 @@ type ChallengerSearchParams = CommonSearchParams & {
   gisuId?: string
 }
 
+type AuditLogSearchParams = CommonSearchParams & {
+  sort?: string
+  from?: string
+  to?: string
+  domain?: string
+  actorMemberId?: string
+}
+
 const managementKeyFactory = createQueryKeys('management', {
   curriculums: (part: PartType) => [part],
+  auditLogs: {
+    queryKey: null,
+    contextQueries: {
+      list: (params: AuditLogSearchParams) => [params],
+    },
+  },
   schools: {
     queryKey: null,
     contextQueries: {
@@ -86,6 +100,11 @@ export const managementKeys = {
   base: ['management'] as const,
   /** 파트별 커리큘럼 조회 키 */
   getCurriculums: (part: PartType) => managementKeyFactory.curriculums(part).queryKey,
+  /** 감사 로그 쿼리 전체 무효화용 base key */
+  getAuditLogsBase: managementKeyFactory.auditLogs.queryKey,
+  /** 감사 로그 조회 키 */
+  getAuditLogs: (params: AuditLogSearchParams) =>
+    managementKeyFactory.auditLogs._ctx.list(params).queryKey,
   /** 전체 학교 목록 조회 키 */
   getAllSchools: managementKeyFactory.schools._ctx.all.queryKey,
   /** 전체 기수 목록(비페이징) 조회 키 */
