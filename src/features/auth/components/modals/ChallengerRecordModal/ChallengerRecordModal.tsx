@@ -12,14 +12,16 @@ type ChallengerRecordModalProps = {
   onClose: () => void
 }
 
-type VerifyStatus = 'idle' | 'success' | 'error'
+type VerifyStatus = 'idle' | 'error'
 
 const CODE_LENGTH = 6
+const SUCCESS_MESSAGE = '챌린저 기록을 성공적으로 불러왔습니다.'
 
 const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
   const [code, setCode] = useState('')
   const [status, setStatus] = useState<VerifyStatus>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const { usePostChallengerRecordMember } = useAuthMutation()
   const { mutate: postChallengerRecord, isPending } = usePostChallengerRecordMember()
@@ -29,11 +31,11 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
   }, [])
 
   const message = useMemo(() => {
-    if (status === 'success') return '챌린저 기록을 성공적으로 불러왔습니다.'
     if (status === 'error')
       return errorMessage || '올바르지 않은 코드입니다. 인증 번호 6자리를 입력해 주세요.'
+    if (successMessage) return successMessage
     return '인증 번호 6자리를 입력해 주세요.'
-  }, [errorMessage, status])
+  }, [errorMessage, status, successMessage])
 
   const digits = useMemo(
     () => Array.from({ length: CODE_LENGTH }, (_, index) => code[index] ?? ''),
@@ -45,12 +47,15 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
       .toUpperCase()
       .replace(/[^0-9A-Z]/g, '')
       .slice(0, CODE_LENGTH)
-    if (status !== 'idle') setStatus('idle')
+    if (status === 'error') setStatus('idle')
     if (errorMessage) setErrorMessage('')
+    if (successMessage) setSuccessMessage('')
     setCode(normalizedCode)
   }
 
   const handleRequest = () => {
+    if (successMessage) setSuccessMessage('')
+
     if (code.length !== CODE_LENGTH) {
       setStatus('error')
       setErrorMessage('인증 번호 6자리를 입력해 주세요.')
@@ -61,8 +66,11 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
       { code },
       {
         onSuccess: () => {
-          setStatus('success')
+          setStatus('idle')
           setErrorMessage('')
+          setSuccessMessage(SUCCESS_MESSAGE)
+          setCode('')
+          inputRef.current?.focus()
         },
         onError: (error) => {
           const apiMessage =
@@ -70,16 +78,16 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
             (error instanceof Error ? error.message : undefined)
 
           setStatus('error')
+          setSuccessMessage('')
           setErrorMessage(
             apiMessage || '올바르지 않은 코드입니다. 인증 번호 6자리를 입력해 주세요.',
           )
           setCode('')
+          inputRef.current?.focus()
         },
       },
     )
   }
-
-  const isSuccess = status === 'success'
 
   return (
     <Modal.Root open={true} onOpenChange={(open) => !open && onClose()}>
@@ -111,7 +119,7 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
                   {digits.map((digit, index) => (
                     <S.CodeBox
                       key={index}
-                      $active={!isSuccess && index === code.length && code.length < CODE_LENGTH}
+                      $active={index === code.length && code.length < CODE_LENGTH}
                     >
                       <S.CodeText>{digit}</S.CodeText>
                     </S.CodeBox>
@@ -130,17 +138,13 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
               <Modal.Footer>
                 <S.Footer>
                   <Button tone="gray" label="닫기" typo="C3.Md" onClick={onClose} />
-                  {isSuccess ? (
-                    <Button tone="gray" label="인증 완료" typo="C3.Md" disabled />
-                  ) : (
-                    <Button
-                      tone="lime"
-                      label="인증 요청"
-                      typo="C3.Md"
-                      isLoading={isPending}
-                      onClick={handleRequest}
-                    />
-                  )}
+                  <Button
+                    tone="lime"
+                    label="인증 요청"
+                    typo="C3.Md"
+                    isLoading={isPending}
+                    onClick={handleRequest}
+                  />
                 </S.Footer>
               </Modal.Footer>
             </Modal.Body>

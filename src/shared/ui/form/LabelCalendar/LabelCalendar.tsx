@@ -28,8 +28,15 @@ type LabelCalendarProps = {
   necessary?: boolean
   id?: string
   className?: string
+  /** 날짜 선택 트리거 버튼에 적용되는 스타일입니다. */
   css?: Interpolation<Theme>
-  fieldCss?: Interpolation<Theme>
+  /**
+   * Field 래퍼(바깥 컨테이너)에만 적용되는 스타일입니다.
+   * 기본 Field 스타일 뒤에 merge 되어 우선순위를 가집니다.
+   */
+  wrapperCss?: Interpolation<Theme>
+  /** `minDate`를 지정하지 않아도 오늘 이전 날짜 선택을 허용합니다. */
+  allowPastDates?: boolean
   disabled?: boolean
 }
 
@@ -49,7 +56,8 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
       id,
       className,
       css,
-      fieldCss,
+      wrapperCss,
+      allowPastDates = false,
       disabled = false,
       minDate,
     },
@@ -105,7 +113,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
             width: '400px',
             [media.down(theme.breakPoints.tablet)]: { width: '100%' },
           },
-          fieldCss,
+          wrapperCss,
         ]}
       >
         <S.SelectHeader>
@@ -154,6 +162,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
                   key={triggerId}
                   value={selectedValue}
                   minDate={minDate}
+                  allowPastDates={allowPastDates}
                   onChange={handleDateChange}
                 />
               </Section>

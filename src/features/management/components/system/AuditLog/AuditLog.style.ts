@@ -89,25 +89,45 @@ const SummaryMeta = styled.span`
 
 const TargetInfo = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2px;
 
-  span:first-of-type {
+  span {
     color: ${theme.colors.white};
-    ${theme.typography.C2.Sb};
-  }
-
-  span:last-of-type {
-    color: ${theme.colors.gray[300]};
-    ${theme.typography.C5.Rg};
-    word-break: break-all;
+    ${theme.typography.C3.Md};
   }
 `
 
 const DescriptionText = styled.span`
   color: ${theme.colors.white};
   ${theme.typography.C3.Md};
-  word-break: break-word;
+  word-break: keep-all;
+`
+
+const MemberLinkButton = styled.button`
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: ${theme.colors.lime};
+  cursor: pointer;
+  ${theme.typography.C2.Sb};
+  text-decoration: underline;
+  text-decoration-color: rgba(149, 239, 75, 0.4);
+  text-underline-offset: 3px;
+  transition:
+    color 120ms ease,
+    text-decoration-color 120ms ease;
+
+  &:hover {
+    color: ${theme.colors.white};
+    text-decoration-color: rgba(255, 255, 255, 0.7);
+  }
+
+  &:focus-visible {
+    outline: 1px solid ${theme.colors.lime};
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
 `
 
 export {
@@ -116,6 +136,7 @@ export {
   DescriptionText,
   FilterField,
   FilterLabel,
+  MemberLinkButton,
   SummaryLabel,
   SummaryMeta,
   SummaryValue,

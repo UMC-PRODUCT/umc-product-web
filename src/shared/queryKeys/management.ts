@@ -2,7 +2,7 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import type { PartFilterType, PartType } from '@/shared/types/part'
 
-import type { CommonSearchParams } from '../types/api'
+import type { AuditLogSearchParams, CommonSearchParams } from '../types/api'
 
 type SchoolsPagingParams = CommonSearchParams & {
   sort?: 'asc' | 'desc'
@@ -24,14 +24,6 @@ type ChallengerSearchParams = CommonSearchParams & {
   chapterId?: string
   part?: PartType
   gisuId?: string
-}
-
-type AuditLogSearchParams = CommonSearchParams & {
-  sort?: string
-  from?: string
-  to?: string
-  domain?: string
-  actorMemberId?: string
 }
 
 const managementKeyFactory = createQueryKeys('management', {

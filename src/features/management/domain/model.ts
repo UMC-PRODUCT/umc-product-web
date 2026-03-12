@@ -4,7 +4,12 @@
  */
 
 import type { RoleType } from '@/shared/types'
-import type { CommonPagingResponseDTO, CommonSearchParams } from '@/shared/types/api'
+import type {
+  AuditLogSearchParams,
+  CommonPagingResponseDTO,
+  CommonSearchParams,
+  SpringPageResponseDTO,
+} from '@/shared/types/api'
 import type { ExternalLink } from '@/shared/types/link'
 import type {
   EvaluationDocumentType,
@@ -183,52 +188,21 @@ export type AuditLogItem = {
   action: AuditLogAction
   targetType: string
   targetId: string
-  actorMemberId: number
+  actorMemberId: number | null
   description: string
   details: string
   ipAddress: string
   createdAt: string
 }
 
-export type AuditLogSortResponseDTO = {
-  empty: boolean
-  unsorted: boolean
-  sorted: boolean
-}
-
-export type AuditLogPageableResponseDTO = {
-  offset: number
-  sort: AuditLogSortResponseDTO
-  unpaged: boolean
-  pageNumber: number
-  paged: boolean
-  pageSize: number
-}
-
-export type AuditLogsResponseDTO = {
-  totalPages: number
-  totalElements: number
-  size: number
-  content: Array<AuditLogItem>
-  number: number
-  sort: AuditLogSortResponseDTO
-  numberOfElements: number
-  pageable: AuditLogPageableResponseDTO
-  first: boolean
-  last: boolean
-  empty: boolean
-}
+export type AuditLogsResponseDTO = SpringPageResponseDTO<AuditLogItem>
 
 export type GetCurriculumsParams = {
   part: PartType
 }
 
-export type GetAuditLogsParams = CommonSearchParams & {
+export type GetAuditLogsParams = AuditLogSearchParams & {
   domain?: AuditLogDomain
-  actorMemberId?: string
-  from?: string
-  to?: string
-  sort?: string
 }
 
 export type GetSchoolsPagingParams = CommonSearchParams & {
@@ -350,6 +324,8 @@ export type ChallengerDetailResponseDTO = {
   memberId: string
   gisuId: string
   gisu: string
+  chapterId?: string | null
+  chapterName?: string | null
   startAt?: string
   endAt?: string
   part: PartType
@@ -373,6 +349,15 @@ export type MemberProfileRole = {
   gisuId: string
 }
 
+export type MemberExternalProfile = {
+  id: string
+  linkedIn: string | null
+  instagram: string | null
+  github: string | null
+  blog: string | null
+  personal: string | null
+}
+
 export type MemberProfileResponseDTO = {
   id: string
   name: string
@@ -380,10 +365,11 @@ export type MemberProfileResponseDTO = {
   email: string
   schoolId: string
   schoolName: string
-  profileImageLink: string
+  profileImageLink: string | null
   status: AccountStateType
   roles: Array<MemberProfileRole>
   challengerRecords: Array<ChallengerDetailResponseDTO>
+  profile?: MemberExternalProfile | null
 }
 
 export type PostChallengerDeactivateBody = {
