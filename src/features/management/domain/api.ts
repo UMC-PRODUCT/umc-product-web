@@ -4,12 +4,14 @@ import type { CommonPagingResponseDTO, CommonResponseDTO } from '@/shared/types/
 
 import type {
   AllGisuResponseDTO,
+  AuditLogsResponseDTO,
   BulkChallengerRecordIdResponseDTO,
   ChallengerDetailResponseDTO,
   ChallengerRecordCodeResponseDTO,
   ChallengerRoleDetailResponseDTO,
   ChaptersResponseDTO,
   Curriculum,
+  GetAuditLogsParams,
   GetChallengerParams,
   GetChallengerResponseDTO,
   GetCurriculumsParams,
@@ -58,6 +60,18 @@ export const getCurriculums = async (
   params: GetCurriculumsParams,
 ): Promise<CommonResponseDTO<Curriculum>> => {
   const { data } = await axiosInstance.get('/curriculums', { params })
+  return data
+}
+
+/**
+ * 감사 로그를 페이징으로 조회함
+ * @param params - 페이지/기간/도메인/수행자 필터
+ * @returns 감사 로그 페이징 응답 데이터
+ */
+export const getAuditLogs = async (
+  params: GetAuditLogsParams,
+): Promise<CommonResponseDTO<AuditLogsResponseDTO>> => {
+  const { data } = await axiosInstance.get('/admin/audit-logs', { params })
   return data
 }
 /**

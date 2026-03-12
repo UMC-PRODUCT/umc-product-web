@@ -8,6 +8,7 @@ import type { PartType } from '@/shared/types/umc'
 
 import {
   getAllGisu,
+  getAuditLogs,
   getChallenger,
   getChallengerRecordById,
   getChapter,
@@ -48,6 +49,17 @@ export function useGetGisuChapterWithSchools(gisuId: string) {
   return useCustomSuspenseQuery(managementKeys.getGisuChapterWithSchools(gisuId), () =>
     getGisuChapterWithSchools({ gisuId }),
   )
+}
+
+/**
+ * 감사 로그 목록을 조회하는 쿼리 훅.
+ * @param params - 페이지/기간/도메인/수행자 필터 파라미터
+ * @returns 감사 로그 조회 쿼리 결과
+ */
+export function useGetAuditLogs(params: Parameters<typeof getAuditLogs>[0]) {
+  return useCustomQuery(managementKeys.getAuditLogs(params), () => getAuditLogs(params), {
+    placeholderData: (prev) => prev,
+  })
 }
 
 /**

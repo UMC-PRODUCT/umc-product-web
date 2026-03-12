@@ -1,6 +1,7 @@
 import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import { Tab } from '@/shared/ui/common/Tab'
 
+import AuditLog from '../components/system/AuditLog/AuditLog'
 import Curriculum from '../components/system/Curriculum/Curriculum'
 import DataChange from '../components/system/DataChange/DataChange'
 import Landing from '../components/system/Landing/Landing'
@@ -21,6 +22,7 @@ export const SystemPage = ({
         {activeTab === 'curriculum' && <Curriculum />}
         {activeTab === 'term' && <Term />}
         {activeTab === 'data' && <DataChange />}
+        {activeTab === 'audit' && <AuditLog />}
       </Tab>
     </PageLayout>
   )

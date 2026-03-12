@@ -29,6 +29,7 @@ type LabelCalendarProps = {
   id?: string
   className?: string
   css?: Interpolation<Theme>
+  fieldCss?: Interpolation<Theme>
   disabled?: boolean
 }
 
@@ -48,6 +49,7 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
       id,
       className,
       css,
+      fieldCss,
       disabled = false,
       minDate,
     },
@@ -98,10 +100,13 @@ const LabelCalendar = forwardRef<HTMLButtonElement, LabelCalendarProps>(
 
     return (
       <Field
-        css={{
-          width: '400px',
-          [media.down(theme.breakPoints.tablet)]: { width: '100%' },
-        }}
+        css={[
+          {
+            width: '400px',
+            [media.down(theme.breakPoints.tablet)]: { width: '100%' },
+          },
+          fieldCss,
+        ]}
       >
         <S.SelectHeader>
           <Label id={labelId} htmlFor={triggerId} label={label} necessary={necessary} />

@@ -44,7 +44,73 @@ export const MANAGE_SYSTEM_TABS = [
   },
   { value: 'term', label: '약관 관리' },
   { value: 'data', label: '데이터 변경 이력 조회' },
+  { value: 'audit', label: '감사 로그 조회' },
 ]
+
+export const AUDIT_LOG_DOMAINS = [
+  'COMMON',
+  'AUTHENTICATION',
+  'AUTHORIZATION',
+  'MEMBER',
+  'CHALLENGER',
+  'ORGANIZATION',
+  'CURRICULUM',
+  'SCHEDULE',
+  'COMMUNITY',
+  'NOTICE',
+  'FCM',
+  'SURVEY',
+  'RECRUITMENT',
+  'TERMS',
+  'EMAIL',
+  'STORAGE',
+  'WEBHOOK',
+  'AUDIT_LOG',
+] as const
+
+export const AUDIT_LOG_DOMAIN_LABELS = {
+  COMMON: '공통',
+  AUTHENTICATION: '인증',
+  AUTHORIZATION: '인가',
+  MEMBER: '회원',
+  CHALLENGER: '챌린저',
+  ORGANIZATION: '조직',
+  CURRICULUM: '커리큘럼',
+  SCHEDULE: '일정',
+  COMMUNITY: '커뮤니티',
+  NOTICE: '공지',
+  FCM: '푸시 알림',
+  SURVEY: '설문',
+  RECRUITMENT: '모집',
+  TERMS: '약관',
+  EMAIL: '이메일',
+  STORAGE: '저장소',
+  WEBHOOK: '웹훅',
+  AUDIT_LOG: '감사 로그',
+} as const satisfies Record<(typeof AUDIT_LOG_DOMAINS)[number], string>
+
+export const AUDIT_LOG_ACTION_LABELS = {
+  CREATE: '생성',
+  UPDATE: '수정',
+  DELETE: '삭제',
+  APPROVE: '승인',
+  REJECT: '반려',
+  CHECK: '확인',
+  SUBMIT: '제출',
+  REGISTER: '등록',
+  WITHDRAW: '철회',
+} as const
+
+export const AUDIT_LOG_TABLE_HEADER_LABELS = [
+  '발생 시각',
+  '도메인',
+  '액션',
+  'Actor ID',
+  '대상',
+  '설명',
+  '상세',
+  'IP',
+] as const
 
 export const MANAGE_BRANCH_TABS = [
   { value: 'add', label: '지부 생성' },
