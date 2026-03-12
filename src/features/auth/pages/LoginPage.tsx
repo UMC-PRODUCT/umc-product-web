@@ -18,7 +18,11 @@ import AuthSection from '../components/AuthSection/AuthSection'
 import IntroBanner from '../components/IntroBanner/IntroBanner'
 import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
 
-export const LoginPage = () => {
+type LoginPageProps = {
+  oauthError?: string
+}
+
+export const LoginPage = ({ oauthError }: LoginPageProps) => {
   const navigate = useNavigate()
   const { setItem, getItem: getPlatform } = useLocalStorage('platform')
   const { getItem: getAccessToken } = useLocalStorage('accessToken')
@@ -60,6 +64,9 @@ export const LoginPage = () => {
         <Logo onClick={() => navigate({ to: '/' })} />
         <Divider label="로그인 또는 회원가입" />
         <ButtonGroup>
+          {oauthError && (
+            <Instruction mode="error" Icon={Notice} content={oauthError} typography="C3.Md" />
+          )}
           <Button
             disabled={false}
             label="Kakao로 계속하기"

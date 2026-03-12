@@ -12,6 +12,8 @@ import { useAuthRedirectByRole } from '../hooks/useAuthRedirectByRole'
 type LoginCallbackParams = {
   success?: boolean
   code?: string
+  error?: string
+  message?: string
   email?: string
   accessToken?: string
   refreshToken?: string
@@ -33,6 +35,8 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     return {
       success: success === 'true' ? true : success === 'false' ? false : undefined,
       code: params.get('code') ?? undefined,
+      error: params.get('error') ?? undefined,
+      message: params.get('message')?.trim() ?? undefined,
       email: params.get('email') ?? undefined,
       accessToken,
       refreshToken,
@@ -40,9 +44,44 @@ const useLoginCallbackParams = (): LoginCallbackParams =>
     }
   }, [])
 
+const resolveOAuthFailureMessage = (error?: string, message?: string, success?: boolean) => {
+  const normalizedMessage = message?.trim()
+
+  if (error === 'oauth_failed' && normalizedMessage?.includes('authorization_request_not_found')) {
+    return '소셜 로그인 요청이 만료되었거나 유효하지 않습니다. 로그인 화면에서 다시 시도해 주세요.'
+  }
+
+  if (
+    error === 'access_denied' ||
+    normalizedMessage?.includes('access_denied') ||
+    normalizedMessage?.includes('cancel')
+  ) {
+    return '소셜 로그인 동의가 취소되었습니다. 다시 시도해 주세요.'
+  }
+
+  if (normalizedMessage && !/^\[[^\]]+\]$/.test(normalizedMessage)) {
+    return normalizedMessage
+  }
+
+  if (error || success === false) {
+    return '소셜 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+  }
+
+  return undefined
+}
+
 export const LoginRedirectPage = () => {
   const callbackParams = useLoginCallbackParams()
-  const { code, oAuthVerificationToken, email, accessToken, refreshToken } = callbackParams
+  const {
+    code,
+    oAuthVerificationToken,
+    email,
+    accessToken,
+    refreshToken,
+    error,
+    message,
+    success,
+  } = callbackParams
   const navigate = useNavigate()
   const { usePostMemberOAuth } = useAuthMutation()
   const { mutateAsync: addOAuthMutateAsync } = usePostMemberOAuth()
@@ -66,8 +105,43 @@ export const LoginRedirectPage = () => {
   const oAuthFrom = getOAuthRedirectFrom()
   const hasRequestedAddOAuthRef = useRef(false)
   const hasAccessToken = typeof accessToken === 'string' && accessToken.length > 0
+  const failureMessage = useMemo(
+    () => resolveOAuthFailureMessage(error, message, success),
+    [error, message, success],
+  )
 
   useEffect(() => {
+    if (!failureMessage) return
+
+    const provider = getOAuthConnectingProvider()
+    if (provider) {
+      removeOAuthConnectingProvider()
+    }
+    removeOAuthRedirectFrom()
+
+    if (oAuthFrom === 'accountModal' && currrentPage) {
+      window.alert(failureMessage)
+      window.location.replace(currrentPage)
+      return
+    }
+
+    navigate({
+      to: '/auth/login',
+      search: { oauthError: failureMessage },
+      replace: true,
+    })
+  }, [
+    currrentPage,
+    failureMessage,
+    getOAuthConnectingProvider,
+    navigate,
+    oAuthFrom,
+    removeOAuthConnectingProvider,
+    removeOAuthRedirectFrom,
+  ])
+
+  useEffect(() => {
+    if (failureMessage) return
     if (hasRequestedAddOAuthRef.current) return
     if (code === 'REGISTER_REQUIRED') {
       const search: Record<string, string> = {}
@@ -86,8 +160,8 @@ export const LoginRedirectPage = () => {
             await addOAuthMutateAsync({
               oAuthVerificationToken,
             })
-          } catch (error) {
-            console.error('OAuth 연결에 실패했습니다.', error)
+          } catch (requestError) {
+            console.error('OAuth 연결에 실패했습니다.', requestError)
           } finally {
             const provider = getOAuthConnectingProvider()
             if (provider) {
@@ -111,6 +185,7 @@ export const LoginRedirectPage = () => {
     email,
     addOAuthMutateAsync,
     currrentPage,
+    failureMessage,
     removeOAuthRedirectFrom,
     removeOAuthConnectingProvider,
     oAuthFrom,
@@ -118,7 +193,7 @@ export const LoginRedirectPage = () => {
   ])
 
   useAuthRedirectByRole({
-    enabled: hasAccessToken && !oAuthFrom,
+    enabled: hasAccessToken && !oAuthFrom && !failureMessage,
     accessToken: accessToken ?? undefined,
     refreshToken: refreshToken ?? undefined,
     persistTokens: true,
