@@ -26,8 +26,7 @@ import { formatDateTimeDot } from '@/shared/utils/date'
 import * as S from './AuditLog.style'
 
 const ALL_OPTION_ID = '0'
-const PAGE_SIZE = '20'
-const EARLIEST_AUDIT_LOG_DATE = dayjs('1900-01-01').startOf('day').toDate()
+const PAGE_SIZE = 20
 
 type AuditLogFilterState = {
   from: string
@@ -87,7 +86,7 @@ const AuditLog = () => {
   const queryParams = useMemo(
     () => ({
       page: String(page),
-      size: PAGE_SIZE,
+      size: String(PAGE_SIZE),
       sort: 'createdAt,desc',
       from: filters.from ? dayjs(filters.from).startOf('day').toISOString() : undefined,
       to: filters.to ? dayjs(filters.to).endOf('day').toISOString() : undefined,
@@ -158,8 +157,8 @@ const AuditLog = () => {
             necessary={false}
             value={draftFromDate}
             onChange={handleFromDateChange}
-            minDate={EARLIEST_AUDIT_LOG_DATE}
-            fieldCss={{ width: '220px', minWidth: '220px', minHeight: 'unset' }}
+            allowPastDates
+            wrapperCss={{ width: '220px', minWidth: '220px', minHeight: 'unset' }}
             css={{ height: '50px' }}
           />
 
@@ -170,8 +169,9 @@ const AuditLog = () => {
             necessary={false}
             value={draftToDate}
             onChange={handleToDateChange}
-            minDate={draftFromDate ?? EARLIEST_AUDIT_LOG_DATE}
-            fieldCss={{ width: '220px', minWidth: '220px', minHeight: 'unset' }}
+            minDate={draftFromDate ?? undefined}
+            allowPastDates
+            wrapperCss={{ width: '220px', minWidth: '220px', minHeight: 'unset' }}
             css={{ height: '50px' }}
           />
 

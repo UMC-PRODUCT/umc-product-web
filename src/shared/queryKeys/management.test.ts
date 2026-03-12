@@ -10,4 +10,33 @@ describe('management 쿼리 키 스모크 테스트', () => {
     expect(managementKeys.getSchoolsPagingBase).toEqual(['management', 'schoolsPaging'])
     expect(managementKeys.getChallengerBase).toEqual(['management', 'challenger'])
   })
+
+  it('감사 로그 조회 키에 필터 파라미터를 포함한다', () => {
+    const defaultKey = managementKeys.getAuditLogs({
+      page: '0',
+      size: '20',
+      sort: 'createdAt,desc',
+    })
+    const filteredKey = managementKeys.getAuditLogs({
+      page: '0',
+      size: '20',
+      sort: 'createdAt,desc',
+      domain: 'AUDIT_LOG',
+      actorMemberId: '42',
+    })
+
+    expect(defaultKey.at(-1)).toEqual({
+      page: '0',
+      size: '20',
+      sort: 'createdAt,desc',
+    })
+    expect(filteredKey.at(-1)).toEqual({
+      page: '0',
+      size: '20',
+      sort: 'createdAt,desc',
+      domain: 'AUDIT_LOG',
+      actorMemberId: '42',
+    })
+    expect(filteredKey).not.toEqual(defaultKey)
+  })
 })

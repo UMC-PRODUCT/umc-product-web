@@ -4,7 +4,12 @@
  */
 
 import type { RoleType } from '@/shared/types'
-import type { CommonPagingResponseDTO, CommonSearchParams } from '@/shared/types/api'
+import type {
+  AuditLogSearchParams,
+  CommonPagingResponseDTO,
+  CommonSearchParams,
+  SpringPageResponseDTO,
+} from '@/shared/types/api'
 import type { ExternalLink } from '@/shared/types/link'
 import type {
   EvaluationDocumentType,
@@ -190,46 +195,13 @@ export type AuditLogItem = {
   createdAt: string
 }
 
-export type AuditLogSortResponseDTO = {
-  empty: boolean
-  unsorted: boolean
-  sorted: boolean
-}
-
-export type AuditLogPageableResponseDTO = {
-  offset: number
-  sort: AuditLogSortResponseDTO
-  unpaged: boolean
-  pageNumber: number
-  paged: boolean
-  pageSize: number
-}
-
-export type AuditLogsResponseDTO = {
-  totalPages: number
-  totalElements: number
-  size: number
-  content: Array<AuditLogItem>
-  number: number
-  sort: AuditLogSortResponseDTO
-  numberOfElements: number
-  pageable: AuditLogPageableResponseDTO
-  first: boolean
-  last: boolean
-  empty: boolean
-}
+export type AuditLogsResponseDTO = SpringPageResponseDTO<AuditLogItem>
 
 export type GetCurriculumsParams = {
   part: PartType
 }
 
-export type GetAuditLogsParams = CommonSearchParams & {
-  domain?: AuditLogDomain
-  actorMemberId?: string
-  from?: string
-  to?: string
-  sort?: string
-}
+export type GetAuditLogsParams = AuditLogSearchParams
 
 export type GetSchoolsPagingParams = CommonSearchParams & {
   sort?: 'asc' | 'desc'
