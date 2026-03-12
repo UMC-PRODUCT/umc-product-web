@@ -19,7 +19,12 @@ import type {
   OrganizationType,
 } from '@/shared/types/umc'
 
-import type { MANAGE_SCHOOL_TABS, RECRUITING_STATE_CONFIG, SCHOOL_STATE_CONFIG } from './constants'
+import type {
+  AUDIT_LOG_DOMAINS,
+  MANAGE_SCHOOL_TABS,
+  RECRUITING_STATE_CONFIG,
+  SCHOOL_STATE_CONFIG,
+} from './constants'
 
 /** 학교 상태 타입 */
 export type SchoolStateType = keyof typeof SCHOOL_STATE_CONFIG
@@ -159,8 +164,71 @@ export type CandidateType = {
   }
 }
 
+export type AuditLogDomain = (typeof AUDIT_LOG_DOMAINS)[number]
+
+export type AuditLogAction =
+  | 'CREATE'
+  | 'UPDATE'
+  | 'DELETE'
+  | 'APPROVE'
+  | 'REJECT'
+  | 'CHECK'
+  | 'SUBMIT'
+  | 'REGISTER'
+  | 'WITHDRAW'
+
+export type AuditLogItem = {
+  id: number
+  domain: AuditLogDomain
+  action: AuditLogAction
+  targetType: string
+  targetId: string
+  actorMemberId: number
+  description: string
+  details: string
+  ipAddress: string
+  createdAt: string
+}
+
+export type AuditLogSortResponseDTO = {
+  empty: boolean
+  unsorted: boolean
+  sorted: boolean
+}
+
+export type AuditLogPageableResponseDTO = {
+  offset: number
+  sort: AuditLogSortResponseDTO
+  unpaged: boolean
+  pageNumber: number
+  paged: boolean
+  pageSize: number
+}
+
+export type AuditLogsResponseDTO = {
+  totalPages: number
+  totalElements: number
+  size: number
+  content: Array<AuditLogItem>
+  number: number
+  sort: AuditLogSortResponseDTO
+  numberOfElements: number
+  pageable: AuditLogPageableResponseDTO
+  first: boolean
+  last: boolean
+  empty: boolean
+}
+
 export type GetCurriculumsParams = {
   part: PartType
+}
+
+export type GetAuditLogsParams = CommonSearchParams & {
+  domain?: AuditLogDomain
+  actorMemberId?: string
+  from?: string
+  to?: string
+  sort?: string
 }
 
 export type GetSchoolsPagingParams = CommonSearchParams & {
