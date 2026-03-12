@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { isAxiosError } from 'axios'
 
 import { useGetMemberProfile } from '@/features/management/hooks/useManagementQueries'
 import Close from '@/shared/assets/icons/close.svg?react'
@@ -61,11 +62,47 @@ const resolveOrganizationTypeLabel = (organizationType: string) =>
     ? ORGANIZATION_TYPE_LABELS[organizationType as keyof typeof ORGANIZATION_TYPE_LABELS]
     : organizationType
 
+const getMemberProfileErrorState = (error: unknown) => {
+  if (isAxiosError<{ message?: string }>(error)) {
+    const responseData = error.response?.data
+    const responseMessage =
+      responseData && typeof responseData.message === 'string' ? responseData.message.trim() : ''
+    const normalizedMessage = `${responseMessage} ${error.message}`.toLowerCase()
+
+    if (
+      normalizedMessage.includes('withdraw') ||
+      normalizedMessage.includes('withdrew') ||
+      normalizedMessage.includes('탈퇴')
+    ) {
+      return {
+        title: '탈퇴한 회원입니다.',
+        description: '탈퇴한 회원은 상세 정보를 조회할 수 없습니다.',
+        showRetryButton: false,
+      }
+    }
+
+    if (error.response?.status === 404) {
+      return {
+        title: '회원 정보를 찾을 수 없습니다.',
+        description: '존재하지 않는 회원입니다.',
+        showRetryButton: false,
+      }
+    }
+  }
+
+  return {
+    title: '회원 정보를 불러오지 못했습니다.',
+    description: '잠시 후 다시 시도해 주세요.',
+    showRetryButton: true,
+  }
+}
+
 const ActorProfileModal = ({ memberId, onClose }: ActorProfileModalProps) => {
-  const { data, isLoading, isError, refetch } = useGetMemberProfile(memberId)
+  const { data, isLoading, isError, error, refetch } = useGetMemberProfile(memberId)
 
   const profile = data?.result
   const statusMeta = resolveStatusMeta(profile?.status)
+  const errorState = useMemo(() => getMemberProfileErrorState(error), [error])
 
   const profileLinks = useMemo(
     () =>
@@ -93,9 +130,9 @@ const ActorProfileModal = ({ memberId, onClose }: ActorProfileModalProps) => {
 
     ;(profile?.roles ?? []).forEach((role) => {
       const gisuLabel = gisuLabelById.get(role.gisuId) ?? `기수 ID ${role.gisuId}`
-      const entry = `${resolveRoleLabel(role.roleType)} · ${resolveOrganizationTypeLabel(
+      const entry = ` ${resolveOrganizationTypeLabel(
         role.organizationType,
-      )} (${role.organizationType})`
+      )} - ${resolveRoleLabel(role.roleType)}`
 
       const current = grouped.get(role.gisuId)
       if (current) {
@@ -138,15 +175,25 @@ const ActorProfileModal = ({ memberId, onClose }: ActorProfileModalProps) => {
             </Modal.Header>
 
             {isLoading ? (
-              <Section variant="solid" padding="28px 24px" css={{ minHeight: '320px', gap: 0 }}>
+              <Section
+                variant="solid"
+                padding="28px 24px"
+                width={420}
+                css={{ minHeight: '320px', gap: 0, width: '420px' }}
+              >
                 <FeedbackState mode="loading" loadingLabel="회원 정보를 불러오는 중입니다." />
               </Section>
             ) : isError ? (
-              <Section variant="solid" padding="28px 24px" css={{ minHeight: '320px', gap: 0 }}>
+              <Section
+                variant="solid"
+                padding="28px 24px"
+                css={{ minHeight: '320px', gap: 0, width: '420px' }}
+              >
                 <FeedbackState
                   mode="error"
-                  title="회원 정보를 불러오지 못했습니다."
-                  description="잠시 후 다시 시도해 주세요."
+                  title={errorState.title}
+                  description={errorState.description}
+                  showRetryButton={errorState.showRetryButton}
                   onRetry={() => {
                     void refetch()
                   }}
@@ -223,7 +270,7 @@ const ActorProfileModal = ({ memberId, onClose }: ActorProfileModalProps) => {
                                 <span>{transformPart(record.part)}</span>
                               </S.ActivityInfo>
                               <S.ActivityInfo isActive={isActive}>
-                                <span>조직</span>
+                                <span>지부</span>
                                 <span>{record.chapterName || record.schoolName || '-'}</span>
                               </S.ActivityInfo>
                               <S.ActivityInfo isActive={isActive}>
@@ -273,7 +320,7 @@ const ActorProfileModal = ({ memberId, onClose }: ActorProfileModalProps) => {
                 <FeedbackState
                   mode="error"
                   title="회원 정보를 찾을 수 없습니다."
-                  description="존재하지 않는 회원이거나 조회 권한이 없습니다."
+                  description="존재하지 않는 회원입니다."
                 />
               </Section>
             )}
