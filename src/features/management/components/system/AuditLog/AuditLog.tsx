@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 
+import ActorProfileModal from '@/features/management/components/modals/ActorProfileModal/ActorProfileModal'
 import {
-  AUDIT_LOG_ACTION_LABELS,
   AUDIT_LOG_DOMAIN_LABELS,
   AUDIT_LOG_DOMAINS,
   AUDIT_LOG_TABLE_HEADER_LABELS,
@@ -50,6 +50,17 @@ const domainOptions: Array<Option<string>> = [
   })),
 ]
 
+const resolveDomainLabel = (domain: string) =>
+  Object.prototype.hasOwnProperty.call(AUDIT_LOG_DOMAIN_LABELS, domain)
+    ? AUDIT_LOG_DOMAIN_LABELS[domain as keyof typeof AUDIT_LOG_DOMAIN_LABELS]
+    : domain
+
+const isMemberProfileId = (value: number | string | null | undefined) =>
+  value != null && /^\d+$/.test(String(value).trim())
+
+const isMemberTarget = (targetType: string | null | undefined) =>
+  targetType?.trim().toLowerCase() === 'member'
+
 const resolveActionTone = (action: AuditLogAction) => {
   switch (action) {
     case 'CREATE':
@@ -68,6 +79,7 @@ const resolveActionTone = (action: AuditLogAction) => {
 
 const AuditLog = () => {
   const [page, setPage] = useState(0)
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
   const [draftFilters, setDraftFilters] = useState<AuditLogFilterState>(() =>
     createInitialFilters(),
   )
@@ -245,7 +257,7 @@ const AuditLog = () => {
         </Flex>
         <S.SummaryMeta>
           {`${dayjs(filters.from).format('YYYY.MM.DD')} ~ ${dayjs(filters.to).format('YYYY.MM.DD')}`}
-          {filters.domain ? ` · ${AUDIT_LOG_DOMAIN_LABELS[filters.domain]}` : ' · 전체 도메인'}
+          {filters.domain ? ` · ${resolveDomainLabel(filters.domain)}` : ' · 전체 도메인'}
           {filters.actorMemberId ? ` · Actor ID ${filters.actorMemberId}` : ''}
         </S.SummaryMeta>
       </Flex>
@@ -285,27 +297,49 @@ const AuditLog = () => {
                 </TableStyles.Td>
                 <TableStyles.Td>
                   <Badge tone="darkGray" variant="outline" typo="C5.Md">
-                    {AUDIT_LOG_DOMAIN_LABELS[log.domain]}
+                    {resolveDomainLabel(log.domain)}
                   </Badge>
                 </TableStyles.Td>
                 <TableStyles.Td>
                   <Badge tone={resolveActionTone(log.action)} variant="solid" typo="C5.Md">
-                    {AUDIT_LOG_ACTION_LABELS[log.action]}
+                    {log.action}
                   </Badge>
                 </TableStyles.Td>
-                <TableStyles.Td css={{ ...theme.typography.C2.Sb }}>
-                  {log.actorMemberId}
+                <TableStyles.Td>
+                  {log.actorMemberId == null ? (
+                    <span css={{ color: theme.colors.gray[400], ...theme.typography.C2.Sb }}>
+                      -
+                    </span>
+                  ) : (
+                    <S.MemberLinkButton
+                      type="button"
+                      onClick={() => setSelectedMemberId(String(log.actorMemberId))}
+                      aria-label={`Actor ID ${log.actorMemberId} 회원 정보 보기`}
+                    >
+                      {log.actorMemberId}
+                    </S.MemberLinkButton>
+                  )}
                 </TableStyles.Td>
-                <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '180px' }}>
+                <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '90px' }}>
                   <S.TargetInfo>
                     <span>{log.targetType || '-'}</span>
-                    <span>{log.targetId || '-'}</span>
+                    {isMemberTarget(log.targetType) && isMemberProfileId(log.targetId) ? (
+                      <S.MemberLinkButton
+                        type="button"
+                        onClick={() => setSelectedMemberId(log.targetId)}
+                        aria-label={`대상 ID ${log.targetId} 회원 정보 보기`}
+                      >
+                        {log.targetId}
+                      </S.MemberLinkButton>
+                    ) : (
+                      <span>{log.targetId || '-'}</span>
+                    )}
                   </S.TargetInfo>
                 </TableStyles.Td>
-                <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '320px' }}>
+                <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '250px' }}>
                   <S.DescriptionText>{log.description || '-'}</S.DescriptionText>
                 </TableStyles.Td>
-                <TableStyles.Td css={{ whiteSpace: 'normal', minWidth: '320px' }}>
+                <TableStyles.Td css={{ whiteSpace: 'normal' }}>
                   <S.DescriptionText>{log.details || '-'}</S.DescriptionText>
                 </TableStyles.Td>
                 <TableStyles.Td css={{ color: theme.colors.gray[300] }}>
@@ -329,6 +363,10 @@ const AuditLog = () => {
           )}
         </Table>
       )}
+
+      {selectedMemberId ? (
+        <ActorProfileModal memberId={selectedMemberId} onClose={() => setSelectedMemberId(null)} />
+      ) : null}
     </S.Container>
   )
 }

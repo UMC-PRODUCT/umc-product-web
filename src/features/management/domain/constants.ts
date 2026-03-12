@@ -89,18 +89,6 @@ export const AUDIT_LOG_DOMAIN_LABELS = {
   AUDIT_LOG: '감사 로그',
 } as const satisfies Record<(typeof AUDIT_LOG_DOMAINS)[number], string>
 
-export const AUDIT_LOG_ACTION_LABELS = {
-  CREATE: '생성',
-  UPDATE: '수정',
-  DELETE: '삭제',
-  APPROVE: '승인',
-  REJECT: '반려',
-  CHECK: '확인',
-  SUBMIT: '제출',
-  REGISTER: '등록',
-  WITHDRAW: '철회',
-} as const
-
 export const AUDIT_LOG_TABLE_HEADER_LABELS = [
   '발생 시각',
   '도메인',

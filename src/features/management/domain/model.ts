@@ -188,7 +188,7 @@ export type AuditLogItem = {
   action: AuditLogAction
   targetType: string
   targetId: string
-  actorMemberId: number
+  actorMemberId: number | null
   description: string
   details: string
   ipAddress: string
@@ -322,6 +322,8 @@ export type ChallengerDetailResponseDTO = {
   memberId: string
   gisuId: string
   gisu: string
+  chapterId?: string | null
+  chapterName?: string | null
   startAt?: string
   endAt?: string
   part: PartType
@@ -345,6 +347,15 @@ export type MemberProfileRole = {
   gisuId: string
 }
 
+export type MemberExternalProfile = {
+  id: string
+  linkedIn: string | null
+  instagram: string | null
+  github: string | null
+  blog: string | null
+  personal: string | null
+}
+
 export type MemberProfileResponseDTO = {
   id: string
   name: string
@@ -352,10 +363,11 @@ export type MemberProfileResponseDTO = {
   email: string
   schoolId: string
   schoolName: string
-  profileImageLink: string
+  profileImageLink: string | null
   status: AccountStateType
   roles: Array<MemberProfileRole>
   challengerRecords: Array<ChallengerDetailResponseDTO>
+  profile?: MemberExternalProfile | null
 }
 
 export type PostChallengerDeactivateBody = {
