@@ -90,7 +90,8 @@ const SummaryMeta = styled.span`
 const TargetInfo = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 2px;
+  gap: 8px;
+  align-items: center;
 
   span {
     color: ${theme.colors.white};
