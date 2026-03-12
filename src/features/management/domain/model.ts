@@ -201,7 +201,9 @@ export type GetCurriculumsParams = {
   part: PartType
 }
 
-export type GetAuditLogsParams = AuditLogSearchParams
+export type GetAuditLogsParams = AuditLogSearchParams & {
+  domain?: AuditLogDomain
+}
 
 export type GetSchoolsPagingParams = CommonSearchParams & {
   sort?: 'asc' | 'desc'

@@ -49,6 +49,7 @@ const ChallengerRecordModal = ({ onClose }: ChallengerRecordModalProps) => {
       .slice(0, CODE_LENGTH)
     if (status === 'error') setStatus('idle')
     if (errorMessage) setErrorMessage('')
+    if (successMessage) setSuccessMessage('')
     setCode(normalizedCode)
   }
 
