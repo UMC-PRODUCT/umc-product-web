@@ -82,11 +82,6 @@ const SummaryValue = styled.span`
   ${theme.typography.H4.Sb};
 `
 
-const SummaryMeta = styled.span`
-  color: ${theme.colors.gray[400]};
-  ${theme.typography.C5.Rg};
-`
-
 const SummaryControls = styled.div`
   display: flex;
   align-items: center;
@@ -105,12 +100,6 @@ const PageSizeControl = styled.div`
   align-items: center;
   gap: 8px;
   width: fit-content;
-`
-
-const PageSizeLabel = styled.label`
-  color: ${theme.colors.gray[400]};
-  white-space: nowrap;
-  ${theme.typography.C5.Rg};
 `
 
 const TargetInfo = styled.div`
@@ -165,10 +154,8 @@ export {
   FilterLabel,
   MemberLinkButton,
   PageSizeControl,
-  PageSizeLabel,
   SummaryControls,
   SummaryLabel,
-  SummaryMeta,
   SummaryValue,
   TargetInfo,
   TextInput,
