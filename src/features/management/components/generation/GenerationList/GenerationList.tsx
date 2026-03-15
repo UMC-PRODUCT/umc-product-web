@@ -62,7 +62,7 @@ const GenerationList = () => {
               <StateButton label={row.state ? '활성' : '비활성'} isActive={row.state} />
             </TableStyles.Td>
             <TableStyles.Td css={{ ...theme.typography.C2.Sb }}>{row.gisuName}기</TableStyles.Td>
-            <TableStyles.Td css={{ color: theme.colors.gray[300], ...theme.typography.C2.Sb }}>
+            <TableStyles.Td css={{ color: theme.colors.gray[300], ...theme.typography.C2.Md }}>
               {row.duration}
             </TableStyles.Td>
             <TableStyles.Td>
