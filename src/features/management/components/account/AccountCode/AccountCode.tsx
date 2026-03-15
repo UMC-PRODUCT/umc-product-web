@@ -1,113 +1,39 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 
 import { getGisuChapterWithSchools } from '@/features/management/domain/api'
-import type {
-  ChallengerRecordCodeResponseDTO,
-  ChallengerRecordRoleType,
-  PostChallengerRecordCodeBody,
-} from '@/features/management/domain/model'
+import type { ChallengerRecordCodeResponseDTO } from '@/features/management/domain/model'
 import { useManagementMutations } from '@/features/management/hooks/useManagementMutations'
 import {
   fetchChallengerRecordByIdQuery,
   useGetAllGisu,
 } from '@/features/management/hooks/useManagementQueries'
-import Plus from '@/shared/assets/icons/plus.svg?react'
-import Trash from '@/shared/assets/icons/trash.svg?react'
-import { PART_LIST, PART_TYPE_TO_SMALL_PART } from '@/shared/constants/part'
 import { useCustomQuery } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import * as SharedStyles from '@/shared/styles/shared'
 import type { Option } from '@/shared/types/form'
-import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
-import { Dropdown } from '@/shared/ui/common/Dropdown'
-import { Flex } from '@/shared/ui/common/Flex'
-import Section from '@/shared/ui/common/Section/Section'
-import Table from '@/shared/ui/common/Table/Table'
-import * as TableStyles from '@/shared/ui/common/Table/Table.style'
-import { transformRoleKorean } from '@/shared/utils/transformKorean'
 
 import * as S from './AccountCode.style'
-
-type DraftFields = {
-  chapterId?: string
-  schoolId?: string
-  part?: PartType
-  memberName: string
-  challengerRoleType?: ChallengerRecordRoleType
-}
-
-type BulkDraftRow = DraftFields & {
-  id: string
-}
-
-type FeedbackState = {
-  tone: 'success' | 'error'
-  message: string
-} | null
-
-const RESULT_TABLE_HEADER_LABELS = ['코드', '이름', '학교 / 지부', '기수 / 파트', '역할', '']
-const MAX_BULK_CODE_ROWS = 20
-const MAX_DETAIL_FETCH_CONCURRENCY = 4
-
-const CHALLENGER_RECORD_ROLE_OPTIONS: Array<ChallengerRecordRoleType> = [
-  'CHALLENGER',
-  'SUPER_ADMIN',
-  'CENTRAL_PRESIDENT',
-  'CENTRAL_VICE_PRESIDENT',
-  'CENTRAL_OPERATING_TEAM_MEMBER',
-  'CENTRAL_EDUCATION_TEAM_MEMBER',
-  'CHAPTER_PRESIDENT',
-  'SCHOOL_PRESIDENT',
-  'SCHOOL_VICE_PRESIDENT',
-  'SCHOOL_PART_LEADER',
-  'SCHOOL_ETC_ADMIN',
-]
-
-let bulkRowSequence = 0
-
-const createEmptyDraft = (): DraftFields => ({
-  memberName: '',
-})
-
-const createBulkDraftRow = (): BulkDraftRow => ({
-  id: `challenger-record-row-${bulkRowSequence++}`,
-  ...createEmptyDraft(),
-})
-
-const createInitialBulkRows = () => [createBulkDraftRow()]
-
-const hasAnyDraftValue = (draft: DraftFields) =>
-  Boolean(
-    draft.chapterId ||
-    draft.schoolId ||
-    draft.part ||
-    draft.challengerRoleType ||
-    draft.memberName.trim(),
-  )
-
-const isDraftComplete = (draft: DraftFields) =>
-  Boolean(
-    draft.chapterId &&
-    draft.schoolId &&
-    draft.part &&
-    draft.challengerRoleType &&
-    draft.memberName.trim(),
-  )
-
-const getErrorMessage = (error: unknown, fallback: string) => {
-  if (isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data.message ?? fallback
-  }
-
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return fallback
-}
+import type { BulkDraftRow, DraftFields, FeedbackState } from './accountCode.types'
+import {
+  buildPayload,
+  createBulkDraftRow,
+  createInitialBulkRows,
+  createPartOptions,
+  createRoleOptions,
+  getConcretePartRequiredMessage,
+  getDraftValidationMessage,
+  getErrorMessage,
+  hasAnyDraftValue,
+  MAX_BULK_CODE_ROWS,
+  MAX_DETAIL_FETCH_CONCURRENCY,
+  requiresConcretePartSelection,
+  shouldSendPart,
+} from './accountCode.utils'
+import AccountCodeBulkSection from './AccountCodeBulkSection'
+import AccountCodeGisuSelector from './AccountCodeGisuSelector'
+import AccountCodeResultSection from './AccountCodeResultSection'
 
 const AccountCode = () => {
   const queryClient = useQueryClient()
@@ -181,47 +107,14 @@ const AccountCode = () => {
     }
   }, [gisuScopeData?.result.chapters])
 
-  const partOptions = useMemo<Array<Option<string>>>(
-    () =>
-      PART_LIST.map((part) => ({
-        id: part,
-        label: PART_TYPE_TO_SMALL_PART[part],
-      })),
-    [],
-  )
+  const partOptions = useMemo<Array<Option<string>>>(() => createPartOptions(), [])
 
-  const roleOptions = useMemo<Array<Option<string>>>(
-    () =>
-      CHALLENGER_RECORD_ROLE_OPTIONS.map((roleType) => ({
-        id: roleType,
-        label: transformRoleKorean(roleType),
-      })),
-    [],
-  )
+  const roleOptions = useMemo<Array<Option<string>>>(() => createRoleOptions(), [])
 
   const getSchoolOptions = (chapterId?: string) =>
     chapterId
       ? (schoolOptionsByChapter.schoolsByChapter.get(chapterId) ?? [])
       : schoolOptionsByChapter.mergedSchoolOptions
-
-  const resolveOption = (options: Array<Option<string>>, targetId?: string) =>
-    targetId ? options.find((option) => String(option.id) === targetId) : undefined
-
-  const buildPayload = (draft: DraftFields): PostChallengerRecordCodeBody => {
-    const payload: PostChallengerRecordCodeBody = {
-      gisuId: selectedGisuId ?? '',
-      chapterId: draft.chapterId ?? '',
-      schoolId: draft.schoolId ?? '',
-      part: draft.part as PartType,
-      memberName: draft.memberName.trim(),
-    }
-
-    if (draft.challengerRoleType && draft.challengerRoleType !== 'CHALLENGER') {
-      payload.challengerRoleType = draft.challengerRoleType
-    }
-
-    return payload
-  }
 
   const resetDrafts = () => {
     setBulkRows(createInitialBulkRows())
@@ -300,6 +193,41 @@ const AccountCode = () => {
     key: TKey,
     value: DraftFields[TKey],
   ) => {
+    const targetRowIndex = bulkRows.findIndex((row) => row.id === rowId)
+    const targetRow = targetRowIndex >= 0 ? bulkRows[targetRowIndex] : null
+
+    if (!targetRow) return
+
+    const targetRowRoleType = targetRow.challengerRoleType
+
+    if (
+      key === 'part' &&
+      value === 'ADMIN' &&
+      targetRowRoleType !== undefined &&
+      requiresConcretePartSelection(targetRowRoleType)
+    ) {
+      setFeedback({
+        tone: 'error',
+        message: `${targetRowIndex + 1}번째 행은 ${getConcretePartRequiredMessage(targetRowRoleType)}`,
+      })
+      return
+    }
+
+    const shouldClearPart =
+      key === 'challengerRoleType' && !shouldSendPart(value as DraftFields['challengerRoleType'])
+    const shouldResetInvalidAdminPart =
+      key === 'challengerRoleType' &&
+      value !== undefined &&
+      requiresConcretePartSelection(value as DraftFields['challengerRoleType']) &&
+      targetRow.part === 'ADMIN'
+
+    if (shouldResetInvalidAdminPart) {
+      setFeedback({
+        tone: 'error',
+        message: `${targetRowIndex + 1}번째 행은 ${getConcretePartRequiredMessage(value as NonNullable<DraftFields['challengerRoleType']>)}`,
+      })
+    }
+
     setBulkRows((prev) =>
       prev.map((row) =>
         row.id === rowId
@@ -307,6 +235,7 @@ const AccountCode = () => {
               ...row,
               [key]: value,
               ...(key === 'chapterId' ? { schoolId: undefined } : {}),
+              ...(shouldClearPart || shouldResetInvalidAdminPart ? { part: undefined } : {}),
             }
           : row,
       ),
@@ -367,11 +296,14 @@ const AccountCode = () => {
       return
     }
 
-    const invalidRowIndex = normalizedRows.findIndex((row) => !isDraftComplete(row))
-    if (invalidRowIndex >= 0) {
+    const invalidDraftMessage = normalizedRows
+      .map((row, index) => getDraftValidationMessage(row, index))
+      .find((message): message is string => message !== null)
+
+    if (invalidDraftMessage) {
       setFeedback({
         tone: 'error',
-        message: `${invalidRowIndex + 1}번째 행의 항목을 모두 입력해 주세요.`,
+        message: invalidDraftMessage,
       })
       return
     }
@@ -386,14 +318,16 @@ const AccountCode = () => {
 
     try {
       if (normalizedRows.length === 1) {
-        const response = await createSingleCode(buildPayload(normalizedRows[0]))
+        const response = await createSingleCode(buildPayload(selectedGisuId, normalizedRows[0]))
         appendGeneratedCodes([response.result])
         setFeedback({
           tone: 'success',
           message: `${response.result.memberName}의 코드 ${response.result.code}를 발급했습니다.`,
         })
       } else {
-        const response = await createBulkCode(normalizedRows.map(buildPayload))
+        const response = await createBulkCode(
+          normalizedRows.map((row) => buildPayload(selectedGisuId, row)),
+        )
         const { details, failedIds } = await fetchGeneratedCodeDetails(response.result)
 
         if (details.length > 0) {
@@ -425,10 +359,6 @@ const AccountCode = () => {
     }
   }
 
-  const copyAllCodesText = generatedCodes
-    .map((code) => `${code.memberName},${code.code}`)
-    .join('\n')
-
   const isSubmitting = isCreatingSingleCode || isCreatingBulkCode
   const isFormDisabled = !selectedGisuId || isScopeLoading || isScopeError
   const shouldGuardScopedDropdowns = !selectedGisuId && !isGisuLoading
@@ -451,24 +381,14 @@ const AccountCode = () => {
       <SharedStyles.TabTitle>과거 챌린저 기록 코드 발급</SharedStyles.TabTitle>
       <SharedStyles.TabSubtitle>챌린저의 코드를 일괄 발급할 수 있습니다.</SharedStyles.TabSubtitle>
       <S.Container alignItems="flex-start">
-        <S.GisuSelector>
-          <S.GisuDropdownFrame $isHighlighted={isGisuPromptActive}>
-            <Dropdown
-              ref={gisuDropdownRef}
-              options={gisuOptions}
-              placeholder="기수를 선택해 주세요"
-              value={selectedGisuOption}
-              disabled={isGisuLoading}
-              onChange={handleSelectGisu}
-              css={{ width: '300px' }}
-            />
-          </S.GisuDropdownFrame>
-          <S.GisuGuideText $isHighlighted={isGisuPromptActive} role="status" aria-live="polite">
-            {isGisuPromptActive
-              ? '기수를 먼저 선택해 주세요.'
-              : '기수를 선택하면 아래 기록 항목을 입력할 수 있어요.'}
-          </S.GisuGuideText>
-        </S.GisuSelector>
+        <AccountCodeGisuSelector
+          dropdownRef={gisuDropdownRef}
+          isHighlighted={isGisuPromptActive}
+          gisuOptions={gisuOptions}
+          selectedGisuOption={selectedGisuOption}
+          isGisuLoading={isGisuLoading}
+          onSelectGisu={handleSelectGisu}
+        />
         {scopeErrorMessage && (
           <S.ScopeErrorActions alignItems="stretch" gap={10}>
             <S.StatusBanner $tone="error">{scopeErrorMessage}</S.StatusBanner>
@@ -483,251 +403,24 @@ const AccountCode = () => {
         )}
         {feedback && <S.StatusBanner $tone={feedback.tone}>{feedback.message}</S.StatusBanner>}
 
-        <Section variant="solid" padding="20px" gap={20}>
-          <S.SectionHeader>
-            <S.SectionTitleWrap alignItems="flex-start">
-              <S.SectionTitle>코드 생성</S.SectionTitle>
-              <S.SectionDescription>
-                기본은 1행부터 시작하며, 한 번에 최대 {MAX_BULK_CODE_ROWS}건까지 같은 화면에서 연속
-                발급할 수 있습니다.
-              </S.SectionDescription>
-            </S.SectionTitleWrap>
+        <AccountCodeBulkSection
+          bulkRows={bulkRows}
+          isSubmitting={isSubmitting}
+          isFormDisabled={isFormDisabled}
+          shouldGuardScopedDropdowns={shouldGuardScopedDropdowns}
+          chapterOptions={chapterOptions}
+          partOptions={partOptions}
+          roleOptions={roleOptions}
+          getSchoolOptions={getSchoolOptions}
+          onTriggerGisuPrompt={triggerGisuPrompt}
+          onChangeRow={handleChangeBulkRow}
+          onAddRow={handleAddBulkRow}
+          onRemoveRow={handleRemoveBulkRow}
+          onResetRows={handleResetBulkRows}
+          onSubmitCodes={handleSubmitCodes}
+        />
 
-            <S.Actions width={'fit-content'}>
-              <Button
-                label="행 추가"
-                tone="gray"
-                variant="outline"
-                Icon={Plus}
-                onClick={handleAddBulkRow}
-                disabled={isSubmitting || bulkRows.length >= MAX_BULK_CODE_ROWS}
-                css={{ width: '108px', height: '41px' }}
-              />
-              <Button
-                label="행 비우기"
-                tone="gray"
-                variant="outline"
-                onClick={handleResetBulkRows}
-                disabled={isSubmitting}
-                css={{ width: '108px', height: '41px' }}
-              />
-              <Button
-                label="코드 생성"
-                tone="lime"
-                onClick={handleSubmitCodes}
-                isLoading={isSubmitting}
-                disabled={isFormDisabled}
-                css={{ width: '132px', height: '41px' }}
-              />
-            </S.Actions>
-          </S.SectionHeader>
-
-          <S.RowList>
-            {bulkRows.map((row, index) => {
-              const schoolOptions = getSchoolOptions(row.chapterId)
-
-              return (
-                <S.RowCard key={row.id}>
-                  <S.RowHeader>
-                    <S.RowIndex>
-                      <S.RowBadge>{index + 1}</S.RowBadge>
-                      <span>{row.memberName.trim() || '새 기록'}</span>
-                    </S.RowIndex>
-
-                    <Flex alignItems="center" gap={10} width={'fit-content'}>
-                      <S.RowMeta>
-                        {row.part ? PART_TYPE_TO_SMALL_PART[row.part] : '파트 미선택'}
-                      </S.RowMeta>
-                      <Button
-                        tone="gray"
-                        variant="outline"
-                        Icon={Trash}
-                        aria-label={`${index + 1}번째 행 삭제`}
-                        onClick={() => handleRemoveBulkRow(row.id)}
-                        disabled={isSubmitting}
-                        css={{ width: '41px', height: '41px', padding: 0 }}
-                      />
-                    </Flex>
-                  </S.RowHeader>
-
-                  <S.FormGrid>
-                    <S.Field>
-                      <S.FieldLabel>지부</S.FieldLabel>
-                      <S.ControlShell
-                        $isBlocked={shouldGuardScopedDropdowns}
-                        onClick={shouldGuardScopedDropdowns ? triggerGisuPrompt : undefined}
-                      >
-                        <Dropdown
-                          options={chapterOptions}
-                          placeholder="지부 선택"
-                          value={resolveOption(chapterOptions, row.chapterId)}
-                          disabled={isFormDisabled}
-                          onChange={(option) =>
-                            handleChangeBulkRow(row.id, 'chapterId', String(option.id))
-                          }
-                          css={{ width: '100%', maxWidth: '100%' }}
-                        />
-                      </S.ControlShell>
-                    </S.Field>
-
-                    <S.Field>
-                      <S.FieldLabel>학교</S.FieldLabel>
-                      <S.ControlShell
-                        $isBlocked={shouldGuardScopedDropdowns}
-                        onClick={shouldGuardScopedDropdowns ? triggerGisuPrompt : undefined}
-                      >
-                        <Dropdown
-                          options={schoolOptions}
-                          placeholder="학교 선택"
-                          value={resolveOption(schoolOptions, row.schoolId)}
-                          disabled={isFormDisabled}
-                          onChange={(option) =>
-                            handleChangeBulkRow(row.id, 'schoolId', String(option.id))
-                          }
-                          css={{ width: '100%', maxWidth: '100%' }}
-                        />
-                      </S.ControlShell>
-                    </S.Field>
-
-                    <S.Field>
-                      <S.FieldLabel>파트</S.FieldLabel>
-                      <S.ControlShell
-                        $isBlocked={shouldGuardScopedDropdowns}
-                        onClick={shouldGuardScopedDropdowns ? triggerGisuPrompt : undefined}
-                      >
-                        <Dropdown
-                          options={partOptions}
-                          placeholder="파트 선택"
-                          value={resolveOption(partOptions, row.part)}
-                          disabled={isFormDisabled}
-                          onChange={(option) =>
-                            handleChangeBulkRow(row.id, 'part', option.id as PartType)
-                          }
-                          css={{ width: '100%', maxWidth: '100%' }}
-                        />
-                      </S.ControlShell>
-                    </S.Field>
-
-                    <S.Field>
-                      <S.FieldLabel>역할</S.FieldLabel>
-                      <S.ControlShell
-                        $isBlocked={shouldGuardScopedDropdowns}
-                        onClick={shouldGuardScopedDropdowns ? triggerGisuPrompt : undefined}
-                      >
-                        <Dropdown
-                          options={roleOptions}
-                          placeholder="역할 선택"
-                          value={resolveOption(roleOptions, row.challengerRoleType)}
-                          disabled={isFormDisabled}
-                          onChange={(option) =>
-                            handleChangeBulkRow(
-                              row.id,
-                              'challengerRoleType',
-                              option.id as ChallengerRecordRoleType,
-                            )
-                          }
-                          css={{ width: '100%', maxWidth: '100%' }}
-                        />
-                      </S.ControlShell>
-                    </S.Field>
-
-                    <S.Field>
-                      <S.FieldLabel>이름</S.FieldLabel>
-                      <S.Input
-                        value={row.memberName}
-                        onChange={(event) =>
-                          handleChangeBulkRow(row.id, 'memberName', event.target.value)
-                        }
-                        placeholder="이름 입력"
-                        disabled={isFormDisabled}
-                      />
-                    </S.Field>
-                  </S.FormGrid>
-                </S.RowCard>
-              )
-            })}
-          </S.RowList>
-        </Section>
-
-        <Section variant="solid" padding="20px" gap={20}>
-          <S.SectionHeader>
-            <S.SectionTitleWrap alignItems="flex-start">
-              <S.SectionTitle>발급 결과</S.SectionTitle>
-              <S.SectionDescription>
-                현재 세션에서 생성한 코드를 확인하고 바로 복사할 수 있습니다.
-              </S.SectionDescription>
-            </S.SectionTitleWrap>
-
-            {generatedCodes.length > 0 && (
-              <S.Actions width={'fit-content'}>
-                <Button
-                  label="전체 복사"
-                  tone="gray"
-                  variant="outline"
-                  onClick={() =>
-                    handleCopy(
-                      copyAllCodesText,
-                      `${generatedCodes.length}건의 코드를 복사했습니다.`,
-                    )
-                  }
-                  css={{ width: '108px', height: '41px' }}
-                />
-              </S.Actions>
-            )}
-          </S.SectionHeader>
-
-          {generatedCodes.length === 0 ? (
-            <S.EmptyState>
-              <S.EmptyTitle>아직 발급된 코드가 없습니다.</S.EmptyTitle>
-              <S.EmptyDescription>
-                코드를 생성하면 여기에서 발급 결과를 바로 확인할 수 있습니다.
-              </S.EmptyDescription>
-            </S.EmptyState>
-          ) : (
-            <Table
-              headerLabels={RESULT_TABLE_HEADER_LABELS}
-              rows={generatedCodes}
-              getRowId={(item) => item.code}
-              count={{ totalAmounts: generatedCodes.length, label: '코드' }}
-              renderRow={(item) => (
-                <>
-                  <TableStyles.Td>
-                    <S.CodeChip>{item.code}</S.CodeChip>
-                  </TableStyles.Td>
-                  <TableStyles.Td>{item.memberName}</TableStyles.Td>
-                  <TableStyles.Td css={{ whiteSpace: 'normal' }}>
-                    <Flex flexDirection="column" gap={2} alignItems="flex-start">
-                      <S.MetaText>{item.schoolName}</S.MetaText>
-                      <S.MetaSubText>{item.chapterName}</S.MetaSubText>
-                    </Flex>
-                  </TableStyles.Td>
-                  <TableStyles.Td css={{ whiteSpace: 'normal' }}>
-                    <Flex flexDirection="column" gap={2} alignItems="flex-start">
-                      <S.MetaText>{item.gisu}기</S.MetaText>
-                      <S.MetaSubText>{PART_TYPE_TO_SMALL_PART[item.part]}</S.MetaSubText>
-                    </Flex>
-                  </TableStyles.Td>
-                  <TableStyles.Td>
-                    {item.challengerRoleType
-                      ? transformRoleKorean(item.challengerRoleType)
-                      : '챌린저'}
-                  </TableStyles.Td>
-                  <TableStyles.Td>
-                    <Button
-                      label="복사"
-                      tone="gray"
-                      variant="outline"
-                      onClick={() =>
-                        handleCopy(item.code, `${item.memberName}의 코드를 복사했습니다.`)
-                      }
-                      css={{ width: '72px', height: '32px', padding: '8px 12px' }}
-                    />
-                  </TableStyles.Td>
-                </>
-              )}
-            />
-          )}
-        </Section>
+        <AccountCodeResultSection generatedCodes={generatedCodes} onCopy={handleCopy} />
       </S.Container>
     </SharedStyles.AccountContent>
   )
