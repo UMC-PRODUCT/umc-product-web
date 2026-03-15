@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import Notice from '@shared/assets/icons/notice.svg?react'
-
 import { postGisuActivate } from '@/features/management/domain/api'
 import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
 import { formatDateToDot } from '@/features/management/utils/gisu'
@@ -10,19 +8,16 @@ import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
-import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import SectionTitle from '@/shared/ui/common/SectionTitles/SectionTitle'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
-import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
 import StateButton from '../../stateButton/StateButton'
 
 const GenerationList = () => {
   const [page, setPage] = useState(0)
-  const [deleteTargetGisuId, setDeleteTargetGisuId] = useState<string | null>(null)
   const [isExistModalOpen, setIsExistModalOpen] = useState(false)
   const queryClient = useQueryClient()
   const { data } = useGetGisuList({ page: String(page), size: '20' })
@@ -45,13 +40,7 @@ const GenerationList = () => {
 
   return (
     <Flex flexDirection="column" gap={16} alignItems="flex-start">
-      <Flex flexDirection="column" gap={2} alignItems="flex-start">
-        <SectionTitle title="기수 목록 및 삭제" />
-        <Flex gap={6}>
-          <Notice color={theme.colors.necessary} width={18} />
-          <ErrorMessage errorMessage="삭제된 기수는 복구할 수 없습니다." typo="C2.Sb" />
-        </Flex>
-      </Flex>
+      <SectionTitle title="기수 목록" />
       <Table
         headerLabels={['활성 상태', '기수', '활동 기간', '활성화']}
         rows={rows}
@@ -104,12 +93,6 @@ const GenerationList = () => {
           onChangePage: (nextPage) => setPage(nextPage - 1),
         }}
       />
-      {deleteTargetGisuId && (
-        <DeleteGenerationConfirm
-          gisuId={deleteTargetGisuId}
-          onClose={() => setDeleteTargetGisuId(null)}
-        />
-      )}
       {isExistModalOpen && <ExistGeneration onClose={() => setIsExistModalOpen(false)} />}
     </Flex>
   )

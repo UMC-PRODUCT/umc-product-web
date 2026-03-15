@@ -35,11 +35,8 @@ const TermContent = () => {
               typo="C3.Md"
               tone={serviceData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{
-                width: '83px',
-                height: '40px',
-                cursor: serviceData?.result.link ? 'pointer' : 'not-allowed',
-              }}
+              disabled={!serviceData?.result.link}
+              css={{ width: '83px', height: '40px' }}
               onClick={() =>
                 serviceData?.result.link &&
                 window.open(serviceData.result.link, '_blank', 'noopener,noreferrer')
@@ -61,11 +58,8 @@ const TermContent = () => {
               typo="C3.Md"
               tone={privacyData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{
-                width: '83px',
-                height: '40px',
-                cursor: privacyData?.result.link ? 'pointer' : 'not-allowed',
-              }}
+              disabled={!privacyData?.result.link}
+              css={{ width: '83px', height: '40px' }}
               onClick={() =>
                 privacyData?.result.link &&
                 window.open(privacyData.result.link, '_blank', 'noopener,noreferrer')
@@ -87,11 +81,8 @@ const TermContent = () => {
               typo="C3.Md"
               tone={marketingData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{
-                width: '83px',
-                height: '40px',
-                cursor: marketingData?.result.link ? 'pointer' : 'not-allowed',
-              }}
+              disabled={!marketingData?.result.link}
+              css={{ width: '83px', height: '40px' }}
               onClick={() =>
                 marketingData?.result.link &&
                 window.open(marketingData.result.link, '_blank', 'noopener,noreferrer')

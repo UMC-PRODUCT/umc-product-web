@@ -343,8 +343,6 @@ export const StatusBanner = styled.div<{ $tone: 'success' | 'error' }>`
   border-radius: 12px;
   border: 1px solid
     ${({ $tone }) => ($tone === 'success' ? theme.colors.lime : theme.colors.caution)};
-  /* background-color: ${({ $tone }) =>
-    $tone === 'success' ? theme.colors.lime : theme.colors.caution}; */
   color: ${({ $tone }) => ($tone === 'success' ? theme.colors.lime : theme.colors.caution)};
   ${theme.typography.C3.Md};
 `

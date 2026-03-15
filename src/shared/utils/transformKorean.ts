@@ -49,7 +49,8 @@ export const transformRoleKorean = (input: string): string => {
  * @param input - 파트 타입
  * @returns 축약 파트명
  */
-const isPartType = (input: string): input is PartType => input in PART_TYPE_TO_SMALL_PART
+const isPartType = (input: string): input is PartType =>
+  Object.prototype.hasOwnProperty.call(PART_TYPE_TO_SMALL_PART, input)
 
 export const transformPart = (input: PartType | string): PartSmallType | '파트 없음' => {
   if (!isPartType(input)) {
