@@ -110,6 +110,7 @@ export const EmailText = styled.span({
 export const InfoRow = styled(Flex)({
   color: theme.colors.gray[300],
   ...theme.typography.B4.Rg,
+  wordBreak: 'keep-all',
 })
 
 export const MobileOnly = styled.div({

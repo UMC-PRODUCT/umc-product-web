@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import Notice from '@shared/assets/icons/notice.svg?react'
-import Trash from '@shared/assets/icons/trash.svg?react'
-
 import { postGisuActivate } from '@/features/management/domain/api'
 import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
 import { formatDateToDot } from '@/features/management/utils/gisu'
@@ -11,19 +8,16 @@ import { useCustomMutation } from '@/shared/hooks/customQuery'
 import { managementKeys } from '@/shared/queryKeys'
 import { theme } from '@/shared/styles/theme'
 import { Button } from '@/shared/ui/common/Button'
-import ErrorMessage from '@/shared/ui/common/ErrorMessage/ErrorMessage'
 import { Flex } from '@/shared/ui/common/Flex'
 import SectionTitle from '@/shared/ui/common/SectionTitles/SectionTitle'
 import Table from '@/shared/ui/common/Table/Table'
 import * as TableStyles from '@/shared/ui/common/Table/Table.style'
 
-import DeleteGenerationConfirm from '../../modals/DeleteGenerationConfirm/DeleteGenerationConfirm'
 import ExistGeneration from '../../modals/ExistGeneration/ExistGenration'
 import StateButton from '../../stateButton/StateButton'
 
 const GenerationList = () => {
   const [page, setPage] = useState(0)
-  const [deleteTargetGisuId, setDeleteTargetGisuId] = useState<string | null>(null)
   const [isExistModalOpen, setIsExistModalOpen] = useState(false)
   const queryClient = useQueryClient()
   const { data } = useGetGisuList({ page: String(page), size: '20' })
@@ -46,15 +40,9 @@ const GenerationList = () => {
 
   return (
     <Flex flexDirection="column" gap={16} alignItems="flex-start">
-      <Flex flexDirection="column" gap={2} alignItems="flex-start">
-        <SectionTitle title="기수 목록 및 삭제" />
-        <Flex gap={6}>
-          <Notice color={theme.colors.necessary} width={18} />
-          <ErrorMessage errorMessage="삭제된 기수는 복구할 수 없습니다." typo="C2.Sb" />
-        </Flex>
-      </Flex>
+      <SectionTitle title="기수 목록" />
       <Table
-        headerLabels={['활성 상태', '기수', '활동 기간', '활성화', '삭제']}
+        headerLabels={['활성 상태', '기수', '활동 기간', '활성화']}
         rows={rows}
         getRowId={(row) => row.id}
         renderRow={(row) => (
@@ -63,13 +51,13 @@ const GenerationList = () => {
               <StateButton label={row.state ? '활성' : '비활성'} isActive={row.state} />
             </TableStyles.Td>
             <TableStyles.Td css={{ ...theme.typography.C2.Sb }}>{row.gisuName}기</TableStyles.Td>
-            <TableStyles.Td css={{ color: theme.colors.gray[300], ...theme.typography.C2.Sb }}>
+            <TableStyles.Td css={{ color: theme.colors.gray[300], ...theme.typography.C2.Md }}>
               {row.duration}
             </TableStyles.Td>
             <TableStyles.Td>
               <Button
                 iconSize={15}
-                typo="C2.Sb"
+                typo="C2.Md"
                 tone={row.state ? 'gray' : 'lime'}
                 variant={row.state ? 'solid' : 'outline'}
                 label={row.state ? '활성 중' : '활성화하기'}
@@ -95,18 +83,6 @@ const GenerationList = () => {
                 }}
               />
             </TableStyles.Td>
-            <TableStyles.Td>
-              <Button
-                Icon={Trash}
-                iconSize={15}
-                typo="C2.Sb"
-                tone="necessary"
-                variant="outline"
-                label="삭제"
-                css={{ width: 'fit-content', padding: '7px 20px' }}
-                onClick={() => setDeleteTargetGisuId(row.id)}
-              />
-            </TableStyles.Td>
           </>
         )}
         showFooter={true}
@@ -117,12 +93,6 @@ const GenerationList = () => {
           onChangePage: (nextPage) => setPage(nextPage - 1),
         }}
       />
-      {deleteTargetGisuId && (
-        <DeleteGenerationConfirm
-          gisuId={deleteTargetGisuId}
-          onClose={() => setDeleteTargetGisuId(null)}
-        />
-      )}
       {isExistModalOpen && <ExistGeneration onClose={() => setIsExistModalOpen(false)} />}
     </Flex>
   )

@@ -403,19 +403,20 @@ export type ChallengerRoleDetailResponseDTO = {
 }
 
 export type ChallengerRecordRoleType = RoleType | 'CHALLENGER'
+export type ChallengerRecordPartType = PartType | 'ADMIN'
 
 export type PostChallengerRecordCodeBody = {
   gisuId: string
   chapterId: string
   schoolId: string
-  part: PartType
+  part?: ChallengerRecordPartType
   memberName: string
   challengerRoleType?: ChallengerRecordRoleType
 }
 
 export type ChallengerRecordCodeResponseDTO = {
   code: string
-  part: PartType
+  part: ChallengerRecordPartType | null
   gisuId: string
   gisu: string
   schoolId: string
