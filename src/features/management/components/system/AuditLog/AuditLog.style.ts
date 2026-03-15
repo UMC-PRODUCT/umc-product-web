@@ -82,9 +82,24 @@ const SummaryValue = styled.span`
   ${theme.typography.H4.Sb};
 `
 
-const SummaryMeta = styled.span`
-  color: ${theme.colors.gray[400]};
-  ${theme.typography.C5.Rg};
+const SummaryControls = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  ${media.down(theme.breakPoints.tablet)} {
+    width: 100%;
+    justify-content: space-between;
+  }
+`
+
+const PageSizeControl = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
 `
 
 const TargetInfo = styled.div`
@@ -138,8 +153,9 @@ export {
   FilterField,
   FilterLabel,
   MemberLinkButton,
+  PageSizeControl,
+  SummaryControls,
   SummaryLabel,
-  SummaryMeta,
   SummaryValue,
   TargetInfo,
   TextInput,

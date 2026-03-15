@@ -33,10 +33,14 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={serviceData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
+              disabled={!serviceData?.result.link}
               css={{ width: '83px', height: '40px' }}
-              onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
+              onClick={() =>
+                serviceData?.result.link &&
+                window.open(serviceData.result.link, '_blank', 'noopener,noreferrer')
+              }
             />
           </Flex>
         </S.TermCard>
@@ -52,10 +56,14 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={privacyData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
+              disabled={!privacyData?.result.link}
               css={{ width: '83px', height: '40px' }}
-              onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
+              onClick={() =>
+                privacyData?.result.link &&
+                window.open(privacyData.result.link, '_blank', 'noopener,noreferrer')
+              }
             />
           </Flex>
         </S.TermCard>
@@ -71,11 +79,13 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={marketingData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
+              disabled={!marketingData?.result.link}
               css={{ width: '83px', height: '40px' }}
               onClick={() =>
-                window.open(marketingData?.result.link, '_blank', 'noopener,noreferrer')
+                marketingData?.result.link &&
+                window.open(marketingData.result.link, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>
