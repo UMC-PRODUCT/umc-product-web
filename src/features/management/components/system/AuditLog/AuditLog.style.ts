@@ -87,6 +87,32 @@ const SummaryMeta = styled.span`
   ${theme.typography.C5.Rg};
 `
 
+const SummaryControls = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  ${media.down(theme.breakPoints.tablet)} {
+    width: 100%;
+    justify-content: space-between;
+  }
+`
+
+const PageSizeControl = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+`
+
+const PageSizeLabel = styled.label`
+  color: ${theme.colors.gray[400]};
+  white-space: nowrap;
+  ${theme.typography.C5.Rg};
+`
+
 const TargetInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -138,6 +164,9 @@ export {
   FilterField,
   FilterLabel,
   MemberLinkButton,
+  PageSizeControl,
+  PageSizeLabel,
+  SummaryControls,
   SummaryLabel,
   SummaryMeta,
   SummaryValue,

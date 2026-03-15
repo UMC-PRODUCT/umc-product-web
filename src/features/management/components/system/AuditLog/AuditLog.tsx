@@ -28,6 +28,11 @@ import * as S from './AuditLog.style'
 
 const ALL_OPTION_ID = '0'
 const PAGE_SIZE = 20
+const PAGE_SIZE_OPTIONS: Array<Option<string>> = [
+  { label: '20개씩 조회', id: '20' },
+  { label: '30개씩 조회', id: '30' },
+  { label: '50개씩 조회', id: '50' },
+]
 
 type AuditLogFilterState = {
   from: string
@@ -90,6 +95,7 @@ const resolveActionTone = (action: AuditLogAction) => {
 
 const AuditLog = () => {
   const [page, setPage] = useState(0)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
   const [draftFilters, setDraftFilters] = useState<AuditLogFilterState>(() =>
     createInitialFilters(),
@@ -101,6 +107,11 @@ const AuditLog = () => {
     return domainOptions.find((option) => String(option.id) === draftFilters.domain)
   }, [draftFilters.domain])
 
+  const selectedPageSizeOption = useMemo<Option<string> | undefined>(
+    () => PAGE_SIZE_OPTIONS.find((option) => Number(option.id) === pageSize),
+    [pageSize],
+  )
+
   const hasInvalidRange =
     Boolean(draftFilters.from) &&
     Boolean(draftFilters.to) &&
@@ -109,14 +120,14 @@ const AuditLog = () => {
   const queryParams = useMemo(
     () => ({
       page: String(page),
-      size: String(PAGE_SIZE),
+      size: String(pageSize),
       sort: 'createdAt,desc',
       from: filters.from ? dayjs(filters.from).startOf('day').toISOString() : undefined,
       to: filters.to ? dayjs(filters.to).endOf('day').toISOString() : undefined,
       domain: filters.domain,
       actorMemberId: filters.actorMemberId.trim() || undefined,
     }),
-    [filters.actorMemberId, filters.domain, filters.from, filters.to, page],
+    [filters.actorMemberId, filters.domain, filters.from, filters.to, page, pageSize],
   )
 
   const { data, isLoading, isFetching, isError, refetch } = useGetAuditLogs(queryParams)
@@ -281,11 +292,22 @@ const AuditLog = () => {
             css={{ width: '112px', height: '34px', padding: '8px 12px' }}
           />
         </Flex>
-        <S.SummaryMeta>
-          {`${dayjs(filters.from).format('YYYY.MM.DD')} ~ ${dayjs(filters.to).format('YYYY.MM.DD')}`}
-          {filters.domain ? ` · ${resolveDomainLabel(filters.domain)}` : ' · 전체 도메인'}
-          {filters.actorMemberId ? ` · Actor ID ${filters.actorMemberId}` : ''}
-        </S.SummaryMeta>
+        <S.SummaryControls>
+          <S.PageSizeControl>
+            <Dropdown
+              id="audit-log-page-size"
+              options={PAGE_SIZE_OPTIONS}
+              placeholder="조회 수 선택"
+              value={selectedPageSizeOption}
+              onChange={(option) => {
+                setPage(0)
+                setPageSize(Number(option.id))
+              }}
+              css={{ width: '148px', minWidth: '148px', height: '34px' }}
+              portal={false}
+            />
+          </S.PageSizeControl>
+        </S.SummaryControls>
       </Flex>
 
       {isLoading ? (
