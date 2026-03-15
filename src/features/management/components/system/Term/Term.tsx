@@ -33,10 +33,17 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={serviceData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{ width: '83px', height: '40px' }}
-              onClick={() => window.open(serviceData?.result.link, '_blank', 'noopener,noreferrer')}
+              css={{
+                width: '83px',
+                height: '40px',
+                cursor: serviceData?.result.link ? 'pointer' : 'not-allowed',
+              }}
+              onClick={() =>
+                serviceData?.result.link &&
+                window.open(serviceData.result.link, '_blank', 'noopener,noreferrer')
+              }
             />
           </Flex>
         </S.TermCard>
@@ -52,10 +59,17 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={privacyData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{ width: '83px', height: '40px' }}
-              onClick={() => window.open(privacyData?.result.link, '_blank', 'noopener,noreferrer')}
+              css={{
+                width: '83px',
+                height: '40px',
+                cursor: privacyData?.result.link ? 'pointer' : 'not-allowed',
+              }}
+              onClick={() =>
+                privacyData?.result.link &&
+                window.open(privacyData.result.link, '_blank', 'noopener,noreferrer')
+              }
             />
           </Flex>
         </S.TermCard>
@@ -71,11 +85,16 @@ const TermContent = () => {
           <Flex gap={21} width={'fit-content'}>
             <Button
               typo="C3.Md"
-              tone="lime"
+              tone={marketingData?.result.link ? 'lime' : 'gray'}
               label="내용 보기"
-              css={{ width: '83px', height: '40px' }}
+              css={{
+                width: '83px',
+                height: '40px',
+                cursor: marketingData?.result.link ? 'pointer' : 'not-allowed',
+              }}
               onClick={() =>
-                window.open(marketingData?.result.link, '_blank', 'noopener,noreferrer')
+                marketingData?.result.link &&
+                window.open(marketingData.result.link, '_blank', 'noopener,noreferrer')
               }
             />
           </Flex>
