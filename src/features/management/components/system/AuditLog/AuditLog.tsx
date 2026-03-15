@@ -27,7 +27,7 @@ import { formatDateTimeDot } from '@/shared/utils/date'
 import * as S from './AuditLog.style'
 
 const ALL_OPTION_ID = '0'
-const PAGE_SIZE = 5
+const PAGE_SIZE = 20
 
 type AuditLogFilterState = {
   from: string
