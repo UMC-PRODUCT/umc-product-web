@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import Notice from '@shared/assets/icons/notice.svg?react'
-import Trash from '@shared/assets/icons/trash.svg?react'
 
 import { postGisuActivate } from '@/features/management/domain/api'
 import { useGetGisuList } from '@/features/management/hooks/useManagementQueries'
@@ -54,7 +53,7 @@ const GenerationList = () => {
         </Flex>
       </Flex>
       <Table
-        headerLabels={['활성 상태', '기수', '활동 기간', '활성화', '삭제']}
+        headerLabels={['활성 상태', '기수', '활동 기간', '활성화']}
         rows={rows}
         getRowId={(row) => row.id}
         renderRow={(row) => (
@@ -69,7 +68,7 @@ const GenerationList = () => {
             <TableStyles.Td>
               <Button
                 iconSize={15}
-                typo="C2.Sb"
+                typo="C2.Md"
                 tone={row.state ? 'gray' : 'lime'}
                 variant={row.state ? 'solid' : 'outline'}
                 label={row.state ? '활성 중' : '활성화하기'}
@@ -93,18 +92,6 @@ const GenerationList = () => {
                     },
                   })
                 }}
-              />
-            </TableStyles.Td>
-            <TableStyles.Td>
-              <Button
-                Icon={Trash}
-                iconSize={15}
-                typo="C2.Sb"
-                tone="necessary"
-                variant="outline"
-                label="삭제"
-                css={{ width: 'fit-content', padding: '7px 20px' }}
-                onClick={() => setDeleteTargetGisuId(row.id)}
               />
             </TableStyles.Td>
           </>

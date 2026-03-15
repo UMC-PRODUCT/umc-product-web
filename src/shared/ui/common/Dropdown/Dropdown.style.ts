@@ -19,7 +19,7 @@ export const StyledTrigger = styled(SelectPrimitive.Trigger)`
   cursor: pointer;
   background-color: ${theme.colors.black};
   width: 100%;
-
+  white-space: nowrap;
   &[data-placeholder] {
     color: ${theme.colors.gray[400]};
   }
