@@ -49,9 +49,14 @@ export const transformRoleKorean = (input: string): string => {
  * @param input - 파트 타입
  * @returns 축약 파트명
  */
-export const transformPart = (input: PartType): PartSmallType => {
-  const mapping = PART_TYPE_TO_SMALL_PART[input]
-  return mapping
+const isPartType = (input: string): input is PartType => input in PART_TYPE_TO_SMALL_PART
+
+export const transformPart = (input: PartType | string): PartSmallType | '파트 없음' => {
+  if (!isPartType(input)) {
+    return '파트 없음'
+  }
+
+  return PART_TYPE_TO_SMALL_PART[input]
 }
 
 /**
