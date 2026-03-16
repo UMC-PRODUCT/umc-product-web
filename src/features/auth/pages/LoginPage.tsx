@@ -36,6 +36,14 @@ export const LoginPage = ({ oauthError }: LoginPageProps) => {
   }
 
   const lastPlatform = getPlatform()
+  const formattedLastPlatform =
+    typeof lastPlatform === 'string'
+      ? ({
+          kakao: 'Kakao',
+          google: 'Google',
+          apple: 'Apple',
+        }[lastPlatform.toLowerCase()] ?? lastPlatform)
+      : null
 
   const { isResolving } = useAuthRedirectByRole({
     enabled: hasAccessToken,
@@ -92,11 +100,11 @@ export const LoginPage = ({ oauthError }: LoginPageProps) => {
             // onClick={() => handleSocialLogin('apple')}
             onClick={() => alert('Apple 로그인은 현재 지원하지 않습니다.')}
           />
-          {lastPlatform && (
+          {formattedLastPlatform && (
             <Instruction
               mode="success"
               Icon={Notice}
-              content={`최근 ${lastPlatform} 계정으로 로그인 하였습니다.`}
+              content={`최근 ${formattedLastPlatform} 계정으로 로그인 하였습니다.`}
               typography="C3.Md"
             />
           )}
