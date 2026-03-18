@@ -10,11 +10,11 @@ import PageLayout from '@/shared/layout/PageLayout/PageLayout'
 import PageTitle from '@/shared/layout/PageTitle/PageTitle'
 import { theme } from '@/shared/styles/theme'
 import type { MyApplicationStatusType } from '@/shared/types/apply'
-import type { PartType } from '@/shared/types/part'
 import AsyncBoundary from '@/shared/ui/common/AsyncBoundary/AsyncBoundary'
 import { Flex } from '@/shared/ui/common/Flex'
 import SuspenseFallback from '@/shared/ui/common/SuspenseFallback/SuspenseFallback'
 
+import type { RecruitmentPartType } from '../domain/model'
 import { useGetActiveRecruitmentId, useGetRecruitmentParts } from '../hooks/useGetApplicationQuery'
 
 type ApplyPageViewData = {
@@ -29,7 +29,7 @@ type ApplyPageViewData = {
   } | null
   parts: Array<{
     recruitmentPartId: string
-    part: PartType
+    part: RecruitmentPartType
     status: string
   }>
   myApplication: {

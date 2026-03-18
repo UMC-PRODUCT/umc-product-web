@@ -258,6 +258,8 @@ export type GetRecruitmentNoticeResponseDTO = {
   content: string
   parts: Array<PartType>
 }
+
+export type RecruitmentPartType = PartType | 'ADMIN'
 /** 특정 파트 모집 정보 */
 export type GetRecruitmentPartsResponseDTO = {
   recruitmentId: string
@@ -273,7 +275,7 @@ export type GetRecruitmentPartsResponseDTO = {
   description: string
   parts: Array<{
     recruitmentPartId: string
-    part: PartType
+    part: RecruitmentPartType
     status: string
   }>
   myApplication: {

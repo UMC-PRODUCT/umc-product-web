@@ -19,7 +19,7 @@ export const MenuList = styled.div({
   gap: '48px',
   color: 'white',
   cursor: 'pointer',
-  [media.down('800px')]: {
+  [media.down('900px')]: {
     gap: '13px',
   },
   [media.down(theme.breakPoints.mobile)]: {
