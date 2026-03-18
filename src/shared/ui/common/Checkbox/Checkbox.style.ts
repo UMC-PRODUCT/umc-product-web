@@ -21,7 +21,7 @@ export const StyledRoot = styled(CheckboxPrimitive.Root)`
   }
 
   &[data-disabled] {
-    opacity: 0.6;
+    /* opacity: 0.6; */
     cursor: not-allowed;
   }
 `

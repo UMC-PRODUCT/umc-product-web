@@ -1,6 +1,13 @@
 import type { UserProfileRole } from '@/shared/store/useUserProfileStore'
 import type { RoleType } from '@/shared/types/umc'
 
+const MANAGEMENT_ROUTE_ROLE_TYPES: ReadonlySet<RoleType> = new Set([
+  'SUPER_ADMIN',
+  'CENTRAL_PRESIDENT',
+  'CENTRAL_VICE_PRESIDENT',
+  'CENTRAL_OPERATING_TEAM_MEMBER',
+])
+
 const ROLE_PRIORITY: Record<RoleType, number> = {
   SUPER_ADMIN: 100,
   CENTRAL_PRESIDENT: 90,
@@ -51,8 +58,11 @@ export const getActiveRolePool = ({
   return []
 }
 
+const isManagementRouteRole = (roleType?: RoleType | null) =>
+  Boolean(roleType && MANAGEMENT_ROUTE_ROLE_TYPES.has(roleType))
+
 export const canAccessManagementByRoles = (roles: Array<UserProfileRole>) =>
-  roles.some((role) => isManagementRole(role.roleType))
+  roles.some((role) => isManagementRouteRole(role.roleType))
 
 export const canAccessSchoolByRoles = (roles: Array<UserProfileRole>) =>
   roles.some((role) => isSchoolRole(role.roleType))

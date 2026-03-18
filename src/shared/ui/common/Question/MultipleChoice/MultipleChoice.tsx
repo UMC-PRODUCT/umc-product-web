@@ -61,7 +61,7 @@ export const MultipleChoice = ({ options, value, onChange, mode }: MultipleChoic
   }
 
   return (
-    <Flex flexDirection="column" gap={10}>
+    <Flex flexDirection="column" gap={10} alignItems="flex-start">
       {options.map((option, index) => {
         const optionId = getOptionId(option, index)
         const isOptionSelected = selectedOptions.includes(optionId)

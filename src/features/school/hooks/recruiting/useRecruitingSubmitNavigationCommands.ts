@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
-import { schoolKeys } from '@/shared/queryKeys'
+import { applyKeys, schoolKeys } from '@/shared/queryKeys'
 import type { RecruitingForms, RecruitingSchedule } from '@/shared/types/form'
 
 import { buildPublishedSchedulePayload } from '../../utils/recruiting/recruitingPayload'
@@ -72,14 +72,44 @@ export const useRecruitingSubmitNavigationCommands = ({
 
   const submitQuestionsPayload = { items: values.items }
 
+  const invalidatePublishedRecruitmentQueries = useCallback(async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitments({ status: 'ONGOING' }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitments({ status: 'SCHEDULED' }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitments({ status: 'CLOSED' }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitments({ status: 'DRAFT' }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitmentExtensionBases,
+      }),
+      queryClient.invalidateQueries({
+        queryKey: schoolKeys.getRecruitmentDraft(recruitingId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: applyKeys.getActiveRecruitmentId,
+      }),
+      queryClient.invalidateQueries({
+        queryKey: applyKeys.getRecruitmentSchedules(recruitingId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: applyKeys.getRecruitmentNotice(recruitingId),
+      }),
+    ])
+  }, [queryClient, recruitingId])
+
   const handleConfirmSubmitInLockedMode = useCallback(() => {
     const payload = buildPublishedSchedulePayload(values.schedule, initialSchedule)
     patchPublishedRecruitmentMutate(payload, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await invalidatePublishedRecruitmentQueries()
         navigationBlocker.allowNextNavigationOnce()
-        queryClient.invalidateQueries({
-          queryKey: schoolKeys.getRecruitmentDraft(recruitingId),
-        })
         navigate({ to: '/school/recruiting', replace: true })
       },
       onError: (error: unknown) => {
@@ -93,13 +123,11 @@ export const useRecruitingSubmitNavigationCommands = ({
       onSettled: () => setIsSubmitting(false),
     })
   }, [
-    buildLockedSchedulePayload,
+    invalidatePublishedRecruitmentQueries,
     initialSchedule,
     navigate,
     navigationBlocker,
     patchPublishedRecruitmentMutate,
-    queryClient,
-    recruitingId,
     setIsSubmitting,
     setModal,
     values.schedule,
@@ -112,7 +140,8 @@ export const useRecruitingSubmitNavigationCommands = ({
         applicationFormQuestions: submitQuestionsPayload,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          await invalidatePublishedRecruitmentQueries()
           navigationBlocker.allowNextNavigationOnce()
           navigate({ to: '/school/recruiting', replace: true })
         },
@@ -132,6 +161,7 @@ export const useRecruitingSubmitNavigationCommands = ({
       },
     )
   }, [
+    invalidatePublishedRecruitmentQueries,
     navigate,
     navigationBlocker,
     postPublishRecruitmentMutate,

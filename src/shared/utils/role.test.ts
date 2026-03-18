@@ -50,6 +50,13 @@ describe('role util smoke tests', () => {
     expect(isSchoolRole('CENTRAL_PRESIDENT')).toBe(false)
 
     expect(canAccessManagementByRoles([makeRole({ roleType: 'SUPER_ADMIN' })])).toBe(true)
+    expect(canAccessManagementByRoles([makeRole({ roleType: 'CENTRAL_VICE_PRESIDENT' })])).toBe(
+      true,
+    )
+    expect(
+      canAccessManagementByRoles([makeRole({ roleType: 'CENTRAL_EDUCATION_TEAM_MEMBER' })]),
+    ).toBe(false)
+    expect(canAccessManagementByRoles([makeRole({ roleType: null })])).toBe(false)
     expect(canAccessSchoolByRoles([makeRole({ roleType: 'SCHOOL_PRESIDENT' })])).toBe(true)
   })
 })

@@ -6,6 +6,7 @@ import { PART_CONFIG } from '@features/auth/domain'
 import { PART_TYPE_TO_SMALL_PART } from '@shared/constants/part'
 
 import * as S from '@/features/apply/components/ApplyPage.style'
+import type { RecruitmentPartType } from '@/features/apply/domain/model'
 import type { MyApplicationStatusType } from '@/shared/types/apply'
 import type { PartType } from '@/shared/types/part'
 import { Button } from '@/shared/ui/common/Button'
@@ -15,12 +16,14 @@ import { useApplyMutation } from '../hooks/useApplyMutation'
 import ConfirmApplicationModal from './modals/CautionConfirm'
 import PartInfoCard from './PartInfoCard'
 
+type RecruitmentPartInfo = {
+  part: RecruitmentPartType
+  status: string
+  recruitmentPartId: string
+}
+
 interface BeforeSubmitProps {
-  partInfoList: Array<{
-    part: PartType
-    status: string
-    recruitmentPartId: string
-  }>
+  partInfoList: Array<RecruitmentPartInfo>
   draftFormResponseId?: string
   recruitmentId?: string
   canApply: boolean
@@ -41,6 +44,9 @@ const BeforeSubmit = ({
   const { useFirstCreateDraft } = useApplyMutation()
   const { mutate: firstCreateDraft } = useFirstCreateDraft()
   const isApplyDisabled = !recruitmentId || !canApply
+  const visiblePartInfoList = partInfoList.filter(
+    (partInfo): partInfo is RecruitmentPartInfo & { part: PartType } => partInfo.part !== 'ADMIN',
+  )
 
   const handleApplyClick = () => {
     if (submitStatus === 'NONE') {
@@ -64,7 +70,7 @@ const BeforeSubmit = ({
   return (
     <>
       <S.PartInfoListContainer gap="16px" flexDirection="column">
-        {partInfoList.map(({ part, status, recruitmentPartId }) => (
+        {visiblePartInfoList.map(({ part, status, recruitmentPartId }) => (
           <PartInfoCard
             key={recruitmentPartId}
             partName={PART_TYPE_TO_SMALL_PART[part]}
