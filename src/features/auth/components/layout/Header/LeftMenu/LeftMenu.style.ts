@@ -8,7 +8,6 @@ export const Container = styled.nav({
   flex: 1,
   display: 'flex',
   [media.down(theme.breakPoints.tablet)]: {
-    maxWidth: '255px',
     overflowX: 'auto',
   },
 })
